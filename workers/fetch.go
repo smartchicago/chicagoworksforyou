@@ -20,6 +20,10 @@ func main() {
 	fetchRequests()
 }
 
+func (req Open311Request) String() string {
+	return fmt.Sprintf("%s: %s at %s %f,%f", req.Service_request_id, req.Service_name, req.Address, req.Lat, req.Long)
+}
+
 func fetchRequests() {
 	log.Printf("fetching from %s", OPEN311_API_URI)
 	resp, err := http.Get(OPEN311_API_URI)
@@ -40,7 +44,10 @@ func fetchRequests() {
 			}
 
 			log.Printf("received %d requests from Open311", len(requests))
-			fmt.Printf("%+v", requests)
+			
+			for i, req := range requests {
+				fmt.Println(i, req)
+			}
 		}
 	} else {
 		log.Fatalln("error fetching from Open311 endpoint", err)
