@@ -1,0 +1,74 @@
+.navbar {
+  margin-bottom: 0;
+  /* Navbar links: increase padding for taller navbar */ }
+  .navbar .nav > li > a {
+    padding: 15px 2 0px; }
+  .navbar .brand {
+    padding: 14px 20px 16px;
+    /* Increase vertical padding to match navbar links */
+    margin: 0; }
+
+.topnav {
+  margin-top: 20px; }
+  .topnav .brand {
+    font-size: 22px;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
+    color: white; }
+  .topnav .navbar-inner {
+    border-radius: 4px 4px 0 0; }
+
+.subnav {
+  margin-bottom: 20px; }
+  .subnav .navbar-inner {
+    background: #fff;
+    border: none;
+    border-radius: 0 0 4px 4px;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none; }
+  .subnav .nav > li > a {
+    color: #555; }
+
+.map iframe {
+  border: none; }
+
+.body {
+  position: relative;
+  padding-top: 40px; }
+
+.alderman {
+  position: absolute;
+  top: -400px;
+  right: 0;
+  width: 120px;
+  background: rgba(0, 0, 0, 0.8);
+  padding: 20px;
+  border-radius: 6px;
+  -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+  -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8); }
+  .alderman img {
+    margin-bottom: 1em; }
+  .alderman h2 {
+    color: white;
+    font-size: 16px;
+    margin: 0;
+    line-height: 20px; }
+
+section {
+  margin-bottom: 30px;
+  border-bottom: 1px solid #ddd; }
+
+.timeframes {
+  line-height: 1; }
+  .timeframes a {
+    padding: 4px 12px;
+    border-radius: 12px; }
+    .timeframes a:hover {
+      background: #DDF2F4;
+      text-decoration: none; }
+
+footer {
+  padding: 10px 0 30px 0;
+  font-size: 12px;
+  color: #888; }
