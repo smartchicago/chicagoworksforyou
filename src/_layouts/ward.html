@@ -19,7 +19,7 @@
 
 <body>
 
-<div class="container navbar-fixed-top">
+<div class="container navgroup navbar-fixed-top">
     {% include navbar.html %}
 
     <div class="navbar subnav">
@@ -36,6 +36,53 @@
 </div>
 
 {{ content }}
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script>
+$(function () {
+    $('#chart').highcharts({
+        chart: {
+            type: 'area'
+        },
+        title: {
+            text: ''
+        },
+        xAxis: {
+            type: 'datetime'
+        },
+        yAxis: {
+            title: {
+                text: 'Tickets submitted'
+            }
+        },
+        plotOptions: {
+            area: {
+                pointStart: Date.UTC(2013, 3, 6),
+                pointInterval: 24 * 3600 * 1000, // one day
+                marker: {
+                    enabled: false,
+                    symbol: 'circle',
+                    radius: 2,
+                    states: {
+                        hover: {
+                            enabled: true
+                        }
+                    }
+                }
+            }
+        },
+        tooltip: {
+            pointFormat: '{series.name} produced <b>{point.y:,.0f}</b><br/>tickets in {point.x}'
+        },
+        series: [{
+            name: 'Ward 6',
+            data: [10, 12, 15, 13, 10, 12, 13]
+        }]
+    });
+});
+</script>
+
 
 <footer class="container">
     © 2013 Smart Chicago Collaborative

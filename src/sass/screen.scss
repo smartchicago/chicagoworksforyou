@@ -15,9 +15,12 @@
     }
 }
 
-.topnav {
-    margin-top: 20px;
+.navgroup {
+    margin: 20px auto;
+    @include box-shadow(0 0 10px fade-out(#000,.7));
+}
 
+.topnav {
     .brand {
         font-size: 22px;
         text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
@@ -30,8 +33,6 @@
 }
 
 .subnav {
-    margin-bottom: 20px;
-
     .navbar-inner {
         background: #fff;
         border: none;
