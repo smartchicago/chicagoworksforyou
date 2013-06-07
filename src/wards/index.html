@@ -27,15 +27,16 @@ L.tileLayer('http://{s}.tile.cloudmade.com/{key}/997/256/{z}/{x}/{y}.png', {
 map.zoomControl.setPosition('bottomleft');
 
 for (path in paths) {
+    var wardNum = parseInt(path) + 1;
     var poly = L.polygon(
         paths[path],
         {
             color: '#0873AD',
             opacity: 1,
-            weight: 2
+            weight: 2,
+            fillOpacity: (((wardNum % 5) + 2) / 10)
         }
     ).addTo(map);
-    var wardNum = parseInt(path) + 1;
     poly.bindPopup('<a href="/wards/' + wardNum + '/">Ward ' + wardNum + '</a>');
 }
 </script>
