@@ -23,25 +23,32 @@ func main() {
 	if err == nil {
 		requests := fetchRequests()
 		for _, request := range requests {
-			stmt, err := db.Prepare("INSERT INTO service_requests(service_request_id, status, service_name, service_code, agency_responsible, address, requested_datetime, updated_datetime, lat, long) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);")
-			if err != nil {
-				log.Fatal("error preparing database statement", err)
-			}
+		        
+		        if request.Service_request_id == "" {
+		                log.Printf("Ignoring a request type %s because there is no SR number assigned", request.Service_name)
+		        } else {
+		                stmt, err := db.Prepare("INSERT INTO service_requests(service_request_id, status, service_name, service_code, agency_responsible, address, requested_datetime, updated_datetime, lat, long) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);")
+        			if err != nil {
+        				log.Fatal("error preparing database statement", err)
+        			}
 
-			_, err = stmt.Exec(request.Service_request_id,
-				request.Status,
-				request.Service_name,
-				request.Service_code,
-				request.Agency_responsible,
-				request.Address,
-				request.Requested_datetime,
-				request.Updated_datetime,
-				request.Lat,
-				request.Long)
+        			_, err = stmt.Exec(request.Service_request_id,
+        				request.Status,
+        				request.Service_name,
+        				request.Service_code,
+        				request.Agency_responsible,
+        				request.Address,
+        				request.Requested_datetime,
+        				request.Updated_datetime,
+        				request.Lat,
+        				request.Long)
 
-			if err != nil {
-				log.Fatalf("could not save %s because %s", request.Service_request_id, err)
-			}
+        			if err != nil {
+        				log.Fatalf("could not save %s because %s", request.Service_request_id, err)
+        			} else {
+        			        log.Printf("saved SR %s to database", request.Service_request_id)
+        			}     			
+		        }		        
 		}
 	} else {
 		log.Fatal("Cannot open database connection", err)
@@ -57,7 +64,7 @@ func (req Open311Request) String() string {
 // 	if err != nil {
 // 		log.Fatal("error preparing database statement", err)
 // 	}
-// 
+//
 // 	_, err = stmt.Exec(req.Service_request_id,
 // 		req.Status,
 // 		req.Service_name,
@@ -68,11 +75,11 @@ func (req Open311Request) String() string {
 // 		req.Updated_datetime,
 // 		req.Lat,
 // 		req.Long)
-// 
+//
 // 	if err != nil {
 // 		log.Fatalf("could not save %s because %s", req.Service_request_id, err)
 // 	}
-// 
+//
 // 	return true
 // }
 
@@ -95,12 +102,12 @@ func fetchRequests() (requests []Open311Request) {
 				log.Fatal("error parsing JSON:", err)
 			}
 
-			log.Printf("received %d requests from Open311", len(requests))			
+			log.Printf("received %d requests from Open311", len(requests))
 
 		}
 	} else {
 		log.Fatalln("error fetching from Open311 endpoint", err)
-	}	
+	}
 
 	return requests
 }
