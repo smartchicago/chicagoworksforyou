@@ -18,10 +18,10 @@
 <link rel="shortcut icon" href="/images/favicon.png">
 </head>
 
-<body>
+<body class="{{ page.section }}">
 
 <div class="container navbar-fixed-top">
-    <div class="navbar topnav navbar-inverse">
+    <div class="navbar topnav navbar-inverse {% if page.has_subnav %}has-subnav{% endif %}">
         <div class="navbar-inner">
           <a class="brand" href="/">CWFY</a>
           <!-- Responsive Navbar Part 2: Place all navbar contents you want collapsed withing .navbar-collapse.collapse. -->
