@@ -11,31 +11,34 @@ html, body {
     /* Increase vertical padding to match navbar links */
     margin: 0; }
 
-.topnav {
-  margin-top: 20px; }
-  .topnav .brand {
-    font-size: 22px;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
-    color: white; }
-  .topnav .navbar-inner {
-    border-radius: 4px; }
-  .topnav.has-subnav .navbar-inner {
-    border-radius: 4px 4px 0 0; }
+.topnav .brand {
+  font-size: 22px;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
+  color: white; }
+.topnav .navbar-inner {
+  border-radius: 4px; }
+.topnav.has-subnav .navbar-inner {
+  border-radius: 4px 4px 0 0; }
 
-.subnav {
-  margin-bottom: 20px; }
-  .subnav .navbar-inner {
-    background: #fff;
-    border: none;
-    border-radius: 0 0 4px 4px;
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    box-shadow: none; }
-  .subnav .nav > li > a {
-    color: #555; }
+.subnav .navbar-inner {
+  background: #fff;
+  border: none;
+  border-radius: 0 0 4px 4px;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none; }
+.subnav .nav > li > a {
+  color: #555; }
 
 .map iframe {
   border: none; }
+
+.navgroup {
+  margin: 20px auto;
+  border-radius: 4px;
+  -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+  -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8); }
 
 .body {
   position: relative;

@@ -20,8 +20,6 @@ html, body {
 }
 
 .topnav {
-    margin-top: 20px;
-
     .brand {
         font-size: 22px;
         text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
@@ -40,8 +38,6 @@ html, body {
 }
 
 .subnav {
-    margin-bottom: 20px;
-
     .navbar-inner {
         background: #fff;
         border: none;
@@ -56,6 +52,12 @@ html, body {
 
 .map iframe {
     border: none;
+}
+
+.navgroup {
+    margin: 20px auto;
+    border-radius: 4px;
+    @include box-shadow(0 0 10px fade-out(black,.2));
 }
 
 .body {
