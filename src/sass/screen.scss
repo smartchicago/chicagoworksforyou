@@ -28,7 +28,13 @@
     }
 
     .navbar-inner {
-        border-radius: 4px 4px 0 0;
+        border-radius: 4px;
+    }
+
+    &.has-subnav {
+        .navbar-inner {
+            border-radius: 4px 4px 0 0;
+        }
     }
 }
 
@@ -53,6 +59,8 @@
     position: relative;
     padding-top: 40px;
 }
+
+// WARD DETAIL
 
 .alderman {
     position: relative;
