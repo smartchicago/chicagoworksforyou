@@ -57,7 +57,7 @@ html, body {
 .navgroup {
     margin: 20px auto;
     border-radius: 4px;
-    @include box-shadow(0 0 10px fade-out(black,.2));
+    @include box-shadow(0 0 10px fade-out(black,.7));
 }
 
 .body {

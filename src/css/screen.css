@@ -36,9 +36,9 @@ html, body {
 .navgroup {
   margin: 20px auto;
   border-radius: 4px;
-  -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
-  -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8); }
+  -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); }
 
 .body {
   position: relative;
