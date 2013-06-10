@@ -22,6 +22,8 @@ type Open311Request struct {
 
 func main() {
 	db, err := sql.Open("postgres", "dbname=cwfy sslmode=disable")
+	defer db.Close()
+	
 	if err == nil {
 		requests := fetchRequests()
 		for _, request := range requests {
@@ -29,17 +31,56 @@ func main() {
 			if request.Service_request_id == "" {
 				log.Printf("Ignoring a request type %s because there is no SR number assigned", request.Service_name)
 			} else {
-				stmt, err := db.Prepare("INSERT INTO service_requests(service_request_id," +
+				insert_stmt, err := db.Prepare("INSERT INTO service_requests(service_request_id," +
 					"status, service_name, service_code, agency_responsible, " +
 					"address, requested_datetime, updated_datetime, lat, long," +
 					"ward, police_district, media_url, channel, duplicate, parent_service_request_id) " +
-					"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16);")
+					"SELECT $1::varchar, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16 " + 
+					"WHERE NOT EXISTS (SELECT 1 FROM service_requests WHERE service_request_id = $1);")
 
 				if err != nil {
-					log.Fatal("error preparing database statement", err)
+					log.Fatal("error preparing database insert statement", err)
 				}
 
-                                _, err = stmt.Exec(request.Service_request_id,
+				update_stmt, err := db.Prepare("UPDATE service_requests SET " +
+					"status = $2, service_name = $3, service_code = $4, agency_responsible = $5, " +
+					"address = $6, requested_datetime = $7, updated_datetime = $8, lat = $9, long = $10," +
+					"ward = $11, police_district = $12, media_url = $13, channel = $14, duplicate = $15, " + 
+					"parent_service_request_id = $16, updated_at = NOW() WHERE service_request_id = $1;")
+
+				if err != nil {
+					log.Fatal("error preparing database update statement", err)
+				}
+
+                                tx, err := db.Begin()
+                                
+                                if err != nil {
+                                        log.Fatal("error beginning transaction", err)
+                                }
+
+
+                                _, err = tx.Stmt(update_stmt).Exec(request.Service_request_id,
+                                     request.Status,
+                                     request.Service_name,
+                                     request.Service_code,
+                                     request.Agency_responsible,
+                                     request.Address,
+                                     request.Requested_datetime,
+                                     request.Updated_datetime,
+                                     request.Lat,
+                                     request.Long,
+                                     request.Extended_attributes["ward"],
+                                     request.Extended_attributes["police_district"],
+                                     request.Media_url,
+                                     request.Extended_attributes["channel"],
+                                     request.Extended_attributes["duplicate"],
+                                     request.Extended_attributes["parent_service_request_id"])
+                               
+                               if err != nil {
+                                    log.Fatalf("could not update %s because %s", request.Service_request_id, err)
+                               }
+                                
+                                _, err = tx.Stmt(insert_stmt).Exec(request.Service_request_id,
                                      request.Status,
                                      request.Service_name,
                                      request.Service_code,
@@ -60,6 +101,11 @@ func main() {
                                      log.Fatalf("could not save %s because %s", request.Service_request_id, err)
                                 } else {
                                      log.Printf("saved SR %s to database", request.Service_request_id)
+                                }
+                                
+                                err = tx.Commit()
+                                if err != nil {
+                                        log.Fatal("error closing transaction", err)
                                 }
 			}
 		}
