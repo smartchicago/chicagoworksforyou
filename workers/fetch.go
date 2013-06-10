@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-const OPEN311_API_URI = "http://311api.cityofchicago.org/open311/v2/requests.json?extensions=true&page_size=100"
+const OPEN311_API_URI = "http://311api.cityofchicago.org/open311/v2/requests.json?extensions=true&page_size=500"
 
 type Open311Request struct {
 	Lat, Long                                                                                               float64
