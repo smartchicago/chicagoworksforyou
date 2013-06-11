@@ -1,40 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<title>{{ page.title }}</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="">
-<meta name="author" content="">
-
-<link href="/css/bootstrap/bootstrap.css" rel="stylesheet">
-<!-- <link href="/css/bootstrap/bootstrap-responsive.css" rel="stylesheet"> -->
-<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
-<link href="/css/screen.css" rel="stylesheet">
-<!--[if IE]>
-    <link href="/css/ie.css" media="screen, projection" rel="stylesheet" type="text/css" />
-<![endif]-->
-
-<link rel="shortcut icon" href="/images/favicon.png">
-</head>
-
-<body>
-
-<div class="container navbar-fixed-top">
-    {% include navbar.html %}
-
-    <div class="navbar subnav">
-      <div class="navbar-inner">
-        <a class="brand" href="#top">Ward {{ page.ward }}</a>
-        <!-- Responsive Navbar Part 2: Place all navbar contents you want collapsed withing .navbar-collapse.collapse. -->
-        <ul class="nav">
-          <li><a href="#stats">Stats</a></li>
-          <li><a href="#rankings">Rankings</a></li>
-          <li><a href="#compare">Compare</a></li>
-        </ul>
-      </div>
-    </div>
-</div>
+---
+layout: default
+section: wards
+has_subnav: true
+---
 
 <div class="container alderman">
     <div class="content">
@@ -109,11 +77,3 @@ L.tileLayer('http://{s}.tile.cloudmade.com/{key}/997/256/{z}/{x}/{y}.png', {
 }).addTo(map);
 var polygon = L.polygon(path).addTo(map);
 </script>
-
-<footer class="container">
-    © 2013 Smart Chicago Collaborative
-</footer>
-
-<script src="/js/holder.js"></script>
-</body>
-</html>
