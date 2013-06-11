@@ -25,7 +25,13 @@
     }
 
     .navbar-inner {
-        border-radius: 4px 4px 0 0;
+        border-radius: 4px;
+    }
+
+    &.has-subnav {
+        .navbar-inner {
+            border-radius: 4px 4px 0 0;
+        }
     }
 }
 
@@ -53,15 +59,22 @@
     padding-top: 40px;
 }
 
+// WARD DETAIL
+
 .alderman {
-    position: absolute;
-    top: -400px;
-    right: 0;
-    width: 120px;
-    background: rgba(0, 0, 0, 0.8);
-    padding: 20px;
-    border-radius: 6px;
-    @include box-shadow(0 0 10px rgba(0, 0, 0, 0.8));
+    position: relative;
+    z-index: 100;
+
+    .content {
+        position: absolute;
+        top: 150px;
+        right: 0;
+        width: 120px;
+        background: rgba(0, 0, 0, 0.8);
+        padding: 20px;
+        border-radius: 6px;
+        @include box-shadow(0 0 10px rgba(0, 0, 0, 0.8));
+    }
 
     img {
         margin-bottom: 1em;

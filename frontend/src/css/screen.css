@@ -15,6 +15,8 @@
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
     color: white; }
   .topnav .navbar-inner {
+    border-radius: 4px; }
+  .topnav.has-subnav .navbar-inner {
     border-radius: 4px 4px 0 0; }
 
 .subnav {
@@ -37,16 +39,19 @@
   padding-top: 40px; }
 
 .alderman {
-  position: absolute;
-  top: -400px;
-  right: 0;
-  width: 120px;
-  background: rgba(0, 0, 0, 0.8);
-  padding: 20px;
-  border-radius: 6px;
-  -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
-  -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8); }
+  position: relative;
+  z-index: 100; }
+  .alderman .content {
+    position: absolute;
+    top: 150px;
+    right: 0;
+    width: 120px;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    border-radius: 6px;
+    -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+    -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.8); }
   .alderman img {
     margin-bottom: 1em; }
   .alderman h2 {
