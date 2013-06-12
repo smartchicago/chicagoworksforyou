@@ -19,6 +19,12 @@ html, body {
     }
 }
 
+.navgroup {
+    margin: 20px auto;
+    border-radius: 4px;
+    @include box-shadow(0 0 10px fade-out(black,.7));
+}
+
 .topnav {
     .brand {
         font-size: 22px;
@@ -52,12 +58,6 @@ html, body {
 
 .map iframe {
     border: none;
-}
-
-.navgroup {
-    margin: 20px auto;
-    border-radius: 4px;
-    @include box-shadow(0 0 10px fade-out(black,.7));
 }
 
 .body {

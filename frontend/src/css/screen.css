@@ -11,6 +11,13 @@ html, body {
     /* Increase vertical padding to match navbar links */
     margin: 0; }
 
+.navgroup {
+  margin: 20px auto;
+  border-radius: 4px;
+  -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); }
+
 .topnav .brand {
   font-size: 22px;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
@@ -32,13 +39,6 @@ html, body {
 
 .map iframe {
   border: none; }
-
-.navgroup {
-  margin: 20px auto;
-  border-radius: 4px;
-  -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); }
 
 .body {
   position: relative;
