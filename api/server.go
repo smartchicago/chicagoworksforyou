@@ -9,10 +9,43 @@ import (
 	"net/http"
 )
 
-var db *sql.DB
-
 func main() {
 	log.Print("starting ChicagoWorksforYou.com API server")
+
+	router := mux.NewRouter()
+	router.HandleFunc("/health_check", HealthCheckHandler)
+	router.HandleFunc("/services.json", ServicesHandler)
+	http.ListenAndServe(":4000", router)
+}
+
+func ServicesHandler(response http.ResponseWriter, request *http.Request) {
+	// return counts of requests, grouped by service name
+	// 
+	// Sample output:
+	// 
+	// [
+	//   {
+	//     "Count": 1139,
+	//     "Service_code": "4fd3b167e750846744000005",
+	//     "Service_name": "Graffiti Removal"
+	//   },
+	//   {
+	//     "Count": 25,
+	//     "Service_code": "4fd6e4ece750840569000019",
+	//     "Service_name": "Restaurant Complaint"
+	//   },
+	// 
+	//  ... snip ...
+	// 
+	// ]
+
+	type ServicesCount struct {
+		Count        int
+		Service_code string
+		Service_name string
+	}
+
+	var services []ServicesCount
 
 	// open database
 	db, err := sql.Open("postgres", "dbname=cwfy sslmode=disable")
@@ -21,45 +54,26 @@ func main() {
 	}
 	defer db.Close()
 
-        log.Print("db is", db)
-
-	router := mux.NewRouter()
-	router.HandleFunc("/health_check", HealthCheckHandler)
-	router.HandleFunc("/services.json", ServicesHandler)
-	http.ListenAndServe(":4000", router)
-}
-
-// type ServicesCount struct {
-//      Count        int
-//      Service_code string
-//      Service_name string
-// }
-
-func ServicesHandler(response http.ResponseWriter, request *http.Request) {
-	// return counts of requests, grouped by service name
-
-        // var services []ServicesCount
-
-        log.Print("db is now", db)
-
-        rows, err := db.Query("SELECT COUNT(*), service_code, service_name FROM service_requests WHERE duplicate IS NULL GROUP BY service_code,service_name;")
+	rows, err := db.Query("SELECT COUNT(*), service_code, service_name FROM service_requests WHERE duplicate IS NULL GROUP BY service_code,service_name;")
 
 	if err != nil {
 		log.Fatal("error fetching data for ServicesHandler", err)
 	}
 
 	for rows.Next() {
-	        var count int
-	        var service_code, service_name string
+		var count int
+		var service_code, service_name string
 
 		if err := rows.Scan(&count, &service_code, &service_name); err != nil {
-		        log.Fatal("error reading row", err)
+			log.Fatal("error reading row", err)
 		}
-		log.Print(count, service_code, service_name)
+
+		row := ServicesCount{Count: count, Service_code: service_code, Service_name: service_name}
+		services = append(services, row)
 	}
-	
-        // jsn, _ := json.Marshal(services)
-        // response.Write()
+
+	jsn, _ := json.MarshalIndent(services, "", "  ")
+	response.Write(jsn)
 }
 
 func HealthCheckHandler(response http.ResponseWriter, request *http.Request) {
