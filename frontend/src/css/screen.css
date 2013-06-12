@@ -90,15 +90,16 @@ html, body {
 section {
   margin-bottom: 30px;
   border-bottom: 1px solid #ddd; }
-
-.timeframes {
-  line-height: 1; }
-  .timeframes a {
-    padding: 4px 12px;
-    border-radius: 12px; }
-    .timeframes a:hover {
-      background: #DDF2F4;
-      text-decoration: none; }
+  section .pagination {
+    text-align: center;
+    margin-top: 0; }
+  section .this-week {
+    font-weight: bold; }
+    section .this-week a {
+      color: #333; }
+  section .prev-week a, section .next-week a {
+    font-size: 13px;
+    color: #666; }
 
 footer {
   padding: 10px 0 30px 0;

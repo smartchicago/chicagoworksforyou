@@ -124,18 +124,24 @@ html, body {
 section {
     margin-bottom: 30px;
     border-bottom: 1px solid #ddd;
-}
 
-.timeframes {
-    line-height: 1;
+    .pagination {
+        text-align: center;
+        margin-top: 0;
+    }
 
-    a {
-        padding: 4px 12px;
-        border-radius: 12px;
+    .this-week {
+        font-weight: bold;
 
-        &:hover {
-            background: #DDF2F4;
-            text-decoration: none;
+        a {
+            color: #333;
+        }
+    }
+
+    .prev-week, .next-week {
+        a {
+            font-size: 13px;
+            color: #666;
         }
     }
 }
