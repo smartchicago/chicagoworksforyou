@@ -78,9 +78,38 @@ func ServicesHandler(response http.ResponseWriter, request *http.Request) {
 
 func HealthCheckHandler(response http.ResponseWriter, request *http.Request) {
 	response.Header().Add("Content-type", "application/json")
-	health_check := map[string]string{}
-	health_check["database"] = "dbconn" // FIXME: meaningful db information
-	health_check["sr_count"] = "123"    // FIXME: meaningful count
+	
+	type HealthCheck struct {
+		Count int
+		Database bool
+		Healthy bool
+	}
+	
+	// open database
+	db, err := sql.Open("postgres", "dbname=cwfy sslmode=disable")
+	if err != nil {
+		log.Fatal("Cannot open database connection", err)
+	}
+	defer db.Close()
+		
+	health_check := HealthCheck{}
+	
+	health_check.Database = db.Ping() == nil
+
+	rows, _ := db.Query("SELECT COUNT(*) FROM service_requests;")
+	for rows.Next() {
+		if err := rows.Scan(&health_check.Count); err != nil {
+			log.Fatal("error fetching count", err)
+		}
+	}	
+
+	// calculate overall health
+	health_check.Healthy = health_check.Count > 0 && health_check.Database
+
+	log.Printf("health_check: %+v", health_check)
+	if !health_check.Healthy {
+		log.Printf("health_check failed")
+	}
 	jsn, _ := json.Marshal(health_check)
 	response.Write(jsn)
 }
