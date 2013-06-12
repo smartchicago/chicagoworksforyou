@@ -23,6 +23,11 @@ html, body {
     margin: 20px auto;
     border-radius: 4px;
     @include box-shadow(0 0 10px fade-out(black,.7));
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 2000;
 }
 
 .topnav {
@@ -92,10 +97,10 @@ html, body {
         top: 150px;
         right: 0;
         width: 120px;
-        background: rgba(0, 0, 0, 0.8);
+        background: fade-out(black,.2);
         padding: 20px;
         border-radius: 6px;
-        @include box-shadow(0 0 10px rgba(0, 0, 0, 0.8));
+        @include box-shadow(0 0 10px fade-out(black,.7));
     }
 
     img {

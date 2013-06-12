@@ -45,7 +45,7 @@ has_subnav: true
                 <a href="#">Year</a>
             </span>
 
-            <div id="chart" style="width:100%; height:400px;"></div>
+            <div id="chart" style="width:100%; height:500px;"></div>
         </div>
     </section>
 
@@ -81,12 +81,15 @@ has_subnav: true
 </div>
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="/js/jquery.sticky.js"></script>
 <script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
 <script src="/data/wards.json"></script>
 <script>
 $(function () {
-    var ward = "{{ page.ward }}";
+    $(".navgroup .subnav").sticky({topSpacing:0});
+
+     var ward = "{{ page.ward }}";
     var centroid = WARDS[ward].centroid;
     var points = WARDS[ward].simple_shape[0][0];
     var path = [];

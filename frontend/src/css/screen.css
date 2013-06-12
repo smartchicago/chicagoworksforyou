@@ -16,7 +16,12 @@ html, body {
   border-radius: 4px;
   -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); }
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2000; }
 
 .topnav .brand {
   font-size: 22px;
@@ -66,9 +71,9 @@ html, body {
     background: rgba(0, 0, 0, 0.8);
     padding: 20px;
     border-radius: 6px;
-    -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
-    -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.8); }
+    -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); }
   .alderman img {
     margin-bottom: 1em; }
   .alderman h2 {
