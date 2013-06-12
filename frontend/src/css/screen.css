@@ -52,7 +52,8 @@ html, body {
     width: 100%;
     padding: 14px 0;
     line-height: 1;
-    text-indent: 40px; }
+    text-indent: 40px;
+    border-radius: 0 0 6px 6px; }
 
 .alderman {
   position: relative;
