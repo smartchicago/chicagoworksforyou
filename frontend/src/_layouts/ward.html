@@ -20,7 +20,7 @@ has_subnav: true
     <section class="row" id="counts">
         <div class="span3">
             <ul class="nav nav-pills nav-stacked">
-                <li><a href="#">Building Violation</a></li>
+                <li class="active"><a href="#">Building Violation</a></li>
                 <li><a href="#">Restaurant Complaint</a></li>
                 <li><a href="#">Abandoned Vehicle</a></li>
                 <li><a href="#">Graffiti Removal</a></li>
@@ -156,8 +156,7 @@ $(function () {
 
     countsChart.highcharts({
         chart: {
-            marginBottom: 20,
-            spacingBottom: 20,
+            marginBottom: 50,
             type: 'area'
         },
         title: {
@@ -168,18 +167,27 @@ $(function () {
             dateTimeLabelFormats: {
                 day: '%b %e'
             },
+            minPadding: .05,
+            maxPadding: .05,
+            // tickPosition: 'inside',
             labels: {
                 style: {
                     fontFamily: 'Helvetica',
                     fontSize: '14px'
-                }
+                },
+                y: 22
             },
         },
         yAxis: {
             title: {
                 text: ''
             },
+            minPadding: 0.1,
             labels: {
+                style: {
+                    fontFamily: 'Helvetica, sans-serif',
+                    fontWeight: 'bold'
+                },
                 align: 'left',
                 x: 0,
                 y: -2
@@ -203,11 +211,17 @@ $(function () {
             }
         },
         tooltip: {
-            pointFormat: '{series.name} produced <b>{point.y:,.0f}</b><br/>tickets in {point.x}'
+            headerFormat: '',
+            pointFormat: '<b>{point.y:,.0f}</b> tickets',
+            shadow: false,
+            style: {
+                fontFamily: 'Helvetica, sans-serif',
+                fontSize: '15px'
+            }
         },
         series: [{
             name: 'Ward 6',
-            data: [100, 112, 152, 123, 100, 102, 135]
+            data: [94, 112, 152, 123, 100, 102, 135]
         }],
         legend: {
             enabled: false
