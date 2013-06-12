@@ -47,7 +47,8 @@
         </ul>
       </div>
     </div>
-    {% else if page.subnav == 'wards' %}
+    {% endif %}
+    {% if page.subnav == 'wards' %}
     <div class="navbar subnav">
         <form class="search-form" action="/search/">
             <input type="text" placeholder="Enter your address to find your ward">
