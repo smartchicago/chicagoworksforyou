@@ -64,7 +64,7 @@ func fetchRequests() (requests []Open311Request) {
 	last_updated_at := time.Now()
 	for rows.Next() {
 		if err := rows.Scan(&last_updated_at); err != nil {
-			log.Fatal(err)
+			log.Print("error finding most recent SR", err)
 		}
 
 		log.Printf("most recent SR timestamp %s", last_updated_at)

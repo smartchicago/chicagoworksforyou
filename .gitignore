@@ -2,3 +2,4 @@
 .DS_Store
 .bundle
 /frontend/site
+.s3cfg
