@@ -17,7 +17,7 @@ has_subnav: true
 </div>
 
 <div class="container body">
-    <section class="row">
+    <section class="row" id="counts">
         <div class="span3">
             <ul class="nav nav-pills nav-stacked">
                 <li><a href="#">Building Violation</a></li>
@@ -29,7 +29,7 @@ has_subnav: true
                 <li><a href="#">Tree Debris</a></li>
                 <li><a href="#">Alley Light Out</a></li>
                 <li><a href="#">Pavement Cave-In Survey</a></li>
-                <li><a href="#">Pothole in Street</a></li>
+                <li><a href="#" class="pothole">Pothole in Street</a></li>
                 <li><a href="#">Street Cut Complaints</a></li>
                 <li><a href="#">Street Light 1 / Out</a></li>
                 <li><a href="#">Street Lights All / Out</a></li>
@@ -45,11 +45,11 @@ has_subnav: true
                 <a href="#">Year</a>
             </span>
 
-            <div id="chart" style="width:100%; height:500px;"></div>
+            <div class="chart" style="width:100%; height:500px;"></div>
         </div>
     </section>
 
-    <section class="row">
+    <section class="row" id="ttc">
         <div class="span3">
             <ul class="nav nav-pills nav-stacked">
                 <li><a href="#">Building Violation</a></li>
@@ -76,6 +76,40 @@ has_subnav: true
                 <a href="#">Month</a>
                 <a href="#">Year</a>
             </span>
+
+            <div class="chart" style="width:100%; height:500px;"></div>
+        </div>
+    </section>
+
+    <section class="row" id="compare">
+        <div class="span3">
+            <ul class="nav nav-pills nav-stacked">
+                <li><a href="#">Building Violation</a></li>
+                <li><a href="#">Restaurant Complaint</a></li>
+                <li><a href="#">Abandoned Vehicle</a></li>
+                <li><a href="#">Graffiti Removal</a></li>
+                <li><a href="#">Rodent Baiting / Rat Complaint</a></li>
+                <li><a href="#">Sanitation Code Violation</a></li>
+                <li><a href="#">Tree Debris</a></li>
+                <li><a href="#">Alley Light Out</a></li>
+                <li><a href="#">Pavement Cave-In Survey</a></li>
+                <li><a href="#">Pothole in Street</a></li>
+                <li><a href="#">Street Cut Complaints</a></li>
+                <li><a href="#">Street Light 1 / Out</a></li>
+                <li><a href="#">Street Lights All / Out</a></li>
+                <li><a href="#">Traffic Signal Out</a></li>
+            </ul>
+        </div>
+        <div class="span9">
+            <span class="timeframes">
+                Over the last
+                <a href="#">Day</a>
+                <a href="#">Week</a>
+                <a href="#">Month</a>
+                <a href="#">Year</a>
+            </span>
+
+            <div class="chart" style="width:100%; height:500px;"></div>
         </div>
     </section>
 </div>
@@ -89,7 +123,7 @@ has_subnav: true
 $(function () {
     $(".navgroup .subnav").sticky({topSpacing:0});
 
-     var ward = "{{ page.ward }}";
+    var ward = "{{ page.ward }}";
     var centroid = WARDS[ward].centroid;
     var points = WARDS[ward].simple_shape[0][0];
     var path = [];
@@ -108,19 +142,47 @@ $(function () {
 
     var polygon = L.polygon(path).addTo(map);
 
-    $('#chart').highcharts({
+    var countsChart = $('#counts .chart');
+
+    $('#counts .nav a').click(function(evt) {
+        evt.preventDefault();
+        var chart = countsChart.highcharts();
+        chart.series[0].setData(
+            [8, 10, 12, 10, 12, 35, 10]
+        );
+        $('#counts .nav li').removeClass('active');
+        $(this).closest('li').addClass('active');
+    });
+
+    countsChart.highcharts({
         chart: {
+            marginBottom: 20,
+            spacingBottom: 20,
             type: 'area'
         },
         title: {
             text: ''
         },
         xAxis: {
-            type: 'datetime'
+            type: 'datetime',
+            dateTimeLabelFormats: {
+                day: '%b %e'
+            },
+            labels: {
+                style: {
+                    fontFamily: 'Helvetica',
+                    fontSize: '14px'
+                }
+            },
         },
         yAxis: {
             title: {
-                text: 'Tickets submitted'
+                text: ''
+            },
+            labels: {
+                align: 'left',
+                x: 0,
+                y: -2
             }
         },
         plotOptions: {
@@ -128,9 +190,10 @@ $(function () {
                 pointStart: Date.UTC(2013, 3, 6),
                 pointInterval: 24 * 3600 * 1000, // one day
                 marker: {
-                    enabled: false,
+                    enabled: true,
                     symbol: 'circle',
-                    radius: 2,
+                    radius: 4,
+                    borderWidth: 1,
                     states: {
                         hover: {
                             enabled: true
@@ -144,8 +207,11 @@ $(function () {
         },
         series: [{
             name: 'Ward 6',
-            data: [10, 12, 15, 13, 10, 12, 13]
-        }]
+            data: [100, 112, 152, 123, 100, 102, 135]
+        }],
+        legend: {
+            enabled: false
+        }
     });
 });
 </script>

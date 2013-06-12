@@ -30,6 +30,12 @@ html, body {
     z-index: 2000;
 }
 
+.sticky-wrapper.is-sticky {
+    .subnav {
+        @include box-shadow(0 0 10px fade-out(black,.7));
+    }
+}
+
 .topnav {
     .brand {
         font-size: 22px;
