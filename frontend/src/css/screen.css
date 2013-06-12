@@ -44,6 +44,16 @@ html, body {
   position: relative;
   padding-top: 40px; }
 
+.search-form {
+  margin: 0; }
+  .search-form input {
+    margin: 0;
+    border: 0;
+    width: 100%;
+    padding: 14px 0;
+    line-height: 1;
+    text-indent: 40px; }
+
 .alderman {
   position: relative;
   z-index: 100; }
