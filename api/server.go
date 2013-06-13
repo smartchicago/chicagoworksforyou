@@ -25,17 +25,25 @@ func main() {
 func WardCountsHandler(response http.ResponseWriter, request *http.Request) {
 	// for a given ward, return the number of service requests opened
 	// grouped by day, then by service request type
-
-        // sample output
-        // $ curl "http://localhost:5000/wards/10/counts.json?service_code=4fd3b167e750846744000005&count=5"
-        // {
-        //   "2013-06-06": 2,
-        //   "2013-06-07": 4,
-        //   "2013-06-09": 5,
-        //   "2013-06-10": 6,
-        //   "2013-06-12": 23
-        // }
-        //
+	//
+	// Parameters:
+	//
+	// 	count: 		the number of days of data to return
+	// 	end_date: 	date that +count+ is based from.
+	// 	service_code: 	the code used by the City of Chicago to categorize service requests
+	//
+	// Sample API output
+	//
+	// Note that the end date is June 12, and the results include the end_date.
+	// $ curl "http://localhost:5000/wards/10/counts.json?service_code=4fd3b167e750846744000005&count=5&end_date=2013-06-12"
+	// {
+	//   "2013-06-06": 2,
+	//   "2013-06-07": 4,
+	//   "2013-06-09": 5,
+	//   "2013-06-10": 6,
+	//   "2013-06-12": 23
+	// }
+	//
 	vars := mux.Vars(request)
 	ward_id := vars["id"]
 	params := request.URL.Query()
@@ -45,20 +53,20 @@ func WardCountsHandler(response http.ResponseWriter, request *http.Request) {
 		log.Fatal("Cannot open database connection", err)
 	}
 	defer db.Close()
-	
+
 	// determine date range. default is last 7 days.
 	days, _ := strconv.Atoi(params["count"][0])
 
-	end, _	:= time.Parse("2006-01-02", params["end_date"][0])
-	end = end.AddDate(0,0,1) // inc to the following day
-	start 	:= end.AddDate(0, 0, -days)
-	
+	end, _ := time.Parse("2006-01-02", params["end_date"][0])
+	end = end.AddDate(0, 0, 1) // inc to the following day
+	start := end.AddDate(0, 0, -days)
+
 	log.Printf("fetching counts for ward %s code %s for past %d days", ward_id, params["service_code"][0], days)
 	log.Printf("date range is %s to %s", start, end)
 
-	rows, err := db.Query("SELECT COUNT(*), DATE(requested_datetime) as requested_date FROM service_requests WHERE ward = $1 " +
-			"AND duplicate IS NULL AND service_code = $2 AND requested_datetime >= $3::date AND requested_datetime <= $4::date " + 
-			"GROUP BY DATE(requested_datetime) ORDER BY requested_date;", string(ward_id), params["service_code"][0], start, end)
+	rows, err := db.Query("SELECT COUNT(*), DATE(requested_datetime) as requested_date FROM service_requests WHERE ward = $1 "+
+		"AND duplicate IS NULL AND service_code = $2 AND requested_datetime >= $3::date AND requested_datetime <= $4::date "+
+		"GROUP BY DATE(requested_datetime) ORDER BY requested_date;", string(ward_id), params["service_code"][0], start, end)
 	if err != nil {
 		log.Fatal("error fetching data for WardCountsHandler", err)
 	}
