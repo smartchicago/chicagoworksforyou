@@ -7,6 +7,7 @@ import (
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -44,10 +45,15 @@ func WardCountsHandler(response http.ResponseWriter, request *http.Request) {
 		log.Fatal("Cannot open database connection", err)
 	}
 	defer db.Close()
+	
+	// determine date range. default is last 7 days.
+	days, _ := strconv.Atoi(params["count"][0])
+	since := time.Now().AddDate(0, 0, -(days - 1))
+	log.Printf("fetching since %s", since)
 
-	log.Printf("fetching counts for ward %s code %s", ward_id, params["service_code"][0])
+	log.Printf("fetching counts for ward %s code %s for past %d days", ward_id, params["service_code"][0], days)
 
-	rows, err := db.Query("SELECT COUNT(*), DATE(requested_datetime) as requested_date FROM service_requests WHERE ward = $1 AND duplicate IS NULL AND service_code = $2 GROUP BY DATE(requested_datetime) ORDER BY requested_date;", string(ward_id), params["service_code"][0])
+	rows, err := db.Query("SELECT COUNT(*), DATE(requested_datetime) as requested_date FROM service_requests WHERE ward = $1 AND duplicate IS NULL AND service_code = $2 AND requested_datetime >= $3::date GROUP BY DATE(requested_datetime) ORDER BY requested_date;", string(ward_id), params["service_code"][0], since)
 	if err != nil {
 		log.Fatal("error fetching data for WardCountsHandler", err)
 	}
