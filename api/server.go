@@ -1,50 +1,50 @@
 package main
 
 import (
-        "os"
-        "os/signal"
 	"database/sql"
 	"encoding/json"
 	"github.com/bmizerany/pq"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
 	"strconv"
 	"time"
 )
 
 type Api struct {
-        Db *sql.DB
-        Version string
+	Db      *sql.DB
+	Version string
 }
 
 var api Api
 
-func init(){
-        // version
-        api.Version = "0.0.1"
-        
-        // setup database connection
+func init() {
+	// version
+	api.Version = "0.0.1"
+
+	// setup database connection
 	db, err := sql.Open("postgres", "dbname=cwfy sslmode=disable")
 	if err != nil {
 		log.Fatal("Cannot open database connection", err)
-	} 
+	}
 	api.Db = db
 }
 
 func main() {
 	log.Print("starting ChicagoWorksforYou.com API server")
 
-        // listen for SIGINT (h/t http://stackoverflow.com/a/12571099/1247272)
-        notify_channel := make(chan os.Signal, 1)
-        signal.Notify(notify_channel, os.Interrupt, os.Kill)
-        go func() {
-                for _ = range notify_channel {
-                        log.Printf("stopping ChicagoWorksForYou.com API server")
-                        api.Db.Close()
-                        os.Exit(1)
-                }
-        }()
+	// listen for SIGINT (h/t http://stackoverflow.com/a/12571099/1247272)
+	notify_channel := make(chan os.Signal, 1)
+	signal.Notify(notify_channel, os.Interrupt, os.Kill)
+	go func() {
+		for _ = range notify_channel {
+			log.Printf("stopping ChicagoWorksForYou.com API server")
+			api.Db.Close()
+			os.Exit(1)
+		}
+	}()
 
 	router := mux.NewRouter()
 	router.HandleFunc("/health_check", HealthCheckHandler)
