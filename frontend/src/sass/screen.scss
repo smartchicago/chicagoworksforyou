@@ -6,23 +6,11 @@ html, body {
 
 .navbar {
     margin-bottom: 0;
-
-    /* Navbar links: increase padding for taller navbar */
-    .nav > li > a {
-        padding: 15px 20px;
-    }
-
-    .brand {
-        padding: 14px 20px 16px;
-        /* Increase vertical padding to match navbar links */
-        margin: 0;
-    }
 }
 
 .navgroup {
     margin: 20px auto;
     border-radius: 4px;
-    @include box-shadow(0 0 10px fade-out(black,.7));
     position: absolute;
     top: 0;
     left: 0;
@@ -37,14 +25,27 @@ html, body {
 }
 
 .topnav {
+    background:black;
+
     .brand {
-        font-size: 22px;
+        font-size: 18px;
+        padding: 12px 10px 0;
+        margin: 0;
         text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
         color: white;
     }
 
+    .nav > li > a {
+        padding: 12px 24px;
+        font-size: 12px;
+        text-transform: uppercase;
+    }
+
     .navbar-inner {
-        border-radius: 4px;
+        background:none;
+        border-radius: 0;
+        margin: 0 auto;
+        width: 900px;
     }
 
     &.has-subnav {
@@ -55,15 +56,47 @@ html, body {
 }
 
 .subnav {
+    position: absolute;
+    top: 70px;
+    left: 0;
+    right: 0;
+    z-index: 2000;
+    border-radius: 4px;
+    background: #fff;
+    @include box-shadow(0 0 10px fade-out(black,.8));
+
+
+    .brand {
+        padding: 14px 20px 16px;
+        margin: 0;
+    }
+
     .navbar-inner {
-        background: #fff;
         border: none;
-        border-radius: 0 0 4px 4px;
-        @include box-shadow(none);
+        background:white;
     }
 
     .nav > li > a {
         color: #555;
+        padding: 15px 20px;
+    }
+}
+
+.sticky-wrapper {
+    height: 0 !important;
+    position: absolute;
+    top: 70px;
+    width: 100%;
+
+    .subnav {
+        position: relative;
+        top: 0;
+    }
+
+    &.is-sticky {
+        .subnav, .navbar-inner {
+            border-radius: 0 0 4px 4px;
+        }
     }
 }
 
@@ -88,7 +121,7 @@ html, body {
         padding: 14px 0;
         line-height: 1;
         text-indent: 40px;
-        border-radius: 0 0 6px 6px;
+        border-radius: 6px 6px;
     }
 }
 

@@ -2,21 +2,11 @@ html, body {
   height: 100%; }
 
 .navbar {
-  margin-bottom: 0;
-  /* Navbar links: increase padding for taller navbar */ }
-  .navbar .nav > li > a {
-    padding: 15px 20px; }
-  .navbar .brand {
-    padding: 14px 20px 16px;
-    /* Increase vertical padding to match navbar links */
-    margin: 0; }
+  margin-bottom: 0; }
 
 .navgroup {
   margin: 20px auto;
   border-radius: 4px;
-  -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   position: absolute;
   top: 0;
   left: 0;
@@ -28,24 +18,57 @@ html, body {
   -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); }
 
-.topnav .brand {
-  font-size: 22px;
-  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
-  color: white; }
-.topnav .navbar-inner {
-  border-radius: 4px; }
-.topnav.has-subnav .navbar-inner {
-  border-radius: 4px 4px 0 0; }
+.topnav {
+  background: black; }
+  .topnav .brand {
+    font-size: 18px;
+    padding: 12px 10px 0;
+    margin: 0;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
+    color: white; }
+  .topnav .nav > li > a {
+    padding: 12px 24px;
+    font-size: 12px;
+    text-transform: uppercase; }
+  .topnav .navbar-inner {
+    background: none;
+    border-radius: 0;
+    margin: 0 auto;
+    width: 900px; }
+  .topnav.has-subnav .navbar-inner {
+    border-radius: 4px 4px 0 0; }
 
-.subnav .navbar-inner {
+.subnav {
+  position: absolute;
+  top: 70px;
+  left: 0;
+  right: 0;
+  z-index: 2000;
+  border-radius: 4px;
   background: #fff;
-  border: none;
-  border-radius: 0 0 4px 4px;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none; }
-.subnav .nav > li > a {
-  color: #555; }
+  -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); }
+  .subnav .brand {
+    padding: 14px 20px 16px;
+    margin: 0; }
+  .subnav .navbar-inner {
+    border: none;
+    background: white; }
+  .subnav .nav > li > a {
+    color: #555;
+    padding: 15px 20px; }
+
+.sticky-wrapper {
+  height: 0 !important;
+  position: absolute;
+  top: 70px;
+  width: 100%; }
+  .sticky-wrapper .subnav {
+    position: relative;
+    top: 0; }
+  .sticky-wrapper.is-sticky .subnav, .sticky-wrapper.is-sticky .navbar-inner {
+    border-radius: 0 0 4px 4px; }
 
 .map iframe {
   border: none; }
@@ -63,7 +86,7 @@ html, body {
     padding: 14px 0;
     line-height: 1;
     text-indent: 40px;
-    border-radius: 0 0 6px 6px; }
+    border-radius: 6px 6px; }
 
 .alderman {
   position: relative;
