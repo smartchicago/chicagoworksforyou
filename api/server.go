@@ -18,15 +18,15 @@ func main() {
 	router.HandleFunc("/services.json", ServicesHandler)
 	router.HandleFunc("/wards/{id}/requests.json", WardRequestsHandler)
 	router.HandleFunc("/wards/{id}/counts.json", WardCountsHandler)
-	http.ListenAndServe(":4000", router)
+	http.ListenAndServe(":5000", router)
 }
 
 func WardCountsHandler(response http.ResponseWriter, request *http.Request) {
 	// for a given ward, return the number of service requests opened
 	// grouped by day, then by service request type
-        
+
         // sample output
-        // $ curl "http://localhost:4000/wards/10/counts.json?service_code=4fd3b167e750846744000005"
+        // $ curl "http://localhost:5000/wards/10/counts.json?service_code=4fd3b167e750846744000005"
         // {
         //   "2013-06-06": 2,
         //   "2013-06-07": 4,
@@ -34,7 +34,7 @@ func WardCountsHandler(response http.ResponseWriter, request *http.Request) {
         //   "2013-06-10": 6,
         //   "2013-06-12": 23
         // }
-        // 
+        //
 	vars := mux.Vars(request)
 	ward_id := vars["id"]
 	params := request.URL.Query()
