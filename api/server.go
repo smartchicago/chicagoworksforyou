@@ -1,6 +1,8 @@
 package main
 
 import (
+        "os"
+        "os/signal"
 	"database/sql"
 	"encoding/json"
 	"github.com/bmizerany/pq"
@@ -32,6 +34,17 @@ func init(){
 
 func main() {
 	log.Print("starting ChicagoWorksforYou.com API server")
+
+        // listen for SIGINT (h/t http://stackoverflow.com/a/12571099/1247272)
+        notify_channel := make(chan os.Signal, 1)
+        signal.Notify(notify_channel, os.Interrupt, os.Kill)
+        go func() {
+                for _ = range notify_channel {
+                        log.Printf("stopping ChicagoWorksForYou.com API server")
+                        api.Db.Close()
+                        os.Exit(1)
+                }
+        }()
 
 	router := mux.NewRouter()
 	router.HandleFunc("/health_check", HealthCheckHandler)
