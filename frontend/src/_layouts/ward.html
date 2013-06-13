@@ -79,9 +79,14 @@ has_subnav: true
 <script src="/data/wards.json"></script>
 <script>
 $(function () {
+    var ward = "{{ page.ward }}";
+
+    // MAKE SUBNAV STICK
+
     $(".navgroup .subnav").sticky({topSpacing:0});
 
-    var ward = "{{ page.ward }}";
+    // WARD MAP
+
     var centroid = WARDS[ward].centroid;
     var points = WARDS[ward].simple_shape[0][0];
     var path = [];
@@ -113,16 +118,31 @@ $(function () {
         'json'
     );
 
+    // CHARTS
+
     var countsChart = $('#counts .chart');
 
-    $('#counts .nav a').click(function(evt) {
+    $('.st-list').on('click', 'a', function(evt) {
         evt.preventDefault();
         var chart = countsChart.highcharts();
-        chart.series[0].setData(
-            [8, 10, 12, 10, 12, 35, 10]
+        var serviceType = $(this).attr('data-code');
+        var counts = [];
+
+        $.get(
+            // 'http://localhost:5000/wards/' + ward + '/counts.json?service_code=' + serviceType,
+            '/data/counts.json',
+            function (response) {
+                for (var d in response) {
+                    counts.push(response[d]);
+                }
+
+                chart.series[0].setData(counts);
+                $('#counts .nav li').removeClass('active');
+                $(this).closest('li').addClass('active');
+            },
+            'json'
         );
-        $('#counts .nav li').removeClass('active');
-        $(this).closest('li').addClass('active');
+
     });
 
     countsChart.highcharts({
