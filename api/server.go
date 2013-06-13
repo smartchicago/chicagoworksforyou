@@ -7,6 +7,7 @@ import (
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+	"time"
 )
 
 func main() {
@@ -16,24 +17,74 @@ func main() {
 	router.HandleFunc("/health_check", HealthCheckHandler)
 	router.HandleFunc("/services.json", ServicesHandler)
 	router.HandleFunc("/wards/{id}/requests.json", WardRequestsHandler)
+	router.HandleFunc("/wards/{id}/counts.json", WardCountsHandler)
 	http.ListenAndServe(":4000", router)
+}
+
+func WardCountsHandler(response http.ResponseWriter, request *http.Request) {
+	// for a given ward, return the number of service requests opened
+	// grouped by day, then by service request type
+
+	vars := mux.Vars(request)
+	ward_id := vars["id"]
+	params := request.URL.Query()
+
+	db, err := sql.Open("postgres", "dbname=cwfy sslmode=disable")
+	if err != nil {
+		log.Fatal("Cannot open database connection", err)
+	}
+	defer db.Close()
+
+	log.Printf("fetching counts for ward %s code %s", ward_id, params["service_code"][0])
+
+	rows, err := db.Query("SELECT COUNT(*), DATE(requested_datetime) as requested_date FROM service_requests WHERE ward = $1 AND duplicate IS NULL AND service_code = $2 GROUP BY DATE(requested_datetime) ORDER BY requested_date;", string(ward_id), params["service_code"][0])
+	if err != nil {
+		log.Fatal("error fetching data for WardCountsHandler", err)
+	}
+
+	type WardCount struct {
+		Requested_date time.Time
+		Count          int
+	}
+
+	var counts []WardCount
+	for rows.Next() {
+		wc := WardCount{}
+		if err := rows.Scan(&wc.Count, &wc.Requested_date); err != nil {
+			log.Print("error reading row of ward count", err)
+		}
+
+		// trunc the requested time to just date
+		counts = append(counts, wc)
+	}
+
+	resp := make(map[string]int)
+
+	for _, c := range counts {
+		key := c.Requested_date.Format("2006-01-02")
+		log.Print("key: ", key)
+		resp[key] = c.Count
+	}
+
+	jsn, _ := json.MarshalIndent(resp, "", "  ")
+	response.Write(jsn)
 }
 
 func WardRequestsHandler(response http.ResponseWriter, request *http.Request) {
 	// for a given ward, return recent service requests
-	
+
 	vars := mux.Vars(request)
 	ward_id := vars["id"]
-	
+
 	log.Print("fetch requests for ward ", ward_id)
-	
+
 	// open database
 	db, err := sql.Open("postgres", "dbname=cwfy sslmode=disable")
 	if err != nil {
 		log.Fatal("Cannot open database connection", err)
 	}
 	defer db.Close()
-	
+
 	rows, err := db.Query("SELECT lat,long,ward,police_district,service_request_id,status,service_name,service_code,agency_responsible,address,channel,media_url,requested_datetime,updated_datetime,created_at,updated_at,duplicate,parent_service_request_id,id FROM service_requests WHERE duplicate IS NULL AND ward = $1 ORDER BY updated_at DESC LIMIT 100;", ward_id)
 
 	if err != nil {
@@ -41,27 +92,27 @@ func WardRequestsHandler(response http.ResponseWriter, request *http.Request) {
 	}
 
 	type Open311RequestRow struct {
-		Lat, Long                                                                                               float64
-		Ward, Police_district, Id                                                                                   int
+		Lat, Long                                                                                                                                     float64
+		Ward, Police_district, Id                                                                                                                     int
 		Service_request_id, Status, Service_name, Service_code, Agency_responsible, Address, Channel, Media_url, Duplicate, Parent_service_request_id sql.NullString
-		Requested_datetime, Updated_datetime, Created_at, Updated_at                                                                    pq.NullTime // FIXME: should these be proper time objects?
-		Extended_attributes                                                                                     map[string]interface{}
+		Requested_datetime, Updated_datetime, Created_at, Updated_at                                                                                  pq.NullTime // FIXME: should these be proper time objects?
+		Extended_attributes                                                                                                                           map[string]interface{}
 	}
 
 	var result []Open311RequestRow
 
 	for rows.Next() {
 		var row Open311RequestRow
-		if err := rows.Scan(&row.Lat, &row.Long, &row.Ward, &row.Police_district, 
-				&row.Service_request_id, &row.Status, &row.Service_name, 
-				&row.Service_code, &row.Agency_responsible, &row.Address, 
-				&row.Channel, &row.Media_url, &row.Requested_datetime, 
-				&row.Updated_datetime, &row.Created_at, &row.Updated_at, 
-				&row.Duplicate, &row.Parent_service_request_id, 
-				&row.Id); err != nil {
+		if err := rows.Scan(&row.Lat, &row.Long, &row.Ward, &row.Police_district,
+			&row.Service_request_id, &row.Status, &row.Service_name,
+			&row.Service_code, &row.Agency_responsible, &row.Address,
+			&row.Channel, &row.Media_url, &row.Requested_datetime,
+			&row.Updated_datetime, &row.Created_at, &row.Updated_at,
+			&row.Duplicate, &row.Parent_service_request_id,
+			&row.Id); err != nil {
 			log.Fatal("error reading row", err)
 		}
-		
+
 		result = append(result, row)
 	}
 
@@ -71,9 +122,9 @@ func WardRequestsHandler(response http.ResponseWriter, request *http.Request) {
 
 func ServicesHandler(response http.ResponseWriter, request *http.Request) {
 	// return counts of requests, grouped by service name
-	// 
+	//
 	// Sample output:
-	// 
+	//
 	// [
 	//   {
 	//     "Count": 1139,
@@ -85,9 +136,9 @@ func ServicesHandler(response http.ResponseWriter, request *http.Request) {
 	//     "Service_code": "4fd6e4ece750840569000019",
 	//     "Service_name": "Restaurant Complaint"
 	//   },
-	// 
+	//
 	//  ... snip ...
-	// 
+	//
 	// ]
 
 	type ServicesCount struct {
@@ -129,22 +180,22 @@ func ServicesHandler(response http.ResponseWriter, request *http.Request) {
 
 func HealthCheckHandler(response http.ResponseWriter, request *http.Request) {
 	response.Header().Add("Content-type", "application/json")
-	
+
 	type HealthCheck struct {
-		Count int
+		Count    int
 		Database bool
-		Healthy bool
+		Healthy  bool
 	}
-	
+
 	// open database
 	db, err := sql.Open("postgres", "dbname=cwfy sslmode=disable")
 	if err != nil {
 		log.Fatal("Cannot open database connection", err)
 	}
 	defer db.Close()
-		
+
 	health_check := HealthCheck{}
-	
+
 	health_check.Database = db.Ping() == nil
 
 	rows, _ := db.Query("SELECT COUNT(*) FROM service_requests;")
@@ -152,7 +203,7 @@ func HealthCheckHandler(response http.ResponseWriter, request *http.Request) {
 		if err := rows.Scan(&health_check.Count); err != nil {
 			log.Fatal("error fetching count", err)
 		}
-	}	
+	}
 
 	// calculate overall health
 	health_check.Healthy = health_check.Count > 0 && health_check.Database
