@@ -11,6 +11,25 @@ import (
 	"time"
 )
 
+type Api struct {
+        Db *sql.DB
+        Version string
+}
+
+var api Api
+
+func init(){
+        // version
+        api.Version = "0.0.1"
+        
+        // setup database connection
+	db, err := sql.Open("postgres", "dbname=cwfy sslmode=disable")
+	if err != nil {
+		log.Fatal("Cannot open database connection", err)
+	} 
+	api.Db = db
+}
+
 func main() {
 	log.Print("starting ChicagoWorksforYou.com API server")
 
@@ -48,12 +67,6 @@ func WardCountsHandler(response http.ResponseWriter, request *http.Request) {
 	ward_id := vars["id"]
 	params := request.URL.Query()
 
-	db, err := sql.Open("postgres", "dbname=cwfy sslmode=disable")
-	if err != nil {
-		log.Fatal("Cannot open database connection", err)
-	}
-	defer db.Close()
-
 	// determine date range. default is last 7 days.
 	days, _ := strconv.Atoi(params["count"][0])
 
@@ -64,7 +77,7 @@ func WardCountsHandler(response http.ResponseWriter, request *http.Request) {
 	log.Printf("fetching counts for ward %s code %s for past %d days", ward_id, params["service_code"][0], days)
 	log.Printf("date range is %s to %s", start, end)
 
-	rows, err := db.Query("SELECT COUNT(*), DATE(requested_datetime) as requested_date FROM service_requests WHERE ward = $1 "+
+	rows, err := api.Db.Query("SELECT COUNT(*), DATE(requested_datetime) as requested_date FROM service_requests WHERE ward = $1 "+
 		"AND duplicate IS NULL AND service_code = $2 AND requested_datetime >= $3::date AND requested_datetime <= $4::date "+
 		"GROUP BY DATE(requested_datetime) ORDER BY requested_date;", string(ward_id), params["service_code"][0], start, end)
 	if err != nil {
@@ -107,14 +120,7 @@ func WardRequestsHandler(response http.ResponseWriter, request *http.Request) {
 
 	log.Print("fetch requests for ward ", ward_id)
 
-	// open database
-	db, err := sql.Open("postgres", "dbname=cwfy sslmode=disable")
-	if err != nil {
-		log.Fatal("Cannot open database connection", err)
-	}
-	defer db.Close()
-
-	rows, err := db.Query("SELECT lat,long,ward,police_district,service_request_id,status,service_name,service_code,agency_responsible,address,channel,media_url,requested_datetime,updated_datetime,created_at,updated_at,duplicate,parent_service_request_id,id FROM service_requests WHERE duplicate IS NULL AND ward = $1 ORDER BY updated_at DESC LIMIT 100;", ward_id)
+	rows, err := api.Db.Query("SELECT lat,long,ward,police_district,service_request_id,status,service_name,service_code,agency_responsible,address,channel,media_url,requested_datetime,updated_datetime,created_at,updated_at,duplicate,parent_service_request_id,id FROM service_requests WHERE duplicate IS NULL AND ward = $1 ORDER BY updated_at DESC LIMIT 100;", ward_id)
 
 	if err != nil {
 		log.Fatal("error fetching data for WardRequestsHandler", err)
@@ -178,14 +184,7 @@ func ServicesHandler(response http.ResponseWriter, request *http.Request) {
 
 	var services []ServicesCount
 
-	// open database
-	db, err := sql.Open("postgres", "dbname=cwfy sslmode=disable")
-	if err != nil {
-		log.Fatal("Cannot open database connection", err)
-	}
-	defer db.Close()
-
-	rows, err := db.Query("SELECT COUNT(*), service_code, service_name FROM service_requests WHERE duplicate IS NULL GROUP BY service_code,service_name;")
+	rows, err := api.Db.Query("SELECT COUNT(*), service_code, service_name FROM service_requests WHERE duplicate IS NULL GROUP BY service_code,service_name;")
 
 	if err != nil {
 		log.Fatal("error fetching data for ServicesHandler", err)
@@ -214,20 +213,14 @@ func HealthCheckHandler(response http.ResponseWriter, request *http.Request) {
 		Count    int
 		Database bool
 		Healthy  bool
+		Version  string
 	}
 
-	// open database
-	db, err := sql.Open("postgres", "dbname=cwfy sslmode=disable")
-	if err != nil {
-		log.Fatal("Cannot open database connection", err)
-	}
-	defer db.Close()
+	health_check := HealthCheck{Version: api.Version}
 
-	health_check := HealthCheck{}
+	health_check.Database = api.Db.Ping() == nil
 
-	health_check.Database = db.Ping() == nil
-
-	rows, _ := db.Query("SELECT COUNT(*) FROM service_requests;")
+	rows, _ := api.Db.Query("SELECT COUNT(*) FROM service_requests;")
 	for rows.Next() {
 		if err := rows.Scan(&health_check.Count); err != nil {
 			log.Fatal("error fetching count", err)
@@ -241,6 +234,6 @@ func HealthCheckHandler(response http.ResponseWriter, request *http.Request) {
 	if !health_check.Healthy {
 		log.Printf("health_check failed")
 	}
-	jsn, _ := json.Marshal(health_check)
+	jsn, _ := json.MarshalIndent(health_check, "", "  ")
 	response.Write(jsn)
 }
