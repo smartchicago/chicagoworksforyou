@@ -27,7 +27,7 @@ func WardCountsHandler(response http.ResponseWriter, request *http.Request) {
 	// grouped by day, then by service request type
 
         // sample output
-        // $ curl "http://localhost:5000/wards/10/counts.json?service_code=4fd3b167e750846744000005"
+        // $ curl "http://localhost:5000/wards/10/counts.json?service_code=4fd3b167e750846744000005&count=5"
         // {
         //   "2013-06-06": 2,
         //   "2013-06-07": 4,
