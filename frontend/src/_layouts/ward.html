@@ -19,21 +19,7 @@ has_subnav: true
 <div class="container body">
     <section class="row" id="counts">
         <div class="span3">
-            <ul class="nav nav-pills nav-stacked">
-                <li class="active"><a href="#">Building Violation</a></li>
-                <li><a href="#">Restaurant Complaint</a></li>
-                <li><a href="#">Abandoned Vehicle</a></li>
-                <li><a href="#">Graffiti Removal</a></li>
-                <li><a href="#">Rodent Baiting / Rat Complaint</a></li>
-                <li><a href="#">Sanitation Code Violation</a></li>
-                <li><a href="#">Tree Debris</a></li>
-                <li><a href="#">Alley Light Out</a></li>
-                <li><a href="#">Pavement Cave-In Survey</a></li>
-                <li><a href="#" class="pothole">Pothole in Street</a></li>
-                <li><a href="#">Street Cut Complaints</a></li>
-                <li><a href="#">Street Light 1 / Out</a></li>
-                <li><a href="#">Street Lights All / Out</a></li>
-                <li><a href="#">Traffic Signal Out</a></li>
+            <ul class="st-list nav nav-pills nav-stacked">
             </ul>
         </div>
         <div class="span9">
@@ -51,21 +37,7 @@ has_subnav: true
 
     <section class="row" id="ttc">
         <div class="span3">
-            <ul class="nav nav-pills nav-stacked">
-                <li><a href="#">Building Violation</a></li>
-                <li><a href="#">Restaurant Complaint</a></li>
-                <li><a href="#">Abandoned Vehicle</a></li>
-                <li><a href="#">Graffiti Removal</a></li>
-                <li><a href="#">Rodent Baiting / Rat Complaint</a></li>
-                <li><a href="#">Sanitation Code Violation</a></li>
-                <li><a href="#">Tree Debris</a></li>
-                <li><a href="#">Alley Light Out</a></li>
-                <li><a href="#">Pavement Cave-In Survey</a></li>
-                <li><a href="#">Pothole in Street</a></li>
-                <li><a href="#">Street Cut Complaints</a></li>
-                <li><a href="#">Street Light 1 / Out</a></li>
-                <li><a href="#">Street Lights All / Out</a></li>
-                <li><a href="#">Traffic Signal Out</a></li>
+            <ul class="st-list nav nav-pills nav-stacked">
             </ul>
         </div>
         <div class="span9">
@@ -83,21 +55,7 @@ has_subnav: true
 
     <section class="row" id="compare">
         <div class="span3">
-            <ul class="nav nav-pills nav-stacked">
-                <li><a href="#">Building Violation</a></li>
-                <li><a href="#">Restaurant Complaint</a></li>
-                <li><a href="#">Abandoned Vehicle</a></li>
-                <li><a href="#">Graffiti Removal</a></li>
-                <li><a href="#">Rodent Baiting / Rat Complaint</a></li>
-                <li><a href="#">Sanitation Code Violation</a></li>
-                <li><a href="#">Tree Debris</a></li>
-                <li><a href="#">Alley Light Out</a></li>
-                <li><a href="#">Pavement Cave-In Survey</a></li>
-                <li><a href="#">Pothole in Street</a></li>
-                <li><a href="#">Street Cut Complaints</a></li>
-                <li><a href="#">Street Light 1 / Out</a></li>
-                <li><a href="#">Street Lights All / Out</a></li>
-                <li><a href="#">Traffic Signal Out</a></li>
+            <ul class="st-list nav nav-pills nav-stacked">
             </ul>
         </div>
         <div class="span9">
@@ -139,8 +97,21 @@ $(function () {
         maxZoom: 18
     }).addTo(map);
     map.zoomControl.setPosition('bottomleft');
-
     var polygon = L.polygon(path).addTo(map);
+
+    // CHARTS NAV
+
+    $.get(
+        '/data/services.json',
+        function (response) {
+            var list = "";
+            for (var st in response) {
+                list += '<li><a data-code="' + response[st].Service_code + '" href="#">' + response[st].Service_name + '</a></li>\n';
+            }
+            $('.st-list').append(list);
+        },
+        'json'
+    );
 
     var countsChart = $('#counts .chart');
 
