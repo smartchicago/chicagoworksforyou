@@ -48,12 +48,17 @@ func WardCountsHandler(response http.ResponseWriter, request *http.Request) {
 	
 	// determine date range. default is last 7 days.
 	days, _ := strconv.Atoi(params["count"][0])
-	since := time.Now().AddDate(0, 0, -(days - 1))
-	log.Printf("fetching since %s", since)
 
+	end, _	:= time.Parse("2006-01-02", params["end_date"][0])
+	end = end.AddDate(0,0,1) // inc to the following day
+	start 	:= end.AddDate(0, 0, -days)
+	
 	log.Printf("fetching counts for ward %s code %s for past %d days", ward_id, params["service_code"][0], days)
+	log.Printf("date range is %s to %s", start, end)
 
-	rows, err := db.Query("SELECT COUNT(*), DATE(requested_datetime) as requested_date FROM service_requests WHERE ward = $1 AND duplicate IS NULL AND service_code = $2 AND requested_datetime >= $3::date GROUP BY DATE(requested_datetime) ORDER BY requested_date;", string(ward_id), params["service_code"][0], since)
+	rows, err := db.Query("SELECT COUNT(*), DATE(requested_datetime) as requested_date FROM service_requests WHERE ward = $1 " +
+			"AND duplicate IS NULL AND service_code = $2 AND requested_datetime >= $3::date AND requested_datetime <= $4::date " + 
+			"GROUP BY DATE(requested_datetime) ORDER BY requested_date;", string(ward_id), params["service_code"][0], start, end)
 	if err != nil {
 		log.Fatal("error fetching data for WardCountsHandler", err)
 	}
