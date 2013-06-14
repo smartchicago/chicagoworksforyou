@@ -58,7 +58,6 @@ func main() {
 func WrapJson(unwrapped []byte, callback []string) (jsn []byte) {
 	jsn = unwrapped
 	if len(callback) > 0 {
-		// wrap for jsonp
 		wrapped := strings.Join([]string{callback[0], "(", string(jsn), ");"}, "")
 		jsn = []byte(wrapped)
 	}
@@ -72,10 +71,10 @@ func WardCountsHandler(response http.ResponseWriter, request *http.Request) {
 	//
 	// Parameters:
 	//
-	// 	count: 		the number of days of data to return
-	// 	end_date: 	date that +count+ is based from.
-	// 	service_code: 	the code used by the City of Chicago to categorize service requests
-	//	callback   	function to wrap response in (for JSONP functionality)
+	//	count:          the number of days of data to return
+	//	end_date:       date that +count+ is based from.
+	//	service_code:   the code used by the City of Chicago to categorize service requests
+	//	callback:       function to wrap response in (for JSONP functionality)
 	//
 	// Sample API output
 	//
