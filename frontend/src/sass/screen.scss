@@ -219,12 +219,18 @@ section {
 // SERVICE TYPES
 
 .servicetypes {
+    .wards-map {
+        margin-top: -46px; // Height of navbar
+        height: 100%;
+    }
+
     .st-info-wrap {
         height: 0;
         position: relative;
 
         .st-info {
             position: absolute;
+            background: white;
             top: 100px;
             left: 0;
             z-index: 3000;

@@ -150,11 +150,15 @@ section {
     font-size: 13px;
     color: #666; }
 
+.servicetypes .wards-map {
+  margin-top: -46px;
+  height: 100%; }
 .servicetypes .st-info-wrap {
   height: 0;
   position: relative; }
   .servicetypes .st-info-wrap .st-info {
     position: absolute;
+    background: white;
     top: 100px;
     left: 0;
     z-index: 3000;

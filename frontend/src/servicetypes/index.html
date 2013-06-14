@@ -33,9 +33,6 @@ for (var ward in WARDS) {
         path.push(latlong);
     }
     paths.push(path);
-    if (paths.length >= 2) {
-        break;
-    }
 }
 
 var map = L.map('map',{scrollWheelZoom: false}).setView([41.83, -87.81], 11);
@@ -48,13 +45,21 @@ map.zoomControl.setPosition('bottomleft');
 
 for (path in paths) {
     var wardNum = parseInt(path) + 1;
+    var fillOp = .1;
+    var col = '#0873AD';
+    if (wardNum == 1) {
+        fillOp = 1;
+    } else if (wardNum == 2) {
+        fillOp = 1;
+        col = 'black';
+    }
     var poly = L.polygon(
         paths[path],
         {
-            color: '#0873AD',
+            color: col,
             opacity: 1,
             weight: 2,
-            fillOpacity: .3 ? wardNum === 1 : 1
+            fillOpacity: fillOp
         }
     ).addTo(map);
     poly.bindPopup('<a href="/wards/' + wardNum + '/">Ward ' + wardNum + '</a>');
