@@ -131,11 +131,17 @@ html, body {
             @include box-shadow(0 0 10px fade-out(black,.7));
 
             li {
+                background:white;
 
                 a {
-                    background:white;
+                    width: 230px;
                 }
             }
+        }
+
+        .icon-chevron-right {
+            float: right;
+            opacity: .5;
         }
     }
 }
