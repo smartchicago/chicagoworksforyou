@@ -121,7 +121,6 @@ func WardCountsHandler(response http.ResponseWriter, request *http.Request) {
 
 	for _, c := range counts {
 		key := c.Requested_date.Format("2006-01-02")
-		log.Print("key: ", key)
 		resp[key] = c.Count
 	}
 
