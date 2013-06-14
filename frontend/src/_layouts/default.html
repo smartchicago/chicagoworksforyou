@@ -18,7 +18,7 @@
 <link rel="shortcut icon" href="/images/favicon.png">
 </head>
 
-<body class="{{ page.section }}">
+<body class="{{ page.section }} {{ page.bodyclass }}">
 
 <div class="navbar topnav navbar-inverse">
     <div class="navbar-inner">
@@ -27,8 +27,8 @@
       <ul class="nav">
         <li {% if page.section == 'wards' %}class="active"{% endif %}><a href="/wards/">Wards</a></li>
         <li {% if page.section == 'servicetypes' %}class="active"{% endif %}><a href="/servicetypes/">Service Types</a></li>
-        <li><a href="/transitions/">Transitions</a></li>
-        <li><a href="/interesting/">Interesting</a></li>
+        <li {% if page.section == 'transitions' %}class="active"{% endif %}><a href="/transitions/">Transitions</a></li>
+        <li {% if page.section == 'interesting' %}class="active"{% endif %}><a href="/interesting/">Interesting</a></li>
         <li><a href="/about/">About</a></li>
       </ul>
     </div>
