@@ -26,7 +26,7 @@ has_subnav: true
             <div class="pagination">
                 <ul>
                     <li class="prev-week"><a href="#">&larr; Previous week</a></li>
-                    <li class="this-week"><a href="#">June 10-16, 2013</a></li>
+                    <li class="this-week"><a href="#">June 9-15, 2013</a></li>
                     <li class="next-week"><a href="#">Next week &rarr;</a></li>
                 </ul>
             </div>
@@ -44,7 +44,7 @@ has_subnav: true
             <div class="pagination">
                 <ul>
                     <li class="prev-week"><a href="#">&larr; Previous week</a></li>
-                    <li class="this-week"><a href="#">June 10-16, 2013</a></li>
+                    <li class="this-week"><a href="#">June 9-15, 2013</a></li>
                     <li class="next-week"><a href="#">Next week &rarr;</a></li>
                 </ul>
             </div>
@@ -62,7 +62,7 @@ has_subnav: true
             <div class="pagination">
                 <ul>
                     <li class="prev-week"><a href="#">&larr; Previous week</a></li>
-                    <li class="this-week"><a href="#">June 10-16, 2013</a></li>
+                    <li class="this-week"><a href="#">June 9-15, 2013</a></li>
                     <li class="next-week"><a href="#">Next week &rarr;</a></li>
                 </ul>
             </div>
@@ -79,7 +79,11 @@ has_subnav: true
 <script src="/data/wards.json"></script>
 <script>
 $(function () {
-    var ward = "{{ page.ward }}";
+    window.currWeek = new Date(2013,05,15);
+    window.ward = "{{ page.ward }}";
+
+    var week = 7 * 24 * 60 * 60 * 1000;
+    var currServiceType = '4fd3b167e750846744000005';
 
     // MAKE SUBNAV STICK
 
@@ -104,7 +108,45 @@ $(function () {
     map.zoomControl.setPosition('bottomleft');
     var polygon = L.polygon(path).addTo(map);
 
-    // CHARTS NAV
+    // CHARTS WEEKNAV
+
+    $('.next-week a').click(function(evt) {
+        evt.preventDefault();
+        currWeek.setTime(currWeek.getTime() + week);
+        $.get(
+            // 'http://localhost:5000/wards/' + ward + '/counts.json?count=7&service_code=' + currServiceType + '&end_date=' + currWeek.getFullYear() + '-' + currWeek.getMonth() + '-' + currWeek.getDate(),
+            '/data/counts1.json',
+            function (response) {
+                var chart = countsChart.highcharts();
+                var counts = [];
+                for (var d in response) {
+                    counts.push(response[d]);
+                }
+                chart.series[0].setData(counts);
+            },
+            'json'
+        );
+    });
+
+    $('.prev-week a').click(function(evt) {
+        evt.preventDefault();
+        currWeek.setTime(currWeek.getTime() - week);
+        $.get(
+            // 'http://localhost:5000/wards/' + ward + '/counts.json?count=7&service_code=' + currServiceType + '&end_date=' + currWeek.getFullYear() + '-' + currWeek.getMonth() + '-' + currWeek.getDate(),
+            '/data/counts2.json',
+            function (response) {
+                var chart = countsChart.highcharts();
+                var counts = [];
+                for (var d in response) {
+                    counts.push(response[d]);
+                }
+                chart.series[0].setData(counts);
+            },
+            'json'
+        );
+    });
+
+    // CHARTS SIDENAV
 
     $.get(
         '/data/services.json',
@@ -113,7 +155,7 @@ $(function () {
             for (var st in response) {
                 list += '<li><a data-code="' + response[st].Service_code + '" href="#">' + response[st].Service_name + '</a></li>\n';
             }
-            $('.st-list').append(list);
+            $('.st-list').append(list).find('li:first').addClass('active');
         },
         'json'
     );
@@ -124,25 +166,24 @@ $(function () {
 
     $('.st-list').on('click', 'a', function(evt) {
         evt.preventDefault();
-        var chart = countsChart.highcharts();
-        var serviceType = $(this).attr('data-code');
-        var counts = [];
+        currServiceType = $(this).attr('data-code');
 
         $.get(
-            // 'http://localhost:5000/wards/' + ward + '/counts.json?service_code=' + serviceType,
+            // 'http://localhost:5000/wards/' + ward + '/counts.json?count=7&service_code=' currServiceType + '&end_date=2013-06-15',
             '/data/counts.json',
             function (response) {
+                var chart = countsChart.highcharts();
+                var counts = [];
                 for (var d in response) {
                     counts.push(response[d]);
                 }
-
                 chart.series[0].setData(counts);
-                $('#counts .nav li').removeClass('active');
-                $(this).closest('li').addClass('active');
             },
             'json'
         );
 
+        $('#counts .nav li').removeClass('active');
+        $(this).closest('li').addClass('active');
     });
 
     countsChart.highcharts({
@@ -186,7 +227,7 @@ $(function () {
         },
         plotOptions: {
             area: {
-                pointStart: Date.UTC(2013, 3, 6),
+                pointStart: Date.UTC(2013, 6, 9),
                 pointInterval: 24 * 3600 * 1000, // one day
                 marker: {
                     enabled: true,
