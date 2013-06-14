@@ -1,0 +1,64 @@
+---
+layout: default
+section: wards
+subnav: wards
+title: Wards
+---
+
+<div class="st-list container">
+    <ul class="nav nav-tabs nav-stacked">
+        <li class="active"><a data-code="4fd3b167e750846744000005" href="#">Graffiti Removal</a></li>
+        <li><a data-code="4fd6e4ece750840569000019" href="#">Restaurant Complaint</a></li>
+        <li><a data-code="4fd3b9bce750846c5300004a" href="#">Rodent Baiting / Rat Complaint</a></li>
+        <li><a data-code="4fd3bbf8e750846c53000069" href="#">Tree Debris</a></li>
+        <li><a data-code="4ffa4c69601827691b000018" href="#">Abandoned Vehicle</a></li>
+        <li><a data-code="4ffa9f2d6018277d400000c8" href="#">Street Light 1 / Out</a></li>
+        <li><a data-code="4ffa971e6018277d4000000b" href="#">Pavement Cave-In Survey</a></li>
+        <li><a data-code="4ffa9cad6018277d4000007b" href="#">Alley Light Out</a></li>
+        <li><a data-code="4fd3bd72e750846c530000cd" href="#">Building Violation</a></li>
+        <li><a data-code="4ffa9db16018277d400000a2" href="#">Traffic Signal Out</a></li>
+        <li><a data-code="4ffa995a6018277d4000003c" href="#">Street Cut Complaints</a></li>
+        <li><a data-code="4fd3b750e750846c5300001d" href="#">Sanitation Code Violation</a></li>
+        <li><a data-code="4fd3b656e750846c53000004" href="#">Pothole in Street</a></li>
+        <li><a data-code="4fd3bd3de750846c530000b9" href="#">Street Lights All / Out</a></li>
+    </ul>
+</div>
+
+<div class="wards-map" id="map"></div>
+
+<script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
+<script src="/data/wards.json"></script>
+<script>
+var paths = [];
+for (var ward in WARDS) {
+    var points = WARDS[ward].simple_shape[0][0];
+    var path = [];
+    for (var p in points) {
+        var latlong = [points[p][1], points[p][0]];
+        path.push(latlong);
+    }
+    paths.push(path);
+}
+
+var map = L.map('map',{scrollWheelZoom: false}).setView([41.83, -87.81], 11);
+L.tileLayer('http://{s}.tile.cloudmade.com/{key}/997/256/{z}/{x}/{y}.png', {
+    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
+    key: '302C8A713FF3456987B21FAAE639A13B',
+    maxZoom: 18
+}).addTo(map);
+map.zoomControl.setPosition('bottomleft');
+
+for (path in paths) {
+    var wardNum = parseInt(path) + 1;
+    var poly = L.polygon(
+        paths[path],
+        {
+            color: '#0873AD',
+            opacity: 1,
+            weight: 2,
+            fillOpacity: (((wardNum % 5) + 2) / 10)
+        }
+    ).addTo(map);
+    poly.bindPopup('<a href="/wards/' + wardNum + '/">Ward ' + wardNum + '</a>');
+}
+</script>
