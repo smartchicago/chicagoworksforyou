@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/signal"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -63,6 +64,7 @@ func WardCountsHandler(response http.ResponseWriter, request *http.Request) {
 	// 	count: 		the number of days of data to return
 	// 	end_date: 	date that +count+ is based from.
 	// 	service_code: 	the code used by the City of Chicago to categorize service requests
+	//	callback   	function to wrap response in (for JSONP functionality)
 	//
 	// Sample API output
 	//
@@ -79,6 +81,8 @@ func WardCountsHandler(response http.ResponseWriter, request *http.Request) {
 	vars := mux.Vars(request)
 	ward_id := vars["id"]
 	params := request.URL.Query()
+
+	callback := params["callback"]
 
 	// determine date range. default is last 7 days.
 	days, _ := strconv.Atoi(params["count"][0])
@@ -122,6 +126,12 @@ func WardCountsHandler(response http.ResponseWriter, request *http.Request) {
 	}
 
 	jsn, _ := json.MarshalIndent(resp, "", "  ")
+	
+	if len(callback) > 0 {
+		// wrap for jsonp
+		wrapped := strings.Join([]string{callback[0], "(", string(jsn), ");"}, "")
+		jsn = []byte(wrapped)
+	}
 	response.Write(jsn)
 }
 
