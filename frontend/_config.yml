@@ -2,3 +2,4 @@ name: Chicago Works For You
 plugins: './_plugins'
 source: src
 destination: site
+permalink: /interesting/:year/:month/:title

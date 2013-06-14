@@ -164,54 +164,83 @@ html, body {
 
 // WARD DETAIL
 
-.alderman {
-    position: relative;
-    z-index: 100;
+.ward {
+    .alderman {
+        position: relative;
+        z-index: 100;
 
-    .content {
-        position: absolute;
-        top: 150px;
-        right: 0;
-        width: 120px;
-        background: fade-out(black,.2);
-        padding: 20px;
-        border-radius: 6px;
-        @include box-shadow(0 0 10px fade-out(black,.7));
-    }
+        .content {
+            position: absolute;
+            top: 150px;
+            right: 0;
+            width: 120px;
+            background: fade-out(black,.2);
+            padding: 20px;
+            border-radius: 6px;
+            @include box-shadow(0 0 10px fade-out(black,.7));
+        }
 
-    img {
-        margin-bottom: 1em;
-    }
+        img {
+            margin-bottom: 1em;
+        }
 
-    h2 {
-        color: white;
-        font-size: 16px;
-        margin: 0;
-        line-height: 20px;
-    }
-}
-
-section {
-    margin-bottom: 30px;
-    border-bottom: 1px solid #ddd;
-
-    .pagination {
-        text-align: center;
-        margin-top: 0;
-    }
-
-    .this-week {
-        font-weight: bold;
-
-        a {
-            color: #333;
+        h2 {
+            color: white;
+            font-size: 16px;
+            margin: 0;
+            line-height: 20px;
         }
     }
 
-    .prev-week, .next-week {
-        a {
-            font-size: 13px;
-            color: #666;
+    section {
+        margin-bottom: 30px;
+        border-bottom: 1px solid #ddd;
+
+        .pagination {
+            text-align: center;
+            margin-top: 0;
+        }
+
+        .this-week {
+            font-weight: bold;
+
+            a {
+                color: #333;
+            }
+        }
+
+        .prev-week, .next-week {
+            a {
+                font-size: 13px;
+                color: #666;
+            }
+        }
+    }
+}
+
+// INTERESTING
+
+.interesting {
+    &.landing {
+        .summary {
+            padding: 1em 0;
+            font-size: 16px;
+            line-height: 21px;
+        }
+    }
+
+    article {
+        padding: 20px 0;
+        border-bottom: 1px solid #ddd;
+
+        .article-body {
+            font-size: 16px;
+            line-height: 24px;
+            padding: 1em 0;
+
+            p {
+                margin: 0 0 1.2em;
+            }
         }
     }
 }
@@ -249,6 +278,8 @@ section {
         }
     }
 }
+
+// FOOTER
 
 footer {
     padding: 10px 0 30px 0;
