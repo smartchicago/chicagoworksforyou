@@ -114,10 +114,10 @@ html, body {
     text-indent: 40px;
     border-radius: 6px 6px; }
 
-.alderman {
+.ward .alderman {
   position: relative;
   z-index: 100; }
-  .alderman .content {
+  .ward .alderman .content {
     position: absolute;
     top: 150px;
     right: 0;
@@ -128,27 +128,40 @@ html, body {
     -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); }
-  .alderman img {
+  .ward .alderman img {
     margin-bottom: 1em; }
-  .alderman h2 {
+  .ward .alderman h2 {
     color: white;
     font-size: 16px;
     margin: 0;
     line-height: 20px; }
-
-section {
+.ward section {
   margin-bottom: 30px;
   border-bottom: 1px solid #ddd; }
-  section .pagination {
+  .ward section .pagination {
     text-align: center;
     margin-top: 0; }
-  section .this-week {
+  .ward section .this-week {
     font-weight: bold; }
-    section .this-week a {
+    .ward section .this-week a {
       color: #333; }
-  section .prev-week a, section .next-week a {
+  .ward section .prev-week a, .ward section .next-week a {
     font-size: 13px;
     color: #666; }
+
+.interesting.landing .summary {
+  padding: 1em 0;
+  font-size: 16px;
+  line-height: 21px; }
+.interesting article {
+  padding: 20px 0;
+  border-bottom: 1px solid #ddd; }
+  .interesting article .article-body {
+    font-size: 16px;
+    line-height: 24px;
+    padding: 1em 0; }
+    .interesting article .article-body p {
+      margin: 0 0 1.2em; }
 
 .servicetypes .wards-map {
   margin-top: -46px;
