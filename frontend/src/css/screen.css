@@ -24,8 +24,8 @@ html, body {
   background: black; }
   .topnav .brand {
     font-size: 18px;
-    padding: 12px 10px 0;
-    margin: 0;
+    padding: 12px 0 0;
+    margin: 0 15px 0 0;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
     color: white; }
   .topnav .nav > li > a {
@@ -36,7 +36,9 @@ html, body {
     background: none;
     border-radius: 0;
     margin: 0 auto;
-    width: 900px; }
+    width: 940px;
+    padding: 0;
+    border: none; }
   .topnav.has-subnav .navbar-inner {
     border-radius: 4px 4px 0 0; }
 
@@ -93,8 +95,13 @@ html, body {
     -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); }
-    .wards .st-list ul li a {
+    .wards .st-list ul li {
       background: white; }
+      .wards .st-list ul li a {
+        width: 230px; }
+  .wards .st-list .icon-chevron-right {
+    float: right;
+    opacity: .5; }
 
 .search-form {
   margin: 0; }
@@ -155,6 +162,29 @@ html, body {
     padding: 1em 0; }
     .interesting article .article-body p {
       margin: 0 0 1.2em; }
+
+.servicetypes .wards-map {
+  margin-top: -46px;
+  height: 100%; }
+.servicetypes .st-info-wrap {
+  height: 0;
+  position: relative; }
+  .servicetypes .st-info-wrap .st-info {
+    position: absolute;
+    background: white;
+    top: 100px;
+    left: 0;
+    z-index: 3000;
+    margin: 0;
+    padding: 12px 20px;
+    border-radius: 6px;
+    -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); }
+  .servicetypes .st-info-wrap h2 {
+    margin: 0 0 10px; }
+  .servicetypes .st-info-wrap .pagination {
+    margin-bottom: 0; }
 
 footer {
   padding: 10px 0 30px 0;
