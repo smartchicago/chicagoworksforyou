@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/signal"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -54,15 +55,26 @@ func main() {
 	http.ListenAndServe(":5000", router)
 }
 
+func WrapJson(unwrapped []byte, callback []string) (jsn []byte) {
+	jsn = unwrapped
+	if len(callback) > 0 {
+		wrapped := strings.Join([]string{callback[0], "(", string(jsn), ");"}, "")
+		jsn = []byte(wrapped)
+	}
+
+	return
+}
+
 func WardCountsHandler(response http.ResponseWriter, request *http.Request) {
 	// for a given ward, return the number of service requests opened
 	// grouped by day, then by service request type
 	//
 	// Parameters:
 	//
-	// 	count: 		the number of days of data to return
-	// 	end_date: 	date that +count+ is based from.
-	// 	service_code: 	the code used by the City of Chicago to categorize service requests
+	//	count:          the number of days of data to return
+	//	end_date:       date that +count+ is based from.
+	//	service_code:   the code used by the City of Chicago to categorize service requests
+	//	callback:       function to wrap response in (for JSONP functionality)
 	//
 	// Sample API output
 	//
@@ -117,11 +129,12 @@ func WardCountsHandler(response http.ResponseWriter, request *http.Request) {
 
 	for _, c := range counts {
 		key := c.Requested_date.Format("2006-01-02")
-		log.Print("key: ", key)
 		resp[key] = c.Count
 	}
 
 	jsn, _ := json.MarshalIndent(resp, "", "  ")
+	jsn = WrapJson(jsn, params["callback"])
+
 	response.Write(jsn)
 }
 
@@ -130,7 +143,7 @@ func WardRequestsHandler(response http.ResponseWriter, request *http.Request) {
 
 	vars := mux.Vars(request)
 	ward_id := vars["id"]
-
+	params := request.URL.Query()
 	log.Print("fetch requests for ward ", ward_id)
 
 	rows, err := api.Db.Query("SELECT lat,long,ward,police_district,service_request_id,status,service_name,service_code,agency_responsible,address,channel,media_url,requested_datetime,updated_datetime,created_at,updated_at,duplicate,parent_service_request_id,id FROM service_requests WHERE duplicate IS NULL AND ward = $1 ORDER BY updated_at DESC LIMIT 100;", ward_id)
@@ -165,6 +178,7 @@ func WardRequestsHandler(response http.ResponseWriter, request *http.Request) {
 	}
 
 	jsn, _ := json.MarshalIndent(result, "", "  ")
+	jsn = WrapJson(jsn, params["callback"])
 	response.Write(jsn)
 }
 
@@ -220,6 +234,8 @@ func ServicesHandler(response http.ResponseWriter, request *http.Request) {
 }
 
 func HealthCheckHandler(response http.ResponseWriter, request *http.Request) {
+	params := request.URL.Query()
+
 	response.Header().Add("Content-type", "application/json")
 
 	type HealthCheck struct {
@@ -248,5 +264,6 @@ func HealthCheckHandler(response http.ResponseWriter, request *http.Request) {
 		log.Printf("health_check failed")
 	}
 	jsn, _ := json.MarshalIndent(health_check, "", "  ")
+	jsn = WrapJson(jsn, params["callback"])
 	response.Write(jsn)
 }
