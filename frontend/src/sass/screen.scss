@@ -6,6 +6,8 @@ html, body {
 
 .navbar {
     margin-bottom: 0;
+    position: relative;
+    z-index: 1000;
 }
 
 .navgroup {
@@ -110,6 +112,33 @@ html, body {
 }
 
 // WARDS
+
+.wards {
+    .wards-map {
+        margin-top: -46px; // Height of navbar
+        height: 100%;
+    }
+
+    .st-list {
+        height: 0;
+        position: relative;
+
+        ul {
+            position: absolute;
+            top: 150px;
+            left: 0;
+            z-index: 3000;
+            @include box-shadow(0 0 10px fade-out(black,.7));
+
+            li {
+
+                a {
+                    background:white;
+                }
+            }
+        }
+    }
+}
 
 .search-form {
     margin: 0;

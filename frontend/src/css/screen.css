@@ -2,7 +2,9 @@ html, body {
   height: 100%; }
 
 .navbar {
-  margin-bottom: 0; }
+  margin-bottom: 0;
+  position: relative;
+  z-index: 1000; }
 
 .navgroup {
   margin: 20px auto;
@@ -76,6 +78,23 @@ html, body {
 .body {
   position: relative;
   padding-top: 40px; }
+
+.wards .wards-map {
+  margin-top: -46px;
+  height: 100%; }
+.wards .st-list {
+  height: 0;
+  position: relative; }
+  .wards .st-list ul {
+    position: absolute;
+    top: 150px;
+    left: 0;
+    z-index: 3000;
+    -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); }
+    .wards .st-list ul li a {
+      background: white; }
 
 .search-form {
   margin: 0; }
