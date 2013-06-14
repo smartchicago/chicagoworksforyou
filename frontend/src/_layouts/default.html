@@ -20,35 +20,42 @@
 
 <body class="{{ page.section }}">
 
-<div class="container navbar-fixed-top">
-    <div class="navbar topnav navbar-inverse {% if page.has_subnav %}has-subnav{% endif %}">
-        <div class="navbar-inner">
-          <a class="brand" href="/">CWFY</a>
-          <!-- Responsive Navbar Part 2: Place all navbar contents you want collapsed withing .navbar-collapse.collapse. -->
-          <ul class="nav">
-            <li {% if page.section == 'wards' %}class="active"{% endif %}><a href="/wards/">Wards</a></li>
-            <li {% if page.section == 'servicetypes' %}class="active"{% endif %}><a href="/servicetypes/">Service Types</a></li>
-            <li><a href="/transitions/">Transitions</a></li>
-            <li><a href="/interesting/">Interesting</a></li>
-            <li><a href="/about/">About</a></li>
-          </ul>
-        </div>
+<div class="navbar topnav navbar-inverse">
+    <div class="navbar-inner">
+      <a class="brand" href="/">CWFY</a>
+      <!-- Responsive Navbar Part 2: Place all navbar contents you want collapsed withing .navbar-collapse.collapse. -->
+      <ul class="nav">
+        <li {% if page.section == 'wards' %}class="active"{% endif %}><a href="/wards/">Wards</a></li>
+        <li {% if page.section == 'servicetypes' %}class="active"{% endif %}><a href="/servicetypes/">Service Types</a></li>
+        <li><a href="/transitions/">Transitions</a></li>
+        <li><a href="/interesting/">Interesting</a></li>
+        <li><a href="/about/">About</a></li>
+      </ul>
     </div>
+</div>
 
-    {% if page.section == 'wards' %}
-    <div class="navbar subnav">
+{% if page.subnav == 'ward_detail' %}
+    <div class="navbar container subnav wardnav">
       <div class="navbar-inner">
         <a class="brand" href="#top">Ward {{ page.ward }}</a>
         <!-- Responsive Navbar Part 2: Place all navbar contents you want collapsed withing .navbar-collapse.collapse. -->
         <ul class="nav">
-          <li><a href="#stats">Stats</a></li>
+          <li><a href="#counts">Tickets submitted</a></li>
+          <li><a href="#ttc">Time to close</a></li>
           <li><a href="#rankings">Rankings</a></li>
           <li><a href="#compare">Compare</a></li>
         </ul>
       </div>
     </div>
-    {% endif %}
-</div>
+{% endif %}
+{% if page.subnav == 'wards' %}
+    <div class="navbar container subnav">
+        <form class="search-form" action="/search/">
+            <input type="text" placeholder="Enter your address to find your ward">
+        </form>
+        <!-- search goes here -->
+    </div>
+{% endif %}
 
 {{ content }}
 
