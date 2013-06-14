@@ -31,8 +31,8 @@ html, body {
 
     .brand {
         font-size: 18px;
-        padding: 12px 10px 0;
-        margin: 0;
+        padding: 12px 0 0;
+        margin: 0 15px 0 0;
         text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
         color: white;
     }
@@ -47,7 +47,9 @@ html, body {
         background:none;
         border-radius: 0;
         margin: 0 auto;
-        width: 900px;
+        width: 940px;
+        padding: 0;
+        border: none;
     }
 
     &.has-subnav {
@@ -210,6 +212,40 @@ section {
         a {
             font-size: 13px;
             color: #666;
+        }
+    }
+}
+
+// SERVICE TYPES
+
+.servicetypes {
+    .wards-map {
+        margin-top: -46px; // Height of navbar
+        height: 100%;
+    }
+
+    .st-info-wrap {
+        height: 0;
+        position: relative;
+
+        .st-info {
+            position: absolute;
+            background: white;
+            top: 100px;
+            left: 0;
+            z-index: 3000;
+            margin: 0;
+            padding: 12px 20px;
+            border-radius: 6px;
+            @include box-shadow(0 0 10px fade-out(black,.7));
+        }
+
+        h2 {
+            margin: 0 0 10px;
+        }
+
+        .pagination {
+            margin-bottom: 0;
         }
     }
 }
