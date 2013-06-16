@@ -364,7 +364,8 @@ CREATE TABLE service_requests (
     channel character varying(255),
     notes text,
     duplicate character varying(40),
-    parent_service_request_id character varying(40)
+    parent_service_request_id character varying(40),
+    closed_datetime timestamp without time zone
 );
 
 
