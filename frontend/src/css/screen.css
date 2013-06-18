@@ -80,13 +80,13 @@ html, body {
   position: relative;
   padding-top: 40px; }
 
-.wards.landing .wards-map {
+.wards-landing .wards-map {
   margin-top: -46px;
   height: 100%; }
-.wards.landing .st-list {
+.wards-landing .st-list {
   height: 0;
   position: relative; }
-  .wards.landing .st-list ul {
+  .wards-landing .st-list ul {
     position: absolute;
     top: 150px;
     left: 0;
@@ -94,11 +94,11 @@ html, body {
     -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); }
-    .wards.landing .st-list ul li {
+    .wards-landing .st-list ul li {
       background: white; }
-      .wards.landing .st-list ul li a {
+      .wards-landing .st-list ul li a {
         width: 230px; }
-  .wards.landing .st-list .icon-chevron-right {
+  .wards-landing .st-list .icon-chevron-right {
     float: right;
     opacity: .5; }
 
