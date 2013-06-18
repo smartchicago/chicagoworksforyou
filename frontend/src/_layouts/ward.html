@@ -34,7 +34,7 @@ has_subnav: true
             <div class="pagination">
                 <ul>
                     <li class="prev-week"><a href="#">&larr; Previous week</a></li>
-                    <li class="this-week"><a href="#">June 9-15, 2013</a></li>
+                    <li class="this-week"><a href="#"></a></li>
                     <li class="next-week"><a href="#">Next week &rarr;</a></li>
                 </ul>
             </div>
@@ -50,12 +50,17 @@ has_subnav: true
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="/js/bootstrap.custom.min.js"></script>
+<script src="/js/moment.min.js"></script>
+<script src="/js/twix.min.js"></script>
 <script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
 <script src="/data/wards.json"></script>
 <script>
 $(function () {
-    window.currWeek = new Date(2013,05,15);
+    window.currWeekEnd = moment(new Date(2013,05,15));
+    var dateFormat = 'YYYY-MM-DD';
+    var weekDuration = moment.duration(1,"week");
+
     window.ward = "{{ page.ward }}";
     var centroid = WARDS[ward].centroid;
     var wardCenter = [centroid[1], centroid[0]];
@@ -110,33 +115,26 @@ $(function () {
             counts.push(response[d]);
         }
         chart.series[0].setData(counts);
-    }
-
-    function formatDate(date) {
-        var y = date.getFullYear();
-        var m = date.getMonth() + 1; // Add 1 because months are 0-indexed.
-        var mPrefix = m < 10 ? "0" : "";
-        var d = date.getDate();
-        var dPrefix = d < 10 ? "0" : "";
-        return y + '-' + mPrefix + m + '-' + dPrefix + d;
+        var currWeek = weekDuration.beforeMoment(currWeekEnd,true);
+        $('.this-week a').text(currWeek.format({implicitYear: false}));
     }
 
     // CHARTS WEEKNAV
 
     $('.next-week a').click(function(evt) {
         evt.preventDefault();
-        currWeek.setTime(currWeek.getTime() + week);
+        currWeekEnd.add('week',1);
         $.getJSON(
-            'http://cwfy-api-staging.smartchicagoapps.org/wards/' + ward + '/counts.json?count=7&service_code=' + currServiceType + '&end_date=' + formatDate(currWeek) + '&callback=?',
+            'http://cwfy-api-staging.smartchicagoapps.org/wards/' + ward + '/counts.json?count=7&service_code=' + currServiceType + '&end_date=' + currWeekEnd.format(dateFormat) + '&callback=?',
             function(response) {redrawChart(response);}
         );
     });
 
     $('.prev-week a').click(function(evt) {
         evt.preventDefault();
-        currWeek.setTime(currWeek.getTime() - week);
+        currWeekEnd.subtract('week',1);
         $.getJSON(
-            'http://cwfy-api-staging.smartchicagoapps.org/wards/' + ward + '/counts.json?count=7&service_code=' + currServiceType + '&end_date=' + formatDate(currWeek) + '&callback=?',
+            'http://cwfy-api-staging.smartchicagoapps.org/wards/' + ward + '/counts.json?count=7&service_code=' + currServiceType + '&end_date=' + currWeekEnd.format(dateFormat) + '&callback=?',
             function(response) {redrawChart(response);}
         );
     });
@@ -146,7 +144,7 @@ $(function () {
         currServiceType = $(this).attr('data-code');
 
         $.getJSON(
-            'http://cwfy-api-staging.smartchicagoapps.org/wards/' + ward + '/counts.json?count=7&service_code=' + currServiceType + '&end_date=2013-06-15&callback=?',
+            'http://cwfy-api-staging.smartchicagoapps.org/wards/' + ward + '/counts.json?count=7&service_code=' + currServiceType + '&end_date=' + currWeekEnd.format(dateFormat) + '&callback=?',
             function(response) {redrawChart(response);}
         );
 
