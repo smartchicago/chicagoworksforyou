@@ -39,15 +39,10 @@ html, body {
     width: 940px;
     padding: 0;
     border: none; }
-  .topnav.has-subnav .navbar-inner {
-    border-radius: 4px 4px 0 0; }
 
 .subnav {
-  position: absolute;
-  top: 70px;
   left: 0;
   right: 0;
-  z-index: 2000;
   border-radius: 4px;
   background: #fff;
   -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
@@ -64,16 +59,19 @@ html, body {
     color: #555;
     padding: 15px 20px; }
 
-.sticky-wrapper {
-  height: 0 !important;
+.subnav-wrap {
+  height: 0;
   position: absolute;
   top: 70px;
-  width: 100%; }
-  .sticky-wrapper .subnav {
-    position: relative;
+  width: 100%;
+  z-index: 9000; }
+  .subnav-wrap .subnav {
     top: 0; }
-  .sticky-wrapper.is-sticky .subnav, .sticky-wrapper.is-sticky .navbar-inner {
-    border-radius: 0 0 4px 4px; }
+  .subnav-wrap.affix {
+    position: fixed;
+    top: 0; }
+    .subnav-wrap.affix .subnav, .subnav-wrap.affix .navbar-inner {
+      border-radius: 0 0 4px 4px; }
 
 .map iframe {
   border: none; }
@@ -82,13 +80,13 @@ html, body {
   position: relative;
   padding-top: 40px; }
 
-.wards .wards-map {
+.wards-landing .wards-map {
   margin-top: -46px;
   height: 100%; }
-.wards .st-list {
+.wards-landing .st-list {
   height: 0;
   position: relative; }
-  .wards .st-list ul {
+  .wards-landing .st-list ul {
     position: absolute;
     top: 150px;
     left: 0;
@@ -96,11 +94,11 @@ html, body {
     -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); }
-    .wards .st-list ul li {
+    .wards-landing .st-list ul li {
       background: white; }
-      .wards .st-list ul li a {
+      .wards-landing .st-list ul li a {
         width: 230px; }
-  .wards .st-list .icon-chevron-right {
+  .wards-landing .st-list .icon-chevron-right {
     float: right;
     opacity: .5; }
 
@@ -125,6 +123,8 @@ ul.nav .alderman a {
   ul.nav .alderman a:hover {
     background: #d7d7d7; }
 
+.ward .st-list.affix {
+  top: 75px; }
 .ward section {
   margin-bottom: 30px;
   border-bottom: 1px solid #ddd; }
