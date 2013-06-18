@@ -21,21 +21,30 @@ type Open311Request struct {
 	Extended_attributes                                                                                     map[string]interface{}
 }
 
-func main() {
+type Worker struct {
+	Db *sql.DB	
+	LastRunAt time.Time
+}
+
+var worker Worker
+
+func init() {
 	// open database
 	db, err := sql.Open("postgres", "dbname=cwfy sslmode=disable")
 	if err != nil {
 		log.Fatal("Cannot open database connection", err)
 	}
-	defer db.Close()
+	worker.Db = db	
+}
 
-	last_run_at := time.Now()
+func main() {
+	defer worker.Db.Close()
 
 	for {
 		switch {
-		case time.Since(last_run_at) > (30 * time.Second):
-			poll_open311(db)
-			last_run_at = time.Now()
+		case time.Since(worker.LastRunAt) > (30 * time.Second):
+			poll_open311(worker.Db)
+			worker.LastRunAt = time.Now()
 		default:
 			log.Print("sleeping for 10 seconds")
 			time.Sleep(10 * time.Second)
