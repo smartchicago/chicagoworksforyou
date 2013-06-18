@@ -79,7 +79,7 @@ html, body {
 
 .body {
   position: relative;
-  padding-top: 40px; }
+  padding-top: 35px; }
 
 .wards-landing .wards-map {
   margin-top: -46px;
@@ -124,21 +124,28 @@ ul.nav .alderman a {
   ul.nav .alderman a:hover {
     background: #d7d7d7; }
 
-.ward .st-list.affix {
+.ward #map {
+  height: 450px; }
+.ward .filter.affix {
   top: 75px; }
+.ward .pagination {
+  margin-top: 0; }
+.ward .this-week {
+  font-weight: bold; }
+  .ward .this-week a {
+    color: #333; }
+.ward .prev-week a, .ward .next-week a {
+  font-size: 13px;
+  color: #666;
+  padding: 4px 8px; }
 .ward section {
   margin-bottom: 30px;
   border-bottom: 1px solid #ddd; }
-  .ward section .pagination {
-    text-align: center;
-    margin-top: 0; }
-  .ward section .this-week {
-    font-weight: bold; }
-    .ward section .this-week a {
-      color: #333; }
-  .ward section .prev-week a, .ward section .next-week a {
-    font-size: 13px;
-    color: #666; }
+.ward h3 {
+  margin: 0 0 1em; }
+.ward .chart {
+  width: 100%;
+  height: 350px; }
 
 .about h3 {
   padding: .5em 0 0;
