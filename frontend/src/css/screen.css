@@ -58,7 +58,8 @@ html, body {
     margin: 0; }
   .subnav .navbar-inner {
     border: none;
-    background: white; }
+    background: white;
+    padding: 0; }
   .subnav .nav > li > a {
     color: #555;
     padding: 15px 20px; }
@@ -114,27 +115,16 @@ html, body {
     text-indent: 40px;
     border-radius: 6px 6px; }
 
-.ward .alderman {
-  position: relative;
-  z-index: 100; }
-  .ward .alderman .content {
-    position: absolute;
-    top: 150px;
-    right: 0;
-    width: 120px;
-    background: rgba(0, 0, 0, 0.8);
-    padding: 20px;
-    border-radius: 6px;
-    -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); }
-  .ward .alderman img {
-    margin-bottom: 1em; }
-  .ward .alderman h2 {
-    color: white;
-    font-size: 16px;
-    margin: 0;
-    line-height: 20px; }
+ul.nav .alderman a {
+  font-weight: bold;
+  background: #e3e3e3;
+  color: #111;
+  border-radius: 0 4px 4px 0; }
+  ul.nav .alderman a i {
+    margin-right: 4px; }
+  ul.nav .alderman a:hover {
+    background: #d7d7d7; }
+
 .ward section {
   margin-bottom: 30px;
   border-bottom: 1px solid #ddd; }
