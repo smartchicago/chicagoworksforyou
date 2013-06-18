@@ -67,7 +67,7 @@ $(function () {
     }
 
     var week = 7 * 24 * 60 * 60 * 1000;
-    var currServiceType = '4ffa4c69601827691b000018';
+    var currServiceType = '';
 
     // MAKE SUBNAV STICK
 
@@ -158,7 +158,7 @@ $(function () {
     countsChart.highcharts({
         chart: {
             marginBottom: 60,
-            type: 'area'
+            type: 'column'
         },
         title: {
             text: ''
@@ -171,7 +171,10 @@ $(function () {
             minPadding: .05,
             maxPadding: .05,
             // tickPosition: 'inside',
+            tickmarkPlacement: 'on',
+            tickInterval: 24 * 3600 * 1000,
             labels: {
+                align: 'left',
                 style: {
                     fontFamily: 'Helvetica',
                     fontSize: '13px'
@@ -195,20 +198,11 @@ $(function () {
             }
         },
         plotOptions: {
-            area: {
-                pointStart: Date.UTC(2013, 6, 9),
-                pointInterval: 24 * 3600 * 1000, // one day
-                marker: {
-                    enabled: true,
-                    symbol: 'circle',
-                    radius: 4,
-                    borderWidth: 1,
-                    states: {
-                        hover: {
-                            enabled: true
-                        }
-                    }
-                }
+            line: {
+                pointPlacement: "between"
+            },
+            column: {
+                pointPlacement: "between"
             }
         },
         tooltip: {
@@ -221,6 +215,14 @@ $(function () {
             }
         },
         series: [{
+            pointStart: Date.UTC(2013, 6, 9),
+            pointInterval: 24 * 3600 * 1000, // one day
+        },{
+            data: [5, 6, 7, 8, 4, 3, 9],
+            type: 'line',
+            dashStyle: 'longdash',
+            pointStart: Date.UTC(2013, 6, 9),
+            pointInterval: 24 * 3600 * 1000, // one day
         }],
         legend: {
             enabled: false
