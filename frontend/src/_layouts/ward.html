@@ -59,7 +59,7 @@ has_subnav: true
 $(function () {
     window.currWeekEnd = moment(new Date(2013,05,15));
     var dateFormat = 'YYYY-MM-DD';
-    var weekDuration = moment.duration(1,"week");
+    var weekDuration = moment.duration(6,"days");
 
     window.ward = "{{ page.ward }}";
     var centroid = WARDS[ward].centroid;
