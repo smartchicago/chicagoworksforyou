@@ -51,20 +51,11 @@ html, body {
         padding: 0;
         border: none;
     }
-
-    &.has-subnav {
-        .navbar-inner {
-            border-radius: 4px 4px 0 0;
-        }
-    }
 }
 
 .subnav {
-    position: absolute;
-    top: 70px;
     left: 0;
     right: 0;
-    z-index: 2000;
     border-radius: 4px;
     background: #fff;
     @include box-shadow(0 0 10px fade-out(black,.8));
@@ -87,18 +78,21 @@ html, body {
     }
 }
 
-.sticky-wrapper {
-    height: 0 !important;
+.subnav-wrap {
+    height: 0;
     position: absolute;
     top: 70px;
     width: 100%;
+    z-index: 9000;
 
     .subnav {
-        position: relative;
         top: 0;
     }
 
-    &.is-sticky {
+    &.affix {
+        position: fixed;
+        top: 0;
+
         .subnav, .navbar-inner {
             border-radius: 0 0 4px 4px;
         }
@@ -116,7 +110,7 @@ html, body {
 
 // WARDS
 
-.wards {
+.wards.landing {
     .wards-map {
         margin-top: -46px; // Height of navbar
         height: 100%;
@@ -183,6 +177,10 @@ ul.nav .alderman {
 }
 
 .ward {
+    .st-list.affix {
+        top: 75px;
+    }
+
     section {
         margin-bottom: 30px;
         border-bottom: 1px solid #ddd;

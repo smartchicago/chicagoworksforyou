@@ -49,7 +49,7 @@ has_subnav: true
 </div>
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script src="/js/jquery.sticky.js"></script>
+<script src="/js/bootstrap.custom.min.js"></script>
 <script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
 <script src="/data/wards.json"></script>
@@ -71,10 +71,14 @@ $(function () {
 
     // MAKE SUBNAV STICK
 
-    $(".wardnav").sticky({topSpacing:0});
+    $(".st-list").affix({
+        offset: { top: 510 }
+    });
+    $(".subnav-wrap").affix({
+        offset: { top: 70 }
+    });
 
     // ALDERMAN NAME
-
 
     $.getJSON(
         'http://data.cityofchicago.org/resource/htai-wnw4.json?ward=' + ward,
