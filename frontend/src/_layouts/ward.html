@@ -147,20 +147,6 @@ $(function () {
         );
     });
 
-    // CHARTS SIDENAV
-
-    $.get(
-        '/data/services.json',
-        function (response) {
-            var list = "";
-            for (var st in response) {
-                list += '<li><a data-code="' + response[st].Service_code + '" href="#">' + response[st].Service_name + '</a></li>\n';
-            }
-            $('.st-list').append(list).find('li:first').addClass('active');
-        },
-        'json'
-    );
-
     // CHARTS
 
     var countsChart = $('#counts .chart');
