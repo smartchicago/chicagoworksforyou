@@ -43,7 +43,7 @@ func main() {
 	for {
 		switch {
 		case time.Since(worker.LastRunAt) > (30 * time.Second):
-			poll_open311(worker.Db)
+			poll_open311()
 			worker.LastRunAt = time.Now()
 		default:
 			log.Print("sleeping for 10 seconds")
@@ -58,14 +58,8 @@ func (req Open311Request) String() string {
 }
 
 func fetchRequests() (requests []Open311Request) {
-	db, err := sql.Open("postgres", "dbname=cwfy sslmode=disable")
-	if err != nil {
-		log.Fatal("Cannot open database connection", err)
-	}
-	defer db.Close()
-
 	// find the most recent SR that we know about in the database
-	rows, err := db.Query("SELECT MAX(updated_datetime) FROM service_requests;")
+	rows, err := worker.Db.Query("SELECT MAX(updated_datetime) FROM service_requests;")
 	if err != nil {
 		log.Fatal("error finding most recent service request", err)
 	}
@@ -113,7 +107,7 @@ func fetchRequests() (requests []Open311Request) {
 	return requests
 }
 
-func poll_open311(db *sql.DB) {
+func poll_open311() {
 	// load requests from open311
 	requests := fetchRequests()
 
@@ -126,7 +120,7 @@ func poll_open311(db *sql.DB) {
 			continue
 		}
 
-		insert_stmt, err := db.Prepare("INSERT INTO service_requests(service_request_id," +
+		insert_stmt, err := worker.Db.Prepare("INSERT INTO service_requests(service_request_id," +
 			"status, service_name, service_code, agency_responsible, " +
 			"address, requested_datetime, updated_datetime, lat, long," +
 			"ward, police_district, media_url, channel, duplicate, parent_service_request_id) " +
@@ -137,7 +131,7 @@ func poll_open311(db *sql.DB) {
 			log.Fatal("error preparing database insert statement", err)
 		}
 
-		update_stmt, err := db.Prepare("UPDATE service_requests SET " +
+		update_stmt, err := worker.Db.Prepare("UPDATE service_requests SET " +
 			"status = $2, service_name = $3, service_code = $4, agency_responsible = $5, " +
 			"address = $6, requested_datetime = $7, updated_datetime = $8, lat = $9, long = $10," +
 			"ward = $11, police_district = $12, media_url = $13, channel = $14, duplicate = $15, " +
@@ -147,7 +141,7 @@ func poll_open311(db *sql.DB) {
 			log.Fatal("error preparing database update statement", err)
 		}
 
-		tx, err := db.Begin()
+		tx, err := worker.Db.Begin()
 
 		if err != nil {
 			log.Fatal("error beginning transaction", err)
