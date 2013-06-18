@@ -13,50 +13,35 @@ has_subnav: true
 <div class="container body">
     <section class="row" id="counts">
         <div class="span3">
-            {% include st_nav.html %}
+            <ul class="st-list nav nav-pills nav-stacked">
+                <li><a data-code="4ffa4c69601827691b000018" href="#">Abandoned Vehicle</a></li>
+                <li><a data-code="4ffa9cad6018277d4000007b" href="#">Alley Light Out</a></li>
+                <li><a data-code="4fd3bd72e750846c530000cd" href="#">Building Violation</a></li>
+                <li class="initial"><a data-code="4fd3b167e750846744000005" href="#">Graffiti Removal</a></li>
+                <li><a data-code="4ffa971e6018277d4000000b" href="#">Pavement Cave-In Survey</a></li>
+                <li><a data-code="4fd3b656e750846c53000004" href="#">Pothole in Street</a></li>
+                <li><a data-code="4fd6e4ece750840569000019" href="#">Restaurant Complaint</a></li>
+                <li><a data-code="4fd3b9bce750846c5300004a" href="#">Rodent Baiting / Rat Complaint</a></li>
+                <li><a data-code="4fd3b750e750846c5300001d" href="#">Sanitation Code Violation</a></li>
+                <li><a data-code="4ffa995a6018277d4000003c" href="#">Street Cut Complaints</a></li>
+                <li><a data-code="4ffa9f2d6018277d400000c8" href="#">Street Light 1 / Out</a></li>
+                <li><a data-code="4fd3bd3de750846c530000b9" href="#">Street Lights All / Out</a></li>
+                <li><a data-code="4ffa9db16018277d400000a2" href="#">Traffic Signal Out</a></li>
+                <li><a data-code="4fd3bbf8e750846c53000069" href="#">Tree Debris</a></li>
+            </ul>
         </div>
         <div class="span9">
             <div class="pagination">
                 <ul>
                     <li class="prev-week"><a href="#">&larr; Previous week</a></li>
-                    <li class="this-week"><a href="#">June 9-15, 2013</a></li>
+                    <li class="this-week"><a href="#"></a></li>
                     <li class="next-week"><a href="#">Next week &rarr;</a></li>
                 </ul>
             </div>
 
             <div class="chart" style="width:100%; height:500px;"></div>
-        </div>
-    </section>
-
-    <section class="row" id="ttc">
-        <div class="span3">
-            {% include st_nav.html %}
-        </div>
-        <div class="span9">
-            <div class="pagination">
-                <ul>
-                    <li class="prev-week"><a href="#">&larr; Previous week</a></li>
-                    <li class="this-week"><a href="#">June 9-15, 2013</a></li>
-                    <li class="next-week"><a href="#">Next week &rarr;</a></li>
-                </ul>
-            </div>
 
             <div class="chart" style="width:100%; height:500px;"></div>
-        </div>
-    </section>
-
-    <section class="row" id="compare">
-        <div class="span3">
-            {% include st_nav.html %}
-        </div>
-        <div class="span9">
-            <div class="pagination">
-                <ul>
-                    <li class="prev-week"><a href="#">&larr; Previous week</a></li>
-                    <li class="this-week"><a href="#">June 9-15, 2013</a></li>
-                    <li class="next-week"><a href="#">Next week &rarr;</a></li>
-                </ul>
-            </div>
 
             <div class="chart" style="width:100%; height:500px;"></div>
         </div>
@@ -64,13 +49,18 @@ has_subnav: true
 </div>
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script src="/js/jquery.sticky.js"></script>
+<script src="/js/bootstrap.custom.min.js"></script>
+<script src="/js/moment.min.js"></script>
+<script src="/js/twix.min.js"></script>
 <script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
 <script src="/data/wards.json"></script>
 <script>
 $(function () {
-    window.currWeek = new Date(2013,05,15);
+    window.currWeekEnd = moment(new Date(2013,05,15));
+    var dateFormat = 'YYYY-MM-DD';
+    var weekDuration = moment.duration(1,"week");
+
     window.ward = "{{ page.ward }}";
     var centroid = WARDS[ward].centroid;
     var wardCenter = [centroid[1], centroid[0]];
@@ -82,14 +72,18 @@ $(function () {
     }
 
     var week = 7 * 24 * 60 * 60 * 1000;
-    var currServiceType = '4ffa4c69601827691b000018';
+    var currServiceType = '';
 
     // MAKE SUBNAV STICK
 
-    $(".wardnav").sticky({topSpacing:0});
+    $(".st-list").affix({
+        offset: { top: 510 }
+    });
+    $(".subnav-wrap").affix({
+        offset: { top: 70 }
+    });
 
     // ALDERMAN NAME
-
 
     $.getJSON(
         'http://data.cityofchicago.org/resource/htai-wnw4.json?ward=' + ward,
@@ -121,33 +115,26 @@ $(function () {
             counts.push(response[d]);
         }
         chart.series[0].setData(counts);
-    }
-
-    function formatDate(date) {
-        var y = date.getFullYear();
-        var m = date.getMonth() + 1; // Add 1 because months are 0-indexed.
-        var mPrefix = m < 10 ? "0" : "";
-        var d = date.getDate();
-        var dPrefix = d < 10 ? "0" : "";
-        return y + '-' + mPrefix + m + '-' + dPrefix + d;
+        var currWeek = weekDuration.beforeMoment(currWeekEnd,true);
+        $('.this-week a').text(currWeek.format({implicitYear: false}));
     }
 
     // CHARTS WEEKNAV
 
     $('.next-week a').click(function(evt) {
         evt.preventDefault();
-        currWeek.setTime(currWeek.getTime() + week);
+        currWeekEnd.add('week',1);
         $.getJSON(
-            'http://cwfy-api-staging.smartchicagoapps.org/wards/' + ward + '/counts.json?count=7&service_code=' + currServiceType + '&end_date=' + formatDate(currWeek) + '&callback=?',
+            'http://cwfy-api-staging.smartchicagoapps.org/wards/' + ward + '/counts.json?count=7&service_code=' + currServiceType + '&end_date=' + currWeekEnd.format(dateFormat) + '&callback=?',
             function(response) {redrawChart(response);}
         );
     });
 
     $('.prev-week a').click(function(evt) {
         evt.preventDefault();
-        currWeek.setTime(currWeek.getTime() - week);
+        currWeekEnd.subtract('week',1);
         $.getJSON(
-            'http://cwfy-api-staging.smartchicagoapps.org/wards/' + ward + '/counts.json?count=7&service_code=' + currServiceType + '&end_date=' + formatDate(currWeek) + '&callback=?',
+            'http://cwfy-api-staging.smartchicagoapps.org/wards/' + ward + '/counts.json?count=7&service_code=' + currServiceType + '&end_date=' + currWeekEnd.format(dateFormat) + '&callback=?',
             function(response) {redrawChart(response);}
         );
     });
@@ -157,7 +144,7 @@ $(function () {
         currServiceType = $(this).attr('data-code');
 
         $.getJSON(
-            'http://cwfy-api-staging.smartchicagoapps.org/wards/' + ward + '/counts.json?count=7&service_code=' + currServiceType + '&end_date=2013-06-15&callback=?',
+            'http://cwfy-api-staging.smartchicagoapps.org/wards/' + ward + '/counts.json?count=7&service_code=' + currServiceType + '&end_date=' + currWeekEnd.format(dateFormat) + '&callback=?',
             function(response) {redrawChart(response);}
         );
 
@@ -169,7 +156,7 @@ $(function () {
     countsChart.highcharts({
         chart: {
             marginBottom: 60,
-            type: 'area'
+            type: 'column'
         },
         title: {
             text: ''
@@ -182,7 +169,10 @@ $(function () {
             minPadding: .05,
             maxPadding: .05,
             // tickPosition: 'inside',
+            tickmarkPlacement: 'on',
+            tickInterval: 24 * 3600 * 1000,
             labels: {
+                align: 'left',
                 style: {
                     fontFamily: 'Helvetica',
                     fontSize: '13px'
@@ -206,20 +196,11 @@ $(function () {
             }
         },
         plotOptions: {
-            area: {
-                pointStart: Date.UTC(2013, 6, 9),
-                pointInterval: 24 * 3600 * 1000, // one day
-                marker: {
-                    enabled: true,
-                    symbol: 'circle',
-                    radius: 4,
-                    borderWidth: 1,
-                    states: {
-                        hover: {
-                            enabled: true
-                        }
-                    }
-                }
+            line: {
+                pointPlacement: "between"
+            },
+            column: {
+                pointPlacement: "between"
             }
         },
         tooltip: {
@@ -232,6 +213,14 @@ $(function () {
             }
         },
         series: [{
+            pointStart: Date.UTC(2013, 6, 9),
+            pointInterval: 24 * 3600 * 1000, // one day
+        },{
+            data: [5, 6, 7, 8, 4, 3, 9],
+            type: 'line',
+            dashStyle: 'longdash',
+            pointStart: Date.UTC(2013, 6, 9),
+            pointInterval: 24 * 3600 * 1000, // one day
         }],
         legend: {
             enabled: false
