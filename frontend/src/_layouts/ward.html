@@ -20,8 +20,7 @@ has_subnav: true
 <div class="container body">
     <section class="row" id="counts">
         <div class="span3">
-            <ul class="st-list nav nav-pills nav-stacked">
-            </ul>
+            {% include st_nav.html %}
         </div>
         <div class="span9">
             <div class="pagination">
@@ -38,8 +37,7 @@ has_subnav: true
 
     <section class="row" id="ttc">
         <div class="span3">
-            <ul class="st-list nav nav-pills nav-stacked">
-            </ul>
+            {% include st_nav.html %}
         </div>
         <div class="span9">
             <div class="pagination">
@@ -56,8 +54,7 @@ has_subnav: true
 
     <section class="row" id="compare">
         <div class="span3">
-            <ul class="st-list nav nav-pills nav-stacked">
-            </ul>
+            {% include st_nav.html %}
         </div>
         <div class="span9">
             <div class="pagination">
@@ -84,7 +81,7 @@ $(function () {
     window.ward = "{{ page.ward }}";
 
     var week = 7 * 24 * 60 * 60 * 1000;
-    var currServiceType = '4fd3b167e750846744000005';
+    var currServiceType = '4ffa4c69601827691b000018';
 
     // MAKE SUBNAV STICK
 
@@ -109,64 +106,55 @@ $(function () {
     map.zoomControl.setPosition('bottomleft');
     var polygon = L.polygon(path).addTo(map);
 
+    // CHARTS
+
+    var countsChart = $('#counts .chart');
+
+    function redrawChart(response) {
+        var chart = countsChart.highcharts();
+        var counts = [];
+        for (var d in response) {
+            counts.push(response[d]);
+        }
+        chart.series[0].setData(counts);
+    }
+
+    function formatDate(date) {
+        var y = date.getFullYear();
+        var m = date.getMonth() + 1; // Add 1 because months are 0-indexed.
+        var mPrefix = m < 10 ? "0" : "";
+        var d = date.getDate();
+        var dPrefix = d < 10 ? "0" : "";
+        return y + '-' + mPrefix + m + '-' + dPrefix + d;
+    }
+
     // CHARTS WEEKNAV
 
     $('.next-week a').click(function(evt) {
         evt.preventDefault();
         currWeek.setTime(currWeek.getTime() + week);
-        $.get(
-            // 'http://localhost:5000/wards/' + ward + '/counts.json?count=7&service_code=' + currServiceType + '&end_date=' + currWeek.getFullYear() + '-' + currWeek.getMonth() + '-' + currWeek.getDate(),
-            '/data/counts1.json',
-            function (response) {
-                var chart = countsChart.highcharts();
-                var counts = [];
-                for (var d in response) {
-                    counts.push(response[d]);
-                }
-                chart.series[0].setData(counts);
-            },
-            'json'
+        $.getJSON(
+            'http://cwfy-api-staging.smartchicagoapps.org/wards/' + ward + '/counts.json?count=7&service_code=' + currServiceType + '&end_date=' + formatDate(currWeek) + '&callback=?',
+            function(response) {redrawChart(response);}
         );
     });
 
     $('.prev-week a').click(function(evt) {
         evt.preventDefault();
         currWeek.setTime(currWeek.getTime() - week);
-        $.get(
-            // 'http://localhost:5000/wards/' + ward + '/counts.json?count=7&service_code=' + currServiceType + '&end_date=' + currWeek.getFullYear() + '-' + currWeek.getMonth() + '-' + currWeek.getDate(),
-            '/data/counts2.json',
-            function (response) {
-                var chart = countsChart.highcharts();
-                var counts = [];
-                for (var d in response) {
-                    counts.push(response[d]);
-                }
-                chart.series[0].setData(counts);
-            },
-            'json'
+        $.getJSON(
+            'http://cwfy-api-staging.smartchicagoapps.org/wards/' + ward + '/counts.json?count=7&service_code=' + currServiceType + '&end_date=' + formatDate(currWeek) + '&callback=?',
+            function(response) {redrawChart(response);}
         );
     });
-
-    // CHARTS
-
-    var countsChart = $('#counts .chart');
 
     $('.st-list').on('click', 'a', function(evt) {
         evt.preventDefault();
         currServiceType = $(this).attr('data-code');
 
-        $.get(
-            // 'http://localhost:5000/wards/' + ward + '/counts.json?count=7&service_code=' currServiceType + '&end_date=2013-06-15',
-            '/data/counts.json',
-            function (response) {
-                var chart = countsChart.highcharts();
-                var counts = [];
-                for (var d in response) {
-                    counts.push(response[d]);
-                }
-                chart.series[0].setData(counts);
-            },
-            'json'
+        $.getJSON(
+            'http://cwfy-api-staging.smartchicagoapps.org/wards/' + ward + '/counts.json?count=7&service_code=' + currServiceType + '&end_date=2013-06-15&callback=?',
+            function(response) {redrawChart(response);}
         );
 
         $('#counts .nav li').removeClass('active');
