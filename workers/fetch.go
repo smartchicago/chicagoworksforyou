@@ -22,7 +22,7 @@ type Open311Request struct {
 }
 
 type Worker struct {
-	Db *sql.DB	
+	Db        *sql.DB
 	LastRunAt time.Time
 }
 
@@ -34,7 +34,7 @@ func init() {
 	if err != nil {
 		log.Fatal("Cannot open database connection", err)
 	}
-	worker.Db = db	
+	worker.Db = db
 }
 
 func main() {
@@ -55,6 +55,99 @@ func main() {
 func (req Open311Request) String() string {
 	// pretty print SR information
 	return fmt.Sprintf("%s: %s at %s %f,%f, last update %s", req.Service_request_id, req.Service_name, req.Address, req.Lat, req.Long, req.Updated_datetime)
+}
+
+func (req Open311Request) Save() (persisted bool) {
+	// create or update a SR
+
+	// open311 says we should always ignore a SR that does not have a SR# assigned
+	if req.Service_request_id == "" {
+		log.Printf("cowardly refusing to create a new SR record because of empty SR#. Request type is %s", req.Service_name)
+		return false
+	}
+
+	persisted = false
+
+	// find existing record if exists
+	var existing_id int
+	err := worker.Db.QueryRow("SELECT id FROM service_requests WHERE service_request_id = $1", req.Service_request_id).Scan(&existing_id)
+	switch {
+	case err == sql.ErrNoRows:
+		log.Printf("did not find existing record %s", req.Service_request_id)
+	case err != nil:
+		log.Print("error searching for existing SR", err)
+	default:
+		persisted = true
+		log.Printf("found existing sr %s", req.Service_request_id)
+	}
+
+	var stmt *sql.Stmt
+
+	if !persisted {
+		// create new record
+		stmt, err = worker.Db.Prepare("INSERT INTO service_requests(service_request_id," +
+			"status, service_name, service_code, agency_responsible, " +
+			"address, requested_datetime, updated_datetime, lat, long," +
+			"ward, police_district, media_url, channel, duplicate, parent_service_request_id) " +
+			"SELECT $1::varchar, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16 " +
+			"WHERE NOT EXISTS (SELECT 1 FROM service_requests WHERE service_request_id = $1);")
+
+		if err != nil {
+			log.Fatal("error preparing database insert statement", err)
+		}
+
+	} else {
+		// update existing record
+		stmt, err = worker.Db.Prepare("UPDATE service_requests SET " +
+			"status = $2, service_name = $3, service_code = $4, agency_responsible = $5, " +
+			"address = $6, requested_datetime = $7, updated_datetime = $8, lat = $9, long = $10," +
+			"ward = $11, police_district = $12, media_url = $13, channel = $14, duplicate = $15, " +
+			"parent_service_request_id = $16, updated_at = NOW() WHERE service_request_id = $1;")
+
+		if err != nil {
+			log.Fatal("error preparing database update statement", err)
+		}
+	}
+
+	tx, err := worker.Db.Begin()
+
+	if err != nil {
+		log.Fatal("error beginning transaction", err)
+	}
+
+	_, err = tx.Stmt(stmt).Exec(req.Service_request_id,
+		req.Status,
+		req.Service_name,
+		req.Service_code,
+		req.Agency_responsible,
+		req.Address,
+		req.Requested_datetime,
+		req.Updated_datetime,
+		req.Lat,
+		req.Long,
+		req.Extended_attributes["ward"],
+		req.Extended_attributes["police_district"],
+		req.Media_url,
+		req.Extended_attributes["channel"],
+		req.Extended_attributes["duplicate"],
+		req.Extended_attributes["parent_service_request_id"])
+
+	if err != nil {
+		log.Fatalf("could not update %s because %s", req.Service_request_id, err)
+	} else {
+		log.Printf("saved %s", req)
+		persisted = true
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		log.Fatal("error closing transaction", err)
+	}
+
+	return persisted
+
+	// calculate closed time if necessary
+
 }
 
 func fetchRequests() (requests []Open311Request) {
@@ -112,88 +205,6 @@ func poll_open311() {
 	requests := fetchRequests()
 
 	for _, request := range requests {
-		// for each request, either create or update the
-		// corresponding record in the database.
-
-		if request.Service_request_id == "" {
-			log.Printf("Ignoring a request type %s because there is no SR number assigned", request.Service_name)
-			continue
-		}
-
-		insert_stmt, err := worker.Db.Prepare("INSERT INTO service_requests(service_request_id," +
-			"status, service_name, service_code, agency_responsible, " +
-			"address, requested_datetime, updated_datetime, lat, long," +
-			"ward, police_district, media_url, channel, duplicate, parent_service_request_id) " +
-			"SELECT $1::varchar, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16 " +
-			"WHERE NOT EXISTS (SELECT 1 FROM service_requests WHERE service_request_id = $1);")
-
-		if err != nil {
-			log.Fatal("error preparing database insert statement", err)
-		}
-
-		update_stmt, err := worker.Db.Prepare("UPDATE service_requests SET " +
-			"status = $2, service_name = $3, service_code = $4, agency_responsible = $5, " +
-			"address = $6, requested_datetime = $7, updated_datetime = $8, lat = $9, long = $10," +
-			"ward = $11, police_district = $12, media_url = $13, channel = $14, duplicate = $15, " +
-			"parent_service_request_id = $16, updated_at = NOW() WHERE service_request_id = $1;")
-
-		if err != nil {
-			log.Fatal("error preparing database update statement", err)
-		}
-
-		tx, err := worker.Db.Begin()
-
-		if err != nil {
-			log.Fatal("error beginning transaction", err)
-		}
-
-		_, err = tx.Stmt(update_stmt).Exec(request.Service_request_id,
-			request.Status,
-			request.Service_name,
-			request.Service_code,
-			request.Agency_responsible,
-			request.Address,
-			request.Requested_datetime,
-			request.Updated_datetime,
-			request.Lat,
-			request.Long,
-			request.Extended_attributes["ward"],
-			request.Extended_attributes["police_district"],
-			request.Media_url,
-			request.Extended_attributes["channel"],
-			request.Extended_attributes["duplicate"],
-			request.Extended_attributes["parent_service_request_id"])
-
-		if err != nil {
-			log.Fatalf("could not update %s because %s", request.Service_request_id, err)
-		}
-
-		_, err = tx.Stmt(insert_stmt).Exec(request.Service_request_id,
-			request.Status,
-			request.Service_name,
-			request.Service_code,
-			request.Agency_responsible,
-			request.Address,
-			request.Requested_datetime,
-			request.Updated_datetime,
-			request.Lat,
-			request.Long,
-			request.Extended_attributes["ward"],
-			request.Extended_attributes["police_district"],
-			request.Media_url,
-			request.Extended_attributes["channel"],
-			request.Extended_attributes["duplicate"],
-			request.Extended_attributes["parent_service_request_id"])
-
-		if err != nil {
-			log.Fatalf("could not save %s because %s", request.Service_request_id, err)
-		} else {
-			log.Printf("saved SR %s", request)
-		}
-
-		err = tx.Commit()
-		if err != nil {
-			log.Fatal("error closing transaction", err)
-		}
+		_ = request.Save()
 	}
 }
