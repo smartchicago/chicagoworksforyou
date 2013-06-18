@@ -6,13 +6,6 @@ subnav: ward_detail
 has_subnav: true
 ---
 
-<div class="container alderman">
-    <div class="content">
-        <img data-src="js/holder.js/120x120/#DDF2F4:#555" alt="">
-        <h2>Alderman Stacey Jones</h2>
-    </div>
-</div>
-
 <div class="map">
     <div id="map" style="height:500px;"></div>
 </div>
@@ -79,6 +72,14 @@ has_subnav: true
 $(function () {
     window.currWeek = new Date(2013,05,15);
     window.ward = "{{ page.ward }}";
+    var centroid = WARDS[ward].centroid;
+    var wardCenter = [centroid[1], centroid[0]];
+    var points = WARDS[ward].simple_shape[0][0];
+    var path = [];
+    for (var i=0; i<points.length; i++) {
+        var latlong = [points[i][1], points[i][0]];
+        path.push(latlong);
+    }
 
     var week = 7 * 24 * 60 * 60 * 1000;
     var currServiceType = '4ffa4c69601827691b000018';
@@ -87,17 +88,20 @@ $(function () {
 
     $(".wardnav").sticky({topSpacing:0});
 
+    // ALDERMAN NAME
+
+
+    $.getJSON(
+        'http://data.cityofchicago.org/resource/htai-wnw4.json?ward=' + ward,
+        function(response) {
+            wardInfo = response[0];
+            $('.alderman').append('<a href="' + wardInfo.website.url + '"><i class="icon icon-user"></i> ' + wardInfo.alderman + '</a>');
+        }
+    );
+
     // WARD MAP
 
-    var centroid = WARDS[ward].centroid;
-    var points = WARDS[ward].simple_shape[0][0];
-    var path = [];
-    for (var i=0; i<points.length; i++) {
-        var latlong = [points[i][1], points[i][0]];
-        path.push(latlong);
-    }
-
-    var map = L.map('map', {scrollWheelZoom: false}).setView([centroid[1], centroid[0]], 13);
+    var map = L.map('map', {scrollWheelZoom: false}).setView(wardCenter, 13);
     L.tileLayer('http://{s}.tile.cloudmade.com/{key}/997/256/{z}/{x}/{y}.png', {
         attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
         key: '302C8A713FF3456987B21FAAE639A13B',
