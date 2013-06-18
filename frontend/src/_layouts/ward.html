@@ -157,9 +157,10 @@ $(function () {
             function(response) {redrawChart(response);}
         );
 
-        $('#counts .nav li').removeClass('active');
-        $(this).closest('li').addClass('active');
+        $(this).closest('li').addClass('active').siblings().removeClass('active');
     });
+
+    $('.st-list .initial a').trigger('click');
 
     countsChart.highcharts({
         chart: {
