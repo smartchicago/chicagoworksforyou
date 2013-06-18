@@ -78,6 +78,7 @@ html, body {
     .navbar-inner {
         border: none;
         background:white;
+        padding: 0;
     }
 
     .nav > li > a {
@@ -164,34 +165,24 @@ html, body {
 
 // WARD DETAIL
 
-.ward {
-    .alderman {
-        position: relative;
-        z-index: 100;
+ul.nav .alderman {
+    a {
+        font-weight: bold;
+        background: #e3e3e3;
+        color: #111;
+        border-radius: 0 4px 4px 0;
 
-        .content {
-            position: absolute;
-            top: 150px;
-            right: 0;
-            width: 120px;
-            background: fade-out(black,.2);
-            padding: 20px;
-            border-radius: 6px;
-            @include box-shadow(0 0 10px fade-out(black,.7));
+        i {
+            margin-right: 4px;
         }
 
-        img {
-            margin-bottom: 1em;
-        }
-
-        h2 {
-            color: white;
-            font-size: 16px;
-            margin: 0;
-            line-height: 20px;
+        &:hover {
+            background:#d7d7d7;
         }
     }
+}
 
+.ward {
     section {
         margin-bottom: 30px;
         border-bottom: 1px solid #ddd;

@@ -6,13 +6,6 @@ subnav: ward_detail
 has_subnav: true
 ---
 
-<div class="container alderman">
-    <div class="content">
-        <img data-src="js/holder.js/120x120/#DDF2F4:#555" alt="">
-        <h2>Alderman Stacey Jones</h2>
-    </div>
-</div>
-
 <div class="map">
     <div id="map" style="height:500px;"></div>
 </div>
@@ -87,6 +80,17 @@ $(function () {
 
     $(".wardnav").sticky({topSpacing:0});
 
+    // ALDERMAN
+
+    $.getJSON(
+        'http://data.cityofchicago.org/resource/htai-wnw4.json?ward=' + ward,
+        function(response) {
+            $('.alderman').append(
+                '<a href="' + response[0].website.url + '"><i class="icon icon-user"></i> ' + response[0].alderman + '</a>'
+            )
+        }
+    );
+
     // WARD MAP
 
     var centroid = WARDS[ward].centroid;
@@ -105,6 +109,7 @@ $(function () {
     }).addTo(map);
     map.zoomControl.setPosition('bottomleft');
     var polygon = L.polygon(path).addTo(map);
+
 
     // CHARTS
 
