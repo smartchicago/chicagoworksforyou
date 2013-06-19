@@ -227,29 +227,6 @@ ul.nav .alderman {
     }
 }
 
-// INTERESTING
-
-.about {
-    h3 {
-        padding: .5em 0 0;
-        margin: 0 0 .25em;
-        color: #888;
-
-        &:not(:first-of-type) {
-            border-top: 1px solid #ddd;
-        }
-    }
-
-    h4 {
-        padding-top: 1em;
-        margin: 0 0 1em;
-    }
-
-    p {
-        margin: 0 0 1.2em;
-    }
-}
-
 // SERVICE TYPES
 
 .servicetypes {
@@ -279,8 +256,38 @@ ul.nav .alderman {
         }
 
         .pagination {
-            margin-bottom: 0;
+            margin: 0 0 10px;
         }
+    }
+}
+
+.servicetype {
+    .chart {
+         width:100%;
+         height:650px;
+    }
+}
+
+// ABOUT
+
+.about {
+    h3 {
+        padding: .5em 0 0;
+        margin: 0 0 .25em;
+        color: #888;
+
+        &:not(:first-of-type) {
+            border-top: 1px solid #ddd;
+        }
+    }
+
+    h4 {
+        padding-top: 1em;
+        margin: 0 0 1em;
+    }
+
+    p {
+        margin: 0 0 1.2em;
     }
 }
 
