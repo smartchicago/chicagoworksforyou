@@ -50,6 +50,7 @@ func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/health_check", HealthCheckHandler)
 	router.HandleFunc("/services.json", ServicesHandler)
+	router.HandleFunc("/requests/time_to_close.json", TimeToCloseHandler)
 	router.HandleFunc("/wards/{id}/requests.json", WardRequestsHandler)
 	router.HandleFunc("/wards/{id}/counts.json", WardCountsHandler)
 	router.HandleFunc("/requests/{service_code}/counts.json", RequestCountsHandler)
@@ -108,14 +109,102 @@ func RequestCountsHandler(response http.ResponseWriter, request *http.Request) {
 		counts = append(counts, wc)
 	}
 
-	// resp := make(map[string]int)
-	//
-	//     for _, c := range counts {
-	//             key := c.Requested_date.Format("2006-01-02")
-	//             resp[key] = c.Count
-	//     }
-
 	jsn, _ := json.MarshalIndent(counts, "", "  ")
+	jsn = WrapJson(jsn, params["callback"])
+
+	response.Write(jsn)
+}
+
+func TimeToCloseHandler(response http.ResponseWriter, request *http.Request) {
+	// Given service type, date, length of time & increment,
+	// return time-to-close for that service type, for each
+	// increment over that length of time, going backwards from that date.
+	//
+	// Response data:
+	//      The city-wide average will be returned as ward "0".
+	//      "Total" is the number of service requests closed in the given time period.
+	//      "Time" is the average difference, in days, between closed and requested datetimes.
+	//      NOTE: This value may be negative, due to wonky data from the City. Go figure.
+	//
+	// Sample request and output:
+	// $ curl "http://localhost:5000/requests/time_to_close.json?end_date=2013-06-19&count=7&service_code=4fd3b167e750846744000005"
+	//        {
+	//          "0": {
+	//            "Time": 0.8193135,
+	//            "Total": 275,
+	//            "Ward": 0
+	//          },
+	//          "1": {
+	//            "Time": 1.0570672,
+	//            "Total": 5,
+	//            "Ward": 1
+	//          },
+	//          "11": {
+	//            "Time": -0.015823688,
+	//            "Total": 12,
+	//            "Ward": 11
+	//          },
+	//          "12": {
+	//            "Time": -0.0120927375,
+	//            "Total": 16,
+	//            "Ward": 12
+	//          },
+	//      ... snipped ...
+
+	params := request.URL.Query()
+
+	// required
+	service_code := params["service_code"][0]
+	days, _ := strconv.Atoi(params["count"][0])
+
+	end, _ := time.Parse("2006-01-02", params["end_date"][0])
+	end = end.AddDate(0, 0, 1) // inc to the following day
+	start := end.AddDate(0, 0, -days)
+
+	rows, err := api.Db.Query("SELECT EXTRACT('EPOCH' FROM AVG(closed_datetime - requested_datetime)) AS avg_ttc, COUNT(service_request_id), ward "+
+		"FROM service_requests WHERE closed_datetime IS NOT NULL AND duplicate IS NULL "+
+		"AND service_code = $1 AND closed_datetime >= $2 AND closed_datetime <= $3"+
+		"GROUP BY ward ORDER BY avg_ttc DESC;", service_code, start, end)
+
+	if err != nil {
+		log.Print("error fetching time to close", err)
+	}
+
+	type TimeToClose struct {
+		Time  float32
+		Total int
+		Ward  int
+	}
+
+	times := make(map[string]TimeToClose)
+
+	for rows.Next() {
+		var ttc TimeToClose
+		if err := rows.Scan(&ttc.Time, &ttc.Total, &ttc.Ward); err != nil {
+			log.Print("error loading time to close counts", err)
+		}
+		ttc.Time = ttc.Time / 86400.0 // convert from seconds to days
+		times[strconv.Itoa(ttc.Ward)] = ttc
+	}
+
+	// find the city-wide average for the interval/service code
+	city_average := TimeToClose{Ward: 0}
+	err = api.Db.QueryRow("SELECT EXTRACT('EPOCH' FROM AVG(closed_datetime - requested_datetime)) AS avg_ttc, COUNT(service_request_id)"+
+		"FROM service_requests WHERE closed_datetime IS NOT NULL AND duplicate IS NULL "+
+		"AND service_code = $1 AND closed_datetime >= $2 AND closed_datetime <= $3",
+		service_code, start, end).Scan(&city_average.Time, &city_average.Total)
+
+	if err != nil {
+		log.Print("error fetching city average time to close", err)
+	}
+
+	city_average.Time = city_average.Time / 86400.0 // convert to days
+	times["0"] = city_average
+
+	jsn, err := json.MarshalIndent(times, "", "  ")
+	if err != nil {
+		log.Print("error marshaling to JSON", err)
+	}
 	jsn = WrapJson(jsn, params["callback"])
 
 	response.Write(jsn)
@@ -148,7 +237,7 @@ func WardCountsHandler(response http.ResponseWriter, request *http.Request) {
 	ward_id := vars["id"]
 	params := request.URL.Query()
 
-	// determine date range. default is last 7 days.
+	// determine date range.
 	days, _ := strconv.Atoi(params["count"][0])
 
 	end, _ := time.Parse("2006-01-02", params["end_date"][0])
