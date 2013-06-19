@@ -50,6 +50,7 @@ func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/health_check", HealthCheckHandler)
 	router.HandleFunc("/services.json", ServicesHandler)
+	router.HandleFunc("/requests/time_to_close.json", TimeToCloseHandler)
 	router.HandleFunc("/wards/{id}/requests.json", WardRequestsHandler)
 	router.HandleFunc("/wards/{id}/counts.json", WardCountsHandler)
 	http.ListenAndServe(":5000", router)
@@ -63,6 +64,57 @@ func WrapJson(unwrapped []byte, callback []string) (jsn []byte) {
 	}
 
 	return
+}
+
+func TimeToCloseHandler(response http.ResponseWriter, request *http.Request) {
+        // Given service type, date, length of time & increment, 
+        // return time-to-close for that service type, for each 
+        // increment over that length of time, going backwards from that date.
+        // If ward is provided, limit to ward, otherwise assume city-wide
+
+	params := request.URL.Query()
+	
+        // required
+	service_code := params["service_code"][0]
+	days, _ := strconv.Atoi(params["count"][0])
+
+	end, _ := time.Parse("2006-01-02", params["end_date"][0])
+	end = end.AddDate(0, 0, 1) // inc to the following day
+	start := end.AddDate(0, 0, -days)
+	
+        // ward := params["ward"][0]
+	
+	rows, err := api.Db.Query("SELECT EXTRACT('EPOCH' FROM AVG(closed_datetime - requested_datetime)) AS avg_ttc, COUNT(service_request_id), ward " + 
+	        "FROM service_requests WHERE closed_datetime IS NOT NULL AND duplicate IS NULL " + 
+                "AND service_code = $1 AND closed_datetime >= $2 AND closed_datetime <= $3" +
+	        "GROUP BY ward ORDER BY avg_ttc;", service_code, start, end)
+	
+	if err != nil {
+	        log.Print("error fetching time to close", err)
+	}
+	
+	type TimeToClose struct {
+	        Time float32
+	        Total int
+	        Ward int
+	}
+	
+	var times []TimeToClose
+	
+	for rows.Next() {
+	        var ttc TimeToClose
+	        if err := rows.Scan(&ttc.Time, &ttc.Total, &ttc.Ward); err != nil {
+	                log.Print("error loading time to close counts", err)
+	        }
+                ttc.Time = ttc.Time / 86400.0 // convert from seconds to days
+	        times = append(times, ttc)
+	}
+
+        jsn, _ := json.MarshalIndent(times, "", "  ")
+	jsn = WrapJson(jsn, params["callback"])
+
+	response.Write(jsn)
+
 }
 
 func WardCountsHandler(response http.ResponseWriter, request *http.Request) {
@@ -92,7 +144,7 @@ func WardCountsHandler(response http.ResponseWriter, request *http.Request) {
 	ward_id := vars["id"]
 	params := request.URL.Query()
 
-	// determine date range. default is last 7 days.
+	// determine date range.
 	days, _ := strconv.Atoi(params["count"][0])
 
 	end, _ := time.Parse("2006-01-02", params["end_date"][0])
