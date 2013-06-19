@@ -97,6 +97,12 @@ html, body {
         .subnav, .navbar-inner {
             border-radius: 0 0 4px 4px;
         }
+
+        .alderman {
+            a {
+                border-top-right-radius: 0;
+            }
+        }
     }
 }
 

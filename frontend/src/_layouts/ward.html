@@ -42,7 +42,7 @@ has_subnav: true
         <div class="span9">
             <section id="counts">
                 <h3>Tickets submitted</h3>
-                <div class="chart"></div>
+                <div id="counts-chart" class="chart"></div>
             </section>
             <section id="ttc">
                 <h3>Time-to-close</h3>
@@ -114,20 +114,24 @@ $(function () {
 
     // CHARTS
 
-    var countsChart = $('#counts .chart');
-
     function redrawChart(response) {
-        var chart = countsChart.highcharts();
+        var categories = [];
         var counts = [];
         for (var d in response) {
+            categories.push(moment(d).format("MMM DD"));
             counts.push(response[d]);
         }
-        chart.series[0].setData(counts);
+        countsChart.series[0].setData(counts);
+        countsChart.xAxis[0].setCategories(categories);
         var currWeek = weekDuration.beforeMoment(currWeekEnd,true);
         $('.this-week a').text(currWeek.format({implicitYear: false}));
     }
 
     // CHARTS WEEKNAV
+
+    $('.this-week a').click(function(evt) {
+        evt.preventDefault();
+    });
 
     $('.next-week a').click(function(evt) {
         evt.preventDefault();
@@ -147,6 +151,8 @@ $(function () {
         );
     });
 
+    // SERVICE TYPE LIST
+
     $('.st-list').on('click', 'a', function(evt) {
         evt.preventDefault();
         currServiceType = $(this).attr('data-code');
@@ -161,28 +167,21 @@ $(function () {
 
     $('.st-list .initial a').trigger('click');
 
-    countsChart.highcharts({
+    Highcharts.setOptions({
         chart: {
-            marginBottom: 60,
+            marginBottom: 80,
             type: 'column'
         },
         title: {
             text: ''
         },
         xAxis: {
-            type: 'datetime',
-            dateTimeLabelFormats: {
-                day: '%b %e<br>%a'
-            },
             minPadding: .05,
             maxPadding: .05,
-            // tickPosition: 'inside',
-            tickmarkPlacement: 'on',
-            tickInterval: 24 * 3600 * 1000,
+            tickmarkPlacement: 'between',
             labels: {
-                align: 'left',
                 style: {
-                    fontFamily: 'Helvetica',
+                    fontFamily: 'Roboto, sans-serif',
                     fontSize: '13px'
                 },
                 y: 22
@@ -195,7 +194,7 @@ $(function () {
             minPadding: 0.1,
             labels: {
                 style: {
-                    fontFamily: 'Helvetica, sans-serif',
+                    fontFamily: 'Roboto, sans-serif',
                     fontWeight: 'bold'
                 },
                 align: 'left',
@@ -204,11 +203,8 @@ $(function () {
             }
         },
         plotOptions: {
-            line: {
-                pointPlacement: "between"
-            },
             column: {
-                pointPlacement: "between"
+                groupPadding: .1,
             }
         },
         tooltip: {
@@ -216,23 +212,30 @@ $(function () {
             pointFormat: '<b>{point.y:,.0f}</b> tickets',
             shadow: false,
             style: {
-                fontFamily: 'Helvetica, sans-serif',
+                fontFamily: 'Roboto, sans-serif',
                 fontSize: '15px'
             }
         },
+        legend: {
+            enabled: true,
+            borderWidth: 0,
+            backgroundColor: "#f7f7f7",
+            padding: 10,
+        }
+    });
+
+    var countsChart = new Highcharts.Chart({
+        chart: {
+            renderTo: 'counts-chart'
+        },
         series: [{
-            pointStart: Date.UTC(2013, 6, 9),
-            pointInterval: 24 * 3600 * 1000, // one day
+            name: "Ward " + ward,
         },{
+            name: "City average",
             data: [5, 6, 7, 8, 4, 3, 9],
             type: 'line',
             dashStyle: 'longdash',
-            pointStart: Date.UTC(2013, 6, 9),
-            pointInterval: 24 * 3600 * 1000, // one day
         }],
-        legend: {
-            enabled: false
-        }
     });
 });
 </script>
