@@ -52,6 +52,7 @@ func main() {
 	router.HandleFunc("/services.json", ServicesHandler)
 	router.HandleFunc("/wards/{id}/requests.json", WardRequestsHandler)
 	router.HandleFunc("/wards/{id}/counts.json", WardCountsHandler)
+	router.HandleFunc("/requests/{service_code}/counts.json", RequestCountsHandler)
 	http.ListenAndServe(":5000", router)
 }
 
@@ -63,6 +64,61 @@ func WrapJson(unwrapped []byte, callback []string) (jsn []byte) {
 	}
 
 	return
+}
+
+func RequestCountsHandler(response http.ResponseWriter, request *http.Request) {
+	// for a given request service type and date, return the count
+	// of requests for that date, grouped by ward
+
+	vars := mux.Vars(request)
+	service_code := vars["service_code"]
+	params := request.URL.Query()
+
+	// determine date range. default is last 7 days.
+	days, _ := strconv.Atoi(params["count"][0])
+
+	end, _ := time.Parse("2006-01-02", params["end_date"][0])
+	end = end.AddDate(0, 0, 1) // inc to the following day
+	start := end.AddDate(0, 0, -days)
+
+	log.Printf("date range is %s to %s", start, end)
+
+	rows, err := api.Db.Query("SELECT COUNT(*), ward FROM service_requests WHERE service_code "+
+		"= $1 AND duplicate IS NULL AND requested_datetime >= $2::date "+
+		" AND requested_datetime <= $3::date  GROUP BY ward ORDER BY ward;",
+		string(service_code), start, end)
+
+	if err != nil {
+		log.Fatal("error fetching data for RequestCountsHandler", err)
+	}
+
+	type WardCount struct {
+		Ward  int
+		Count int
+	}
+
+	var counts []WardCount
+	for rows.Next() {
+		wc := WardCount{}
+		if err := rows.Scan(&wc.Count, &wc.Ward); err != nil {
+			log.Print("error reading row of ward count", err)
+		}
+
+		// trunc the requested time to just date
+		counts = append(counts, wc)
+	}
+
+	// resp := make(map[string]int)
+	//
+	//     for _, c := range counts {
+	//             key := c.Requested_date.Format("2006-01-02")
+	//             resp[key] = c.Count
+	//     }
+
+	jsn, _ := json.MarshalIndent(counts, "", "  ")
+	jsn = WrapJson(jsn, params["callback"])
+
+	response.Write(jsn)
 }
 
 func WardCountsHandler(response http.ResponseWriter, request *http.Request) {
