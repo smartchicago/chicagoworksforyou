@@ -18,7 +18,7 @@
 <link rel="shortcut icon" href="/images/favicon.png">
 </head>
 
-<body class="{{ page.section }} {{ page.bodyclass }}">
+<body class="{{ page.section }} {{ page.slug }}">
 
 <div class="navbar topnav navbar-inverse">
     <div class="navbar-inner">
@@ -65,5 +65,15 @@
     © 2013 Smart Chicago Collaborative
 </footer>
 
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="/js/bootstrap.custom.min.js"></script>
+<script src="/js/moment.min.js"></script>
+<script src="/js/twix.min.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
+<script src="/data/wards.json"></script>
+{% if page.has_js %}
+<script src="/js/{{ page.slug }}.js"></script>
+{% endif %}
 </body>
 </html>
