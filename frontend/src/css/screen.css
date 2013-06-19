@@ -73,6 +73,8 @@ html, body {
     top: 0; }
     .subnav-wrap.affix .subnav, .subnav-wrap.affix .navbar-inner {
       border-radius: 0 0 4px 4px; }
+    .subnav-wrap.affix .alderman a {
+      border-top-right-radius: 0; }
 
 .map iframe {
   border: none; }
