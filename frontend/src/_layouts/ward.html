@@ -129,6 +129,10 @@ $(function () {
 
     // CHARTS WEEKNAV
 
+    $('.this-week a').click(function(evt) {
+        evt.preventDefault();
+    });
+
     $('.next-week a').click(function(evt) {
         evt.preventDefault();
         currWeekEnd.add('week',1);
@@ -147,6 +151,8 @@ $(function () {
         );
     });
 
+    // SERVICE TYPE LIST
+
     $('.st-list').on('click', 'a', function(evt) {
         evt.preventDefault();
         currServiceType = $(this).attr('data-code');
@@ -163,7 +169,7 @@ $(function () {
 
     Highcharts.setOptions({
         chart: {
-            marginBottom: 60,
+            marginBottom: 80,
             type: 'column'
         },
         title: {
@@ -197,6 +203,9 @@ $(function () {
             }
         },
         plotOptions: {
+            column: {
+                groupPadding: .1,
+            }
         },
         tooltip: {
             headerFormat: '',
@@ -208,7 +217,10 @@ $(function () {
             }
         },
         legend: {
-            enabled: false
+            enabled: true,
+            borderWidth: 0,
+            backgroundColor: "#f7f7f7",
+            padding: 10,
         }
     });
 
@@ -217,7 +229,9 @@ $(function () {
             renderTo: 'counts-chart'
         },
         series: [{
+            name: "Ward " + ward,
         },{
+            name: "City average",
             data: [5, 6, 7, 8, 4, 3, 9],
             type: 'line',
             dashStyle: 'longdash',
