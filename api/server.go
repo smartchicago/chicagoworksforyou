@@ -98,7 +98,7 @@ func RequestCountsHandler(response http.ResponseWriter, request *http.Request) {
 		Count int
 	}
 
-	counts := make(map[string]WardCount)
+	counts := make(map[int]WardCount)
 	for rows.Next() {
 		wc := WardCount{}
 		if err := rows.Scan(&wc.Count, &wc.Ward); err != nil {
@@ -106,7 +106,7 @@ func RequestCountsHandler(response http.ResponseWriter, request *http.Request) {
 		}
 
 		// trunc the requested time to just date
-		counts[strconv.Itoa(wc.Ward)] = wc
+		counts[wc.Ward] = wc
 	}
 
 	// find total opened for the entire city for date range
@@ -120,9 +120,15 @@ func RequestCountsHandler(response http.ResponseWriter, request *http.Request) {
 		log.Print("error loading city-wide total count for %s. err: %s", service_code, err)
 	}
 
-	counts["0"] = city_total
+	counts[0] = city_total
 
-	jsn, _ := json.MarshalIndent(counts, "", "  ")
+	// pluck data to return, ensure we return a number, even zero, for each ward
+	data := make(map[string]int)
+	for i := 0; i < 51; i++ {
+		data[strconv.Itoa(i)] = counts[i].Count
+	}
+
+	jsn, _ := json.MarshalIndent(data, "", "  ")
 	jsn = WrapJson(jsn, params["callback"])
 
 	response.Write(jsn)
