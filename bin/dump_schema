@@ -1,0 +1,3 @@
+#!/bin/bash
+
+pg_dump cwfy --create --no-owner --schema-only -f db/schema.sql
