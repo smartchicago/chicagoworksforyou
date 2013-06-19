@@ -118,8 +118,10 @@ $(function () {
 
     function redrawChart(response) {
         var chart = countsChart.highcharts();
+        var categories = [];
         var counts = [];
         for (var d in response) {
+            categories.push(moment(d).format("MMM DD"));
             counts.push(response[d]);
         }
         chart.series[0].setData(counts);
@@ -176,13 +178,10 @@ $(function () {
             },
             minPadding: .05,
             maxPadding: .05,
-            // tickPosition: 'inside',
-            tickmarkPlacement: 'on',
-            tickInterval: 24 * 3600 * 1000,
             labels: {
                 align: 'left',
                 style: {
-                    fontFamily: 'Helvetica',
+                    fontFamily: 'Roboto, sans-serif',
                     fontSize: '13px'
                 },
                 y: 22
@@ -195,7 +194,7 @@ $(function () {
             minPadding: 0.1,
             labels: {
                 style: {
-                    fontFamily: 'Helvetica, sans-serif',
+                    fontFamily: 'Roboto, sans-serif',
                     fontWeight: 'bold'
                 },
                 align: 'left',
@@ -205,10 +204,14 @@ $(function () {
         },
         plotOptions: {
             line: {
-                pointPlacement: "between"
+                pointPlacement: "between",
+                pointStart: Date.UTC(2013, 6, 9),
+                pointInterval: 24 * 3600 * 1000, // one day
             },
             column: {
-                pointPlacement: "between"
+                pointPlacement: "between",
+                pointStart: Date.UTC(2013, 6, 9),
+                pointInterval: 24 * 3600 * 1000, // one day
             }
         },
         tooltip: {
@@ -216,19 +219,15 @@ $(function () {
             pointFormat: '<b>{point.y:,.0f}</b> tickets',
             shadow: false,
             style: {
-                fontFamily: 'Helvetica, sans-serif',
+                fontFamily: 'Roboto, sans-serif',
                 fontSize: '15px'
             }
         },
         series: [{
-            pointStart: Date.UTC(2013, 6, 9),
-            pointInterval: 24 * 3600 * 1000, // one day
         },{
             data: [5, 6, 7, 8, 4, 3, 9],
             type: 'line',
             dashStyle: 'longdash',
-            pointStart: Date.UTC(2013, 6, 9),
-            pointInterval: 24 * 3600 * 1000, // one day
         }],
         legend: {
             enabled: false
