@@ -1,5 +1,6 @@
 html, body {
-  height: 100%; }
+  height: 100%;
+  font-family: 'Roboto', sans-serif; }
 
 .navbar {
   margin-bottom: 0;
@@ -39,15 +40,10 @@ html, body {
     width: 940px;
     padding: 0;
     border: none; }
-  .topnav.has-subnav .navbar-inner {
-    border-radius: 4px 4px 0 0; }
 
 .subnav {
-  position: absolute;
-  top: 70px;
   left: 0;
   right: 0;
-  z-index: 2000;
   border-radius: 4px;
   background: #fff;
   -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
@@ -58,36 +54,42 @@ html, body {
     margin: 0; }
   .subnav .navbar-inner {
     border: none;
-    background: white; }
+    background: white;
+    padding: 0; }
   .subnav .nav > li > a {
     color: #555;
     padding: 15px 20px; }
 
-.sticky-wrapper {
-  height: 0 !important;
+.subnav-wrap {
+  height: 0;
   position: absolute;
   top: 70px;
-  width: 100%; }
-  .sticky-wrapper .subnav {
-    position: relative;
+  width: 100%;
+  z-index: 9000; }
+  .subnav-wrap .subnav {
     top: 0; }
-  .sticky-wrapper.is-sticky .subnav, .sticky-wrapper.is-sticky .navbar-inner {
-    border-radius: 0 0 4px 4px; }
+  .subnav-wrap.affix {
+    position: fixed;
+    top: 0; }
+    .subnav-wrap.affix .subnav, .subnav-wrap.affix .navbar-inner {
+      border-radius: 0 0 4px 4px; }
+    .subnav-wrap.affix .alderman a {
+      border-top-right-radius: 0; }
 
 .map iframe {
   border: none; }
 
 .body {
   position: relative;
-  padding-top: 40px; }
+  padding-top: 35px; }
 
-.wards .wards-map {
+.wards-landing .wards-map {
   margin-top: -46px;
   height: 100%; }
-.wards .st-list {
+.wards-landing .st-list {
   height: 0;
   position: relative; }
-  .wards .st-list ul {
+  .wards-landing .st-list ul {
     position: absolute;
     top: 150px;
     left: 0;
@@ -95,11 +97,11 @@ html, body {
     -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); }
-    .wards .st-list ul li {
+    .wards-landing .st-list ul li {
       background: white; }
-      .wards .st-list ul li a {
+      .wards-landing .st-list ul li a {
         width: 230px; }
-  .wards .st-list .icon-chevron-right {
+  .wards-landing .st-list .icon-chevron-right {
     float: right;
     opacity: .5; }
 
@@ -114,54 +116,50 @@ html, body {
     text-indent: 40px;
     border-radius: 6px 6px; }
 
-.ward .alderman {
-  position: relative;
-  z-index: 100; }
-  .ward .alderman .content {
-    position: absolute;
-    top: 150px;
-    right: 0;
-    width: 120px;
-    background: rgba(0, 0, 0, 0.8);
-    padding: 20px;
-    border-radius: 6px;
-    -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); }
-  .ward .alderman img {
-    margin-bottom: 1em; }
-  .ward .alderman h2 {
-    color: white;
-    font-size: 16px;
-    margin: 0;
-    line-height: 20px; }
+ul.nav .alderman a {
+  font-weight: bold;
+  background: #e3e3e3;
+  color: #111;
+  border-radius: 0 4px 4px 0; }
+  ul.nav .alderman a i {
+    margin-right: 4px; }
+  ul.nav .alderman a:hover {
+    background: #d7d7d7; }
+
+.ward #map {
+  height: 450px; }
+.ward .filter.affix {
+  top: 75px; }
+.ward .pagination {
+  margin-top: 0; }
+.ward .this-week {
+  font-weight: bold; }
+  .ward .this-week a {
+    color: #333; }
+.ward .prev-week a, .ward .next-week a {
+  font-size: 13px;
+  color: #666;
+  padding: 4px 8px; }
 .ward section {
   margin-bottom: 30px;
   border-bottom: 1px solid #ddd; }
-  .ward section .pagination {
-    text-align: center;
-    margin-top: 0; }
-  .ward section .this-week {
-    font-weight: bold; }
-    .ward section .this-week a {
-      color: #333; }
-  .ward section .prev-week a, .ward section .next-week a {
-    font-size: 13px;
-    color: #666; }
+.ward h3 {
+  margin: 0 0 1em; }
+.ward .chart {
+  width: 100%;
+  height: 350px; }
 
-.interesting.landing .summary {
-  padding: 1em 0;
-  font-size: 16px;
-  line-height: 21px; }
-.interesting article {
-  padding: 20px 0;
-  border-bottom: 1px solid #ddd; }
-  .interesting article .article-body {
-    font-size: 16px;
-    line-height: 24px;
-    padding: 1em 0; }
-    .interesting article .article-body p {
-      margin: 0 0 1.2em; }
+.about h3 {
+  padding: .5em 0 0;
+  margin: 0 0 .25em;
+  color: #888; }
+  .about h3:not(:first-of-type) {
+    border-top: 1px solid #ddd; }
+.about h4 {
+  padding-top: 1em;
+  margin: 0 0 1em; }
+.about p {
+  margin: 0 0 1.2em; }
 
 .servicetypes .wards-map {
   margin-top: -46px;

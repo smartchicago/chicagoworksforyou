@@ -8,7 +8,7 @@
 <meta name="author" content="">
 
 <link href="/css/bootstrap/bootstrap.css" rel="stylesheet">
-<!-- <link href="/css/bootstrap/bootstrap-responsive.css" rel="stylesheet"> -->
+<link href='http://fonts.googleapis.com/css?family=Roboto:300,700' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
 <link href="/css/screen.css" rel="stylesheet">
 <!--[if IE]>
@@ -18,7 +18,7 @@
 <link rel="shortcut icon" href="/images/favicon.png">
 </head>
 
-<body class="{{ page.section }} {{ page.bodyclass }}">
+<body class="{{ page.section }} {{ page.slug }}">
 
 <div class="navbar topnav navbar-inverse">
     <div class="navbar-inner">
@@ -27,21 +27,24 @@
         <li {% if page.section == 'wards' %}class="active"{% endif %}><a href="/wards/">Wards</a></li>
         <li {% if page.section == 'servicetypes' %}class="active"{% endif %}><a href="/servicetypes/">Service Types</a></li>
         <li {% if page.section == 'transitions' %}class="active"{% endif %}><a href="/transitions/">Transitions</a></li>
-        <li {% if page.section == 'interesting' %}class="active"{% endif %}><a href="/interesting/">Interesting</a></li>
-        <li><a href="/about/">About</a></li>
+        <li {% if page.section == 'interesting' %}class="active"{% endif %}><a href="/about/">About</a></li>
       </ul>
     </div>
 </div>
 
+<div class="subnav-wrap">
 {% if page.subnav == 'ward_detail' %}
     <div class="navbar container subnav wardnav">
       <div class="navbar-inner">
-        <a class="brand" href="#top">Ward {{ page.ward }}</a>
+        <a class="brand" href="#">Ward {{ page.ward }}</a>
         <ul class="nav">
+            <li><a href="#map">Map</a></li>
           <li><a href="#counts">Tickets submitted</a></li>
           <li><a href="#ttc">Time to close</a></li>
           <li><a href="#rankings">Rankings</a></li>
-          <li><a href="#compare">Compare</a></li>
+        </ul>
+        <ul class="nav pull-right">
+          <li class="alderman"></li>
         </ul>
       </div>
     </div>
@@ -54,6 +57,7 @@
         <!-- search goes here -->
     </div>
 {% endif %}
+</div>
 
 {{ content }}
 
@@ -61,6 +65,15 @@
     © 2013 Smart Chicago Collaborative
 </footer>
 
-<script src="/js/holder.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="/js/bootstrap.custom.min.js"></script>
+<script src="/js/moment.min.js"></script>
+<script src="/js/twix.min.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
+<script src="/data/wards.json"></script>
+{% if page.has_js %}
+<script src="/js/{{ page.slug }}.js"></script>
+{% endif %}
 </body>
 </html>

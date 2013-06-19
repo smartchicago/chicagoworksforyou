@@ -1,237 +1,62 @@
 ---
 layout: default
 section: wards
-bodyclass: ward
+slug: ward
 subnav: ward_detail
-has_subnav: true
+has_js: true
 ---
 
-<div class="container alderman">
-    <div class="content">
-        <img data-src="js/holder.js/120x120/#DDF2F4:#555" alt="">
-        <h2>Alderman Stacey Jones</h2>
-    </div>
-</div>
+<script>
+window.wardNum = "{{ page.ward }}";
+</script>
 
 <div class="map">
-    <div id="map" style="height:500px;"></div>
+    <div id="map"></div>
 </div>
 
 <div class="container body">
-    <section class="row" id="counts">
+    <div class="row">
         <div class="span3">
-            {% include st_nav.html %}
-        </div>
-        <div class="span9">
-            <div class="pagination">
-                <ul>
-                    <li class="prev-week"><a href="#">&larr; Previous week</a></li>
-                    <li class="this-week"><a href="#">June 9-15, 2013</a></li>
-                    <li class="next-week"><a href="#">Next week &rarr;</a></li>
+            <div class="filter">
+                <div class="pagination">
+                    <ul>
+                        <li class="prev-week"><a href="#">&larr;</a></li>
+                        <li class="this-week"><a href="#"></a></li>
+                        <li class="next-week"><a href="#">&rarr;</a></li>
+                    </ul>
+                </div>
+                <ul class="st-list nav nav-pills nav-stacked">
+                    <li><a data-code="4ffa4c69601827691b000018" href="#">Abandoned Vehicle</a></li>
+                    <li><a data-code="4ffa9cad6018277d4000007b" href="#">Alley Light Out</a></li>
+                    <li><a data-code="4fd3bd72e750846c530000cd" href="#">Building Violation</a></li>
+                    <li class="initial"><a data-code="4fd3b167e750846744000005" href="#">Graffiti Removal</a></li>
+                    <li><a data-code="4ffa971e6018277d4000000b" href="#">Pavement Cave-In Survey</a></li>
+                    <li><a data-code="4fd3b656e750846c53000004" href="#">Pothole in Street</a></li>
+                    <li><a data-code="4fd6e4ece750840569000019" href="#">Restaurant Complaint</a></li>
+                    <li><a data-code="4fd3b9bce750846c5300004a" href="#">Rodent Baiting / Rat Complaint</a></li>
+                    <li><a data-code="4fd3b750e750846c5300001d" href="#">Sanitation Code Violation</a></li>
+                    <li><a data-code="4ffa995a6018277d4000003c" href="#">Street Cut Complaints</a></li>
+                    <li><a data-code="4ffa9f2d6018277d400000c8" href="#">Street Light 1 / Out</a></li>
+                    <li><a data-code="4fd3bd3de750846c530000b9" href="#">Street Lights All / Out</a></li>
+                    <li><a data-code="4ffa9db16018277d400000a2" href="#">Traffic Signal Out</a></li>
+                    <li><a data-code="4fd3bbf8e750846c53000069" href="#">Tree Debris</a></li>
                 </ul>
             </div>
-
-            <div class="chart" style="width:100%; height:500px;"></div>
-        </div>
-    </section>
-
-    <section class="row" id="ttc">
-        <div class="span3">
-            {% include st_nav.html %}
         </div>
         <div class="span9">
-            <div class="pagination">
-                <ul>
-                    <li class="prev-week"><a href="#">&larr; Previous week</a></li>
-                    <li class="this-week"><a href="#">June 9-15, 2013</a></li>
-                    <li class="next-week"><a href="#">Next week &rarr;</a></li>
-                </ul>
-            </div>
-
-            <div class="chart" style="width:100%; height:500px;"></div>
+            <section id="counts">
+                <h3>Tickets submitted</h3>
+                <div id="counts-chart" class="chart"></div>
+            </section>
+            <section id="ttc">
+                <h3>Time-to-close</h3>
+                <div class="chart"></div>
+            </section>
+            <section id="rankings">
+                <h3>Rankings</h3>
+                <div class="chart"></div>
+            </section>
         </div>
-    </section>
-
-    <section class="row" id="compare">
-        <div class="span3">
-            {% include st_nav.html %}
-        </div>
-        <div class="span9">
-            <div class="pagination">
-                <ul>
-                    <li class="prev-week"><a href="#">&larr; Previous week</a></li>
-                    <li class="this-week"><a href="#">June 9-15, 2013</a></li>
-                    <li class="next-week"><a href="#">Next week &rarr;</a></li>
-                </ul>
-            </div>
-
-            <div class="chart" style="width:100%; height:500px;"></div>
-        </div>
-    </section>
+    </div>
 </div>
 
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script src="/js/jquery.sticky.js"></script>
-<script src="http://code.highcharts.com/highcharts.js"></script>
-<script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
-<script src="/data/wards.json"></script>
-<script>
-$(function () {
-    window.currWeek = new Date(2013,05,15);
-    window.ward = "{{ page.ward }}";
-
-    var week = 7 * 24 * 60 * 60 * 1000;
-    var currServiceType = '4ffa4c69601827691b000018';
-
-    // MAKE SUBNAV STICK
-
-    $(".wardnav").sticky({topSpacing:0});
-
-    // WARD MAP
-
-    var centroid = WARDS[ward].centroid;
-    var points = WARDS[ward].simple_shape[0][0];
-    var path = [];
-    for (var i=0; i<points.length; i++) {
-        var latlong = [points[i][1], points[i][0]];
-        path.push(latlong);
-    }
-
-    var map = L.map('map', {scrollWheelZoom: false}).setView([centroid[1], centroid[0]], 13);
-    L.tileLayer('http://{s}.tile.cloudmade.com/{key}/997/256/{z}/{x}/{y}.png', {
-        attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
-        key: '302C8A713FF3456987B21FAAE639A13B',
-        maxZoom: 18
-    }).addTo(map);
-    map.zoomControl.setPosition('bottomleft');
-    var polygon = L.polygon(path).addTo(map);
-
-    // CHARTS
-
-    var countsChart = $('#counts .chart');
-
-    function redrawChart(response) {
-        var chart = countsChart.highcharts();
-        var counts = [];
-        for (var d in response) {
-            counts.push(response[d]);
-        }
-        chart.series[0].setData(counts);
-    }
-
-    function formatDate(date) {
-        var y = date.getFullYear();
-        var m = date.getMonth() + 1; // Add 1 because months are 0-indexed.
-        var mPrefix = m < 10 ? "0" : "";
-        var d = date.getDate();
-        var dPrefix = d < 10 ? "0" : "";
-        return y + '-' + mPrefix + m + '-' + dPrefix + d;
-    }
-
-    // CHARTS WEEKNAV
-
-    $('.next-week a').click(function(evt) {
-        evt.preventDefault();
-        currWeek.setTime(currWeek.getTime() + week);
-        $.getJSON(
-            'http://cwfy-api-staging.smartchicagoapps.org/wards/' + ward + '/counts.json?count=7&service_code=' + currServiceType + '&end_date=' + formatDate(currWeek) + '&callback=?',
-            function(response) {redrawChart(response);}
-        );
-    });
-
-    $('.prev-week a').click(function(evt) {
-        evt.preventDefault();
-        currWeek.setTime(currWeek.getTime() - week);
-        $.getJSON(
-            'http://cwfy-api-staging.smartchicagoapps.org/wards/' + ward + '/counts.json?count=7&service_code=' + currServiceType + '&end_date=' + formatDate(currWeek) + '&callback=?',
-            function(response) {redrawChart(response);}
-        );
-    });
-
-    $('.st-list').on('click', 'a', function(evt) {
-        evt.preventDefault();
-        currServiceType = $(this).attr('data-code');
-
-        $.getJSON(
-            'http://cwfy-api-staging.smartchicagoapps.org/wards/' + ward + '/counts.json?count=7&service_code=' + currServiceType + '&end_date=2013-06-15&callback=?',
-            function(response) {redrawChart(response);}
-        );
-
-        $(this).closest('li').addClass('active').siblings().removeClass('active');
-    });
-
-    $('.st-list .initial a').trigger('click');
-
-    countsChart.highcharts({
-        chart: {
-            marginBottom: 60,
-            type: 'area'
-        },
-        title: {
-            text: ''
-        },
-        xAxis: {
-            type: 'datetime',
-            dateTimeLabelFormats: {
-                day: '%b %e<br>%a'
-            },
-            minPadding: .05,
-            maxPadding: .05,
-            // tickPosition: 'inside',
-            labels: {
-                style: {
-                    fontFamily: 'Helvetica',
-                    fontSize: '13px'
-                },
-                y: 22
-            },
-        },
-        yAxis: {
-            title: {
-                text: ''
-            },
-            minPadding: 0.1,
-            labels: {
-                style: {
-                    fontFamily: 'Helvetica, sans-serif',
-                    fontWeight: 'bold'
-                },
-                align: 'left',
-                x: 0,
-                y: -2
-            }
-        },
-        plotOptions: {
-            area: {
-                pointStart: Date.UTC(2013, 6, 9),
-                pointInterval: 24 * 3600 * 1000, // one day
-                marker: {
-                    enabled: true,
-                    symbol: 'circle',
-                    radius: 4,
-                    borderWidth: 1,
-                    states: {
-                        hover: {
-                            enabled: true
-                        }
-                    }
-                }
-            }
-        },
-        tooltip: {
-            headerFormat: '',
-            pointFormat: '<b>{point.y:,.0f}</b> tickets',
-            shadow: false,
-            style: {
-                fontFamily: 'Helvetica, sans-serif',
-                fontSize: '15px'
-            }
-        },
-        series: [{
-        }],
-        legend: {
-            enabled: false
-        }
-    });
-});
-</script>
