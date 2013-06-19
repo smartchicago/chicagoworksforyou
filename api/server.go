@@ -70,35 +70,35 @@ func WrapJson(unwrapped []byte, callback []string) (jsn []byte) {
 func RequestCountsHandler(response http.ResponseWriter, request *http.Request) {
 	// for a given request service type and date, return the count
 	// of requests for that date, grouped by ward, and the city total
-        // The output is a map where keys are ward identifiers, and the value is the count.
-        // The city total for the time interval is assigned to ward #0
-        // 
-        // Sample request and output:
-        // $ curl "http://localhost:5000/requests/4fd3b167e750846744000005/counts.json?end_date=2013-06-19&count=1&callback=foo"
-        //         foo({
-        //           "0": 398,
-        //           "1": 9,
-        //           "10": 1,
-        //           "11": 20,
-        //           "12": 22,
-        //           "13": 1,
-        //           "14": 44,
-        //           "15": 8,
-        //           "16": 2,
-        //           "17": 0,
-        //           "18": 1,
-        //           "19": 2,
-        //           "2": 0,
-        //           "20": 2,
-        //           "21": 2,
-        //           "22": 10,
-        //           "23": 14,
-        //           "24": 2,
-        //           "25": 77,
-        //           "26": 6,
-        //           "27": 11,
-        //         
-        
+	// The output is a map where keys are ward identifiers, and the value is the count.
+	// The city total for the time interval is assigned to ward #0
+	//
+	// Sample request and output:
+	// $ curl "http://localhost:5000/requests/4fd3b167e750846744000005/counts.json?end_date=2013-06-19&count=1&callback=foo"
+	//         foo({
+	//           "0": 398,
+	//           "1": 9,
+	//           "10": 1,
+	//           "11": 20,
+	//           "12": 22,
+	//           "13": 1,
+	//           "14": 44,
+	//           "15": 8,
+	//           "16": 2,
+	//           "17": 0,
+	//           "18": 1,
+	//           "19": 2,
+	//           "2": 0,
+	//           "20": 2,
+	//           "21": 2,
+	//           "22": 10,
+	//           "23": 14,
+	//           "24": 2,
+	//           "25": 77,
+	//           "26": 6,
+	//           "27": 11,
+	//
+
 	vars := mux.Vars(request)
 	service_code := vars["service_code"]
 	params := request.URL.Query()
