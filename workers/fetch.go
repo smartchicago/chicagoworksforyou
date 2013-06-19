@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"github.com/bmizerany/pq"
 	"io/ioutil"
@@ -28,6 +29,7 @@ type Worker struct {
 }
 
 var worker Worker
+var sr_number string
 
 func init() {
 	// open database
@@ -36,10 +38,20 @@ func init() {
 		log.Fatal("Cannot open database connection", err)
 	}
 	worker.Db = db
+
+	// fetch SR num from command line, if present
+	flag.StringVar(&sr_number, "sr-number", "", "SR number to fetch")
 }
 
 func main() {
 	defer worker.Db.Close()
+	flag.Parse()
+
+        if sr_number != "" {
+                sr := fetchSingleRequest(sr_number)
+		sr.Save()
+		return
+        }
 
 	for {
 		switch {
@@ -94,9 +106,9 @@ func (req Open311Request) Save() (persisted bool) {
 			"address, requested_datetime, updated_datetime, lat, long," +
 			"ward, police_district, media_url, channel, duplicate, parent_service_request_id, closed_datetime) " +
 			"VALUES ($1::varchar, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17); ")
-			
-		        // "WHERE NOT EXISTS (SELECT 1 FROM service_requests WHERE service_request_id = $1);")
-			
+
+		// "WHERE NOT EXISTS (SELECT 1 FROM service_requests WHERE service_request_id = $1);")
+
 		if err != nil {
 			log.Fatal("error preparing database insert statement", err)
 		}
@@ -124,6 +136,8 @@ func (req Open311Request) Save() (persisted bool) {
 	if t := req.ExtractClosedDatetime(); !t.IsZero() {
 		closed_time.Time = t
 	}
+
+	log.Printf("closed time for SR %s is %+v", req.Service_request_id, closed_time)
 
 	_, err = tx.Stmt(stmt).Exec(req.Service_request_id,
 		req.Status,
@@ -199,6 +213,38 @@ func (req Open311Request) PrintNotes() {
 	for _, note := range req.Notes {
 		fmt.Printf("%+v\n", note)
 	}
+}
+
+func fetchSingleRequest(sr_number string) (request Open311Request) {
+	// given an SR, fetch the record
+	log.Printf("fetching single SR %s", sr_number)
+	open311_api_endpoint := fmt.Sprintf("http://311api.cityofchicago.org/open311/v2/requests/%s.json?extensions=true", sr_number)
+
+	log.Printf("fetching from %s", open311_api_endpoint)
+	resp, err := http.Get(open311_api_endpoint)
+	defer resp.Body.Close()
+
+	if err != nil {
+		log.Fatalln("error fetching from Open311 endpoint", err)
+	}
+
+	// load response body
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal("error loading response body", err)
+	}
+
+	// parse JSON and load into an array of Open311Request objects
+	var requests []Open311Request
+
+	err = json.Unmarshal(body, &requests)
+	if err != nil {
+		log.Fatal("error parsing JSON:", err)
+	}
+
+	log.Printf("received %d requests from Open311", len(requests))
+
+	return requests[0]
 }
 
 func fetchRequests() (requests []Open311Request) {
