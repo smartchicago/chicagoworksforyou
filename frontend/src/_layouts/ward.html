@@ -122,6 +122,7 @@ $(function () {
             counts.push(response[d]);
         }
         countsChart.series[0].setData(counts);
+        countsChart.xAxis[0].setCategories(categories);
         var currWeek = weekDuration.beforeMoment(currWeekEnd,true);
         $('.this-week a').text(currWeek.format({implicitYear: false}));
     }
@@ -169,14 +170,10 @@ $(function () {
             text: ''
         },
         xAxis: {
-            type: 'datetime',
-            dateTimeLabelFormats: {
-                day: '%b %e<br>%a'
-            },
             minPadding: .05,
             maxPadding: .05,
+            tickmarkPlacement: 'between',
             labels: {
-                align: 'left',
                 style: {
                     fontFamily: 'Roboto, sans-serif',
                     fontSize: '13px'
@@ -200,16 +197,6 @@ $(function () {
             }
         },
         plotOptions: {
-            line: {
-                pointPlacement: "between",
-                pointStart: Date.UTC(2013, 6, 9),
-                pointInterval: 24 * 3600 * 1000, // one day
-            },
-            column: {
-                pointPlacement: "between",
-                pointStart: Date.UTC(2013, 6, 9),
-                pointInterval: 24 * 3600 * 1000, // one day
-            }
         },
         tooltip: {
             headerFormat: '',
