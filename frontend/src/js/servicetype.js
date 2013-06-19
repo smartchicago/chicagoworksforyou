@@ -49,6 +49,7 @@ $(function () {
             minPadding: 0.05,
             maxPadding: 0.05,
             tickmarkPlacement: 'between',
+
             labels: {
                 style: {
                     fontFamily: 'Roboto, sans-serif',
@@ -67,7 +68,19 @@ $(function () {
                     fontFamily: 'Roboto, sans-serif',
                     fontWeight: 'bold'
                 }
-            }
+            },
+            plotLines: [{
+                value: 22,
+                color: 'red',
+                width: 3,
+                label: {
+                    align: 'center',
+                    style: {
+                        color: 'gray',
+                    }
+                },
+                zIndex:5
+            }]
         },
         plotOptions: {
             bar: {
@@ -107,7 +120,9 @@ $(function () {
             renderTo: 'chart'
         },
         series: [{
-            data: [50, 61, 72, 81, 42, 39, -15, -44, -60, -100]
+            data: [50, 61, 72, 81, 42, 39, 15, 44, 60, 100]
+        },{
+            data: [50, 61, 72, 81, 42, 39, 15, 44, 60, 100]
         }]
     });
 });
