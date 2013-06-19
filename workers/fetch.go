@@ -93,9 +93,10 @@ func (req Open311Request) Save() (persisted bool) {
 			"status, service_name, service_code, agency_responsible, " +
 			"address, requested_datetime, updated_datetime, lat, long," +
 			"ward, police_district, media_url, channel, duplicate, parent_service_request_id, closed_datetime) " +
-			"SELECT $1::varchar, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17 " +
-			"WHERE NOT EXISTS (SELECT 1 FROM service_requests WHERE service_request_id = $1);")
-
+			"VALUES ($1::varchar, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17); ")
+			
+		        // "WHERE NOT EXISTS (SELECT 1 FROM service_requests WHERE service_request_id = $1);")
+			
 		if err != nil {
 			log.Fatal("error preparing database insert statement", err)
 		}
