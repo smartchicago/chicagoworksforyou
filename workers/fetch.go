@@ -73,12 +73,12 @@ func (req Open311Request) Save() (persisted bool) {
 	err := worker.Db.QueryRow("SELECT id FROM service_requests WHERE service_request_id = $1", req.Service_request_id).Scan(&existing_id)
 	switch {
 	case err == sql.ErrNoRows:
-		log.Printf("did not find existing record %s", req.Service_request_id)
+		// log.Printf("did not find existing record %s", req.Service_request_id)
 	case err != nil:
-		log.Print("error searching for existing SR", err)
+		// log.Print("error searching for existing SR", err)
 	default:
 		persisted = true
-		log.Printf("found existing sr %s", req.Service_request_id)
+		// log.Printf("found existing sr %s", req.Service_request_id)
 	}
 
 	var stmt *sql.Stmt
@@ -135,7 +135,14 @@ func (req Open311Request) Save() (persisted bool) {
 	if err != nil {
 		log.Fatalf("could not update %s because %s", req.Service_request_id, err)
 	} else {
-		log.Printf("saved %s", req)
+		var verb string
+		if persisted {
+			verb = "CREATED"
+		} else {
+			verb = "UPDATED"
+		}
+		
+		log.Printf("[%s] %s", verb, req)
 		persisted = true
 	}
 
