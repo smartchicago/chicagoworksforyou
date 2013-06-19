@@ -19,6 +19,7 @@ type Open311Request struct {
 	Service_request_id, Status, Service_name, Service_code, Agency_responsible, Address, Channel, Media_url string
 	Requested_datetime, Updated_datetime                                                                    string // FIXME: should these be proper time objects?
 	Extended_attributes                                                                                     map[string]interface{}
+	Notes []map[string]interface{}
 }
 
 type Worker struct {
@@ -91,8 +92,8 @@ func (req Open311Request) Save() (persisted bool) {
 		stmt, err = worker.Db.Prepare("INSERT INTO service_requests(service_request_id," +
 			"status, service_name, service_code, agency_responsible, " +
 			"address, requested_datetime, updated_datetime, lat, long," +
-			"ward, police_district, media_url, channel, duplicate, parent_service_request_id) " +
-			"SELECT $1::varchar, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16 " +
+			"ward, police_district, media_url, channel, duplicate, parent_service_request_id, closed_datetime) " +
+			"SELECT $1::varchar, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17 " +
 			"WHERE NOT EXISTS (SELECT 1 FROM service_requests WHERE service_request_id = $1);")
 
 		if err != nil {
@@ -105,7 +106,7 @@ func (req Open311Request) Save() (persisted bool) {
 			"status = $2, service_name = $3, service_code = $4, agency_responsible = $5, " +
 			"address = $6, requested_datetime = $7, updated_datetime = $8, lat = $9, long = $10," +
 			"ward = $11, police_district = $12, media_url = $13, channel = $14, duplicate = $15, " +
-			"parent_service_request_id = $16, updated_at = NOW() WHERE service_request_id = $1;")
+			"parent_service_request_id = $16, updated_at = NOW(), closed_datetime = $17 WHERE service_request_id = $1;")
 
 		if err != nil {
 			log.Fatal("error preparing database update statement", err)
@@ -133,7 +134,9 @@ func (req Open311Request) Save() (persisted bool) {
 		req.Media_url,
 		req.Extended_attributes["channel"],
 		req.Extended_attributes["duplicate"],
-		req.Extended_attributes["parent_service_request_id"])
+		req.Extended_attributes["parent_service_request_id"],
+		req.ExtractClosedDatetime(),
+	)
 
 	if err != nil {
 		log.Fatalf("could not update %s because %s", req.Service_request_id, err)
@@ -144,7 +147,7 @@ func (req Open311Request) Save() (persisted bool) {
 		} else {
 			verb = "UPDATED"
 		}
-		
+
 		log.Printf("[%s] %s", verb, req)
 		persisted = true
 	}
@@ -158,6 +161,33 @@ func (req Open311Request) Save() (persisted bool) {
 
 	// calculate closed time if necessary
 
+}
+
+func (req Open311Request) ExtractClosedDatetime() time.Time {
+	// given an extended_attributes JSON blob, pluck out the closed time, if present
+	// req.PrintNotes()
+
+	var closed_at time.Time
+	for _, note := range req.Notes {
+		if note["type"] == "closed" {
+			parsed_date, err := time.Parse("2006-01-02T15:04:05-07:00", note["datetime"].(string))
+			if err != nil {
+				log.Print("error parsing date", err)
+			}
+			log.Printf("located closed date %s for sr: %s", parsed_date, req)
+			closed_at = parsed_date
+		}
+	}
+	
+	return closed_at
+}
+
+func (req Open311Request) PrintNotes() {
+	fmt.Printf("Notes for SR %s:\n", req.Service_request_id)
+	
+	for _, note := range(req.Notes) {
+		fmt.Printf("%+v\n", note)
+	}
 }
 
 func fetchRequests() (requests []Open311Request) {
