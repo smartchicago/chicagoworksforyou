@@ -43,7 +43,10 @@ func main() {
 	for {
 		switch {
 		case time.Since(worker.LastRunAt) > (30 * time.Second):
-			poll_open311()
+			// load requests from open311
+			for _, request := range fetchRequests() {
+				request.Save()
+			}
 			worker.LastRunAt = time.Now()
 		default:
 			log.Print("sleeping for 10 seconds")
@@ -205,13 +208,4 @@ func fetchRequests() (requests []Open311Request) {
 	log.Printf("received %d requests from Open311", len(requests))
 
 	return requests
-}
-
-func poll_open311() {
-	// load requests from open311
-	requests := fetchRequests()
-
-	for _, request := range requests {
-		_ = request.Save()
-	}
 }
