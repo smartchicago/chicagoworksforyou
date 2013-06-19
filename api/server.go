@@ -53,6 +53,7 @@ func main() {
 	router.HandleFunc("/requests/time_to_close.json", TimeToCloseHandler)
 	router.HandleFunc("/wards/{id}/requests.json", WardRequestsHandler)
 	router.HandleFunc("/wards/{id}/counts.json", WardCountsHandler)
+	router.HandleFunc("/requests/{service_code}/counts.json", RequestCountsHandler)
 	http.ListenAndServe(":5000", router)
 }
 
@@ -64,6 +65,101 @@ func WrapJson(unwrapped []byte, callback []string) (jsn []byte) {
 	}
 
 	return
+}
+
+func RequestCountsHandler(response http.ResponseWriter, request *http.Request) {
+	// for a given request service type and date, return the count
+	// of requests for that date, grouped by ward, and the city total
+	// The output is a map where keys are ward identifiers, and the value is the count.
+	// The city total for the time interval is assigned to ward #0
+	//
+	// Sample request and output:
+	// $ curl "http://localhost:5000/requests/4fd3b167e750846744000005/counts.json?end_date=2013-06-19&count=1&callback=foo"
+	//         foo({
+	//           "0": 398,
+	//           "1": 9,
+	//           "10": 1,
+	//           "11": 20,
+	//           "12": 22,
+	//           "13": 1,
+	//           "14": 44,
+	//           "15": 8,
+	//           "16": 2,
+	//           "17": 0,
+	//           "18": 1,
+	//           "19": 2,
+	//           "2": 0,
+	//           "20": 2,
+	//           "21": 2,
+	//           "22": 10,
+	//           "23": 14,
+	//           "24": 2,
+	//           "25": 77,
+	//           "26": 6,
+	//           "27": 11,
+	//
+
+	vars := mux.Vars(request)
+	service_code := vars["service_code"]
+	params := request.URL.Query()
+
+	// determine date range. default is last 7 days.
+	days, _ := strconv.Atoi(params["count"][0])
+
+	end, _ := time.Parse("2006-01-02", params["end_date"][0])
+	end = end.AddDate(0, 0, 1) // inc to the following day
+	start := end.AddDate(0, 0, -days)
+
+	log.Printf("RequestCountsHandler: service_code: %s params: %+v", service_code, params)
+
+	rows, err := api.Db.Query("SELECT COUNT(*), ward FROM service_requests WHERE service_code "+
+		"= $1 AND duplicate IS NULL AND requested_datetime >= $2::date "+
+		" AND requested_datetime <= $3::date  GROUP BY ward ORDER BY ward;",
+		string(service_code), start, end)
+
+	if err != nil {
+		log.Fatal("error fetching data for RequestCountsHandler", err)
+	}
+
+	type WardCount struct {
+		Ward  int
+		Count int
+	}
+
+	counts := make(map[int]WardCount)
+	for rows.Next() {
+		wc := WardCount{}
+		if err := rows.Scan(&wc.Count, &wc.Ward); err != nil {
+			log.Print("error reading row of ward count", err)
+		}
+
+		// trunc the requested time to just date
+		counts[wc.Ward] = wc
+	}
+
+	// find total opened for the entire city for date range
+	city_total := WardCount{Ward: 0}
+	err = api.Db.QueryRow("SELECT COUNT(*) FROM service_requests WHERE service_code "+
+		"= $1 AND duplicate IS NULL AND requested_datetime >= $2::date "+
+		" AND requested_datetime <= $3::date;",
+		string(service_code), start, end).Scan(&city_total.Count)
+
+	if err != nil {
+		log.Print("error loading city-wide total count for %s. err: %s", service_code, err)
+	}
+
+	counts[0] = city_total
+
+	// pluck data to return, ensure we return a number, even zero, for each ward
+	data := make(map[string]int)
+	for i := 0; i < 51; i++ {
+		data[strconv.Itoa(i)] = counts[i].Count
+	}
+
+	jsn, _ := json.MarshalIndent(data, "", "  ")
+	jsn = WrapJson(jsn, params["callback"])
+
+	response.Write(jsn)
 }
 
 func TimeToCloseHandler(response http.ResponseWriter, request *http.Request) {
@@ -156,7 +252,6 @@ func TimeToCloseHandler(response http.ResponseWriter, request *http.Request) {
 	if err != nil {
 		log.Print("error marshaling to JSON", err)
 	}
-
 	jsn = WrapJson(jsn, params["callback"])
 
 	response.Write(jsn)
