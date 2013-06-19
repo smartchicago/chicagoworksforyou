@@ -47,11 +47,11 @@ func main() {
 	defer worker.Db.Close()
 	flag.Parse()
 
-        if sr_number != "" {
-                sr := fetchSingleRequest(sr_number)
+	if sr_number != "" {
+		sr := fetchSingleRequest(sr_number)
 		sr.Save()
 		return
-        }
+	}
 
 	for {
 		switch {
@@ -132,12 +132,8 @@ func (req Open311Request) Save() (persisted bool) {
 		log.Fatal("error beginning transaction", err)
 	}
 
-	var closed_time pq.NullTime
-	if t := req.ExtractClosedDatetime(); !t.IsZero() {
-		closed_time.Time = t
-	}
-
-	log.Printf("closed time for SR %s is %+v", req.Service_request_id, closed_time)
+	t := req.ExtractClosedDatetime()
+	closed_time := pq.NullTime{Time: t, Valid: !t.IsZero()}
 
 	_, err = tx.Stmt(stmt).Exec(req.Service_request_id,
 		req.Status,
@@ -199,7 +195,7 @@ func (req Open311Request) ExtractClosedDatetime() time.Time {
 			if err != nil {
 				log.Print("error parsing date", err)
 			}
-			log.Printf("located closed date %s for sr: %s", parsed_date, req)
+			log.Printf("SR %s closed at: %s", req, parsed_date)
 			closed_at = parsed_date
 		}
 	}
