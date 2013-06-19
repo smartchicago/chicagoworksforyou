@@ -82,7 +82,7 @@ func RequestCountsHandler(response http.ResponseWriter, request *http.Request) {
 	end = end.AddDate(0, 0, 1) // inc to the following day
 	start := end.AddDate(0, 0, -days)
 
-	log.Printf("date range is %s to %s", start, end)
+	log.Printf("RequestCountsHandler: service_code: %s params: %+v", service_code, params)
 
 	rows, err := api.Db.Query("SELECT COUNT(*), ward FROM service_requests WHERE service_code "+
 		"= $1 AND duplicate IS NULL AND requested_datetime >= $2::date "+
