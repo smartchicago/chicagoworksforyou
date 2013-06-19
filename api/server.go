@@ -98,7 +98,7 @@ func RequestCountsHandler(response http.ResponseWriter, request *http.Request) {
 		Count int
 	}
 
-	var counts []WardCount
+	counts := make(map[string]WardCount)
 	for rows.Next() {
 		wc := WardCount{}
 		if err := rows.Scan(&wc.Count, &wc.Ward); err != nil {
@@ -106,8 +106,21 @@ func RequestCountsHandler(response http.ResponseWriter, request *http.Request) {
 		}
 
 		// trunc the requested time to just date
-		counts = append(counts, wc)
+		counts[strconv.Itoa(wc.Ward)] = wc
 	}
+
+	// find total opened for the entire city for date range
+	city_total := WardCount{Ward: 0}
+	err = api.Db.QueryRow("SELECT COUNT(*) FROM service_requests WHERE service_code "+
+		"= $1 AND duplicate IS NULL AND requested_datetime >= $2::date "+
+		" AND requested_datetime <= $3::date;",
+		string(service_code), start, end).Scan(&city_total.Count)
+
+	if err != nil {
+		log.Print("error loading city-wide total count for %s. err: %s", service_code, err)
+	}
+
+	counts["0"] = city_total
 
 	jsn, _ := json.MarshalIndent(counts, "", "  ")
 	jsn = WrapJson(jsn, params["callback"])
