@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	_ "github.com/bmizerany/pq"
+	"github.com/bmizerany/pq"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -19,7 +19,7 @@ type Open311Request struct {
 	Service_request_id, Status, Service_name, Service_code, Agency_responsible, Address, Channel, Media_url string
 	Requested_datetime, Updated_datetime                                                                    string // FIXME: should these be proper time objects?
 	Extended_attributes                                                                                     map[string]interface{}
-	Notes []map[string]interface{}
+	Notes                                                                                                   []map[string]interface{}
 }
 
 type Worker struct {
@@ -119,6 +119,11 @@ func (req Open311Request) Save() (persisted bool) {
 		log.Fatal("error beginning transaction", err)
 	}
 
+	var closed_time pq.NullTime
+	if t := req.ExtractClosedDatetime(); !t.IsZero() {
+		closed_time.Time = t
+	}
+
 	_, err = tx.Stmt(stmt).Exec(req.Service_request_id,
 		req.Status,
 		req.Service_name,
@@ -135,17 +140,22 @@ func (req Open311Request) Save() (persisted bool) {
 		req.Extended_attributes["channel"],
 		req.Extended_attributes["duplicate"],
 		req.Extended_attributes["parent_service_request_id"],
-		req.ExtractClosedDatetime(),
+		closed_time,
 	)
 
 	if err != nil {
 		log.Fatalf("could not update %s because %s", req.Service_request_id, err)
 	} else {
 		var verb string
-		if persisted {
+		switch {
+		case !persisted && closed_time.Time.IsZero():
 			verb = "CREATED"
-		} else {
+		case !persisted && !closed_time.Time.IsZero():
+			verb = "CREATED/CLOSED"
+		case persisted && closed_time.Time.IsZero():
 			verb = "UPDATED"
+		case persisted && !closed_time.Time.IsZero():
+			verb = "UPDATED/CLOSED"
 		}
 
 		log.Printf("[%s] %s", verb, req)
@@ -178,14 +188,14 @@ func (req Open311Request) ExtractClosedDatetime() time.Time {
 			closed_at = parsed_date
 		}
 	}
-	
+
 	return closed_at
 }
 
 func (req Open311Request) PrintNotes() {
 	fmt.Printf("Notes for SR %s:\n", req.Service_request_id)
-	
-	for _, note := range(req.Notes) {
+
+	for _, note := range req.Notes {
 		fmt.Printf("%+v\n", note)
 	}
 }
