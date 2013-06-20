@@ -1,17 +1,43 @@
+var currWeekEnd = moment().day(-1).startOf('day');
+var dateFormat = 'YYYY-MM-DD';
+var weekDuration = moment.duration(6,"days");
+
+function redrawChart() {
+    var stCode = currServiceType;
+    var numOfDays = 7;
+    var url = 'http://cwfy-api-staging.smartchicagoapps.org/requests/' + stCode + '/counts.json?end_date=' + currWeekEnd.format(dateFormat) + '&count=' + numOfDays + '&callback=?';
+    $.getJSON(
+        url,
+        function(response) {
+            var avg = response['0'] / 50;
+            var sorted = _.sortBy(_.pairs(response),function(pair) { return pair[1]; }).slice(0,50).reverse();
+            var cats = _.map(sorted, function(pair) { return pair[0]; });
+
+            chart.series[0].setData(sorted);
+            chart.xAxis[0].setCategories(cats);
+            chart.yAxis[0].removePlotLine('avg');
+            chart.yAxis[0].addPlotLine({
+                id: 'avg',
+                value: avg,
+                color: 'black',
+                width: 3,
+                label: {
+                    align: 'center',
+                    style: {
+                        color: 'gray'
+                    }
+                },
+                zIndex:5
+            });
+
+            var currWeek = weekDuration.beforeMoment(currWeekEnd,true);
+            $('.this-week a').text(currWeek.format({implicitYear: false}));
+        }
+    );
+}
+
 $(function () {
-    window.currWeekEnd = moment(new Date(2013,05,15));
-    var dateFormat = 'YYYY-MM-DD';
-    var weekDuration = moment.duration(6,"days");
-    var week = 7 * 24 * 60 * 60 * 1000;
-
     // CHARTS
-
-    function redrawChart(response) {
-        var currWeek = weekDuration.beforeMoment(currWeekEnd,true);
-        $('.this-week a').text(currWeek.format({implicitYear: false}));
-    }
-
-    redrawChart();
 
     // CHARTS WEEKNAV
 
@@ -22,19 +48,13 @@ $(function () {
     $('.next-week a').click(function(evt) {
         evt.preventDefault();
         currWeekEnd.add('week',1);
-        $.getJSON(
-            // 'http://cwfy-api-staging.smartchicagoapps.org/wards/' + ward + '/counts.json?count=7&service_code=' + currServiceType + '&end_date=' + currWeekEnd.format(dateFormat) + '&callback=?',
-            function(response) {redrawChart(response);}
-        );
+        redrawChart();
     });
 
     $('.prev-week a').click(function(evt) {
         evt.preventDefault();
         currWeekEnd.subtract('week',1);
-        $.getJSON(
-            // 'http://cwfy-api-staging.smartchicagoapps.org/wards/' + ward + '/counts.json?count=7&service_code=' + currServiceType + '&end_date=' + currWeekEnd.format(dateFormat) + '&callback=?',
-            function(response) {redrawChart(response);}
-        );
+        redrawChart();
     });
 
     Highcharts.setOptions({
@@ -55,8 +75,7 @@ $(function () {
                     fontFamily: 'Roboto, sans-serif',
                     fontSize: '13px'
                 }
-            },
-            categories: [1,2,3]
+            }
         },
         yAxis: {
             title: {
@@ -68,29 +87,14 @@ $(function () {
                     fontFamily: 'Roboto, sans-serif',
                     fontWeight: 'bold'
                 }
-            },
-            plotLines: [{
-                value: 22,
-                color: 'red',
-                width: 3,
-                label: {
-                    align: 'center',
-                    style: {
-                        color: 'gray',
-                    }
-                },
-                zIndex:5
-            }]
+            }
         },
         plotOptions: {
             bar: {
                 groupPadding: 0.1,
                 dataLabels: {
                     enabled: true,
-                    inside: true,
-                    align: 'right',
-                    color: "#ffffff",
-                    x: -5,
+                    color: "#000000",
                     style: {
                         fontFamily: "Roboto, sans-serif",
                         fontSize: '13px'
@@ -115,14 +119,12 @@ $(function () {
         }
     });
 
-    var countsChart = new Highcharts.Chart({
+    window.chart = new Highcharts.Chart({
         chart: {
             renderTo: 'chart'
         },
-        series: [{
-            data: [50, 61, 72, 81, 42, 39, 15, 44, 60, 100]
-        },{
-            data: [50, 61, 72, 81, 42, 39, 15, 44, 60, 100]
-        }]
+        series: [{}]
     });
+
+    redrawChart();
 });
