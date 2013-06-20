@@ -1,8 +1,8 @@
 $(function () {
     var currWeekEnd = moment().day(-1).startOf('day');
-
     var dateFormat = 'YYYY-MM-DD';
     var weekDuration = moment.duration(6,"days");
+
     var ward = wardNum;
     var centroid = WARDS[ward].centroid;
     var wardCenter = [centroid[1], centroid[0]];
