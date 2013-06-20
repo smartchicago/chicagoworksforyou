@@ -57,17 +57,17 @@ func main() {
 		return
 	}
 
-        start_backfill_from := backfill_date
+	start_backfill_from := backfill_date
 	for {
 		switch {
 		case backfill:
-		        requests := backFillRequests(start_backfill_from)
-                        for _, request := range requests {
-		                request.Save()
-		        }
-		        
-                        start_backfill_from = requests[len(requests) - 1].Updated_datetime // FIXME: is it safe to assume the items are sorted?
-                        
+			requests := backFillRequests(start_backfill_from)
+			for _, request := range requests {
+				request.Save()
+			}
+
+			start_backfill_from = requests[len(requests)-1].Updated_datetime // FIXME: is it safe to assume the items are sorted?
+
 		case time.Since(worker.LastRunAt) > (30 * time.Second):
 			// load requests from open311
 			for _, request := range fetchRequests() {
@@ -306,12 +306,11 @@ func fetchRequests() (requests []Open311Request) {
 	return requests
 }
 
-
 func backFillRequests(start_from string) (requests []Open311Request) {
 	formatted_date_string, err := time.Parse(time.RFC3339, start_from)
 	if err != nil {
-	        log.Fatal("[backfill] error parsing date to start from", err)
-	}	
+		log.Fatal("[backfill] error parsing date to start from", err)
+	}
 	formatted_date_string_with_tz := formatted_date_string.Format(time.RFC3339)
 
 	// construct the request URI using base params and the proper time
