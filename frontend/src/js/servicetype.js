@@ -13,7 +13,10 @@ function redrawChart() {
             var sorted = _.sortBy(_.pairs(response),function(pair) { return pair[1]; }).slice(0,50).reverse();
             var cats = _.map(sorted, function(pair) { return pair[0]; });
 
-            chart.series[0].setData(sorted);
+            if (chart.series[0]) { chart.series[0].remove(); }
+            chart.addSeries({
+                data: sorted
+            });
             chart.xAxis[0].setCategories(cats);
             chart.yAxis[0].removePlotLine('avg');
             chart.yAxis[0].addPlotLine({
@@ -123,7 +126,7 @@ $(function () {
         chart: {
             renderTo: 'chart'
         },
-        series: [{}]
+        series: []
     });
 
     redrawChart();
