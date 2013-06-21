@@ -11,50 +11,58 @@ function redrawChart() {
     $.getJSON(
         url,
         function(response) {
+            var cityAverage = response['0'] / 50;
+            var counts = _.pairs(response).slice(1,51);
+
+            var sorted = _.sortBy(counts,function(pair) { return pair[1]; }).reverse();
+            var sortedCategories = _.map(sorted, function(pair) { return "Ward " + pair[0]; });
+            var sortedFakeWardAverages = _.map(sorted, function(pair) { return Math.max(pair[1] - Math.ceil((Math.random() - 0.5) * 20),0); });
+
             if (chart) {
-                chart.destroy();
-            }
+                chart.get('counts').setData(counts);
+                chart.yAxis[0].removePlotLine('avg');
+                chart.yAxis[0].addPlotLine({
+                    id: 'avg',
+                    value: cityAverage,
+                    color: 'brown',
+                    width: 3,
+                    zIndex:5
+                });
+            } else {
+                var categories = _.map(counts, function(pair) { return "Ward " + pair[0]; });
+                var fakeWardAverages = _.map(counts, function(pair) { return Math.max(pair[1] - Math.ceil((Math.random() - 0.5) * 20),0); });
 
-            var avg = response['0'] / 50;
-            var sorted = _.sortBy(_.pairs(response),function(pair) { return pair[1]; }).slice(0,50).reverse();
-            var fakeAvgs = _.map(sorted, function(pair) { return Math.max(pair[1] - Math.ceil((Math.random() - 0.5) * 20),0); });
-            var cats = _.map(sorted, function(pair) { return "Ward " + pair[0]; });
-
-            chart = new Highcharts.Chart({
-                chart: {
-                    renderTo: 'chart'
-                },
-                series: [{
-                    data: sorted,
-                    index: 2,
-                    dataLabels: {
-                        style: {
-                            fontWeight: 'bold'
-                        }
-                    }
-                },{
-                    data: fakeAvgs,
-                    index: 1
-                }],
-                xAxis: {
-                    categories: cats
-                },
-                yAxis: {
-                    plotLines: [{
-                        id: 'avg',
-                        value: avg,
-                        color: 'brown',
-                        width: 3,
-                        label: {
-                            align: 'center',
+                new Highcharts.Chart({
+                    chart: {
+                        renderTo: 'chart'
+                    },
+                    series: [{
+                        data: counts,
+                        id: 'counts',
+                        index: 2,
+                        dataLabels: {
                             style: {
-                                color: 'gray'
+                                fontWeight: 'bold'
                             }
-                        },
-                        zIndex:5
-                    }]
-                }
-            });
+                        }
+                    },{
+                        data: fakeWardAverages,
+                        index: 1
+                    }],
+                    xAxis: {
+                        categories: categories
+                    },
+                    yAxis: {
+                        plotLines: [{
+                            id: 'avg',
+                            value: cityAverage,
+                            color: 'brown',
+                            width: 3,
+                            zIndex:5
+                        }]
+                    }
+                });
+            }
 
             var currWeek = weekDuration.beforeMoment(currWeekEnd,true);
             $('.this-week a').text(currWeek.format({implicitYear: false}));
