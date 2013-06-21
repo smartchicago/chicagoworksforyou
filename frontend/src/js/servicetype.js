@@ -14,9 +14,9 @@ function redrawChart() {
             var cityAverage = response['0'] / 50;
             var counts = _.pairs(response).slice(1,51);
 
-            var sorted = _.sortBy(counts,function(pair) { return pair[1]; }).reverse();
-            var sortedCategories = _.map(sorted, function(pair) { return "Ward " + pair[0]; });
-            var sortedFakeWardAverages = _.map(sorted, function(pair) { return Math.max(pair[1] - Math.ceil((Math.random() - 0.5) * 20),0); });
+            // var sorted = _.sortBy(counts,function(pair) { return pair[1]; }).reverse();
+            // var sortedCategories = _.map(sorted, function(pair) { return "Ward " + pair[0]; });
+            // var sortedFakeWardAverages = _.map(sorted, function(pair) { return Math.max(pair[1] - Math.ceil((Math.random() - 0.5) * 20),0); });
 
             if (chart) {
                 chart.get('counts').setData(counts);
