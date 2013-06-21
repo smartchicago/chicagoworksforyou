@@ -173,6 +173,8 @@ ul.nav .alderman a {
   .servicetypes .st-info-wrap .pagination {
     margin: 0 0 10px; }
 
+.servicetype .content {
+  padding-top: 15px; }
 .servicetype .chart {
   width: 100%;
   height: 2500px; }
