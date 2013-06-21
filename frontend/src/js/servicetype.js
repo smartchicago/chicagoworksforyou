@@ -6,31 +6,54 @@ function redrawChart() {
     var stCode = currServiceType;
     var numOfDays = 7;
     var url = 'http://cwfy-api-staging.smartchicagoapps.org/requests/' + stCode + '/counts.json?end_date=' + currWeekEnd.format(dateFormat) + '&count=' + numOfDays + '&callback=?';
+    var chart = $('#chart').highcharts();
+
     $.getJSON(
         url,
         function(response) {
+            if (chart) {
+                chart.destroy();
+            }
+
             var avg = response['0'] / 50;
             var sorted = _.sortBy(_.pairs(response),function(pair) { return pair[1]; }).slice(0,50).reverse();
-            var cats = _.map(sorted, function(pair) { return pair[0]; });
+            var fakeAvgs = _.map(sorted, function(pair) { return Math.max(pair[1] - Math.ceil((Math.random() - 0.5) * 20),0); });
+            var cats = _.map(sorted, function(pair) { return "Ward " + pair[0]; });
 
-            if (chart.series[0]) { chart.series[0].remove(); }
-            chart.addSeries({
-                data: sorted
-            });
-            chart.xAxis[0].setCategories(cats);
-            chart.yAxis[0].removePlotLine('avg');
-            chart.yAxis[0].addPlotLine({
-                id: 'avg',
-                value: avg,
-                color: 'black',
-                width: 3,
-                label: {
-                    align: 'center',
-                    style: {
-                        color: 'gray'
-                    }
+            chart = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'chart'
                 },
-                zIndex:5
+                series: [{
+                    data: sorted,
+                    index: 2,
+                    dataLabels: {
+                        style: {
+                            fontWeight: 'bold'
+                        }
+                    }
+                },{
+                    data: fakeAvgs,
+                    index: 1
+                }],
+                xAxis: {
+                    categories: cats
+                },
+                yAxis: {
+                    plotLines: [{
+                        id: 'avg',
+                        value: avg,
+                        color: 'brown',
+                        width: 3,
+                        label: {
+                            align: 'center',
+                            style: {
+                                color: 'gray'
+                            }
+                        },
+                        zIndex:5
+                    }]
+                }
             });
 
             var currWeek = weekDuration.beforeMoment(currWeekEnd,true);
@@ -40,9 +63,7 @@ function redrawChart() {
 }
 
 $(function () {
-    // CHARTS
-
-    // CHARTS WEEKNAV
+    // WEEKNAV
 
     $('.this-week a').click(function(evt) {
         evt.preventDefault();
@@ -60,19 +81,18 @@ $(function () {
         redrawChart();
     });
 
+    // CHART SETTINGS
+
     Highcharts.setOptions({
         chart: {
-            marginBottom: 80,
+            marginBottom: 40,
             type: 'bar'
         },
         title: {
             text: ''
         },
         xAxis: {
-            minPadding: 0.05,
-            maxPadding: 0.05,
             tickmarkPlacement: 'between',
-
             labels: {
                 style: {
                     fontFamily: 'Roboto, sans-serif',
@@ -94,7 +114,8 @@ $(function () {
         },
         plotOptions: {
             bar: {
-                groupPadding: 0.1,
+                borderWidth: 0,
+                groupPadding: 0.08,
                 dataLabels: {
                     enabled: true,
                     color: "#000000",
@@ -102,7 +123,8 @@ $(function () {
                         fontFamily: "Roboto, sans-serif",
                         fontSize: '13px'
                     }
-                }
+                },
+                pointPadding: 0
             }
         },
         tooltip: {
@@ -115,19 +137,11 @@ $(function () {
             }
         },
         legend: {
-            enabled: true,
-            borderWidth: 0,
-            backgroundColor: "#f7f7f7",
-            padding: 10
+            enabled: false
         }
     });
 
-    window.chart = new Highcharts.Chart({
-        chart: {
-            renderTo: 'chart'
-        },
-        series: []
-    });
+    // SET UP INITIAL CHART
 
     redrawChart();
 });
