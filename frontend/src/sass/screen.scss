@@ -164,6 +164,26 @@ html, body {
     }
 }
 
+// PAGINATION
+
+.pagination {
+    .this-week {
+        font-weight: bold;
+
+        a {
+            color: #333;
+        }
+    }
+
+    .prev-week, .next-week {
+        a {
+            font-size: 13px;
+            color: #666;
+            padding: 4px 8px;
+        }
+    }
+}
+
 // WARD DETAIL
 
 ul.nav .alderman {
@@ -194,22 +214,6 @@ ul.nav .alderman {
 
     .pagination {
         margin-top: 0;
-    }
-
-    .this-week {
-        font-weight: bold;
-
-        a {
-            color: #333;
-        }
-    }
-
-    .prev-week, .next-week {
-        a {
-            font-size: 13px;
-            color: #666;
-            padding: 4px 8px;
-        }
     }
 
     section {

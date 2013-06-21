@@ -116,6 +116,15 @@ html, body {
     text-indent: 40px;
     border-radius: 6px 6px; }
 
+.pagination .this-week {
+  font-weight: bold; }
+  .pagination .this-week a {
+    color: #333; }
+.pagination .prev-week a, .pagination .next-week a {
+  font-size: 13px;
+  color: #666;
+  padding: 4px 8px; }
+
 ul.nav .alderman a {
   font-weight: bold;
   background: #e3e3e3;
@@ -132,14 +141,6 @@ ul.nav .alderman a {
   top: 75px; }
 .ward .pagination {
   margin-top: 0; }
-.ward .this-week {
-  font-weight: bold; }
-  .ward .this-week a {
-    color: #333; }
-.ward .prev-week a, .ward .next-week a {
-  font-size: 13px;
-  color: #666;
-  padding: 4px 8px; }
 .ward section {
   margin-bottom: 30px;
   border-bottom: 1px solid #ddd; }
