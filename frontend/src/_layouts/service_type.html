@@ -12,10 +12,7 @@ window.currServiceType = '{{ page.service_type }}';
 <div class="container">
     <div class="row">
         <div class="span4">
-            <h2>Graffiti Removal</h2>
-            <p>
-                In condimentum facilisis porta. Sed nec diam eu diam mattis viverra. Nulla fringilla, orci ac euismod semper, magna diam porttitor mauris, quis sollicitudin sapien justo in libero. Vestibulum mollis mauris enim. Morbi euismod magna ac lorem rutrum elementum. Donec viverra auctor lobortis. Pellentesque eu est a nulla placerat dignissim. Morbi a.
-            </p>
+            {{ content }}
             <div class="pagination">
                 <ul>
                     <li class="prev-week"><a href="#">&larr;</a></li>
@@ -26,7 +23,6 @@ window.currServiceType = '{{ page.service_type }}';
         </div>
         <div class="span8">
             <div id="chart" class="chart"></div>
-            {{ content }}
         </div>
     </div>
 </div>
