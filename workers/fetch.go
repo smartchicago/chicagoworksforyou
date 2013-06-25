@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"github.com/bmizerany/pq"
+	"github.com/lib/pq"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -30,6 +30,8 @@ type Worker struct {
 
 var worker Worker
 var sr_number string
+var backfill bool
+var backfill_date string
 
 func init() {
 	// open database
@@ -41,6 +43,8 @@ func init() {
 
 	// fetch SR num from command line, if present
 	flag.StringVar(&sr_number, "sr-number", "", "SR number to fetch")
+	flag.BoolVar(&backfill, "backfill", false, "run in reverse and backfill data")
+	flag.StringVar(&backfill_date, "backfill-from", "", "date to start backfilling data from. Use RFC3339 format. Default will be the tiem of the least recently updated SR in the database.")
 }
 
 func main() {
@@ -53,8 +57,17 @@ func main() {
 		return
 	}
 
+	start_backfill_from := backfill_date
 	for {
 		switch {
+		case backfill:
+			requests := backFillRequests(start_backfill_from)
+			for _, request := range requests {
+				request.Save()
+			}
+
+			start_backfill_from = requests[len(requests)-1].Updated_datetime // FIXME: is it safe to assume the items are sorted?
+
 		case time.Since(worker.LastRunAt) > (30 * time.Second):
 			// load requests from open311
 			for _, request := range fetchRequests() {
@@ -289,6 +302,53 @@ func fetchRequests() (requests []Open311Request) {
 	}
 
 	log.Printf("received %d requests from Open311", len(requests))
+
+	return requests
+}
+
+func backFillRequests(start_from string) (requests []Open311Request) {
+	var fetch_from time.Time
+	
+	if start_from == "" {
+		err := worker.Db.QueryRow("SELECT updated_datetime FROM service_requests ORDER BY updated_datetime ASC LIMIT 1").Scan(&fetch_from)
+		if err != nil {
+			log.Println("error fetching oldest SR:", err)
+		}
+		log.Printf("no start_from value provided, so falling back to oldest (by last update) SR in the database: %s", start_from)
+	} else {
+		t, err := time.Parse(time.RFC3339, start_from)
+		if err != nil {
+			log.Fatal("[backfill] error parsing date to start from", err)
+		}
+		fetch_from = t		
+	}
+	
+	formatted_date_string_with_tz := fetch_from.Format(time.RFC3339)
+
+	// construct the request URI using base params and the proper time
+	open311_api_endpoint := OPEN311_API_URI + "&updated_before=" + formatted_date_string_with_tz
+
+	log.Printf("[backfill] fetching from %s", open311_api_endpoint)
+	resp, err := http.Get(open311_api_endpoint)
+	defer resp.Body.Close()
+
+	if err != nil {
+		log.Fatalln("[backfill] error fetching from Open311 endpoint", err)
+	}
+
+	// load response body
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal("[backfill] error loading response body", err)
+	}
+
+	// parse JSON and load into an array of Open311Request objects
+	err = json.Unmarshal(body, &requests)
+	if err != nil {
+		log.Fatal("[backfill] error parsing JSON:", err)
+	}
+
+	log.Printf("[backfill] received %d requests from Open311", len(requests))
 
 	return requests
 }
