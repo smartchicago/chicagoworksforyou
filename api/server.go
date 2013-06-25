@@ -106,15 +106,18 @@ func RequestCountsHandler(response http.ResponseWriter, request *http.Request) {
 	// determine date range. default is last 7 days.
 	days, _ := strconv.Atoi(params["count"][0])
 
-	end, _ := time.Parse("2006-01-02", params["end_date"][0])
+	chi, _ := time.LoadLocation("America/Chicago")
+	end, _ := time.ParseInLocation("2006-01-02", params["end_date"][0], chi)
 	end = end.AddDate(0, 0, 1) // inc to the following day
 	start := end.AddDate(0, 0, -days)
 
 	log.Printf("RequestCountsHandler: service_code: %s params: %+v", service_code, params)
 
+	log.Printf("searching with times: %s to %s", start, end)
+
 	rows, err := api.Db.Query("SELECT COUNT(*), ward FROM service_requests WHERE service_code "+
-		"= $1 AND duplicate IS NULL AND requested_datetime >= $2::date "+
-		" AND requested_datetime <= $3::date  GROUP BY ward ORDER BY ward;",
+		"= $1 AND duplicate IS NULL AND requested_datetime >= $2 "+
+		" AND requested_datetime <= $3 GROUP BY ward ORDER BY ward;",
 		string(service_code), start, end)
 
 	if err != nil {
@@ -140,8 +143,8 @@ func RequestCountsHandler(response http.ResponseWriter, request *http.Request) {
 	// find total opened for the entire city for date range
 	city_total := WardCount{Ward: 0}
 	err = api.Db.QueryRow("SELECT COUNT(*) FROM service_requests WHERE service_code "+
-		"= $1 AND duplicate IS NULL AND requested_datetime >= $2::date "+
-		" AND requested_datetime <= $3::date;",
+		"= $1 AND duplicate IS NULL AND requested_datetime >= $2 "+
+		" AND requested_datetime <= $3;",
 		string(service_code), start, end).Scan(&city_total.Count)
 
 	if err != nil {
@@ -204,7 +207,8 @@ func TimeToCloseHandler(response http.ResponseWriter, request *http.Request) {
 	service_code := params["service_code"][0]
 	days, _ := strconv.Atoi(params["count"][0])
 
-	end, _ := time.Parse("2006-01-02", params["end_date"][0])
+	chi, _ := time.LoadLocation("America/Chicago")
+	end, _ := time.ParseInLocation("2006-01-02", params["end_date"][0], chi)
 	end = end.AddDate(0, 0, 1) // inc to the following day
 	start := end.AddDate(0, 0, -days)
 
@@ -287,7 +291,8 @@ func WardCountsHandler(response http.ResponseWriter, request *http.Request) {
 	// determine date range.
 	days, _ := strconv.Atoi(params["count"][0])
 
-	end, _ := time.Parse("2006-01-02", params["end_date"][0])
+	chi, _ := time.LoadLocation("America/Chicago")
+	end, _ := time.ParseInLocation("2006-01-02", params["end_date"][0], chi)
 	end = end.AddDate(0, 0, 1) // inc to the following day
 	start := end.AddDate(0, 0, -days)
 
