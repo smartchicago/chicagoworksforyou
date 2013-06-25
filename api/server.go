@@ -99,6 +99,8 @@ func RequestCountsHandler(response http.ResponseWriter, request *http.Request) {
 	//           "27": 11,
 	//
 
+	response.Header().Set("Content-type", "application/json; charset=utf-8")
+
 	vars := mux.Vars(request)
 	service_code := vars["service_code"]
 	params := request.URL.Query()
@@ -201,6 +203,8 @@ func TimeToCloseHandler(response http.ResponseWriter, request *http.Request) {
 	//          },
 	//      ... snipped ...
 
+	response.Header().Set("Content-type", "application/json; charset=utf-8")
+		
 	params := request.URL.Query()
 
 	// required
@@ -284,6 +288,9 @@ func WardCountsHandler(response http.ResponseWriter, request *http.Request) {
 	//   "2013-06-12": 23
 	// }
 	//
+	
+	response.Header().Set("Content-type", "application/json; charset=utf-8")
+	
 	vars := mux.Vars(request)
 	ward_id := vars["id"]
 	params := request.URL.Query()
@@ -337,6 +344,8 @@ func WardCountsHandler(response http.ResponseWriter, request *http.Request) {
 
 func WardRequestsHandler(response http.ResponseWriter, request *http.Request) {
 	// for a given ward, return recent service requests
+	response.Header().Set("Content-type", "application/json; charset=utf-8")
+	
 
 	vars := mux.Vars(request)
 	ward_id := vars["id"]
@@ -400,6 +409,8 @@ func ServicesHandler(response http.ResponseWriter, request *http.Request) {
 	//
 	// ]
 
+	response.Header().Set("Content-type", "application/json; charset=utf-8")
+	
 	type ServicesCount struct {
 		Count        int
 		Service_code string
@@ -431,9 +442,9 @@ func ServicesHandler(response http.ResponseWriter, request *http.Request) {
 }
 
 func HealthCheckHandler(response http.ResponseWriter, request *http.Request) {
-	params := request.URL.Query()
+	response.Header().Set("Content-type", "application/json; charset=utf-8")
 
-	response.Header().Add("Content-type", "application/json")
+	params := request.URL.Query()
 
 	type HealthCheck struct {
 		Count    int
