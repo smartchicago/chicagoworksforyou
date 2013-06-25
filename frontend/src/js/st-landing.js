@@ -120,15 +120,21 @@ function redrawChart(stCode, isRedraw) {
     );
 }
 
+function updateST(i) {
+    var st = serviceTypes[i][1];
+    $('.st-info h2').text(st.name);
+    redrawChart(st.code, true);
+}
+
 $(function () {
     $('.prevST').click(function(evt) {
         evt.preventDefault();
-        redrawChart(serviceTypes[--stIndex][1].code, true);
+        updateST(--stIndex);
     });
 
     $('.nextST a').click(function(evt) {
         evt.preventDefault();
-        redrawChart(serviceTypes[++stIndex][1].code, true);
+        updateST(++stIndex);
     });
 
     for (var ward in WARDS) {
