@@ -257,51 +257,37 @@ func fetchSingleRequest(sr_number string) (request Open311Request) {
 }
 
 func fetchRequests() (requests []Open311Request) {
-	// find the most recent SR that we know about in the database
-	rows, err := worker.Db.Query("SELECT MAX(updated_datetime) FROM service_requests;")
-	if err != nil {
-		log.Fatal("error finding most recent service request", err)
+	last_updated_at := time.Now()	
+	if err := worker.Db.QueryRow("SELECT MAX(updated_datetime) FROM service_requests;").Scan(&last_updated_at); err != nil {
+		log.Print("[fetchRequests] error loading most recent SR, will fallback to current time: ", err)
 	}
 
-	last_updated_at := time.Now()
-	for rows.Next() {
-		if err := rows.Scan(&last_updated_at); err != nil {
-			log.Print("error finding most recent SR", err)
-		}
-
-		log.Printf("most recent SR timestamp %s", last_updated_at)
-	}
-
-	// janky hack to transform the last updated timestamp into
-	// a format that plays nicely with the Open311 API
-	// FIXME: there HAS to be a better way to handle this.
-	formatted_date_string := last_updated_at.Format(time.RFC3339)
-	formatted_date_string_with_tz := formatted_date_string[0:len(formatted_date_string)-1] + "-0500" // trunc the trailing 'Z' and tack on timezone
+	log.Print("[fetchRequests] most recent SR timestamp ", last_updated_at.Format(time.RFC3339))
 
 	// construct the request URI using base params and the proper time
-	open311_api_endpoint := OPEN311_API_URI + "&updated_after=" + formatted_date_string_with_tz
+	open311_api_endpoint := OPEN311_API_URI + "&updated_after=" + last_updated_at.Format(time.RFC3339)
 
-	log.Printf("fetching from %s", open311_api_endpoint)
+	log.Printf("[fetchRequests] fetching from %s", open311_api_endpoint)
 	resp, err := http.Get(open311_api_endpoint)
 	defer resp.Body.Close()
 
 	if err != nil {
-		log.Fatalln("error fetching from Open311 endpoint", err)
+		log.Fatalln("[fetchRequests] error fetching from Open311 endpoint", err)
 	}
 
 	// load response body
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatal("error loading response body", err)
+		log.Fatal("[fetchRequests] error loading response body", err)
 	}
 
 	// parse JSON and load into an array of Open311Request objects
 	err = json.Unmarshal(body, &requests)
 	if err != nil {
-		log.Fatal("error parsing JSON:", err)
+		log.Fatal("[fetchRequests] error parsing JSON:", err)
 	}
 
-	log.Printf("received %d requests from Open311", len(requests))
+	log.Printf("[fetchRequests] received %d requests from Open311", len(requests))
 
 	return requests
 }
