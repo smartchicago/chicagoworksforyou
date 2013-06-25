@@ -44,7 +44,7 @@ func init() {
 	// fetch SR num from command line, if present
 	flag.StringVar(&sr_number, "sr-number", "", "SR number to fetch")
 	flag.BoolVar(&backfill, "backfill", false, "run in reverse and backfill data")
-	flag.StringVar(&backfill_date, "backfill-from", time.Now().Format(time.RFC3339), "date to start backfilling data from. Use RFC3339 format")
+	flag.StringVar(&backfill_date, "backfill-from", "", "date to start backfilling data from. Use RFC3339 format. Default will be the tiem of the least recently updated SR in the database.")
 }
 
 func main() {
@@ -307,11 +307,23 @@ func fetchRequests() (requests []Open311Request) {
 }
 
 func backFillRequests(start_from string) (requests []Open311Request) {
-	formatted_date_string, err := time.Parse(time.RFC3339, start_from)
-	if err != nil {
-		log.Fatal("[backfill] error parsing date to start from", err)
+	var fetch_from time.Time
+	
+	if start_from == "" {
+		err := worker.Db.QueryRow("SELECT updated_datetime FROM service_requests ORDER BY updated_datetime ASC LIMIT 1").Scan(&fetch_from)
+		if err != nil {
+			log.Println("error fetching oldest SR:", err)
+		}
+		log.Printf("no start_from value provided, so falling back to oldest (by last update) SR in the database: %s", start_from)
+	} else {
+		t, err := time.Parse(time.RFC3339, start_from)
+		if err != nil {
+			log.Fatal("[backfill] error parsing date to start from", err)
+		}
+		fetch_from = t		
 	}
-	formatted_date_string_with_tz := formatted_date_string.Format(time.RFC3339)
+	
+	formatted_date_string_with_tz := fetch_from.Format(time.RFC3339)
 
 	// construct the request URI using base params and the proper time
 	open311_api_endpoint := OPEN311_API_URI + "&updated_before=" + formatted_date_string_with_tz
