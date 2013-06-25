@@ -164,6 +164,26 @@ html, body {
     }
 }
 
+// PAGINATION
+
+.pagination {
+    .this-week {
+        font-weight: bold;
+
+        a {
+            color: #333;
+        }
+    }
+
+    .prev-week, .next-week {
+        a {
+            font-size: 13px;
+            color: #666;
+            padding: 4px 8px;
+        }
+    }
+}
+
 // WARD DETAIL
 
 ul.nav .alderman {
@@ -196,22 +216,6 @@ ul.nav .alderman {
         margin-top: 0;
     }
 
-    .this-week {
-        font-weight: bold;
-
-        a {
-            color: #333;
-        }
-    }
-
-    .prev-week, .next-week {
-        a {
-            font-size: 13px;
-            color: #666;
-            padding: 4px 8px;
-        }
-    }
-
     section {
         margin-bottom: 30px;
         border-bottom: 1px solid #ddd;
@@ -224,29 +228,6 @@ ul.nav .alderman {
     .chart {
          width:100%;
          height:350px;
-    }
-}
-
-// INTERESTING
-
-.about {
-    h3 {
-        padding: .5em 0 0;
-        margin: 0 0 .25em;
-        color: #888;
-
-        &:not(:first-of-type) {
-            border-top: 1px solid #ddd;
-        }
-    }
-
-    h4 {
-        padding-top: 1em;
-        margin: 0 0 1em;
-    }
-
-    p {
-        margin: 0 0 1.2em;
     }
 }
 
@@ -279,8 +260,41 @@ ul.nav .alderman {
         }
 
         .pagination {
-            margin-bottom: 0;
+            margin: 0 0 10px;
         }
+    }
+}
+
+.servicetype {
+    .content {
+        padding-top: 15px;
+    }
+    .chart {
+         width:100%;
+         height:2500px;
+    }
+}
+
+// ABOUT
+
+.about {
+    h3 {
+        padding: .5em 0 0;
+        margin: 0 0 .25em;
+        color: #888;
+
+        &:not(:first-of-type) {
+            border-top: 1px solid #ddd;
+        }
+    }
+
+    h4 {
+        padding-top: 1em;
+        margin: 0 0 1em;
+    }
+
+    p {
+        margin: 0 0 1.2em;
     }
 }
 

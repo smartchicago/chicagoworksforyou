@@ -19,7 +19,6 @@ module Jekyll
 
     def generate(site)
       if site.layouts.key? 'ward'
-        dir = site.config['category_dir'] || 'wards'
         for i in 1..50 do
           site.pages << WardPage.new(site, site.source, i.to_s)
         end
