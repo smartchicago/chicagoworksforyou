@@ -2,8 +2,8 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"flag"
+	"fmt"
 	_ "github.com/lib/pq"
 	"io/ioutil"
 	"regexp"
@@ -19,18 +19,18 @@ func init() {
 func main() {
 	// tool to migrate the database
 	// This is very immature code.
-	// 
+	//
 	// Usage:
-	// 
+	//
 	// go run bin/migrate.go 		# apply migrations
 	// go run bin/migrate.go --dry=true 	# show what will be run, do not execute statements.
-	// 
+	//
 	// TODO:
 	// - rollback
 	// - transactional migrations
 	// - show output of migration
 	// - decent error handling
-		
+
 	// load all migrations and find version numbers
 	file_list, err := ioutil.ReadDir("db/")
 	if err != nil {
@@ -81,7 +81,7 @@ func main() {
 		if err != nil {
 			fmt.Printf("error reading %s: %s\n", migration, err)
 		}
-		
+
 		fmt.Printf("===== executing migration %s =====\n\n%s\n\n", migration, string(raw_sql))
 
 		if !dry {
@@ -96,6 +96,6 @@ func main() {
 			if err != nil {
 				fmt.Printf("error migrating %s: %s", migration, err)
 			}
-		}				
+		}
 	}
 }
