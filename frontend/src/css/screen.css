@@ -116,6 +116,15 @@ html, body {
     text-indent: 40px;
     border-radius: 6px 6px; }
 
+.pagination .this-week {
+  font-weight: bold; }
+  .pagination .this-week a {
+    color: #333; }
+.pagination .prev-week a, .pagination .next-week a {
+  font-size: 13px;
+  color: #666;
+  padding: 4px 8px; }
+
 ul.nav .alderman a {
   font-weight: bold;
   background: #e3e3e3;
@@ -132,14 +141,6 @@ ul.nav .alderman a {
   top: 75px; }
 .ward .pagination {
   margin-top: 0; }
-.ward .this-week {
-  font-weight: bold; }
-  .ward .this-week a {
-    color: #333; }
-.ward .prev-week a, .ward .next-week a {
-  font-size: 13px;
-  color: #666;
-  padding: 4px 8px; }
 .ward section {
   margin-bottom: 30px;
   border-bottom: 1px solid #ddd; }
@@ -148,18 +149,6 @@ ul.nav .alderman a {
 .ward .chart {
   width: 100%;
   height: 350px; }
-
-.about h3 {
-  padding: .5em 0 0;
-  margin: 0 0 .25em;
-  color: #888; }
-  .about h3:not(:first-of-type) {
-    border-top: 1px solid #ddd; }
-.about h4 {
-  padding-top: 1em;
-  margin: 0 0 1em; }
-.about p {
-  margin: 0 0 1.2em; }
 
 .servicetypes .wards-map {
   margin-top: -46px;
@@ -182,7 +171,25 @@ ul.nav .alderman a {
   .servicetypes .st-info-wrap h2 {
     margin: 0 0 10px; }
   .servicetypes .st-info-wrap .pagination {
-    margin-bottom: 0; }
+    margin: 0 0 10px; }
+
+.servicetype .content {
+  padding-top: 15px; }
+.servicetype .chart {
+  width: 100%;
+  height: 2500px; }
+
+.about h3 {
+  padding: .5em 0 0;
+  margin: 0 0 .25em;
+  color: #888; }
+  .about h3:not(:first-of-type) {
+    border-top: 1px solid #ddd; }
+.about h4 {
+  padding-top: 1em;
+  margin: 0 0 1em; }
+.about p {
+  margin: 0 0 1.2em; }
 
 footer {
   padding: 10px 0 30px 0;
