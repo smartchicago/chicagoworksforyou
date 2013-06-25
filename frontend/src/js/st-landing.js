@@ -121,9 +121,13 @@ function redrawChart(stCode, isRedraw) {
 }
 
 $(function () {
-    $('.pagination a').click(function(evt) {
+    $('.prevST').click(function(evt) {
         evt.preventDefault();
-        var stCode = '4fd6e4ece750840569000019'; // Restaurant complaint
+        redrawChart(serviceTypes[--stIndex][1].code, true);
+    });
+
+    $('.nextST a').click(function(evt) {
+        evt.preventDefault();
         redrawChart(serviceTypes[++stIndex][1].code, true);
     });
 
