@@ -117,8 +117,8 @@ func (req Open311Request) Save() (persisted bool) {
 		stmt, err = worker.Db.Prepare("INSERT INTO service_requests(service_request_id," +
 			"status, service_name, service_code, agency_responsible, " +
 			"address, requested_datetime, updated_datetime, lat, long," +
-			"ward, police_district, media_url, channel, duplicate, parent_service_request_id, closed_datetime) " +
-			"VALUES ($1::varchar, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17); ")
+			"ward, police_district, media_url, channel, duplicate, parent_service_request_id, closed_datetime, notes) " +
+			"VALUES ($1::varchar, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18); ")
 
 		// "WHERE NOT EXISTS (SELECT 1 FROM service_requests WHERE service_request_id = $1);")
 
@@ -132,7 +132,7 @@ func (req Open311Request) Save() (persisted bool) {
 			"status = $2, service_name = $3, service_code = $4, agency_responsible = $5, " +
 			"address = $6, requested_datetime = $7, updated_datetime = $8, lat = $9, long = $10," +
 			"ward = $11, police_district = $12, media_url = $13, channel = $14, duplicate = $15, " +
-			"parent_service_request_id = $16, updated_at = NOW(), closed_datetime = $17 WHERE service_request_id = $1;")
+			"parent_service_request_id = $16, updated_at = NOW(), closed_datetime = $17, notes = $18 WHERE service_request_id = $1;")
 
 		if err != nil {
 			log.Fatal("error preparing database update statement", err)
@@ -147,7 +147,10 @@ func (req Open311Request) Save() (persisted bool) {
 
 	t := req.ExtractClosedDatetime()
 	closed_time := pq.NullTime{Time: t, Valid: !t.IsZero()}
-
+	notes_as_json, err := json.Marshal(req.Notes)
+	if err != nil {
+		log.Print("error marshaling notes to JSON: ", err)
+	}
 	_, err = tx.Stmt(stmt).Exec(req.Service_request_id,
 		req.Status,
 		req.Service_name,
@@ -165,6 +168,7 @@ func (req Open311Request) Save() (persisted bool) {
 		req.Extended_attributes["duplicate"],
 		req.Extended_attributes["parent_service_request_id"],
 		closed_time,
+		notes_as_json,
 	)
 
 	if err != nil {
