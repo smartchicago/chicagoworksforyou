@@ -44,6 +44,15 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
+-- Name: schema_info; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE schema_info (
+    version character varying(12)
+);
+
+
+--
 -- Name: service_requests; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -55,10 +64,10 @@ CREATE TABLE service_requests (
     service_code character varying(255),
     agency_responsible character varying(255),
     address character varying(255),
-    requested_datetime timestamp without time zone,
-    updated_datetime timestamp without time zone,
-    created_at timestamp without time zone DEFAULT now(),
-    updated_at timestamp without time zone DEFAULT now(),
+    requested_datetime timestamp with time zone,
+    updated_datetime timestamp with time zone,
+    created_at timestamp with time zone DEFAULT now(),
+    updated_at timestamp with time zone DEFAULT now(),
     lat double precision,
     long double precision,
     media_url character varying(255),
@@ -68,7 +77,7 @@ CREATE TABLE service_requests (
     notes text,
     duplicate character varying(40),
     parent_service_request_id character varying(40),
-    closed_datetime timestamp without time zone
+    closed_datetime timestamp with time zone
 );
 
 
@@ -92,6 +101,16 @@ ALTER SEQUENCE service_requests_id_seq OWNED BY service_requests.id;
 
 
 --
+-- Name: update_log; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE update_log (
+    last_run_at timestamp with time zone NOT NULL,
+    notes character varying(100)
+);
+
+
+--
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -112,6 +131,14 @@ ALTER TABLE ONLY service_requests
 
 ALTER TABLE ONLY service_requests
     ADD CONSTRAINT sr_number_uniq UNIQUE (service_request_id);
+
+
+--
+-- Name: update_log_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY update_log
+    ADD CONSTRAINT update_log_pkey PRIMARY KEY (last_run_at);
 
 
 --
