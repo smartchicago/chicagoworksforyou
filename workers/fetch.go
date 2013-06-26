@@ -24,8 +24,10 @@ type Open311Request struct {
 }
 
 type Worker struct {
-	Db        *sql.DB
-	LastRunAt time.Time
+	Db         *sql.DB
+	LastRunAt  time.Time
+	InsertStmt *sql.Stmt
+	UpdateStmt *sql.Stmt
 }
 
 var worker Worker
@@ -40,6 +42,8 @@ func init() {
 		log.Fatal("Cannot open database connection", err)
 	}
 	worker.Db = db
+
+	worker.SetupStmts()
 
 	// fetch SR num from command line, if present
 	flag.StringVar(&sr_number, "sr-number", "", "SR number to fetch")
@@ -81,6 +85,30 @@ func main() {
 	}
 }
 
+func (w *Worker) SetupStmts() {
+	insert, err := worker.Db.Prepare(`INSERT INTO service_requests(service_request_id,
+		status, service_name, service_code, agency_responsible,
+		address, requested_datetime, updated_datetime, lat, long,
+		ward, police_district, media_url, channel, duplicate, parent_service_request_id, closed_datetime, notes)
+		VALUES ($1::varchar, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18);`)
+
+	if err != nil {
+		fmt.Print("error preparing insert statement ", err)
+	}
+	w.InsertStmt = insert
+
+	update, err := worker.Db.Prepare(`UPDATE service_requests SET
+		status = $2, service_name = $3, service_code = $4, agency_responsible = $5, 
+		address = $6, requested_datetime = $7, updated_datetime = $8, lat = $9, long = $10,
+		ward = $11, police_district = $12, media_url = $13, channel = $14, duplicate = $15,
+		parent_service_request_id = $16, updated_at = NOW(), closed_datetime = $17, notes = $18 WHERE service_request_id = $1;`)
+
+	if err != nil {
+		fmt.Print("error preparing update statement ", err)
+	}
+	w.UpdateStmt = update
+}
+
 func (req Open311Request) String() string {
 	// pretty print SR information
 	return fmt.Sprintf("%s: %s at %s %f,%f, last update %s", req.Service_request_id, req.Service_name, req.Address, req.Lat, req.Long, req.Updated_datetime)
@@ -104,7 +132,7 @@ func (req Open311Request) Save() (persisted bool) {
 	case err == sql.ErrNoRows:
 		// log.Printf("did not find existing record %s", req.Service_request_id)
 	case err != nil:
-		// log.Print("error searching for existing SR", err)
+		log.Print("error searching for existing SR", err)
 	default:
 		persisted = true
 		// log.Printf("found existing sr %s", req.Service_request_id)
@@ -113,36 +141,9 @@ func (req Open311Request) Save() (persisted bool) {
 	var stmt *sql.Stmt
 
 	if !persisted {
-		// create new record
-		stmt, err = worker.Db.Prepare("INSERT INTO service_requests(service_request_id," +
-			"status, service_name, service_code, agency_responsible, " +
-			"address, requested_datetime, updated_datetime, lat, long," +
-			"ward, police_district, media_url, channel, duplicate, parent_service_request_id, closed_datetime, notes) " +
-			"VALUES ($1::varchar, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18); ")
-
-		// "WHERE NOT EXISTS (SELECT 1 FROM service_requests WHERE service_request_id = $1);")
-
-		if err != nil {
-			log.Fatal("error preparing database insert statement", err)
-		}
-
+		stmt = worker.InsertStmt
 	} else {
-		// update existing record
-		stmt, err = worker.Db.Prepare("UPDATE service_requests SET " +
-			"status = $2, service_name = $3, service_code = $4, agency_responsible = $5, " +
-			"address = $6, requested_datetime = $7, updated_datetime = $8, lat = $9, long = $10," +
-			"ward = $11, police_district = $12, media_url = $13, channel = $14, duplicate = $15, " +
-			"parent_service_request_id = $16, updated_at = NOW(), closed_datetime = $17, notes = $18 WHERE service_request_id = $1;")
-
-		if err != nil {
-			log.Fatal("error preparing database update statement", err)
-		}
-	}
-
-	tx, err := worker.Db.Begin()
-
-	if err != nil {
-		log.Fatal("error beginning transaction", err)
+		stmt = worker.UpdateStmt
 	}
 
 	t := req.ExtractClosedDatetime()
@@ -151,7 +152,8 @@ func (req Open311Request) Save() (persisted bool) {
 	if err != nil {
 		log.Print("error marshaling notes to JSON: ", err)
 	}
-	_, err = tx.Stmt(stmt).Exec(req.Service_request_id,
+
+	_, err = stmt.Exec(req.Service_request_id,
 		req.Status,
 		req.Service_name,
 		req.Service_code,
@@ -190,15 +192,7 @@ func (req Open311Request) Save() (persisted bool) {
 		persisted = true
 	}
 
-	err = tx.Commit()
-	if err != nil {
-		log.Fatal("error closing transaction", err)
-	}
-
 	return persisted
-
-	// calculate closed time if necessary
-
 }
 
 func (req Open311Request) ExtractClosedDatetime() time.Time {
@@ -261,7 +255,7 @@ func fetchSingleRequest(sr_number string) (request Open311Request) {
 }
 
 func fetchRequests() (requests []Open311Request) {
-	last_updated_at := time.Now()	
+	last_updated_at := time.Now()
 	if err := worker.Db.QueryRow("SELECT MAX(updated_datetime) FROM service_requests;").Scan(&last_updated_at); err != nil {
 		log.Print("[fetchRequests] error loading most recent SR, will fallback to current time: ", err)
 	}
