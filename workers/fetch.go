@@ -110,33 +110,34 @@ func (req Open311Request) Save() (persisted bool) {
 		// log.Printf("found existing sr %s", req.Service_request_id)
 	}
 
-	var stmt *sql.Stmt
+	// var stmt *sql.Stmt
+	var stmt string
 
 	if !persisted {
 		// create new record
-		stmt, err = worker.Db.Prepare("INSERT INTO service_requests(service_request_id," +
-			"status, service_name, service_code, agency_responsible, " +
-			"address, requested_datetime, updated_datetime, lat, long," +
-			"ward, police_district, media_url, channel, duplicate, parent_service_request_id, closed_datetime, notes) " +
-			"VALUES ($1::varchar, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18); ")
+		stmt = `INSERT INTO service_requests(service_request_id,
+			status, service_name, service_code, agency_responsible,
+			address, requested_datetime, updated_datetime, lat, long,
+			ward, police_district, media_url, channel, duplicate, parent_service_request_id, closed_datetime, notes)
+			VALUES ($1::varchar, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18);`
 
 		// "WHERE NOT EXISTS (SELECT 1 FROM service_requests WHERE service_request_id = $1);")
 
-		if err != nil {
-			log.Fatal("error preparing database insert statement", err)
-		}
+		// if err != nil {
+		// 	log.Fatal("error preparing database insert statement", err)
+		// }
 
 	} else {
 		// update existing record
-		stmt, err = worker.Db.Prepare("UPDATE service_requests SET " +
-			"status = $2, service_name = $3, service_code = $4, agency_responsible = $5, " +
-			"address = $6, requested_datetime = $7, updated_datetime = $8, lat = $9, long = $10," +
-			"ward = $11, police_district = $12, media_url = $13, channel = $14, duplicate = $15, " +
-			"parent_service_request_id = $16, updated_at = NOW(), closed_datetime = $17, notes = $18 WHERE service_request_id = $1;")
+		stmt = `UPDATE service_requests SET
+			status = $2, service_name = $3, service_code = $4, agency_responsible = $5, 
+			address = $6, requested_datetime = $7, updated_datetime = $8, lat = $9, long = $10,
+			ward = $11, police_district = $12, media_url = $13, channel = $14, duplicate = $15,
+			parent_service_request_id = $16, updated_at = NOW(), closed_datetime = $17, notes = $18 WHERE service_request_id = $1;`
 
-		if err != nil {
-			log.Fatal("error preparing database update statement", err)
-		}
+		// if err != nil {
+		// 	log.Fatal("error preparing database update statement", err)
+		// }
 	}
 
 	// tx, err := worker.Db.Begin()
@@ -152,7 +153,8 @@ func (req Open311Request) Save() (persisted bool) {
 		log.Print("error marshaling notes to JSON: ", err)
 	}
 	
-	_, err = stmt.Exec(req.Service_request_id,
+	_, err = worker.Db.Exec(stmt,
+		req.Service_request_id,
 		req.Status,
 		req.Service_name,
 		req.Service_code,
