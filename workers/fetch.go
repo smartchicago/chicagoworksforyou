@@ -139,11 +139,11 @@ func (req Open311Request) Save() (persisted bool) {
 		}
 	}
 
-	tx, err := worker.Db.Begin()
-
-	if err != nil {
-		log.Fatal("error beginning transaction", err)
-	}
+	// tx, err := worker.Db.Begin()
+	// 
+	// if err != nil {
+	// 	log.Fatal("error beginning transaction", err)
+	// }
 
 	t := req.ExtractClosedDatetime()
 	closed_time := pq.NullTime{Time: t, Valid: !t.IsZero()}
@@ -151,7 +151,8 @@ func (req Open311Request) Save() (persisted bool) {
 	if err != nil {
 		log.Print("error marshaling notes to JSON: ", err)
 	}
-	_, err = tx.Stmt(stmt).Exec(req.Service_request_id,
+	
+	_, err = stmt.Exec(req.Service_request_id,
 		req.Status,
 		req.Service_name,
 		req.Service_code,
@@ -190,10 +191,10 @@ func (req Open311Request) Save() (persisted bool) {
 		persisted = true
 	}
 
-	err = tx.Commit()
-	if err != nil {
-		log.Fatal("error closing transaction", err)
-	}
+	// err = tx.Commit()
+	// if err != nil {
+	// 	log.Fatal("error closing transaction", err)
+	// }
 
 	return persisted
 
