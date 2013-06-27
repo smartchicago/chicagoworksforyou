@@ -88,6 +88,7 @@ func main() {
 			_, err = db.Exec(string(raw_sql))
 			if err != nil {
 				fmt.Printf("error migrating %s: %s", migration, err)
+				return
 			}
 
 			fmt.Println("===== completed migration =====", migration)
