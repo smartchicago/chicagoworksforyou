@@ -1,0 +1,22 @@
+---
+layout: default
+section: annotations
+slug: annotations-landing
+title: Annotations
+---
+
+<div class="container content">
+{% for post in site.posts %}
+<article class="row">
+    <div class="span4">
+        <h2><a href="{{ post.url }}">{{ post.title }}</a></h2>
+    </div>
+    <div class="span8 article-body">
+        <p>
+            {{ post.summary }}
+        </p>
+
+    </div>
+</article>
+{% endfor %}
+</div>
