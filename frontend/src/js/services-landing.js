@@ -1,5 +1,5 @@
-var stIndex = 0;
-var serviceTypes = _.pairs(serviceTypesJSON);
+window.stIndex = 0;
+window.serviceTypes = _.pairs(serviceTypesJSON);
 
 function calculateLayerSettings(wardNum, highest, lowest) {
     var fillOp = 0.1;

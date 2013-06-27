@@ -1,11 +1,11 @@
-var wardPaths = [];
-var wardPolys = [];
+window.wardPaths = [];
+window.wardPolys = [];
 
-var currWeekEnd = moment().day(-1).startOf('day');
-var dateFormat = 'YYYY-MM-DD';
-var weekDuration = moment.duration(6,"days");
+window.currWeekEnd = moment().day(-1).startOf('day');
+window.dateFormat = 'YYYY-MM-DD';
+window.weekDuration = moment.duration(6,"days");
 
-var serviceTypesJSON = {
+window.serviceTypesJSON = {
     "graffiti_removal": {
         "code": "4fd3b167e750846744000005",
         "name": "Graffiti Removal"
