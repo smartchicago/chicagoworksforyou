@@ -3,5 +3,4 @@ plugins: './_plugins'
 source: src
 destination: site
 permalink: /annotations/:year/:month/:day/
-# debug: false
 debug: true
