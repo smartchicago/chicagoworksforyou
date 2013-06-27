@@ -20,7 +20,7 @@ function calculateLayerSettings(wardNum, highest, lowest) {
     return settings;
 }
 
-function redrawChart(stCode, isRedraw) {
+function redrawWards(stCode, isRedraw) {
     var numOfDays = 7;
     var url = window.apiDomain + 'requests/' + stCode + '/counts.json?end_date=' + currWeekEnd.format(dateFormat) + '&count=' + numOfDays + '&callback=?';
 
@@ -58,27 +58,25 @@ function redrawChart(stCode, isRedraw) {
     );
 }
 
-function updateST(i) {
+function updateST(i, isRedraw) {
     var st = serviceTypes[i][1];
     $('.st-info h2').text(st.name);
-    redrawChart(st.code, true);
+    redrawWards(st.code, isRedraw);
 }
 
 $(function () {
     $('.prevST').click(function(evt) {
         evt.preventDefault();
-        updateST(--stIndex);
+        updateST(--stIndex, true);
     });
 
     $('.nextST a').click(function(evt) {
         evt.preventDefault();
-        updateST(++stIndex);
+        updateST(++stIndex, true);
     });
 
     drawChicagoMap();
     buildWardPaths();
-
     window.allWards = L.layerGroup();
-
-    redrawChart(serviceTypes[0][1].code, false); // Graffiti Removal
+    updateST(stIndex, false);
 });
