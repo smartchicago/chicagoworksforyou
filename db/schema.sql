@@ -101,16 +101,6 @@ ALTER SEQUENCE service_requests_id_seq OWNED BY service_requests.id;
 
 
 --
--- Name: update_log; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE update_log (
-    last_run_at timestamp with time zone NOT NULL,
-    notes character varying(100)
-);
-
-
---
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -134,11 +124,17 @@ ALTER TABLE ONLY service_requests
 
 
 --
--- Name: update_log_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: sr_closed_code; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-ALTER TABLE ONLY update_log
-    ADD CONSTRAINT update_log_pkey PRIMARY KEY (last_run_at);
+CREATE INDEX sr_closed_code ON service_requests USING btree (closed_datetime, service_code);
+
+
+--
+-- Name: sr_requested_code; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX sr_requested_code ON service_requests USING btree (requested_datetime, service_code);
 
 
 --
