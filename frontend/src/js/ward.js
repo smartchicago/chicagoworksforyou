@@ -71,7 +71,7 @@ $(function () {
         evt.preventDefault();
         currWeekEnd.add('week',1);
         $.getJSON(
-            'http://cwfy-api-staging.smartchicagoapps.org/wards/' + ward + '/counts.json?count=7&service_code=' + currServiceType + '&end_date=' + currWeekEnd.format(dateFormat) + '&callback=?',
+            window.apiDomain + 'wards/' + ward + '/counts.json?count=7&service_code=' + currServiceType + '&end_date=' + currWeekEnd.format(dateFormat) + '&callback=?',
             function(response) {redrawChart(response);}
         );
     });
@@ -80,7 +80,7 @@ $(function () {
         evt.preventDefault();
         currWeekEnd.subtract('week',1);
         $.getJSON(
-            'http://cwfy-api-staging.smartchicagoapps.org/wards/' + ward + '/counts.json?count=7&service_code=' + currServiceType + '&end_date=' + currWeekEnd.format(dateFormat) + '&callback=?',
+            window.apiDomain + 'wards/' + ward + '/counts.json?count=7&service_code=' + currServiceType + '&end_date=' + currWeekEnd.format(dateFormat) + '&callback=?',
             function(response) {redrawChart(response);}
         );
     });
@@ -92,7 +92,7 @@ $(function () {
         currServiceType = $(this).attr('data-code');
 
         $.getJSON(
-            'http://cwfy-api-staging.smartchicagoapps.org/wards/' + ward + '/counts.json?count=7&service_code=' + currServiceType + '&end_date=' + currWeekEnd.format(dateFormat) + '&callback=?',
+            window.apiDomain + 'wards/' + ward + '/counts.json?count=7&service_code=' + currServiceType + '&end_date=' + currWeekEnd.format(dateFormat) + '&callback=?',
             function(response) {redrawChart(response);}
         );
 
