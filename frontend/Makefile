@@ -22,4 +22,8 @@ deploy:
 	$(S3CMD) $(PRODUCTION_BUCKET)
 
 staging:
+	bundle exec jekyll build --config _config.yml,_config_staging.yml
 	$(S3CMD) $(STAGING_BUCKET)
+
+production:
+	bundle exec jekyll build --config _config.yml,_config_production.yml
