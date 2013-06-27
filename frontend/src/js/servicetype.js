@@ -5,7 +5,7 @@ var weekDuration = moment.duration(6,"days");
 function redrawChart() {
     var stCode = currServiceType;
     var numOfDays = 7;
-    var url = 'http://cwfy-api-staging.smartchicagoapps.org/requests/' + stCode + '/counts.json?end_date=' + currWeekEnd.format(dateFormat) + '&count=' + numOfDays + '&callback=?';
+    var url = window.apiDomain + 'requests/' + stCode + '/counts.json?end_date=' + currWeekEnd.format(dateFormat) + '&count=' + numOfDays + '&callback=?';
     var chart = $('#chart').highcharts();
 
     $.getJSON(

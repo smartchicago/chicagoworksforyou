@@ -85,7 +85,7 @@ function calculateLayerSettings(wardNum, highest, lowest) {
 }
 
 function redrawChart(stCode, isRedraw) {
-    var url = 'http://cwfy-api-staging.smartchicagoapps.org/requests/' + stCode + '/counts.json?end_date=' + currWeekEnd.format(dateFormat) + '&count=' + numOfDays + '&callback=?';
+    var url = window.apiDomain + 'requests/' + stCode + '/counts.json?end_date=' + currWeekEnd.format(dateFormat) + '&count=' + numOfDays + '&callback=?';
     $.getJSON(
         url,
         function(response) {
