@@ -67,7 +67,11 @@
 </footer>
 
 <script>
-window.apiDomain = "{{ site.api }}";
+{% if site.debug %}
+window.apiDomain = "http://localhost:5000/";
+{% else %}
+window.apiDomain = "http://cwfy-api-staging.smartchicagoapps.org/";
+{% endif %}
 </script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="/js/bootstrap.custom.min.js"></script>
