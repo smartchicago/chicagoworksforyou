@@ -1,7 +1,3 @@
-var currWeekEnd = moment().day(-1).startOf('day');
-var dateFormat = 'YYYY-MM-DD';
-var weekDuration = moment.duration(6,"days");
-
 function redrawChart() {
     var stCode = currServiceType;
     var numOfDays = 7;
