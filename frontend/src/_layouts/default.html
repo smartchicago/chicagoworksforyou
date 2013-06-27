@@ -66,14 +66,17 @@
     © 2013 Smart Chicago Collaborative
 </footer>
 
-<script>
 {% if site.debug %}
+<script>
 window.apiDomain = "http://localhost:5000/";
+</script>
+<script src="/js/jquery.1.9.1.js"></script>
 {% else %}
+<script>
 window.apiDomain = "http://cwfy-api-staging.smartchicagoapps.org/";
-{% endif %}
 </script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+{% endif %}
 <script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
 <script src="/data/wards.json"></script>
