@@ -1,6 +1,3 @@
-var wardPaths = [];
-var wardPolys = [];
-
 $(function () {
     for (var ward in WARDS) {
         var points = WARDS[ward].simple_shape[0][0];
