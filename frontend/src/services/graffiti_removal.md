@@ -1,6 +1,6 @@
 ---
 layout: service
-service_type: 4fd3b167e750846744000005
+service_code: 4fd3b167e750846744000005
 title: Graffiti Removal
 ---
 
