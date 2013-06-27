@@ -1,5 +1,6 @@
 ---
 layout: about
+section: about
 title: About Chicago Works For You
 ---
 
