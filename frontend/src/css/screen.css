@@ -150,13 +150,13 @@ ul.nav .alderman a {
   width: 100%;
   height: 350px; }
 
-.servicetypes .wards-map {
+.services-landing .wards-map {
   margin-top: -46px;
   height: 100%; }
-.servicetypes .st-info-wrap {
+.services-landing .st-info-wrap {
   height: 0;
   position: relative; }
-  .servicetypes .st-info-wrap .st-info {
+  .services-landing .st-info-wrap .st-info {
     position: absolute;
     background: white;
     top: 100px;
@@ -168,9 +168,9 @@ ul.nav .alderman a {
     -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); }
-  .servicetypes .st-info-wrap h2 {
+  .services-landing .st-info-wrap h2 {
     margin: 0 0 10px; }
-  .servicetypes .st-info-wrap .pagination {
+  .services-landing .st-info-wrap .pagination {
     margin: 0 0 10px; }
 
 .service .content {
