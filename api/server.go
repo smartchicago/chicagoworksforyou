@@ -23,7 +23,7 @@ var api Api
 
 func init() {
 	// version
-	api.Version = "0.0.1"
+	api.Version = "0.0.2"
 
 	// setup database connection
 	db, err := sql.Open("postgres", "dbname=cwfy sslmode=disable")
