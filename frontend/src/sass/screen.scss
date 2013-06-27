@@ -115,18 +115,34 @@ html, body {
     padding-top: 35px;
 }
 
+// WARDS MAP
+
+.wards-map {
+    margin-top: -46px; // Height of navbar
+    height: 100%;
+}
+
+.map-overlay-wrap {
+    height: 0;
+    position: relative;
+
+    .map-overlay {
+        position: absolute;
+        background: white;
+        top: 100px;
+        left: 0;
+        z-index: 3000;
+        margin: 0;
+        padding: 12px 20px;
+        border-radius: 6px;
+        @include box-shadow(0 0 10px fade-out(black,.7));
+    }
+}
+
 // WARDS
 
 .wards-landing {
-    .wards-map {
-        margin-top: -46px; // Height of navbar
-        height: 100%;
-    }
-
     .st-list {
-        height: 0;
-        position: relative;
-
         ul {
             position: absolute;
             top: 150px;
@@ -234,34 +250,12 @@ ul.nav .alderman {
 // SERVICE TYPES
 
 .services-landing {
-    .wards-map {
-        margin-top: -46px; // Height of navbar
-        height: 100%;
+    h2 {
+        margin: 0 0 10px;
     }
 
-    .st-info-wrap {
-        height: 0;
-        position: relative;
-
-        .st-info {
-            position: absolute;
-            background: white;
-            top: 100px;
-            left: 0;
-            z-index: 3000;
-            margin: 0;
-            padding: 12px 20px;
-            border-radius: 6px;
-            @include box-shadow(0 0 10px fade-out(black,.7));
-        }
-
-        h2 {
-            margin: 0 0 10px;
-        }
-
-        .pagination {
-            margin: 0 0 10px;
-        }
+    .pagination {
+        margin: 0 0 10px;
     }
 }
 
