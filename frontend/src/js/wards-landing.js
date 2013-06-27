@@ -1,12 +1,4 @@
-for (var ward in WARDS) {
-    var points = WARDS[ward].simple_shape[0][0];
-    var path = [];
-    for (var p in points) {
-        var latlong = [points[p][1], points[p][0]];
-        path.push(latlong);
-    }
-    wardPaths.push(path);
-}
+buildWardPaths();
 
 var map = L.map('map',{scrollWheelZoom: false}).setView([41.83, -87.81], 11);
 L.tileLayer('http://{s}.tile.cloudmade.com/{key}/997/256/{z}/{x}/{y}.png', {
@@ -16,7 +8,7 @@ L.tileLayer('http://{s}.tile.cloudmade.com/{key}/997/256/{z}/{x}/{y}.png', {
 }).addTo(map);
 map.zoomControl.setPosition('bottomleft');
 
-for (path in wardPaths) {
+for (var path in wardPaths) {
     var wardNum = parseInt(path,10) + 1;
     var poly = L.polygon(
         wardPaths[path],

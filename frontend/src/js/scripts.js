@@ -63,3 +63,15 @@ var serviceTypesJSON = {
         "name": "Street Lights All / Out"
     }
 };
+
+function buildWardPaths() {
+    for (var ward in WARDS) {
+        var points = WARDS[ward].simple_shape[0][0];
+        var wardPath = [];
+        for (var p in points) {
+            var latlong = [points[p][1], points[p][0]];
+            wardPath.push(latlong);
+        }
+        wardPaths[ward] = wardPath;
+    }
+}

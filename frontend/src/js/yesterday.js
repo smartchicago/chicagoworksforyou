@@ -1,13 +1,5 @@
 $(function () {
-    for (var ward in WARDS) {
-        var points = WARDS[ward].simple_shape[0][0];
-        var wardPath = [];
-        for (var p in points) {
-            var latlong = [points[p][1], points[p][0]];
-            wardPath.push(latlong);
-        }
-        wardPaths[ward] = wardPath;
-    }
+    buildWardPaths();
 
     window.map = L.map('map',{scrollWheelZoom: false}).setView([41.83, -87.81], 11);
     L.tileLayer('http://{s}.tile.cloudmade.com/{key}/997/256/{z}/{x}/{y}.png', {
