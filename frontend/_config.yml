@@ -2,6 +2,6 @@ name: Chicago Works For You
 plugins: './_plugins'
 source: src
 destination: site
-permalink: /interesting/:year/:month/:title
 api: http://cwfy-api-staging.smartchicagoapps.org/
 # api: http://localhost:5000/
+permalink: /annotations/:year/:month/:day/

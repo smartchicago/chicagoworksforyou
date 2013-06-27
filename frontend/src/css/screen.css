@@ -187,6 +187,11 @@ ul.nav .alderman a {
 .about p {
   margin: 0 0 1.2em; }
 
+.annotations .content {
+  padding-top: 20px; }
+.annotations .article-body {
+  padding-top: 10px; }
+
 footer {
   padding: 10px 0 30px 0;
   font-size: 12px;
