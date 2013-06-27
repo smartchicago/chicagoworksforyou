@@ -127,8 +127,9 @@ func RequestCountsHandler(response http.ResponseWriter, request *http.Request) {
 	}
 
 	type WardCount struct {
-		Ward  int
-		Count int
+		Ward    int
+		Count   int
+		Average float32
 	}
 
 	counts := make(map[int]WardCount)
@@ -143,7 +144,7 @@ func RequestCountsHandler(response http.ResponseWriter, request *http.Request) {
 	}
 
 	// find total opened for the entire city for date range
-	city_total := WardCount{Ward: 0}
+	city_total := WardCount{Ward: 0, Count: 0, Average: 0.0}
 	err = api.Db.QueryRow("SELECT COUNT(*) FROM service_requests WHERE service_code "+
 		"= $1 AND duplicate IS NULL AND requested_datetime >= $2 "+
 		" AND requested_datetime <= $3;",
@@ -155,10 +156,36 @@ func RequestCountsHandler(response http.ResponseWriter, request *http.Request) {
 
 	counts[0] = city_total
 
+	if params["include_average"][0] == "true" {
+		// load the 1 year rolling average for number opened per day
+		rows, err := api.Db.Query(`SELECT COUNT(*) AS cnt, ward 
+			FROM service_requests 
+			WHERE service_code = $1 
+				AND requested_datetime >= (NOW() - INTERVAL '1 year')
+				AND duplicate IS NULL 
+			GROUP BY ward;`, service_code)
+
+		if err != nil {
+			log.Print("error querying for year counts", err)
+		}
+
+		for rows.Next() {
+			var count int
+			var ward int
+			if err := rows.Scan(&count, &ward); err != nil {
+				log.Print("error loading ward counts ", err, count, ward)
+			}
+			
+			tmp := counts[ward]
+			tmp.Average = float32(count) / 365.0
+			counts[ward] = tmp
+		}
+	}
+
 	// pluck data to return, ensure we return a number, even zero, for each ward
-	data := make(map[string]int)
+	data := make(map[string]WardCount)
 	for i := 0; i < 51; i++ {
-		data[strconv.Itoa(i)] = counts[i].Count
+			data[strconv.Itoa(i)] = counts[i]
 	}
 
 	jsn, _ := json.MarshalIndent(data, "", "  ")
@@ -204,7 +231,7 @@ func TimeToCloseHandler(response http.ResponseWriter, request *http.Request) {
 	//      ... snipped ...
 
 	response.Header().Set("Content-type", "application/json; charset=utf-8")
-		
+
 	params := request.URL.Query()
 
 	// required
@@ -288,9 +315,9 @@ func WardCountsHandler(response http.ResponseWriter, request *http.Request) {
 	//   "2013-06-12": 23
 	// }
 	//
-	
+
 	response.Header().Set("Content-type", "application/json; charset=utf-8")
-	
+
 	vars := mux.Vars(request)
 	ward_id := vars["id"]
 	params := request.URL.Query()
@@ -345,7 +372,6 @@ func WardCountsHandler(response http.ResponseWriter, request *http.Request) {
 func WardRequestsHandler(response http.ResponseWriter, request *http.Request) {
 	// for a given ward, return recent service requests
 	response.Header().Set("Content-type", "application/json; charset=utf-8")
-	
 
 	vars := mux.Vars(request)
 	ward_id := vars["id"]
@@ -410,7 +436,7 @@ func ServicesHandler(response http.ResponseWriter, request *http.Request) {
 	// ]
 
 	response.Header().Set("Content-type", "application/json; charset=utf-8")
-	
+
 	type ServicesCount struct {
 		Count        int
 		Service_code string
