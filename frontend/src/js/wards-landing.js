@@ -12,7 +12,7 @@ $(function () {
                 weight: 2,
                 fillOpacity: (((wardNum % 5) + 2) / 10)
             }
-        ).addTo(map);
+        ).addTo(window.map);
         poly.bindPopup('<a href="/wards/' + wardNum + '/">Ward ' + wardNum + '</a>');
     }
 });

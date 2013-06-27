@@ -34,6 +34,8 @@ function redrawWards(stCode, isRedraw) {
             var highest = sorted[49];
 
             if (!isRedraw) {
+                window.allWards = L.layerGroup();
+
                 for (var path in wardPaths) {
                     var wardNum = parseInt(path, 10);
                     var poly = L.polygon(
@@ -45,12 +47,12 @@ function redrawWards(stCode, isRedraw) {
                         }, calculateLayerSettings(wardNum, highest, lowest))
                     );
                     poly.bindPopup('<a href="/wards/' + wardNum + '/">Ward ' + wardNum + '</a>');
-                    allWards.addLayer(poly);
+                    window.allWards.addLayer(poly);
                 }
 
-                allWards.addTo(window.map);
+                window.allWards.addTo(window.map);
             } else {
-                allWards.eachLayer(function(layer) {
+                window.allWards.eachLayer(function(layer) {
                     layer.setStyle(calculateLayerSettings(layer.options.id, highest, lowest));
                 });
             }
@@ -77,6 +79,6 @@ $(function () {
 
     drawChicagoMap();
     buildWardPaths();
-    window.allWards = L.layerGroup();
+
     updateST(stIndex, false);
 });
