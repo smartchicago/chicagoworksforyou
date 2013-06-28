@@ -115,14 +115,10 @@ html, body {
     padding-top: 35px;
 }
 
-div[ng-view] {
-    margin-top: -46px; // Height of navbar
-    height: 100%;
-}
-
-// WARDS MAP
+// MAP
 
 .wards-map {
+    margin-top: -46px; // Height of navbar
     height: 100%;
 }
 
@@ -140,6 +136,27 @@ div[ng-view] {
         padding: 12px 20px;
         border-radius: 6px;
         @include box-shadow(0 0 10px fade-out(black,.7));
+    }
+}
+
+// SERVICES
+
+.services {
+    h2 {
+        margin: 0 0 10px;
+    }
+
+    .pagination {
+        margin: 0 0 10px;
+    }
+
+    .content {
+        padding-top: 15px;
+    }
+
+    .chart {
+         width:100%;
+         height:2500px;
     }
 }
 
@@ -248,27 +265,6 @@ ul.nav .alderman {
     .chart {
          width:100%;
          height:350px;
-    }
-}
-
-// SERVICES
-
-.services {
-    h2 {
-        margin: 0 0 10px;
-    }
-
-    .pagination {
-        margin: 0 0 10px;
-    }
-
-    .content {
-        padding-top: 15px;
-    }
-
-    .chart {
-         width:100%;
-         height:2500px;
     }
 }
 

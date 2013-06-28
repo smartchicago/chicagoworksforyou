@@ -2,17 +2,15 @@
 
 /* Controllers */
 
-function ServiceMapCtrl($scope, $http, $routeParams) {
+servicesMapApp.controller("servicesMapCtrl", function($scope, $http, $route, $routeParams) {
     $http.get('/data/services.json').success(function(data) {
         $scope.services = data;
-        window.test = data;
     });
 
     $scope.orderProp = 'name';
-    $scope.wrapClass = 'has-map';
     $scope.serviceTypeSlug = $routeParams.serviceSlug;
     $scope.serviceType = serviceTypesJSON[$routeParams.serviceSlug];
-    $scope.hasMap = true;
+    $scope.date = $routeParams.date;
 
     $scope.calculateLayerSettings = function(wardNum, highest, lowest) {
         var fillOp = 0.1;
@@ -77,7 +75,7 @@ function ServiceMapCtrl($scope, $http, $routeParams) {
     drawChicagoMap();
     buildWardPaths();
     $scope.updateST(false);
-}
+});
 
 //ServiceMapCtrl.$inject = ['$scope', '$http'];
 

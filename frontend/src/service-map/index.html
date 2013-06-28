@@ -1,3 +1,10 @@
+---
+layout: default
+section: services
+app: servicesMapApp
+title: Service Types
+---
+
 <div class="map-overlay-wrap container">
     <div class="map-overlay span3">
         <div class="pagination">
@@ -6,13 +13,7 @@
                 <li class="nextST"><a href="#">Next &rarr;</a></li>
             </ul>
         </div>
-        <h2>{{ serviceType.name }}</h2>
-        <p>
-            {{ serviceType.code }}
-        </p>
-        <p>
-            <a href="#/{{ serviceTypeSlug }}">More &rarr;</a>
-        </p>
+        <div ng-view></div>
     </div>
 </div>
 

@@ -83,11 +83,8 @@ html, body {
   position: relative;
   padding-top: 35px; }
 
-div[ng-view] {
-  margin-top: -46px;
-  height: 100%; }
-
 .wards-map {
+  margin-top: -46px;
   height: 100%; }
 
 .map-overlay-wrap {
@@ -105,6 +102,16 @@ div[ng-view] {
     -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); }
+
+.services h2 {
+  margin: 0 0 10px; }
+.services .pagination {
+  margin: 0 0 10px; }
+.services .content {
+  padding-top: 15px; }
+.services .chart {
+  width: 100%;
+  height: 2500px; }
 
 .wards-landing .st-list ul {
   position: absolute;
@@ -166,16 +173,6 @@ ul.nav .alderman a {
 .ward .chart {
   width: 100%;
   height: 350px; }
-
-.services h2 {
-  margin: 0 0 10px; }
-.services .pagination {
-  margin: 0 0 10px; }
-.services .content {
-  padding-top: 15px; }
-.services .chart {
-  width: 100%;
-  height: 2500px; }
 
 .about h3 {
   padding: .5em 0 0;
