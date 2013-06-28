@@ -48,7 +48,7 @@ function updateST(i, isRedraw) {
                             weight: 2
                         }, calculateLayerSettings(wardNum, highest, lowest))
                     );
-                    poly.bindPopup('<a href="/wards/' + wardNum + '/">Ward ' + wardNum + '</a>');
+                    poly.bindPopup('<a href="/ward/' + wardNum + '/">Ward ' + wardNum + '</a>');
                     window.allWards.addLayer(poly);
                 }
 

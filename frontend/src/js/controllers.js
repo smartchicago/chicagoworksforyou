@@ -58,7 +58,7 @@ servicesMapApp.controller("servicesMapCtrl", function($scope, $http, $route, $ro
                                 weight: 2
                             }, $scope.calculateLayerSettings(wardNum, highest, lowest))
                         );
-                        poly.bindPopup('<a href="/wards/' + wardNum + '/">Ward ' + wardNum + '</a>');
+                        poly.bindPopup('<a href="/ward/' + wardNum + '/">Ward ' + wardNum + '</a>');
                         window.allWards.addLayer(poly);
                     }
 
