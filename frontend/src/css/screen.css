@@ -159,18 +159,18 @@ ul.nav .alderman a {
   ul.nav .alderman a:hover {
     background: #d7d7d7; }
 
-.ward #map {
+.wardApp #map {
   height: 450px; }
-.ward .filter.affix {
+.wardApp .filter.affix {
   top: 75px; }
-.ward .pagination {
+.wardApp .pagination {
   margin-top: 0; }
-.ward section {
+.wardApp section {
   margin-bottom: 30px;
   border-bottom: 1px solid #ddd; }
-.ward h3 {
+.wardApp h3 {
   margin: 0 0 1em; }
-.ward .chart {
+.wardApp .chart {
   width: 100%;
   height: 350px; }
 

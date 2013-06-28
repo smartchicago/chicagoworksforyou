@@ -37,7 +37,7 @@
 </div>
 
 <div class="subnav-wrap">
-{% if page.subnav == 'ward_detail' %}
+{% if page.app == 'wardApp' %}
     <div class="navbar container subnav wardnav">
       <div class="navbar-inner">
         <a class="brand" href="#">Ward {{ page.ward }}</a>
@@ -53,7 +53,7 @@
       </div>
     </div>
 {% endif %}
-{% if page.subnav == 'wards' %}
+{% if page.app == 'wardMapApp' %}
     <div class="navbar container subnav">
         <form class="search-form" action="/search/">
             <input type="text" placeholder="Enter your address to find your ward">
@@ -88,5 +88,8 @@ window.apiDomain = "http://cwfy-api-staging.smartchicagoapps.org/";
 <script src="/lib/twix.min.js"></script>
 <script src="/lib/underscore-min.js"></script>
 <script src="/js/scripts.js"></script>
+{% if page.has_js %}
+<script src="/js/{{ page.app }}.js"></script>
+{% endif %}
 </body>
 </html>

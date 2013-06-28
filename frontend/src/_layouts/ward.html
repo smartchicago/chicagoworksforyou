@@ -1,8 +1,8 @@
 ---
 layout: default
 section: wards
-slug: ward
-subnav: ward_detail
+app: wardApp
+title: Ward
 has_js: true
 ---
 
@@ -25,37 +25,14 @@ window.wardNum = "{{ page.ward }}";
                         <li class="next-week"><a href="#">&rarr;</a></li>
                     </ul>
                 </div>
-                <ul class="st-list nav nav-pills nav-stacked">
-                    <li><a data-code="4ffa4c69601827691b000018" href="#">Abandoned Vehicle</a></li>
-                    <li><a data-code="4ffa9cad6018277d4000007b" href="#">Alley Light Out</a></li>
-                    <li><a data-code="4fd3bd72e750846c530000cd" href="#">Building Violation</a></li>
-                    <li class="initial"><a data-code="4fd3b167e750846744000005" href="#">Graffiti Removal</a></li>
-                    <li><a data-code="4ffa971e6018277d4000000b" href="#">Pavement Cave-In Survey</a></li>
-                    <li><a data-code="4fd3b656e750846c53000004" href="#">Pothole in Street</a></li>
-                    <li><a data-code="4fd6e4ece750840569000019" href="#">Restaurant Complaint</a></li>
-                    <li><a data-code="4fd3b9bce750846c5300004a" href="#">Rodent Baiting / Rat Complaint</a></li>
-                    <li><a data-code="4fd3b750e750846c5300001d" href="#">Sanitation Code Violation</a></li>
-                    <li><a data-code="4ffa995a6018277d4000003c" href="#">Street Cut Complaints</a></li>
-                    <li><a data-code="4ffa9f2d6018277d400000c8" href="#">Street Light 1 / Out</a></li>
-                    <li><a data-code="4fd3bd3de750846c530000b9" href="#">Street Lights All / Out</a></li>
-                    <li><a data-code="4ffa9db16018277d400000a2" href="#">Traffic Signal Out</a></li>
-                    <li><a data-code="4fd3bbf8e750846c53000069" href="#">Tree Debris</a></li>
+                {% raw %}
+                <ul class="st-list nav nav-pills nav-stacked" ng-controller="serviceListCtrl">
+                    <li ng-class="{active: isActive(service.slug)}" ng-repeat="service in services | orderBy:orderProp"><a href="#/{{ service.slug }}">{{ service.name }}</a></li>
                 </ul>
+                {% endraw %}
             </div>
         </div>
-        <div class="span9">
-            <section id="counts">
-                <h3>Tickets submitted</h3>
-                <div id="counts-chart" class="chart"></div>
-            </section>
-            <section id="ttc">
-                <h3>Time-to-close</h3>
-                <div class="chart"></div>
-            </section>
-            <section id="rankings">
-                <h3>Rankings</h3>
-                <div class="chart"></div>
-            </section>
+        <div class="span9" ng-view>
         </div>
     </div>
 </div>
