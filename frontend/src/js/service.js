@@ -7,8 +7,8 @@ function redrawChart() {
     $.getJSON(
         url,
         function(response) {
-            var cityAverage = response['0'] / 50;
-            var counts = _.pairs(response).slice(1,51);
+            var cityAverage = response['0'].Count / 50;
+            var counts = _.rest(_.pluck(response, 'Count'));
 
             // var sorted = _.sortBy(counts,function(pair) { return pair[1]; }).reverse();
             // var sortedCategories = _.map(sorted, function(pair) { return "Ward " + pair[0]; });
@@ -25,8 +25,8 @@ function redrawChart() {
                     zIndex:5
                 });
             } else {
-                var categories = _.map(counts, function(pair) { return "Ward " + pair[0]; });
-                var fakeWardAverages = _.map(counts, function(pair) { return Math.max(pair[1] - Math.ceil((Math.random() - 0.5) * 20),0); });
+                var categories = _.map(counts, function(ward) { return "Ward " + ward[0]; });
+                var averages = _.map(_.rest(_.pluck(response, 'Average')), Math.round);
 
                 new Highcharts.Chart({
                     chart: {
@@ -42,7 +42,7 @@ function redrawChart() {
                             }
                         }
                     },{
-                        data: fakeWardAverages,
+                        data: averages,
                         index: 1
                     }],
                     xAxis: {
