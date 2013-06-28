@@ -20,9 +20,11 @@ function calculateLayerSettings(wardNum, highest, lowest) {
     return settings;
 }
 
-function redrawWards(stCode, isRedraw) {
+function updateST(i, isRedraw) {
+    var st = serviceTypes[i][1];
+    $('.st-info h2').text(st.name);
     var numOfDays = 7;
-    var url = window.apiDomain + 'requests/' + stCode + '/counts.json?end_date=' + currWeekEnd.format(dateFormat) + '&count=' + numOfDays + '&callback=?';
+    var url = window.apiDomain + 'requests/' + st.code + '/counts.json?end_date=' + currWeekEnd.format(dateFormat) + '&count=' + numOfDays + '&callback=?';
 
     $.getJSON(
         url,
@@ -58,12 +60,6 @@ function redrawWards(stCode, isRedraw) {
             }
         }
     );
-}
-
-function updateST(i, isRedraw) {
-    var st = serviceTypes[i][1];
-    $('.st-info h2').text(st.name);
-    redrawWards(st.code, isRedraw);
 }
 
 $(function () {
