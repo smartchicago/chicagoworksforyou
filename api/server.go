@@ -3,7 +3,7 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
-	"github.com/bmizerany/pq"
+	"github.com/lib/pq"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
@@ -143,6 +143,30 @@ func RequestCountsHandler(response http.ResponseWriter, request *http.Request) {
 		counts[wc.Ward] = wc
 	}
 
+        // load the 1 year rolling average for number opened per day
+	rows, err = api.Db.Query(`SELECT COUNT(*) AS cnt, ward 
+		FROM service_requests 
+		WHERE service_code = $1 
+			AND requested_datetime >= (NOW() - INTERVAL '1 year')
+			AND duplicate IS NULL 
+		GROUP BY ward;`, service_code)
+
+	if err != nil {
+		log.Print("error querying for year counts", err)
+	}
+
+	for rows.Next() {
+		var count int
+		var ward int
+		if err := rows.Scan(&count, &ward); err != nil {
+			log.Print("error loading ward counts ", err, count, ward)
+		}
+		
+		tmp := counts[ward]
+		tmp.Average = float32(count) / 365.0
+		counts[ward] = tmp
+	}
+
 	// find total opened for the entire city for date range
 	city_total := WardCount{Ward: 0, Count: 0, Average: 0.0}
 	err = api.Db.QueryRow("SELECT COUNT(*) FROM service_requests WHERE service_code "+
@@ -154,38 +178,15 @@ func RequestCountsHandler(response http.ResponseWriter, request *http.Request) {
 		log.Print("error loading city-wide total count for %s. err: %s", service_code, err)
 	}
 
+        city_total.Average = float32(city_total.Count) / 365.0
 	counts[0] = city_total
 
-	if params["include_average"][0] == "true" {
-		// load the 1 year rolling average for number opened per day
-		rows, err := api.Db.Query(`SELECT COUNT(*) AS cnt, ward 
-			FROM service_requests 
-			WHERE service_code = $1 
-				AND requested_datetime >= (NOW() - INTERVAL '1 year')
-				AND duplicate IS NULL 
-			GROUP BY ward;`, service_code)
-
-		if err != nil {
-			log.Print("error querying for year counts", err)
-		}
-
-		for rows.Next() {
-			var count int
-			var ward int
-			if err := rows.Scan(&count, &ward); err != nil {
-				log.Print("error loading ward counts ", err, count, ward)
-			}
-			
-			tmp := counts[ward]
-			tmp.Average = float32(count) / 365.0
-			counts[ward] = tmp
-		}
-	}
+        log.Printf("city total: %+v", city_total)
 
 	// pluck data to return, ensure we return a number, even zero, for each ward
 	data := make(map[string]WardCount)
 	for i := 0; i < 51; i++ {
-			data[strconv.Itoa(i)] = counts[i]
+		data[strconv.Itoa(i)] = counts[i]
 	}
 
 	jsn, _ := json.MarshalIndent(data, "", "  ")
