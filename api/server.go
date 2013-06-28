@@ -3,8 +3,8 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
-	"github.com/lib/pq"
 	"github.com/gorilla/mux"
+	"github.com/lib/pq"
 	"log"
 	"net/http"
 	"os"
@@ -143,7 +143,7 @@ func RequestCountsHandler(response http.ResponseWriter, request *http.Request) {
 		counts[wc.Ward] = wc
 	}
 
-        // load the 1 year rolling average for number opened per day
+	// load the 1 year rolling average for number opened per day
 	rows, err = api.Db.Query(`SELECT COUNT(*) AS cnt, ward 
 		FROM service_requests 
 		WHERE service_code = $1 
@@ -161,7 +161,7 @@ func RequestCountsHandler(response http.ResponseWriter, request *http.Request) {
 		if err := rows.Scan(&count, &ward); err != nil {
 			log.Print("error loading ward counts ", err, count, ward)
 		}
-		
+
 		tmp := counts[ward]
 		tmp.Average = float32(count) / 365.0
 		counts[ward] = tmp
@@ -178,10 +178,10 @@ func RequestCountsHandler(response http.ResponseWriter, request *http.Request) {
 		log.Print("error loading city-wide total count for %s. err: %s", service_code, err)
 	}
 
-        city_total.Average = float32(city_total.Count) / 365.0
+	city_total.Average = float32(city_total.Count) / 365.0
 	counts[0] = city_total
 
-        log.Printf("city total: %+v", city_total)
+	log.Printf("city total: %+v", city_total)
 
 	// pluck data to return, ensure we return a number, even zero, for each ward
 	data := make(map[string]WardCount)
