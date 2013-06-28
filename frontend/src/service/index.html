@@ -29,7 +29,7 @@ window.currServiceType = '{{ page.service_code }}';
             {% raw %}
             <ul class="nav nav-tabs nav-stacked">
                 <li ng-repeat="service in services | orderBy:orderProp">
-                    <a href="#/{{ service.slug }}">{{ service.name }}</a>
+                    <a href="#{{ service.slug }}">{{ service.name }}</a>
                 </li>
             </ul>
             {% endraw %}

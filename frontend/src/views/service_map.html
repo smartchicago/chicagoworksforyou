@@ -1,0 +1,19 @@
+<div class="map-overlay-wrap container">
+    <div class="map-overlay span3">
+        <div class="pagination">
+            <ul>
+                <li class="prevST"><a href="#">&larr; Previous</a></li>
+                <li class="nextST"><a href="#">Next &rarr;</a></li>
+            </ul>
+        </div>
+        <h2>{{ serviceType.name }}</h2>
+        <p>
+            {{ serviceType.code }}
+        </p>
+        <p>
+            <a href="#/{{ serviceTypeSlug }}">More &rarr;</a>
+        </p>
+    </div>
+</div>
+
+<div class="wards-map" id="map"></div>

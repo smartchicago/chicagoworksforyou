@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app>
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <title>{{ page.title }}</title>
@@ -17,10 +17,11 @@
 
 <link rel="shortcut icon" href="/images/favicon.png">
 <script src="/lib/angular.min.js"></script>
+<script src="/js/app.js"></script>
 <script src="/js/controllers.js"></script>
 </head>
 
-<body ng-controller="ServiceListCtrl" class="{{ page.section }} {% if page.slug != page.section %}{{ page.slug }}{% endif %}">
+<body class="{{ page.section }}" ng-app="{{ page.section }}">
 
 <div class="navbar topnav navbar-inverse">
     <div class="navbar-inner">
@@ -62,7 +63,7 @@
 {% endif %}
 </div>
 
-{{ content }}
+<div ng-view>{{ content }}</div>
 
 <footer class="container">
     © 2013 Smart Chicago Collaborative
@@ -87,8 +88,5 @@ window.apiDomain = "http://cwfy-api-staging.smartchicagoapps.org/";
 <script src="/lib/twix.min.js"></script>
 <script src="/lib/underscore-min.js"></script>
 <script src="/js/scripts.js"></script>
-{% if page.has_js %}
-<script src="/js/{{ page.slug }}.js"></script>
-{% endif %}
 </body>
 </html>

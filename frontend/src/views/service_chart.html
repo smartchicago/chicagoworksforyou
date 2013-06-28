@@ -1,14 +1,3 @@
----
-layout: default
-section: services
-slug: service
-has_js: true
----
-
-<script>
-window.currServiceType = '{{ page.service_code }}';
-</script>
-
 <div class="container content">
     <div class="row">
         <div class="span4">
@@ -29,7 +18,7 @@ window.currServiceType = '{{ page.service_code }}';
             {% raw %}
             <ul class="nav nav-tabs nav-stacked">
                 <li ng-repeat="service in services | orderBy:orderProp">
-                    <a href="#/{{ service.slug }}">{{ service.name }}</a>
+                    <a href="#{{ service.slug }}">{{ service.name }}</a>
                 </li>
             </ul>
             {% endraw %}

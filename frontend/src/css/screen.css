@@ -83,8 +83,11 @@ html, body {
   position: relative;
   padding-top: 35px; }
 
-.wards-map {
+div[ng-view] {
   margin-top: -46px;
+  height: 100%; }
+
+.wards-map {
   height: 100%; }
 
 .map-overlay-wrap {
@@ -164,14 +167,13 @@ ul.nav .alderman a {
   width: 100%;
   height: 350px; }
 
-.services-landing h2 {
+.services h2 {
   margin: 0 0 10px; }
-.services-landing .pagination {
+.services .pagination {
   margin: 0 0 10px; }
-
-.service .content {
+.services .content {
   padding-top: 15px; }
-.service .chart {
+.services .chart {
   width: 100%;
   height: 2500px; }
 

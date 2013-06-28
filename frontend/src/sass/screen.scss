@@ -115,10 +115,14 @@ html, body {
     padding-top: 35px;
 }
 
+div[ng-view] {
+    margin-top: -46px; // Height of navbar
+    height: 100%;
+}
+
 // WARDS MAP
 
 .wards-map {
-    margin-top: -46px; // Height of navbar
     height: 100%;
 }
 
@@ -247,9 +251,9 @@ ul.nav .alderman {
     }
 }
 
-// SERVICE TYPES
+// SERVICES
 
-.services-landing {
+.services {
     h2 {
         margin: 0 0 10px;
     }
@@ -257,9 +261,7 @@ ul.nav .alderman {
     .pagination {
         margin: 0 0 10px;
     }
-}
 
-.service {
     .content {
         padding-top: 15px;
     }
