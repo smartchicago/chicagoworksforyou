@@ -141,7 +141,7 @@ html, body {
 
 // SERVICES
 
-.services {
+.serviceMapApp {
     h2 {
         margin: 0 0 10px;
     }
@@ -149,7 +149,9 @@ html, body {
     .pagination {
         margin: 0 0 10px;
     }
+}
 
+.serviceApp {
     .content {
         padding-top: 15px;
     }
@@ -291,7 +293,7 @@ ul.nav .alderman {
     }
 }
 
-// INTERESTING
+// ANNOTATIONS
 
 .annotations {
     .content {

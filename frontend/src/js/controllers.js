@@ -79,12 +79,12 @@ servicesMapApp.controller("servicesMapCtrl", function($scope, $http, $route, $ro
 
 //ServiceMapCtrl.$inject = ['$scope', '$http'];
 
-
-function ServiceChartCtrl($scope, $routeParams) {
-    $scope.serviceSlug = $routeParams.serviceSlug;
-}
-
-//PhoneDetailCtrl.$inject = ['$scope', '$routeParams'];
+serviceApp.controller("serviceListCtrl", function ($scope, $http, $location) {
+    $http.get('/data/services.json').success(function(data) {
+        $scope.services = data;
+    });
+    $scope.orderProp = 'name';
+});
 
 wardMapApp.controller("wardMapCtrl", function ($scope, $http) {
     $http.get('/data/services.json').success(function(data) {
@@ -97,7 +97,7 @@ wardMapApp.controller("wardMapCtrl", function ($scope, $http) {
     drawChicagoMap();
 
     for (var path in wardPaths) {
-        var wardNum = parseInt(path,10) + 1;
+        var wardNum = parseInt(path,10);
         var poly = L.polygon(
             wardPaths[path],
             {
@@ -186,5 +186,4 @@ wardApp.controller("wardCtrl", function ($scope, $location, $routeParams) {
     });
 
     $scope.wardNum = wardNum;
-
 });

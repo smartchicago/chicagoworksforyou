@@ -17,6 +17,23 @@ servicesMapApp.config(function($routeProvider) {
         });
 });
 
+var serviceApp = angular.module('serviceApp', []);
+
+serviceApp.config(function($routeProvider) {
+    $routeProvider.
+        when('/', {
+            controller: "serviceCtrl",
+            templateUrl: "/views/service_chart.html"
+        }).
+        when('/:date', {
+            controller: "serviceCtrl",
+            templateUrl: "/views/service_chart.html"
+        }).
+        otherwise({
+            redirectTo: '/'
+        });
+});
+
 var wardMapApp = angular.module('wardMapApp', []);
 
 wardMapApp.config(function($routeProvider) {
@@ -40,11 +57,11 @@ wardApp.config(function($routeProvider) {
     $routeProvider.
         when('/:serviceSlug', {
             controller: "wardCtrl",
-            templateUrl: "/views/ward_info.html"
+            templateUrl: "/views/ward_charts.html"
         }).
         when('/:serviceSlug/:date', {
             controller: "wardCtrl",
-            templateUrl: "/views/ward_info.html"
+            templateUrl: "/views/ward_charts.html"
         }).
         otherwise({
             redirectTo: '/graffiti_removal'

@@ -103,13 +103,14 @@ html, body {
     -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); }
 
-.services h2 {
+.serviceMapApp h2 {
   margin: 0 0 10px; }
-.services .pagination {
+.serviceMapApp .pagination {
   margin: 0 0 10px; }
-.services .content {
+
+.serviceApp .content {
   padding-top: 15px; }
-.services .chart {
+.serviceApp .chart {
   width: 100%;
   height: 2500px; }
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 section: services
-slug: service
+app: serviceApp
 has_js: true
 ---
 
@@ -27,15 +27,12 @@ window.currServiceType = '{{ page.service_code }}';
                 Red stripe = city average for this week
             </p>
             {% raw %}
-            <ul class="nav nav-tabs nav-stacked">
-                <li ng-repeat="service in services | orderBy:orderProp">
-                    <a href="#/{{ service.slug }}">{{ service.name }}</a>
-                </li>
+            <ul class="nav nav-tabs nav-stacked" ng-controller="serviceListCtrl">
+                <li ng-class="{active: isActive(service.slug)}" ng-repeat="service in services | orderBy:orderProp"><a href="{{ service.slug }}.html">{{ service.name }}</a></li>
             </ul>
             {% endraw %}
         </div>
-        <div class="span8">
-            <div id="chart" class="chart"></div>
+        <div class="span8" ng-view>
         </div>
     </div>
 </div>
