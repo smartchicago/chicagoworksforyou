@@ -1,0 +1,19 @@
+---
+layout: default
+section: wards
+app: wardMapApp
+title: Wards
+subnav: wards
+---
+
+<div class="map-overlay-wrap st-list container">
+    {% raw %}
+    <ul class="nav nav-tabs nav-stacked" ng-controller="wardMapCtrl">
+        <li ng-repeat="service in services | orderBy:orderProp"><a data-code="{{ service.code }}" href="#/{{ service.slug }}">{{ service.name }} <i class="icon-chevron-right"></i></a></li>
+    </ul>
+    {% endraw %}
+</div>
+
+<div ng-view></div>
+
+<div class="wards-map" id="map"></div>

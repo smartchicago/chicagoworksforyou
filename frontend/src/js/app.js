@@ -16,3 +16,20 @@ servicesMapApp.config(function($routeProvider) {
             redirectTo: '/graffiti_removal'
         });
 });
+
+var wardMapApp = angular.module('wardMapApp', []);
+
+wardMapApp.config(function($routeProvider) {
+    $routeProvider.
+        when('/:serviceSlug', {
+            controller: "wardMapCtrl",
+            templateUrl: "/views/ward_map_info.html"
+        }).
+        when('/:serviceSlug/:date', {
+            controller: "servicesMapCtrl",
+            templateUrl: "/views/wardMapCtrl.html"
+        }).
+        otherwise({
+            redirectTo: '/graffiti_removal'
+        });
+});

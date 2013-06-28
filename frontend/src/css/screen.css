@@ -113,7 +113,7 @@ html, body {
   width: 100%;
   height: 2500px; }
 
-.wards-landing .st-list ul {
+.wardMapApp .st-list ul {
   position: absolute;
   top: 150px;
   left: 0;
@@ -121,11 +121,11 @@ html, body {
   -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); }
-  .wards-landing .st-list ul li {
+  .wardMapApp .st-list ul li {
     background: white; }
-    .wards-landing .st-list ul li a {
+    .wardMapApp .st-list ul li a {
       width: 230px; }
-.wards-landing .st-list .icon-chevron-right {
+.wardMapApp .st-list .icon-chevron-right {
   float: right;
   opacity: .5; }
 
