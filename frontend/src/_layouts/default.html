@@ -17,9 +17,10 @@
 
 <link rel="shortcut icon" href="/images/favicon.png">
 <script src="/lib/angular.min.js"></script>
+<script src="/js/controllers.js"></script>
 </head>
 
-<body class="{{ page.section }} {% if page.slug != page.section %}{{ page.slug }}{% endif %}">
+<body ng-controller="ServiceListCtrl" class="{{ page.section }} {% if page.slug != page.section %}{{ page.slug }}{% endif %}">
 
 <div class="navbar topnav navbar-inverse">
     <div class="navbar-inner">

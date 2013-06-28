@@ -26,22 +26,13 @@ window.currServiceType = '{{ page.service_code }}';
                 Black = ward average<br>
                 Red stripe = city average for this week
             </p>
-            <ul class="nav nav-tabs nav-stacked">
-                <li><a href="abandoned_vehicle.html">Abandoned Vehicle</a></li>
-                <li><a href="alley_light_out.html">Alley Light Out</a></li>
-                <li><a href="building_violation.html">Building Violation</a></li>
-                <li><a href="graffiti_removal.html">Graffiti Removal</a></li>
-                <li><a href="pavement_cavein_survey.html">Pavement Cave-in Survey</a></li>
-                <li><a href="pothole_in_street.html">Pothole in Street</a></li>
-                <li><a href="restaurant_complaint.html">Restaurant Complaint</a></li>
-                <li><a href="rodent_baiting_rat_complaint.html">Rodent Baiting / Rat Complaint</a></li>
-                <li><a href="sanitation_code_violation.html">Sanitation Code Violation</a></li>
-                <li><a href="street_cut_complaint.html">Street Cut Complaint</a></li>
-                <li><a href="street_light_1_out.html">Street Light 1 / Out</a></li>
-                <li><a href="street_lights_all_out.html">Street Lights All Out</a></li>
-                <li><a href="traffic_signal_out.html">Traffic Signal Out</a></li>
-                <li><a href="tree_debris.html">Tree Debris</a></li>
+            {% raw %}
+            <ul class="nav nav-tabs nav-stacked" ng-controller="ServiceListCtrl">
+                <li ng-repeat="service in services | orderBy:orderProp">
+                    <a href="{{ service.slug }}.html">{{ service.name }}</a>
+                </li>
             </ul>
+            {% endraw %}
         </div>
         <div class="span8">
             <div id="chart" class="chart"></div>
