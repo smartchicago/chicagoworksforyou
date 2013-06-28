@@ -39,8 +39,8 @@ servicesMapApp.controller("servicesMapCtrl", function($scope, $http, $route, $ro
         $.getJSON(
             url,
             function(response) {
-                var counts = _.pairs(response).slice(1,51);
-                var sorted = _.sortBy(counts,function(pair) { return pair[1]; });
+                var counts = _.rest(_.pairs(response));
+                var sorted = _.sortBy(counts,function(pair) { return pair[1].Count; });
 
                 var lowest = sorted[0];
                 var highest = sorted[49];
