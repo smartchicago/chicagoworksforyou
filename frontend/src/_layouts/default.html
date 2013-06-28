@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app>
 <head>
 <meta charset="utf-8">
 <title>{{ page.title }}</title>
@@ -16,6 +16,7 @@
 <![endif]-->
 
 <link rel="shortcut icon" href="/images/favicon.png">
+<script src="/lib/angular.min.js"></script>
 </head>
 
 <body class="{{ page.section }} {% if page.slug != page.section %}{{ page.slug }}{% endif %}">
