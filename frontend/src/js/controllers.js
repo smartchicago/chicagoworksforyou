@@ -77,6 +77,8 @@ serviceMapApp.controller("servicesMapCtrl", function($scope, $http, $route, $rou
 
 //ServiceMapCtrl.$inject = ['$scope', '$http'];
 
+// SERVICE DETAIL
+
 serviceApp.controller("serviceListCtrl", function ($scope, $http, $location) {
     $http.get('/data/services.json').success(function(data) {
         $scope.services = data;
@@ -84,6 +86,8 @@ serviceApp.controller("serviceListCtrl", function ($scope, $http, $location) {
     $scope.orderProp = 'name';
 });
 
+serviceApp.controller("serviceCtrl", function ($scope, $http, $routeParams) {
+});
 
 // WARD MAP
 
@@ -123,6 +127,8 @@ wardMapApp.controller("wardMapCtrl", function ($scope, $http) {
         poly.bindPopup('<a href="/ward/' + wardNum + '/">Ward ' + wardNum + '</a>');
     }
 });
+
+// WARD DETAIL
 
 wardApp.controller("serviceListCtrl", function ($scope, $http, $location) {
     $http.get('/data/services.json').success(function(data) {
