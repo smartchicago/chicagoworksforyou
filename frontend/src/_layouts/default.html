@@ -8,8 +8,12 @@
 <meta name="author" content="">
 
 <link href="/css/bootstrap/bootstrap.css" rel="stylesheet">
+{% if site.debug %}
+<link rel="stylesheet" href="/lib/leaflet.css" />
+{% else %}
 <link href='http://fonts.googleapis.com/css?family=Roboto:300,700' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
+{% endif %}
 <link href="/css/screen.css" rel="stylesheet">
 <!--[if IE]>
     <link href="/css/ie.css" media="screen, projection" rel="stylesheet" type="text/css" />
@@ -74,14 +78,16 @@
 window.apiDomain = "http://localhost:5000/";
 </script>
 <script src="/lib/jquery.1.9.1.js"></script>
+<script src="/lib/highcharts.js"></script>
+<script src="/lib/leaflet.js"></script>
 {% else %}
 <script>
 window.apiDomain = "http://cwfy-api-staging.smartchicagoapps.org/";
 </script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-{% endif %}
 <script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
+{% endif %}
 <script src="/data/wards.json"></script>
 <script src="/lib/bootstrap.custom.min.js"></script>
 <script src="/lib/moment.min.js"></script>
