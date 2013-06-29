@@ -84,6 +84,21 @@ serviceApp.controller("serviceListCtrl", function ($scope, $http, $location) {
     $scope.orderProp = 'name';
 });
 
+
+// WARD MAP
+
+wardMapApp.controller("serviceListCtrl", function ($scope, $http, $location) {
+    $http.get('/data/services.json').success(function(data) {
+        $scope.services = data;
+    });
+    $scope.orderProp = 'name';
+
+    $scope.isActive = function(slug) {
+        var currServiceSlug = $location.path().substr(1);
+        return slug == currServiceSlug;
+    };
+});
+
 wardMapApp.controller("wardMapCtrl", function ($scope, $http) {
     $http.get('/data/services.json').success(function(data) {
         $scope.services = data;
