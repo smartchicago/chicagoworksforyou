@@ -1,8 +1,8 @@
 'use strict';
 
-/* Controllers */
+// SERVICE MAP
 
-servicesMapApp.controller("servicesMapCtrl", function($scope, $http, $route, $routeParams) {
+serviceMapApp.controller("servicesMapCtrl", function($scope, $http, $route, $routeParams) {
     $http.get('/data/services.json').success(function(data) {
         $scope.services = data;
     });
@@ -72,8 +72,6 @@ servicesMapApp.controller("servicesMapCtrl", function($scope, $http, $route, $ro
         );
     }
 
-    drawChicagoMap();
-    buildWardPaths();
     $scope.updateST(false);
 });
 

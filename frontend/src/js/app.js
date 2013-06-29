@@ -1,8 +1,8 @@
 'use strict';
 
-var servicesMapApp = angular.module('servicesMapApp', []);
+var serviceMapApp = angular.module('serviceMapApp', []);
 
-servicesMapApp.config(function($routeProvider) {
+serviceMapApp.config(function($routeProvider) {
     $routeProvider.
         when('/:serviceSlug', {
             controller: "servicesMapCtrl",
