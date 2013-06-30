@@ -1,5 +1,22 @@
 'use strict';
 
+var dateMapApp = angular.module('dateMapApp', []);
+
+dateMapApp.config(function($routeProvider) {
+    $routeProvider.
+        when('/:date', {
+            controller: "dateMapCtrl",
+            templateUrl: "/views/date_info.html"
+        }).
+        when('/', {
+            controller: "dateMapCtrl",
+            templateUrl: "/views/date_info.html"
+        }).
+        otherwise({
+            redirectTo: '/'
+        });
+});
+
 var serviceMapApp = angular.module('serviceMapApp', []);
 
 serviceMapApp.config(function($routeProvider) {

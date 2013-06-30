@@ -1,4 +1,0 @@
-$(function () {
-    buildWardPaths();
-    drawChicagoMap();
-});
