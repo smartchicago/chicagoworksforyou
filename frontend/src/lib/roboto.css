@@ -2,11 +2,11 @@
   font-family: 'Roboto';
   font-style: normal;
   font-weight: 300;
-  src: local('Roboto Light'), local('Roboto-Light'), url(http://themes.googleusercontent.com/static/fonts/roboto/v8/Hgo13k-tfSpn0qi1SFdUfbO3LdcAZYWl9Si6vvxL-qU.woff) format('woff');
+  src: local('Roboto Light'), local('Roboto-Light'), url(Hgo13k-tfSpn0qi1SFdUfbO3LdcAZYWl9Si6vvxL-qU.woff) format('woff');
 }
 @font-face {
   font-family: 'Roboto';
   font-style: normal;
   font-weight: 700;
-  src: local('Roboto Bold'), local('Roboto-Bold'), url(http://themes.googleusercontent.com/static/fonts/roboto/v8/d-6IYplOFocCacKzxwXSOLO3LdcAZYWl9Si6vvxL-qU.woff) format('woff');
+  src: local('Roboto Bold'), local('Roboto-Bold'), url(d-6IYplOFocCacKzxwXSOLO3LdcAZYWl9Si6vvxL-qU.woff) format('woff');
 }
