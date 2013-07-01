@@ -71,6 +71,24 @@ func WrapJson(unwrapped []byte, callback []string) (jsn []byte) {
 func DayCountsHandler(response http.ResponseWriter, request *http.Request) {
 	// Given day, return total # of each service type for that day, 
 	// along with daily average for each service type.
+	// 
+	// $ curl "http://localhost:5000/requests/counts_by_day.json?day=2013-06-20"
+	// {
+	//   "4fd3b167e750846744000005": {
+	//     "Count": 384,
+	//     "Average": 315.22467
+	//   },
+	//   "4fd3b656e750846c53000004": {
+	//     "Count": 226,
+	//     "Average": 135.1589
+	//   },
+	//   "4fd3b750e750846c5300001d": {
+	//     "Count": 78,
+	//     "Average": 47.221916
+	//   },
+	//   "4fd3b9bce750846c5300004a": {
+	//     "Count": 118,
+	//     "Average": 90.120544
 	
 	response.Header().Set("Content-type", "application/json; charset=utf-8")
 
@@ -96,21 +114,45 @@ func DayCountsHandler(response http.ResponseWriter, request *http.Request) {
 	}
 	
 	type DayCount struct {
-		Service_code 	string
 		Count		int
 		Average		float32
 	}
 	
-	var counts []DayCount
+	counts := make(map[string]DayCount)
 	
 	for rows.Next() {
 		var dc DayCount		
-		if err := rows.Scan(&dc.Service_code, &dc.Count); err != nil {
+		var sc string
+		if err := rows.Scan(&sc, &dc.Count); err != nil {
 			log.Print("error loading daily counts from DB", err)
 		}		
-		counts = append(counts, dc)
+		counts[sc] = dc
 	}
 	
+	// fetch daily averages
+	
+	rows, err = api.Db.Query(`SELECT service_code, COUNT(*) AS cnt 
+		FROM service_requests 
+		WHERE requested_datetime >= (NOW() - INTERVAL '1 year')
+			AND duplicate IS NULL
+		GROUP BY service_code
+		ORDER BY cnt;`)
+	
+	if err != nil {
+		log.Print("error loading averages", err)
+	}
+	
+	for rows.Next() {
+		var sc string
+		var avg float32
+		if err := rows.Scan(&sc, &avg); err != nil {
+			// handle
+		}
+		
+		tmp := counts[sc]
+		tmp.Average = avg / 365.0
+		counts[sc] = tmp
+	}
 	
 	jsn, _ := json.MarshalIndent(counts, "", "  ")
 	jsn = WrapJson(jsn, params["callback"])
