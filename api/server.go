@@ -54,6 +54,7 @@ func main() {
 	router.HandleFunc("/wards/{id}/requests.json", WardRequestsHandler)
 	router.HandleFunc("/wards/{id}/counts.json", WardCountsHandler)
 	router.HandleFunc("/requests/{service_code}/counts.json", RequestCountsHandler)
+	router.HandleFunc("/requests/counts_by_day.json", DayCountsHandler)
 	http.ListenAndServe(":5000", router)
 }
 
@@ -65,6 +66,56 @@ func WrapJson(unwrapped []byte, callback []string) (jsn []byte) {
 	}
 
 	return
+}
+
+func DayCountsHandler(response http.ResponseWriter, request *http.Request) {
+	// Given day, return total # of each service type for that day, 
+	// along with daily average for each service type.
+	
+	response.Header().Set("Content-type", "application/json; charset=utf-8")
+
+	params := request.URL.Query()
+
+	chi, _ := time.LoadLocation("America/Chicago")
+	end, _ := time.ParseInLocation("2006-01-02", params["day"][0], chi)
+	end = end.AddDate(0, 0, 1) // inc to the following day
+	start := end.AddDate(0, 0, -1)
+	
+	log.Printf("DayCountsHandler: params: %+v. start %s, end %s", params, start, end)
+	
+	rows, err := api.Db.Query(`SELECT service_code, COUNT(*) AS cnt 
+		FROM service_requests 
+		WHERE requested_datetime >= $1 
+			AND requested_datetime <= $2
+			AND duplicate IS NULL
+		GROUP BY service_code
+		ORDER BY cnt;`, start, end)
+	
+	if err != nil {
+		log.Print("error loading day counts: ", err)
+	}
+	
+	type DayCount struct {
+		Service_code 	string
+		Count		int
+		Average		float32
+	}
+	
+	var counts []DayCount
+	
+	for rows.Next() {
+		var dc DayCount		
+		if err := rows.Scan(&dc.Service_code, &dc.Count); err != nil {
+			log.Print("error loading daily counts from DB", err)
+		}		
+		counts = append(counts, dc)
+	}
+	
+	
+	jsn, _ := json.MarshalIndent(counts, "", "  ")
+	jsn = WrapJson(jsn, params["callback"])
+
+	response.Write(jsn)	
 }
 
 func RequestCountsHandler(response http.ResponseWriter, request *http.Request) {
