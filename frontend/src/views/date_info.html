@@ -1,7 +1,14 @@
-<h2>June 26, 2013</h2>
+<div class="pagination">
+    <ul>
+        <li class="prevDay"><a href="{{ prevDay }}">&larr; Previous</a></li>
+        <li class="nextDay"><a href="{{ nextDay }}">Next &rarr;</a></li>
+    </ul>
+</div>
+
+<h2>{{ dateFormatted }}</h2>
 <p>
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus luctus urna sed urna ultricies ac tempor dui sagittis. In condimentum facilisis porta. Sed nec diam eu diam mattis viverra. Nulla fringilla.
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus luctus urna sed urna ultricies ac tempor dui sagittis. In condimentum facilisis porta. Sed nec diam eu diam mattis viverra. Nulla fringilla.
 </p>
 <p>
-    <a href="#">Share this map</a>
+    <a href="{{ currURL }}">Share this map</a>
 </p>

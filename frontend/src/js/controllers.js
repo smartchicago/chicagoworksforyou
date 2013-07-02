@@ -2,7 +2,25 @@
 
 // HOMEPAGE
 
-dateMapApp.controller("dateMapCtrl", function ($scope, $http) {
+dateMapApp.controller("dateMapCtrl", function ($scope, $http, $routeParams) {
+    var date = moment().subtract('days', 1).startOf('day');
+    if ($routeParams.date) {
+        date = moment($routeParams.date);
+    }
+
+    window.date = date;
+
+    $scope.dateFormatted = date.format('MMM D, YYYY');
+    $scope.nextDay = "#/" + moment(date).add('days', 1).format('YYYY-MM-DD');
+    $scope.prevDay = "#/" + moment(date).subtract('days', 1).format('YYYY-MM-DD');
+    $scope.currURL = "#/" + date.format('YYYY-MM-DD');
+
+    if (window.allWards) {
+        window.allWards.clearLayers();
+    } else {
+        window.allWards = L.layerGroup();
+    }
+
     for (var path in wardPaths) {
         var wardNum = parseInt(path,10);
         var poly = L.polygon(
@@ -15,7 +33,11 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http) {
             }
         ).addTo(window.map);
         poly.bindPopup('<a href="/ward/' + wardNum + '/">Ward ' + wardNum + '</a>');
+        window.allWards.addLayer(poly);
     }
+
+    window.allWards.addTo(window.map);
+
 });
 
 // SERVICE MAP
