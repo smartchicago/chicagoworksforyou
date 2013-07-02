@@ -1,3 +1,7 @@
+development:
+    driver: postgres
+    connstr: dbname=cwfy sslmode=disable
+    
 staging:
     driver: postgres
     connstr: dbname=cwfy sslmode=disable
