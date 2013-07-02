@@ -137,19 +137,17 @@ html, body {
         border-radius: 6px;
         @include box-shadow(0 0 10px fade-out(black,.7));
     }
-}
 
-// SERVICES
-
-.serviceMapApp {
     h2 {
         margin: 0 0 10px;
     }
 
     .pagination {
-        margin: 0 0 10px;
+        margin: 10px 0;
     }
 }
+
+// SERVICES
 
 .serviceApp {
     .content {
@@ -249,10 +247,6 @@ ul.nav .alderman {
 
     .filter.affix {
         top: 75px;
-    }
-
-    .pagination {
-        margin-top: 0;
     }
 
     section {

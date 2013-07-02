@@ -102,11 +102,10 @@ html, body {
     -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); }
-
-.serviceMapApp h2 {
-  margin: 0 0 10px; }
-.serviceMapApp .pagination {
-  margin: 0 0 10px; }
+  .map-overlay-wrap h2 {
+    margin: 0 0 10px; }
+  .map-overlay-wrap .pagination {
+    margin: 10px 0; }
 
 .serviceApp .content {
   padding-top: 15px; }
@@ -164,8 +163,6 @@ ul.nav .alderman a {
   height: 450px; }
 .wardApp .filter.affix {
   top: 75px; }
-.wardApp .pagination {
-  margin-top: 0; }
 .wardApp section {
   margin-bottom: 30px;
   border-bottom: 1px solid #ddd; }
