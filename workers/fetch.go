@@ -174,7 +174,7 @@ func (req Open311Request) Save() (persisted bool) {
 	)
 
 	if err != nil {
-		log.Fatalf("could not update %s because %s", req.Service_request_id, err)
+		log.Printf("[error] could not update %s because %s", req.Service_request_id, err)
 	} else {
 		var verb string
 		switch {
