@@ -26,7 +26,7 @@ var (
 	api         Api
 	environment = flag.String("environment", "", "Environment to run in, e.g. staging, production")
 	config      = flag.String("config", "./config/database.yml", "database configuration file")
-	port = flag.Int("port", 5000, "port that server will listen to (default: 5000)")
+	port        = flag.Int("port", 5000, "port that server will listen to (default: 5000)")
 )
 
 func init() {
@@ -81,10 +81,10 @@ func main() {
 	router.HandleFunc("/wards/{id}/counts.json", WardCountsHandler)
 	router.HandleFunc("/requests/{service_code}/counts.json", RequestCountsHandler)
 	router.HandleFunc("/requests/counts_by_day.json", DayCountsHandler)
-        log.Printf("CWFY ready for battle on port %d", *port)	
+	log.Printf("CWFY ready for battle on port %d", *port)
 	err := http.ListenAndServe(fmt.Sprintf(":%d", *port), router)
 	if err != nil {
-	        log.Fatal(err)
+		log.Fatal(err)
 	}
 }
 
