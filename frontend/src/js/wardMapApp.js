@@ -1,9 +1,9 @@
 $(function () {
-    buildWardPaths();
     drawChicagoMap();
+    buildWardPaths();
 
     for (var path in wardPaths) {
-        var wardNum = parseInt(path,10) + 1;
+        var wardNum = parseInt(path,10);
         var poly = L.polygon(
             wardPaths[path],
             {
@@ -13,6 +13,6 @@ $(function () {
                 fillOpacity: (((wardNum % 5) + 2) / 10)
             }
         ).addTo(window.map);
-        poly.bindPopup('<a href="/wards/' + wardNum + '/">Ward ' + wardNum + '</a>');
+        poly.bindPopup('<a href="/ward/' + wardNum + '/">Ward ' + wardNum + '</a>');
     }
 });

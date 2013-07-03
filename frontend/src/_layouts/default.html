@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="{{ page.app }}">
 <head>
 <meta charset="utf-8">
 <title>{{ page.title }}</title>
@@ -8,25 +8,33 @@
 <meta name="author" content="">
 
 <link href="/css/bootstrap/bootstrap.css" rel="stylesheet">
+{% if site.debug %}
+<link rel="stylesheet" href="/lib/roboto.css" />
+<link rel="stylesheet" href="/lib/leaflet.css" />
+{% else %}
 <link href='http://fonts.googleapis.com/css?family=Roboto:300,700' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
+{% endif %}
 <link href="/css/screen.css" rel="stylesheet">
 <!--[if IE]>
     <link href="/css/ie.css" media="screen, projection" rel="stylesheet" type="text/css" />
 <![endif]-->
 
 <link rel="shortcut icon" href="/images/favicon.png">
+<script src="/lib/angular.min.js"></script>
+<script src="/js/app.js"></script>
+<script src="/js/controllers.js"></script>
 </head>
 
-<body class="{{ page.section }} {% if page.slug != page.section %}{{ page.slug }}{% endif %}">
+<body class="{{ page.app }}">
 
 <div class="navbar topnav navbar-inverse">
     <div class="navbar-inner">
       <a class="brand" href="/">CWFY</a>
       <ul class="nav">
         <li {% if page.section == 'yesterday' %}class="active"{% endif %}><a href="/">Yesterday</a></li>
-        <li {% if page.section == 'services' %}class="active"{% endif %}><a href="/services/">Services</a></li>
-        <li {% if page.section == 'wards' %}class="active"{% endif %}><a href="/wards/">Wards</a></li>
+        <li {% if page.section == 'services' %}class="active"{% endif %}><a href="/service-map/">Services</a></li>
+        <li {% if page.section == 'wards' %}class="active"{% endif %}><a href="/ward-map/">Wards</a></li>
         <li {% if page.section == 'annotations' %}class="active"{% endif %}><a href="/annotations/">Annotations</a></li>
         <li {% if page.section == 'about' %}class="active"{% endif %}><a href="/about/">About</a></li>
       </ul>
@@ -34,7 +42,7 @@
 </div>
 
 <div class="subnav-wrap">
-{% if page.subnav == 'ward_detail' %}
+{% if page.app == 'wardApp' %}
     <div class="navbar container subnav wardnav">
       <div class="navbar-inner">
         <a class="brand" href="#">Ward {{ page.ward }}</a>
@@ -50,7 +58,7 @@
       </div>
     </div>
 {% endif %}
-{% if page.subnav == 'wards' %}
+{% if page.app == 'wardMapApp' %}
     <div class="navbar container subnav">
         <form class="search-form" action="/search/">
             <input type="text" placeholder="Enter your address to find your ward">
@@ -70,23 +78,25 @@
 <script>
 window.apiDomain = "http://localhost:5000/";
 </script>
-<script src="/js/jquery.1.9.1.js"></script>
+<script src="/lib/jquery.1.9.1.js"></script>
+<script src="/lib/highcharts.js"></script>
+<script src="/lib/leaflet.js"></script>
 {% else %}
 <script>
 window.apiDomain = "http://cwfy-api-staging.smartchicagoapps.org/";
 </script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-{% endif %}
 <script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
+{% endif %}
 <script src="/data/wards.json"></script>
-<script src="/js/bootstrap.custom.min.js"></script>
-<script src="/js/moment.min.js"></script>
-<script src="/js/twix.min.js"></script>
-<script src="/js/underscore-min.js"></script>
+<script src="/lib/bootstrap.custom.min.js"></script>
+<script src="/lib/moment.min.js"></script>
+<script src="/lib/twix.min.js"></script>
+<script src="/lib/underscore-min.js"></script>
 <script src="/js/scripts.js"></script>
 {% if page.has_js %}
-<script src="/js/{{ page.slug }}.js"></script>
+<script src="/js/{{ page.app }}.js"></script>
 {% endif %}
 </body>
 </html>

@@ -4,7 +4,7 @@ module Jekyll
     def initialize(site, base, ward)
       @site = site
       @base = base
-      @dir = File.join('wards', ward)
+      @dir = File.join('ward', ward)
       @name = 'index.html'
 
       self.process(@name)

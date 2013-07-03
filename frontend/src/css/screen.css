@@ -102,8 +102,18 @@ html, body {
     -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); }
+  .map-overlay-wrap h2 {
+    margin: 0 0 10px; }
+  .map-overlay-wrap .pagination {
+    margin: 10px 0; }
 
-.wards-landing .st-list ul {
+.serviceApp .content {
+  padding-top: 15px; }
+.serviceApp .chart {
+  width: 100%;
+  height: 2500px; }
+
+.wardMapApp .st-list ul {
   position: absolute;
   top: 150px;
   left: 0;
@@ -111,11 +121,11 @@ html, body {
   -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); }
-  .wards-landing .st-list ul li {
+  .wardMapApp .st-list ul li {
     background: white; }
-    .wards-landing .st-list ul li a {
+    .wardMapApp .st-list ul li a {
       width: 230px; }
-.wards-landing .st-list .icon-chevron-right {
+.wardMapApp .st-list .icon-chevron-right {
   float: right;
   opacity: .5; }
 
@@ -149,31 +159,18 @@ ul.nav .alderman a {
   ul.nav .alderman a:hover {
     background: #d7d7d7; }
 
-.ward #map {
+.wardApp #map {
   height: 450px; }
-.ward .filter.affix {
+.wardApp .filter.affix {
   top: 75px; }
-.ward .pagination {
-  margin-top: 0; }
-.ward section {
+.wardApp section {
   margin-bottom: 30px;
   border-bottom: 1px solid #ddd; }
-.ward h3 {
+.wardApp h3 {
   margin: 0 0 1em; }
-.ward .chart {
+.wardApp .chart {
   width: 100%;
   height: 350px; }
-
-.services-landing h2 {
-  margin: 0 0 10px; }
-.services-landing .pagination {
-  margin: 0 0 10px; }
-
-.service .content {
-  padding-top: 15px; }
-.service .chart {
-  width: 100%;
-  height: 2500px; }
 
 .about h3 {
   padding: .5em 0 0;
