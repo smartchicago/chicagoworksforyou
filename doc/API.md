@@ -258,17 +258,75 @@ Output:
       "2013-06-03": 7
     }
 
+Request Counts
+--------------
 
-@@@@@
-Path:
+Path: /requests/{service_code}/counts.json
 
-Description:
+Description: For a given request service type and date, return the count of requests for that date, grouped by ward, and the city total.
 
 Input:
 
-Output:
-@@@@@
+    end_date: e.g. "2013-06-19"
+    count: number of days to count back from end date
+    service_code: code of the service, e.g. "4fd3b167e750846744000005"
 
-router.HandleFunc("/wards/{id}/counts.json", WardCountsHandler)
-router.HandleFunc("/requests/{service_code}/counts.json", RequestCountsHandler)
-router.HandleFunc("/requests/counts_by_day.json", DayCountsHandler)
+Output:
+
+The output is a map where keys are ward identifiers, and the value is the count. The city total for the time interval is assigned to ward #0
+
+    $ curl "http://localhost:5000/requests/4fd3b167e750846744000005/counts.json?end_date=2013-06-19&count=1"
+    {
+      "0": {
+        "Ward": 0,
+        "Count": 488,
+        "Average": 1.3369863
+      },
+      "1": {
+        "Ward": 1,
+        "Count": 14,
+        "Average": 16.90959
+      },
+      "10": {
+        "Ward": 10,
+        "Count": 2,
+        "Average": 6.758904
+      },
+      "11": {
+        "Ward": 11,
+        "Count": 26,
+        "Average": 17.638355
+      },
+      (response truncated)
+      
+Request Counts by Day
+---------------------
+
+Path: `/requests/counts_by_day.json`
+
+Description: Given day, return total # of each service type for that day, along with daily average for each service type.
+
+Input:
+
+    day: e.g. 2013-06-20
+
+Output:
+
+    $ curl "http://localhost:5000/requests/counts_by_day.json?day=2013-06-20"
+    {
+       "4fd3b167e750846744000005": {
+         "Count": 384,
+         "Average": 315.22467
+       },
+       "4fd3b656e750846c53000004": {
+         "Count": 226,
+         "Average": 135.1589
+       },
+       "4fd3b750e750846c5300001d": {
+         "Count": 78,
+         "Average": 47.221916
+       },
+       "4fd3b9bce750846c5300004a": {
+         "Count": 118,
+         "Average": 90.120544
+      (response truncated)
