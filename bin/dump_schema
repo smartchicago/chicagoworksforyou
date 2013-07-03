@@ -1,3 +1,3 @@
 #!/bin/bash
 
-pg_dump cwfy --create --no-owner --schema-only -f db/schema.sql
+pg_dump cwfy --no-owner --schema-only --no-privileges -f db/schema.sql

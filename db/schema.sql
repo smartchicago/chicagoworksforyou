@@ -9,21 +9,6 @@ SET check_function_bodies = false;
 SET client_min_messages = warning;
 
 --
--- Name: cwfy; Type: DATABASE; Schema: -; Owner: -
---
-
-CREATE DATABASE cwfy WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'en_US.UTF-8' LC_CTYPE = 'en_US.UTF-8';
-
-
-\connect cwfy
-
-SET statement_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
-SET check_function_bodies = false;
-SET client_min_messages = warning;
-
---
 -- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -135,16 +120,6 @@ CREATE INDEX sr_closed_code ON service_requests USING btree (closed_datetime, se
 --
 
 CREATE INDEX sr_requested_code ON service_requests USING btree (requested_datetime, service_code);
-
-
---
--- Name: public; Type: ACL; Schema: -; Owner: -
---
-
-REVOKE ALL ON SCHEMA public FROM PUBLIC;
-REVOKE ALL ON SCHEMA public FROM cgansen;
-GRANT ALL ON SCHEMA public TO cgansen;
-GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
 --
