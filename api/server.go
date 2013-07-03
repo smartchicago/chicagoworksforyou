@@ -3,7 +3,10 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
+	"flag"
+	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/kylelemons/go-gypsy/yaml"
 	"github.com/lib/pq"
 	"log"
 	"net/http"
@@ -19,23 +22,46 @@ type Api struct {
 	Version string
 }
 
-var api Api
+var (
+	api         Api
+	environment = flag.String("environment", "", "Environment to run in, e.g. staging, production")
+	config      = flag.String("config", "./config/database.yml", "database configuration file")
+	port        = flag.Int("port", 5000, "port that server will listen to (default: 5000)")
+)
 
 func init() {
+	log.Print("starting ChicagoWorksforYou.com API server")
+
 	// version
 	api.Version = "0.0.2"
 
+	// load db config
+	flag.Parse()
+	log.Printf("running in %s environment, configuration file %s", *environment, *config)
+	settings := yaml.ConfigFile(*config)
+
 	// setup database connection
-	db, err := sql.Open("postgres", "dbname=cwfy sslmode=disable")
+	driver, err := settings.Get(fmt.Sprintf("%s.driver", *environment))
+	if err != nil {
+		log.Fatal("error loading db driver", err)
+	}
+
+	connstr, err := settings.Get(fmt.Sprintf("%s.connstr", *environment))
+	if err != nil {
+		log.Fatal("error loading db connstr", err)
+	}
+
+	db, err := sql.Open(driver, connstr)
 	if err != nil {
 		log.Fatal("Cannot open database connection", err)
 	}
+
+	log.Printf("database connstr: %s", connstr)
+
 	api.Db = db
 }
 
 func main() {
-	log.Print("starting ChicagoWorksforYou.com API server")
-
 	// listen for SIGINT (h/t http://stackoverflow.com/a/12571099/1247272)
 	notify_channel := make(chan os.Signal, 1)
 	signal.Notify(notify_channel, os.Interrupt, os.Kill)
@@ -55,7 +81,11 @@ func main() {
 	router.HandleFunc("/wards/{id}/counts.json", WardCountsHandler)
 	router.HandleFunc("/requests/{service_code}/counts.json", RequestCountsHandler)
 	router.HandleFunc("/requests/counts_by_day.json", DayCountsHandler)
-	http.ListenAndServe(":5000", router)
+	log.Printf("CWFY ready for battle on port %d", *port)
+	err := http.ListenAndServe(fmt.Sprintf(":%d", *port), router)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func WrapJson(unwrapped []byte, callback []string) (jsn []byte) {
@@ -399,14 +429,17 @@ func WardCountsHandler(response http.ResponseWriter, request *http.Request) {
 	//
 	// Sample API output
 	//
-	// Note that the end date is June 12, and the results include the end_date.
-	// $ curl "http://localhost:5000/wards/10/counts.json?service_code=4fd3b167e750846744000005&count=5&end_date=2013-06-12"
+	// Note that the end date is June 12, and the results include the end_date. Days with no service requests will report "0"
+	//
+	// $ curl "http://localhost:5000/wards/10/counts.json?service_code=4fd3b167e750846744000005&count=7&end_date=2013-06-03"
 	// {
-	//   "2013-06-06": 2,
-	//   "2013-06-07": 4,
-	//   "2013-06-09": 5,
-	//   "2013-06-10": 6,
-	//   "2013-06-12": 23
+	//   "2013-05-28": 10,
+	//   "2013-05-29": 6,
+	//   "2013-05-30": 9,
+	//   "2013-05-31": 3,
+	//   "2013-06-01": 2,
+	//   "2013-06-02": 6,
+	//   "2013-06-03": 7
 	// }
 	//
 
@@ -434,27 +467,22 @@ func WardCountsHandler(response http.ResponseWriter, request *http.Request) {
 		log.Fatal("error fetching data for WardCountsHandler", err)
 	}
 
-	type WardCount struct {
-		Requested_date time.Time
-		Count          int
-	}
-
-	var counts []WardCount
+	counts := make(map[string]int)
 	for rows.Next() {
-		wc := WardCount{}
-		if err := rows.Scan(&wc.Count, &wc.Requested_date); err != nil {
+		var c int
+		var rd time.Time
+		if err := rows.Scan(&c, &rd); err != nil {
 			log.Print("error reading row of ward count", err)
 		}
-
-		// trunc the requested time to just date
-		counts = append(counts, wc)
+		counts[rd.Format("2006-01-02")] = c
 	}
 
 	resp := make(map[string]int)
 
-	for _, c := range counts {
-		key := c.Requested_date.Format("2006-01-02")
-		resp[key] = c.Count
+	for i := 1; i < days+1; i++ { // note: we inc. end to the following day above, so need to compensate here otherwise it's off-by-one
+		d := end.AddDate(0, 0, -i)
+		key := d.Format("2006-01-02")
+		resp[key] = counts[key]
 	}
 
 	jsn, _ := json.MarshalIndent(resp, "", "  ")

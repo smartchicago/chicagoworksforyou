@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/kylelemons/go-gypsy/yaml"
 	"github.com/lib/pq"
 	"io/ioutil"
 	"log"
@@ -31,40 +32,57 @@ type Worker struct {
 }
 
 var worker Worker
-var sr_number string
-var backfill bool
-var backfill_date string
+
+//  command line flags
+var (
+	environment   = flag.String("environment", "", "Environment to run in, e.g. staging, production")
+	config        = flag.String("config", "./config/database.yml", "database configuration file")
+	sr_number     = flag.String("sr-number", "", "SR number to fetch")
+	backfill      = flag.Bool("backfill", false, "run in reverse and backfill data")
+	backfill_date = flag.String("backfill-from", "", "date to start backfilling data from. Use RFC3339 format. Default will be the time of the least recently updated SR in the database.")
+)
 
 func init() {
-	// open database
-	db, err := sql.Open("postgres", "dbname=cwfy sslmode=disable")
+	flag.Parse()
+
+	log.Printf("running in %s environment, configuration file %s", *environment, *config)
+	settings := yaml.ConfigFile(*config)
+
+	// setup database connection
+	driver, err := settings.Get(fmt.Sprintf("%s.driver", *environment))
+	if err != nil {
+		log.Fatal("error loading db driver", err)
+	}
+
+	connstr, err := settings.Get(fmt.Sprintf("%s.connstr", *environment))
+	if err != nil {
+		log.Fatal("error loading db connstr", err)
+	}
+
+	db, err := sql.Open(driver, connstr)
 	if err != nil {
 		log.Fatal("Cannot open database connection", err)
 	}
+
+	log.Printf("database connstr: %s", connstr)
+
 	worker.Db = db
-
 	worker.SetupStmts()
-
-	// fetch SR num from command line, if present
-	flag.StringVar(&sr_number, "sr-number", "", "SR number to fetch")
-	flag.BoolVar(&backfill, "backfill", false, "run in reverse and backfill data")
-	flag.StringVar(&backfill_date, "backfill-from", "", "date to start backfilling data from. Use RFC3339 format. Default will be the time of the least recently updated SR in the database.")
 }
 
 func main() {
 	defer worker.Db.Close()
-	flag.Parse()
 
-	if sr_number != "" {
-		sr := fetchSingleRequest(sr_number)
+	if *sr_number != "" {
+		sr := fetchSingleRequest(*sr_number)
 		sr.Save()
 		return
 	}
 
-	start_backfill_from := backfill_date
+	start_backfill_from := *backfill_date
 	for {
 		switch {
-		case backfill:
+		case *backfill:
 			requests := backFillRequests(start_backfill_from)
 			for _, request := range requests {
 				request.Save()
