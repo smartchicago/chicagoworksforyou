@@ -1,3 +1,4 @@
 #!/bin/bash
 
-pg_dump cwfy --no-owner --schema-only --no-privileges -f db/schema.sql
+pg_dump $1 --no-owner --schema-only --no-privileges -f db/schema.sql
+pg_dump -a -t schema_info --inserts $1 >> db/schema.sql
