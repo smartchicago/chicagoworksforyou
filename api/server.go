@@ -429,14 +429,17 @@ func WardCountsHandler(response http.ResponseWriter, request *http.Request) {
 	//
 	// Sample API output
 	//
-	// Note that the end date is June 12, and the results include the end_date.
-	// $ curl "http://localhost:5000/wards/10/counts.json?service_code=4fd3b167e750846744000005&count=5&end_date=2013-06-12"
+	// Note that the end date is June 12, and the results include the end_date. Days with no service requests will report "0"
+	//
+	// $ curl "http://localhost:5000/wards/10/counts.json?service_code=4fd3b167e750846744000005&count=7&end_date=2013-06-03"
 	// {
-	//   "2013-06-06": 2,
-	//   "2013-06-07": 4,
-	//   "2013-06-09": 5,
-	//   "2013-06-10": 6,
-	//   "2013-06-12": 23
+	//   "2013-05-28": 10,
+	//   "2013-05-29": 6,
+	//   "2013-05-30": 9,
+	//   "2013-05-31": 3,
+	//   "2013-06-01": 2,
+	//   "2013-06-02": 6,
+	//   "2013-06-03": 7
 	// }
 	//
 
@@ -464,27 +467,22 @@ func WardCountsHandler(response http.ResponseWriter, request *http.Request) {
 		log.Fatal("error fetching data for WardCountsHandler", err)
 	}
 
-	type WardCount struct {
-		Requested_date time.Time
-		Count          int
-	}
-
-	var counts []WardCount
+	counts := make(map[string]int)
 	for rows.Next() {
-		wc := WardCount{}
-		if err := rows.Scan(&wc.Count, &wc.Requested_date); err != nil {
+		var c int
+		var rd time.Time
+		if err := rows.Scan(&c, &rd); err != nil {
 			log.Print("error reading row of ward count", err)
 		}
-
-		// trunc the requested time to just date
-		counts = append(counts, wc)
+		counts[rd.Format("2006-01-02")] = c
 	}
 
 	resp := make(map[string]int)
 
-	for _, c := range counts {
-		key := c.Requested_date.Format("2006-01-02")
-		resp[key] = c.Count
+	for i := 1; i < days+1; i++ { // note: we inc. end to the following day above, so need to compensate here otherwise it's off-by-one
+		d := end.AddDate(0, 0, -i)
+		key := d.Format("2006-01-02")
+		resp[key] = counts[key]
 	}
 
 	jsn, _ := json.MarshalIndent(resp, "", "  ")
