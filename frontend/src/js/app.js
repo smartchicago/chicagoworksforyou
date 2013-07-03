@@ -4,6 +4,10 @@ var dateMapApp = angular.module('dateMapApp', []);
 
 dateMapApp.config(function($routeProvider) {
     $routeProvider.
+        when('/:date/:serviceSlug', {
+            controller: "dateMapCtrl",
+            templateUrl: "/views/date_info.html"
+        }).
         when('/:date', {
             controller: "dateMapCtrl",
             templateUrl: "/views/date_info.html"
