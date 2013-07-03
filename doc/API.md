@@ -106,11 +106,169 @@ Output:
     ]
     
 
+Time to Close
+-------------
+
+Path: `/requests/time_to_close.json`
+
+Description: Return the number of requests closed in a given time interval and the average time to close over the past year. Results are grouped by ward number.
+
+Input:
+
+    end_date: e.g. "2013-06-19"
+    count: number of days to count back from end date
+    service_code: code of the service, e.g. "4fd3b167e750846744000005"
+
+Output:
+
+The city-wide average time to close and count of requests opened is grouped under ward #0. Time to close is measured in days.
+
+    $ curl "http://localhost:5000/requests/time_to_close.json?end_date=2013-06-19&count=7&service_code=4fd3b167e750846744000005"
+    {
+      "0": {
+        "Time": 2.8068197,
+        "Total": 2590,
+        "Ward": 0
+      },
+      "1": {
+        "Time": 2.332114,
+        "Total": 102,
+        "Ward": 1
+      },
+      "10": {
+        "Time": 4.0669537,
+        "Total": 50,
+        "Ward": 10
+      },
+      "11": {
+        "Time": 0.5686893,
+        "Total": 151,
+        "Ward": 11
+      },
+      
+      (result truncated)
+
+Ward Requests
+-------------
+
+Path: `/wards/{id}/requests.json`
+
+Description: Return the 100 most recently updated (by CWFY) requests for a given ward.
+
+Input:
+
+    id: ward number, an integer between 1 - 50, inclusive.    
+
+Output:
+
+    $ curl "http://localhost:5000/wards/1/requests.json"
+    [
+      {
+        "Lat": 41.913368,
+        "Long": -87.688519,
+        "Ward": 1,
+        "Police_district": 14,
+        "Id": 1378483,
+        "Service_request_id": {
+          "String": "10-01408091",
+          "Valid": true
+        },
+        "Status": {
+          "String": "closed",
+          "Valid": true
+        },
+        "Service_name": {
+          "String": "Graffiti Removal",
+          "Valid": true
+        },
+        "Service_code": {
+          "String": "4fd3b167e750846744000005",
+          "Valid": true
+        },
+        "Agency_responsible": {
+          "String": "Bureau of Street Operations - Graffiti",
+          "Valid": true
+        },
+        "Address": {
+          "String": "1743 N ARTESIAN AVE, CHICAGO, IL, 60647",
+          "Valid": true
+        },
+        "Channel": {
+          "String": "phone",
+          "Valid": true
+        },
+        "Media_url": {
+          "String": "",
+          "Valid": true
+        },
+        "Duplicate": {
+          "String": "",
+          "Valid": false
+        },
+        "Parent_service_request_id": {
+          "String": "",
+          "Valid": false
+        },
+        "Requested_datetime": {
+          "Time": "2010-09-01T13:14:06Z",
+          "Valid": true
+        },
+        "Updated_datetime": {
+          "Time": "2010-09-21T18:38:00Z",
+          "Valid": true
+        },
+        "Created_at": {
+          "Time": "2013-06-26T22:00:31.628959Z",
+          "Valid": true
+        },
+        "Updated_at": {
+          "Time": "2013-06-26T22:00:31.628959Z",
+          "Valid": true
+        },
+        "Extended_attributes": null
+      },
+      
+      ( result truncated)    
+    ]
 
 
-router.HandleFunc("/services.json", ServicesHandler)
-router.HandleFunc("/requests/time_to_close.json", TimeToCloseHandler)
-router.HandleFunc("/wards/{id}/requests.json", WardRequestsHandler)
+Ward Counts
+-----------
+
+Path: `/wards/{id}/counts.json`
+
+Description: Return the number of service requests opened grouped by day, then by service request type, for a given ward.
+
+Input: 
+
+    end_date: e.g. "2013-06-19"
+    count: number of days to count back from end date
+    service_code: code of the service, e.g. "4fd3b167e750846744000005"
+
+Output:
+
+    $ curl "http://localhost:5000/wards/10/counts.json?service_code=4fd3b167e750846744000005&count=7&end_date=2013-06-03"
+    {
+      "2013-05-28": 10,
+      "2013-05-29": 6,
+      "2013-05-30": 9,
+      "2013-05-31": 3,
+      "2013-06-01": 2,
+      "2013-06-02": 6,
+      "2013-06-03": 7
+    }
+
+
+@@@@@
+Path:
+
+Description:
+
+Input:
+
+Output:
+@@@@@
+
 router.HandleFunc("/wards/{id}/counts.json", WardCountsHandler)
 router.HandleFunc("/requests/{service_code}/counts.json", RequestCountsHandler)
 router.HandleFunc("/requests/counts_by_day.json", DayCountsHandler)
