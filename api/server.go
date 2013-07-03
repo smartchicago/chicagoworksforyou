@@ -3,7 +3,10 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
+	"flag"
+	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/kylelemons/go-gypsy/yaml"
 	"github.com/lib/pq"
 	"log"
 	"net/http"
@@ -19,23 +22,46 @@ type Api struct {
 	Version string
 }
 
-var api Api
+var (
+	api         Api
+	environment = flag.String("environment", "", "Environment to run in, e.g. staging, production")
+	config      = flag.String("config", "./config/database.yml", "database configuration file")
+	port        = flag.Int("port", 5000, "port that server will listen to (default: 5000)")
+)
 
 func init() {
+	log.Print("starting ChicagoWorksforYou.com API server")
+
 	// version
 	api.Version = "0.0.2"
 
+	// load db config
+	flag.Parse()
+	log.Printf("running in %s environment, configuration file %s", *environment, *config)
+	settings := yaml.ConfigFile(*config)
+
 	// setup database connection
-	db, err := sql.Open("postgres", "dbname=cwfy sslmode=disable")
+	driver, err := settings.Get(fmt.Sprintf("%s.driver", *environment))
+	if err != nil {
+		log.Fatal("error loading db driver", err)
+	}
+
+	connstr, err := settings.Get(fmt.Sprintf("%s.connstr", *environment))
+	if err != nil {
+		log.Fatal("error loading db connstr", err)
+	}
+
+	db, err := sql.Open(driver, connstr)
 	if err != nil {
 		log.Fatal("Cannot open database connection", err)
 	}
+
+	log.Printf("database connstr: %s", connstr)
+
 	api.Db = db
 }
 
 func main() {
-	log.Print("starting ChicagoWorksforYou.com API server")
-
 	// listen for SIGINT (h/t http://stackoverflow.com/a/12571099/1247272)
 	notify_channel := make(chan os.Signal, 1)
 	signal.Notify(notify_channel, os.Interrupt, os.Kill)
@@ -55,7 +81,11 @@ func main() {
 	router.HandleFunc("/wards/{id}/counts.json", WardCountsHandler)
 	router.HandleFunc("/requests/{service_code}/counts.json", RequestCountsHandler)
 	router.HandleFunc("/requests/counts_by_day.json", DayCountsHandler)
-	http.ListenAndServe(":5000", router)
+	log.Printf("CWFY ready for battle on port %d", *port)
+	err := http.ListenAndServe(fmt.Sprintf(":%d", *port), router)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func WrapJson(unwrapped []byte, callback []string) (jsn []byte) {
