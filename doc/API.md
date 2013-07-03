@@ -1,6 +1,15 @@
 Chicago Works For You API Reference
 ===================================
 
+Overview
+--------
+
+The Chicago Works For You (CWFY) API lives at http://cwfy-api.smartchicagoapps.org/.
+
+The CWFY API serves JSON(P) responses to HTTP requests.
+
+Any request may include a `callback` URL parameter, e.g. `callback=foo`; the response will use the callback parameter as a function name and wrap the response in a Javascript function call.
+
 Health Check
 ------------
 
