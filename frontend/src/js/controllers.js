@@ -86,6 +86,8 @@ serviceMapApp.controller("servicesMapCtrl", function($scope, $http, $route, $rou
     $scope.serviceTypeSlug = $routeParams.serviceSlug;
     $scope.serviceType = window.lookupSlug($routeParams.serviceSlug);
     $scope.date = $routeParams.date;
+    $scope.prevST = window.prevST($scope.serviceTypeSlug);
+    $scope.nextST = window.nextST($scope.serviceTypeSlug);
 
     $scope.calculateLayerSettings = function(wardNum, highest, lowest) {
         var fillOp = 0.1;

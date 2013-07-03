@@ -80,6 +80,22 @@ window.serviceTypesJSON = [
 
 window.stSlugs = _.pluck(serviceTypesJSON, 'slug');
 
+window.prevST = function(slug) {
+    var i = stSlugs.indexOf(slug) - 1;
+    if (i < 0) {
+        i = serviceTypesJSON.length - 1;
+    }
+    return serviceTypesJSON[i];
+};
+
+window.nextST = function(slug) {
+    var i = stSlugs.indexOf(slug) + 1;
+    if (i >= serviceTypesJSON.length) {
+        i = 0;
+    }
+    return serviceTypesJSON[i];
+};
+
 window.lookupSlug = function(slug) {
     return _.find(serviceTypesJSON,function(obj) {return obj.slug == slug;});
 };
