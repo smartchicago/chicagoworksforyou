@@ -479,7 +479,7 @@ func WardCountsHandler(response http.ResponseWriter, request *http.Request) {
 
 	resp := make(map[string]int)
 
-	for i := 1; i < days+1; i++ { // note: we inc. end to the following day above, so need to compenstate here otherwise it's off-by-one
+	for i := 1; i < days+1; i++ { // note: we inc. end to the following day above, so need to compensate here otherwise it's off-by-one
 		d := end.AddDate(0, 0, -i)
 		key := d.Format("2006-01-02")
 		resp[key] = counts[key]
