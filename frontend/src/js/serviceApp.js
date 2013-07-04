@@ -25,7 +25,7 @@ function redrawChart() {
                     zIndex:5
                 });
             } else {
-                var categories = _.map(counts, function(ward) { return "Ward " + ward[0]; });
+                var categories = _.map(_.rest(_.pluck(response, 'Ward')), function (wardNum) { return "Ward " + wardNum; });
                 var averages = _.map(_.rest(_.pluck(response, 'Average')), Math.round);
 
                 new Highcharts.Chart({

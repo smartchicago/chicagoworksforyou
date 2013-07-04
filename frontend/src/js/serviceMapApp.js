@@ -1,4 +1,4 @@
 $(function () {
-    buildWardPaths();
     drawChicagoMap();
+    buildWardPaths();
 });
