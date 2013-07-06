@@ -1,26 +1,5 @@
 // 'use strict';
 
-// SERVICE DETAIL
-
-
-// WARD MAP
-
-wardMapApp.controller("serviceListCtrl", function ($scope, $http, $location) {
-    $http.get('/data/services.json').success(function(data) {
-        $scope.services = data;
-    });
-    $scope.orderProp = 'name';
-
-    $scope.isActive = function(slug) {
-        var currServiceSlug = $location.path().substr(1);
-        return slug == currServiceSlug;
-    };
-});
-
-wardMapApp.controller("wardMapCtrl", function ($scope, $http) {
-
-});
-
 // WARD DETAIL
 
 wardApp.controller("serviceListCtrl", function ($scope, $http, $location) {
