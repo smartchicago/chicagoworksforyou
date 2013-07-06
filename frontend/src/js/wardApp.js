@@ -3,12 +3,7 @@
 $(function () {
     var centroid = WARDS[wardNum].centroid;
     var wardCenter = [centroid[1], centroid[0]];
-    var points = WARDS[wardNum].simple_shape[0][0];
-    var path = [];
-    for (var i=0; i<points.length; i++) {
-        var latlong = [points[i][1], points[i][0]];
-        path.push(latlong);
-    }
+    buildWardPaths();
 
     // WARD MAP
 
@@ -19,7 +14,7 @@ $(function () {
         maxZoom: 18
     }).addTo(map);
     map.zoomControl.setPosition('bottomleft');
-    var polygon = L.polygon(path).addTo(map);
+    var polygon = L.polygon(wardPaths[wardNum]).addTo(map);
 
     // MAKE SUBNAV STICK
 

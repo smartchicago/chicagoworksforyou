@@ -1,5 +1,4 @@
 window.wardPaths = [];
-window.wardPolys = [];
 
 window.currWeekEnd = moment().day(-1).startOf('day');
 window.dateFormat = 'YYYY-MM-DD';

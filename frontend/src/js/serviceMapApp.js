@@ -24,7 +24,6 @@ serviceMapApp.config(function($routeProvider) {
         });
 });
 
-
 serviceMapApp.controller("servicesMapCtrl", function($scope, $http, $route, $routeParams) {
     $http.get('/data/services.json').success(function(data) {
         $scope.services = data;
