@@ -1,21 +1,5 @@
 // 'use strict';
 
-var serviceMapApp = angular.module('serviceMapApp', []);
-
-serviceMapApp.config(function($routeProvider) {
-    $routeProvider.
-        when('/:serviceSlug', {
-            controller: "servicesMapCtrl",
-            templateUrl: "/views/service_map_info.html"
-        }).
-        when('/:serviceSlug/:date', {
-            controller: "servicesMapCtrl",
-            templateUrl: "/views/service_map_info.html"
-        }).
-        otherwise({
-            redirectTo: '/graffiti_removal'
-        });
-});
 
 var serviceApp = angular.module('serviceApp', []);
 
