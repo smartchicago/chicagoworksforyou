@@ -149,3 +149,32 @@ $(function () {
 
     redrawChart();
 });
+
+// ANGULAR
+
+var serviceApp = angular.module('serviceApp', []);
+
+serviceApp.config(function($routeProvider) {
+    $routeProvider.
+        when('/', {
+            controller: "serviceCtrl",
+            templateUrl: "/views/service_chart.html"
+        }).
+        when('/:date', {
+            controller: "serviceCtrl",
+            templateUrl: "/views/service_chart.html"
+        }).
+        otherwise({
+            redirectTo: '/'
+        });
+});
+
+serviceApp.controller("serviceListCtrl", function ($scope, $http, $location) {
+    $http.get('/data/services.json').success(function(data) {
+        $scope.services = data;
+    });
+    $scope.orderProp = 'name';
+});
+
+serviceApp.controller("serviceCtrl", function ($scope, $http, $routeParams) {
+});
