@@ -21,9 +21,6 @@
 <![endif]-->
 
 <link rel="shortcut icon" href="/images/favicon.png">
-<script src="/lib/angular.min.js"></script>
-<script src="/js/app.js"></script>
-<script src="/js/controllers.js"></script>
 </head>
 
 <body class="{{ page.app }}">
@@ -76,9 +73,11 @@
 
 {% if site.debug %}
 <script>
-window.apiDomain = "http://localhost:5000/";
+// window.apiDomain = "http://localhost:5000/";
+window.apiDomain = "http://cwfy-api-staging.smartchicagoapps.org/";
 </script>
 <script src="/lib/jquery.1.9.1.js"></script>
+<script src="/lib/angular.min.js"></script>
 <script src="/lib/highcharts.js"></script>
 <script src="/lib/leaflet.js"></script>
 {% else %}
@@ -86,6 +85,7 @@ window.apiDomain = "http://localhost:5000/";
 window.apiDomain = "http://cwfy-api-staging.smartchicagoapps.org/";
 </script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.2/angular.min.js"></script>
 <script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
 {% endif %}
