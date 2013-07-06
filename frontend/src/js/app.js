@@ -1,23 +1,6 @@
 // 'use strict';
 
 
-var serviceApp = angular.module('serviceApp', []);
-
-serviceApp.config(function($routeProvider) {
-    $routeProvider.
-        when('/', {
-            controller: "serviceCtrl",
-            templateUrl: "/views/service_chart.html"
-        }).
-        when('/:date', {
-            controller: "serviceCtrl",
-            templateUrl: "/views/service_chart.html"
-        }).
-        otherwise({
-            redirectTo: '/'
-        });
-});
-
 var wardMapApp = angular.module('wardMapApp', []);
 
 wardMapApp.config(function($routeProvider) {

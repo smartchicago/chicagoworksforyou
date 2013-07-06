@@ -1,19 +1,7 @@
 // 'use strict';
 
-// HOMEPAGE
-
-
 // SERVICE DETAIL
 
-serviceApp.controller("serviceListCtrl", function ($scope, $http, $location) {
-    $http.get('/data/services.json').success(function(data) {
-        $scope.services = data;
-    });
-    $scope.orderProp = 'name';
-});
-
-serviceApp.controller("serviceCtrl", function ($scope, $http, $routeParams) {
-});
 
 // WARD MAP
 
