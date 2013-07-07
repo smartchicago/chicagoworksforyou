@@ -15,7 +15,7 @@ Health Check
 
 Path: `/health_check`
 
-Description: Display the current status of the system. Returns the current API version, database health, count of service requests in the database, and overall system health. 
+Description: Display the current status of the system. Returns the current API version, database health, count of service requests in the database, and overall system health.
 
 Input: none
 
@@ -38,7 +38,7 @@ Description: Return a list of all types of service requests stored in the databa
 
 Input: none
 
-Output: 
+Output:
 
     $ curl "http://localhost:5000/services.json"
     [
@@ -113,7 +113,7 @@ Output:
         "Service_name": "Street Lights All / Out"
       }
     ]
-    
+
 
 Time to Close
 -------------
@@ -154,7 +154,7 @@ The city-wide average time to close and count of requests opened is grouped unde
         "Total": 151,
         "Ward": 11
       },
-      
+
       (result truncated)
 
 Ward Requests
@@ -166,7 +166,7 @@ Description: Return the 100 most recently updated (by CWFY) requests for a given
 
 Input:
 
-    id: ward number, an integer between 1 - 50, inclusive.    
+    id: ward number, an integer between 1 - 50, inclusive.
 
 Output:
 
@@ -236,8 +236,8 @@ Output:
         },
         "Extended_attributes": null
       },
-      
-      ( result truncated)    
+
+      ( result truncated)
     ]
 
 
@@ -248,7 +248,7 @@ Path: `/wards/{id}/counts.json`
 
 Description: Return the number of service requests opened grouped by day, then by service request type, for a given ward.
 
-Input: 
+Input:
 
     end_date: e.g. "2013-06-19"
     count: number of days to count back from end date
@@ -270,7 +270,7 @@ Output:
 Request Counts
 --------------
 
-Path: /requests/{service_code}/counts.json
+Path: `/requests/{service_code}/counts.json`
 
 Description: For a given request service type and date, return the count of requests for that date, grouped by ward, and the city total.
 
@@ -307,7 +307,7 @@ The output is a map where keys are ward identifiers, and the value is the count.
         "Average": 17.638355
       },
       (response truncated)
-      
+
 Request Counts by Day
 ---------------------
 
