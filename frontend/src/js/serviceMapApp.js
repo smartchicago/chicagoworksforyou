@@ -2,7 +2,6 @@
 
 $(function () {
     drawChicagoMap();
-    buildWardPaths();
 });
 
 // ANGULAR
@@ -53,7 +52,7 @@ serviceMapApp.controller("servicesMapCtrl", function($scope, $http, $route, $rou
         };
 
         return settings;
-    }
+    };
 
     $scope.updateST = function(isRedraw) {
         var st = $scope.serviceType;
@@ -94,7 +93,7 @@ serviceMapApp.controller("servicesMapCtrl", function($scope, $http, $route, $rou
                 }
             }
         );
-    }
+    };
 
     $scope.updateST(false);
 });

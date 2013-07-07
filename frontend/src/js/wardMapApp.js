@@ -2,7 +2,6 @@
 
 $(function () {
     drawChicagoMap();
-    buildWardPaths();
 
     for (var path in wardPaths) {
         var wardNum = parseInt(path,10);
