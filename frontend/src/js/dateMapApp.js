@@ -1,7 +1,6 @@
 // JQUERY
 
 $(function () {
-    buildWardPaths();
     drawChicagoMap();
 
     for (var path in wardPaths) {
@@ -12,7 +11,7 @@ $(function () {
                 color: '#0873AD',
                 opacity: 1,
                 weight: 2,
-                fillOpacity: .1
+                fillOpacity: 0.1
             }
         ).addTo(window.map);
         poly.bindPopup('<a href="/ward/' + wardNum + '/">Ward ' + wardNum + '</a>');

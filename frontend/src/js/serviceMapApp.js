@@ -2,7 +2,6 @@
 
 $(function () {
     drawChicagoMap();
-    buildWardPaths();
 });
 
 // ANGULAR
@@ -23,7 +22,6 @@ serviceMapApp.config(function($routeProvider) {
             redirectTo: '/graffiti_removal'
         });
 });
-
 
 serviceMapApp.controller("servicesMapCtrl", function($scope, $http, $route, $routeParams) {
     $http.get('/data/services.json').success(function(data) {
@@ -54,7 +52,7 @@ serviceMapApp.controller("servicesMapCtrl", function($scope, $http, $route, $rou
         };
 
         return settings;
-    }
+    };
 
     $scope.updateST = function(isRedraw) {
         var st = $scope.serviceType;
@@ -95,7 +93,7 @@ serviceMapApp.controller("servicesMapCtrl", function($scope, $http, $route, $rou
                 }
             }
         );
-    }
+    };
 
     $scope.updateST(false);
 });
