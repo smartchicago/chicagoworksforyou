@@ -23,15 +23,15 @@ serviceMapApp.config(function($routeProvider) {
         });
 });
 
-serviceMapApp.controller("servicesMapCtrl", function($scope, $http, $route, $routeParams) {
-    $http.get('/data/services.json').success(function(data) {
-        $scope.services = data;
-    });
+serviceMapApp.controller("servicesMapCtrl", function($scope, $http, $routeParams) {
+    var date = moment().subtract('days', 1).startOf('day'); // Last Saturday
+    if ($routeParams.date) {
+        date = moment($routeParams.date);
+    }
 
-    $scope.orderProp = 'name';
     $scope.serviceTypeSlug = $routeParams.serviceSlug;
     $scope.serviceType = window.lookupSlug($routeParams.serviceSlug);
-    $scope.date = $routeParams.date;
+    $scope.date = date.format('MMMM DD, YYYY');
     $scope.prevST = window.prevST($scope.serviceTypeSlug);
     $scope.nextST = window.nextST($scope.serviceTypeSlug);
 
@@ -54,48 +54,45 @@ serviceMapApp.controller("servicesMapCtrl", function($scope, $http, $route, $rou
         return settings;
     };
 
-    $scope.updateST = function(isRedraw) {
-        var st = $scope.serviceType;
-        var numOfDays = 7;
-        var url = window.apiDomain + 'requests/' + st.code + '/counts.json?end_date=' + currWeekEnd.format(dateFormat) + '&count=' + numOfDays + '&callback=?';
+    var st = $scope.serviceType;
+    var numOfDays = 7;
+    var url = window.apiDomain + 'requests/' + st.code + '/counts.json?end_date=' + currWeekEnd.format(dateFormat) + '&count=' + numOfDays + '&callback=JSON_CALLBACK';
 
-        $.getJSON(
-            url,
-            function(response) {
-                var counts = _.rest(_.pairs(response));
-                var sorted = _.sortBy(counts,function(pair) { return pair[1].Count; });
+    $http.jsonp(url).
+        success(function(data, status, headers, config) {
+            var counts = _.rest(_.pairs(data));
+            var sorted = _.sortBy(counts,function(pair) { return pair[1].Count; });
 
-                var lowest = sorted[0];
-                var highest = sorted[49];
+            var lowest = sorted[0];
+            var highest = sorted[49];
 
-                if (!isRedraw) {
-                    window.allWards = L.layerGroup();
-
-                    for (var path in wardPaths) {
-                        var wardNum = parseInt(path, 10);
-                        var poly = L.polygon(
-                            wardPaths[path],
-                            $.extend({
-                                id: wardNum,
-                                opacity: 1,
-                                weight: 2
-                            }, $scope.calculateLayerSettings(wardNum, highest, lowest))
-                        );
-                        poly.bindPopup('<a href="/ward/' + wardNum + '/">Ward ' + wardNum + '</a>');
-                        window.allWards.addLayer(poly);
-                    }
-
-                    window.allWards.addTo(window.map);
-                } else {
-                    window.allWards.eachLayer(function(layer) {
-                        layer.setStyle(calculateLayerSettings(layer.options.id, highest, lowest));
-                    });
-                }
+            if (window.allWards) {
+                window.allWards.clearLayers();
+            } else {
+                window.allWards = L.layerGroup();
             }
-        );
-    };
 
-    $scope.updateST(false);
+            for (var path in wardPaths) {
+                var wardNum = parseInt(path, 10);
+                var poly = L.polygon(
+                    wardPaths[path],
+                    $.extend({
+                        id: wardNum,
+                        opacity: 1,
+                        weight: 2
+                    }, $scope.calculateLayerSettings(wardNum + 1, highest, lowest))
+                );
+                poly.bindPopup('<a href="/ward/' + wardNum + '/">Ward ' + wardNum + '</a>');
+                window.allWards.addLayer(poly);
+            }
+
+            window.allWards.addTo(window.map);
+        }).
+        error(function(data, status, headers, config) {
+            // called asynchronously if an error occurs
+            // or server returns response with an error status.
+        }
+    );
 });
 
 //ServiceMapCtrl.$inject = ['$scope', '$http'];
