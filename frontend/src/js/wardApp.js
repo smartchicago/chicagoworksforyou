@@ -176,6 +176,19 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $routeParams) {
                     dashStyle: 'longdash'
                 }]
             });
+
+            var ttcChart = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'ttc-chart'
+                },
+                xAxis: {
+                    categories: categories
+                },
+                series: [{
+                    name: "Ward " + wardNum,
+                    data: counts
+                }]
+            });
         }
     );
 });
