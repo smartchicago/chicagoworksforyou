@@ -11,14 +11,14 @@ window.currServiceType = '{{ page.service_code }}';
 
 <div class="container content">
     <div class="row">
-        <div class="span4">
+        <div class="span4" ng-controller="sidebarCtrl">
             <h1>{{ page.title }}</h1>
             {{ content }}
             <div class="pagination">
                 <ul>
-                    <li class="prev-week"><a ng-click="prevWeek()" href="#">&larr;</a></li>
-                    <li class="this-week"><a href="#"></a></li>
-                    <li class="next-week"><a ng-click="nextWeek()" href="#">&rarr;</a></li>
+                    <li class="prev-week"><a ng-click="prevWeek()">&larr;</a></li>
+                    <li class="this-week"><a href="#" ng-bind="data.thisWeek"></a></li>
+                    <li class="next-week"><a ng-click="nextWeek()">&rarr;</a></li>
                 </ul>
             </div>
             <p>
@@ -27,8 +27,8 @@ window.currServiceType = '{{ page.service_code }}';
                 Red stripe = city average for this week
             </p>
             {% raw %}
-            <ul class="nav nav-tabs nav-stacked" ng-controller="serviceListCtrl">
-                <li ng-class="{active: isActive(service.slug)}" ng-repeat="service in services | orderBy:orderProp"><a href="{{ service.slug }}.html">{{ service.name }}</a></li>
+            <ul class="nav nav-tabs nav-stacked">
+                <li ng-class="{active: service.slug == data.currServiceSlug}" ng-repeat="service in data.services | orderBy:'name'"><a ng-href="{{ service.slug }}.html#/{{ data.dateFormatted }}" ng-bind="service.name"></a></li>
             </ul>
             {% endraw %}
         </div>
