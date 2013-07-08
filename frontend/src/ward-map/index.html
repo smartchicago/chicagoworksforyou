@@ -12,8 +12,8 @@ has_js: true
         <li ng-class="{active: isActive(service.slug)}" ng-repeat="service in services | orderBy:orderProp"><a href="#/{{ service.slug }}">{{ service.name }} <i class="icon-chevron-right"></i></a></li>
     </ul>
     {% endraw %}
+    <div ng-view></div>
 </div>
 
-<div ng-view></div>
 
 <div class="wards-map" id="map"></div>
