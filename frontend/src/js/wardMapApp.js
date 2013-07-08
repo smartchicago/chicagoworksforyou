@@ -2,25 +2,15 @@
 
 $(function () {
     drawChicagoMap();
-
-    for (var path in wardPaths) {
-        var wardNum = parseInt(path,10);
-        var poly = L.polygon(
-            wardPaths[path],
-            {
-                color: '#0873AD',
-                opacity: 1,
-                weight: 2,
-                fillOpacity: (((wardNum % 5) + 2) / 10)
-            }
-        ).addTo(window.map);
-        poly.bindPopup('<a href="/ward/' + wardNum + '/">Ward ' + wardNum + '</a>');
-    }
 });
 
 // ANGULAR
 
 var wardMapApp = angular.module('wardMapApp', []);
+
+wardMapApp.factory('Data', function () {
+    return {};
+});
 
 wardMapApp.config(function($routeProvider) {
     $routeProvider.
@@ -37,38 +27,57 @@ wardMapApp.config(function($routeProvider) {
         });
 });
 
-wardMapApp.controller("serviceListCtrl", function ($scope, $http, $location) {
+wardMapApp.controller("serviceListCtrl", function ($scope, Data, $http, $location) {
     $http.get('/data/services.json').success(function(data) {
-        $scope.services = data;
+        Data.services = data;
     });
-    $scope.orderProp = 'name';
 
-    $scope.isActive = function(slug) {
-        var currServiceSlug = $location.path().substr(1);
-        return slug == currServiceSlug;
+    $scope.data = Data;
+
+    $scope.selectService = function (service) {
+        $location.path(service);
     };
 });
 
-wardMapApp.controller("wardMapCtrl", function ($scope, $http, $routeParams) {
+wardMapApp.controller("wardMapCtrl", function ($scope, Data, $http, $routeParams) {
     var date = moment().subtract('days', 1).startOf('day'); // Last Saturday
     if ($routeParams.date) {
         date = moment($routeParams.date);
     }
 
-    $scope.serviceType = window.lookupSlug($routeParams.serviceSlug);
-    $scope.date = date.format('MMMM DD, YYYY');
+    Data.currServiceSlug = $routeParams.serviceSlug;
+    Data.dateFormatted = date.format(dateFormat);
+    Data.serviceType = window.lookupSlug($routeParams.serviceSlug);
 
-    var st = $scope.serviceType;
+    $scope.data = Data;
+
     var numOfDays = 7;
-    var url = window.apiDomain + 'requests/' + st.code + '/counts.json?end_date=' + currWeekEnd.format(dateFormat) + '&count=' + numOfDays + '&callback=JSON_CALLBACK';
-
+    var url = window.apiDomain + 'requests/' + Data.serviceType.code + '/counts.json?end_date=' + Data.dateFormatted + '&count=' + numOfDays + '&callback=JSON_CALLBACK';
 
     $http.jsonp(url).
-        success(function(data, status, headers, config) {
-        }).
-        error(function(data, status, headers, config) {
-            // called asynchronously if an error occurs
-            // or server returns response with an error status.
+        success(function(response, status, headers, config) {
+            if (window.allWards) {
+                window.allWards.clearLayers();
+            } else {
+                window.allWards = L.layerGroup();
+            }
+
+            for (var path in wardPaths) {
+                var wardNum = parseInt(path,10);
+                var poly = L.polygon(
+                    wardPaths[path],
+                    {
+                        color: '#0873AD',
+                        opacity: 1,
+                        weight: 2,
+                        fillOpacity: (((wardNum % 5) + 2) / 10)
+                    }
+                );
+                poly.bindPopup('<a href="/ward/' + wardNum + '/">Ward ' + wardNum + '</a>');
+                window.allWards.addLayer(poly);
+            }
+
+            window.allWards.addTo(window.map);
         }
     );
 });
