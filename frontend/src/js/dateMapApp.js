@@ -42,7 +42,7 @@ dateMapApp.config(function($routeProvider) {
 });
 
 dateMapApp.controller("dateMapCtrl", function ($scope, $http, $routeParams) {
-    var date = moment().subtract('days', 1).startOf('day');
+    var date = moment().subtract('days', 1).startOf('day'); // Last Saturday
     if ($routeParams.date) {
         date = moment($routeParams.date);
     }

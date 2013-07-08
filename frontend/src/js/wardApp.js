@@ -25,15 +25,13 @@ $(function () {
         offset: { top: 70 }
     });
 
-    // ALDERMAN NAME
+    // EVENT CONTROL
 
-    $.getJSON(
-        'http://data.cityofchicago.org/resource/htai-wnw4.json?ward=' + wardNum,
-        function(response) {
-            var wardInfo = response[0];
-            $('.alderman').append('<a href="' + wardInfo.website.url + '"><i class="icon icon-user"></i> ' + wardInfo.alderman + '</a>');
-        }
-    );
+    $('.this-week a').click(function(evt) {
+        evt.preventDefault();
+    });
+
+    // HIGHCHARTS
 
     Highcharts.setOptions({
         chart: {
@@ -114,79 +112,74 @@ wardApp.config(function($routeProvider) {
 
 // WARD DETAIL
 
-wardApp.controller("serviceListCtrl", function ($scope, $http, $location) {
-    $http.get('/data/services.json').success(function(data) {
-        $scope.services = data;
-    });
-    $scope.orderProp = 'name';
+wardApp.factory('Data', function () {
+    return {};
+});
 
-    $scope.isActive = function(slug) {
-        var currServiceSlug = $location.path().substr(1);
-        return slug == currServiceSlug;
+wardApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
+    $http.get('/data/services.json').success(function(response) {
+        Data.services = response;
+    });
+
+    $scope.data = Data;
+
+    $scope.prevWeek = function () {
+        $location.path(Data.currServiceSlug + "/" + Data.prevWeek);
+    };
+
+    $scope.nextWeek = function () {
+        $location.path(Data.currServiceSlug + "/" + Data.nextWeek);
     };
 });
 
-wardApp.controller("wardCtrl", function ($scope, $location, $routeParams) {
-    var serviceType = window.lookupSlug($routeParams.serviceSlug);
-    var serviceCode = serviceType.code;
+wardApp.controller("wardCtrl", function ($scope, Data, $http, $routeParams) {
+    var date = moment().subtract('days', 1).startOf('day'); // Last Saturday
+    if ($routeParams.date) {
+        date = moment($routeParams.date);
+    }
 
-    // CHARTS WEEKNAV
+    Data.currServiceSlug = $routeParams.serviceSlug;
+    Data.dateFormatted = date.format(dateFormat);
+    Data.prevWeek = moment(date).subtract('week',1).format(dateFormat);
+    Data.nextWeek = moment(date).add('week',1).format(dateFormat);
+    Data.thisWeek = weekDuration.beforeMoment(date,true).format({implicitYear: false});
 
-    $('.this-week a').click(function(evt) {
-        evt.preventDefault();
-    });
-
-    $('.next-week a').click(function(evt) {
-        evt.preventDefault();
-        currWeekEnd.add('week',1);
-        $.getJSON(
-            window.apiDomain + 'wards/' + wardNum + '/counts.json?count=7&service_code=' + serviceCode + '&end_date=' + currWeekEnd.format(dateFormat) + '&callback=?',
-            function(response) {redrawChart(response);}
-        );
-    });
-
-    $('.prev-week a').click(function(evt) {
-        evt.preventDefault();
-        currWeekEnd.subtract('week',1);
-        $.getJSON(
-            window.apiDomain + 'wards/' + wardNum + '/counts.json?count=7&service_code=' + serviceCode + '&end_date=' + currWeekEnd.format(dateFormat) + '&callback=?',
-            function(response) {redrawChart(response);}
-        );
-    });
+    $scope.data = Data;
 
     // CHART
 
-    $.getJSON(
-        window.apiDomain + 'wards/' + wardNum + '/counts.json?count=7&service_code=' + serviceCode + '&end_date=' + currWeekEnd.format(dateFormat) + '&callback=?',
-        function(response) {redrawChart(response);}
-    );
+    var url = window.apiDomain + 'wards/' + window.wardNum + '/counts.json?count=7&service_code=' + window.lookupSlug(Data.currServiceSlug).code + '&end_date=' + Data.dateFormatted + '&callback=JSON_CALLBACK';
+    $http.jsonp(url).
+        success(function(response, status, headers, config) {
+            var categories = [];
+            var counts = [];
 
-    function redrawChart(response) {
-        var categories = [];
-        var counts = [];
-        for (var d in response) {
-            categories.push(moment(d).format("MMM DD"));
-            counts.push(response[d]);
+            for (var d in response) {
+                categories.push(moment(d).format("MMM DD"));
+                counts.push(response[d]);
+            }
+
+            var countsChart = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'counts-chart'
+                },
+                xAxis: {
+                    categories: categories
+                },
+                series: [{
+                    name: "Ward " + wardNum,
+                    data: counts
+                },{
+                    name: "City average",
+                    data: [5, 6, 7, 8, 4, 3, 9],
+                    type: 'line',
+                    dashStyle: 'longdash'
+                }]
+            });
+        }).
+        error(function(data, status, headers, config) {
+            // called asynchronously if an error occurs
+            // or server returns response with an error status.
         }
-        countsChart.series[0].setData(counts);
-        countsChart.xAxis[0].setCategories(categories);
-        var currWeek = weekDuration.beforeMoment(currWeekEnd,true);
-        $('.this-week a').text(currWeek.format({implicitYear: false}));
-    }
-
-    var countsChart = new Highcharts.Chart({
-        chart: {
-            renderTo: 'counts-chart'
-        },
-        series: [{
-            name: "Ward " + wardNum
-        },{
-            name: "City average",
-            data: [5, 6, 7, 8, 4, 3, 9],
-            type: 'line',
-            dashStyle: 'longdash'
-        }]
-    });
-
-    $scope.wardNum = wardNum;
+    );
 });

@@ -49,6 +49,26 @@ wardMapApp.controller("serviceListCtrl", function ($scope, $http, $location) {
     };
 });
 
-wardMapApp.controller("wardMapCtrl", function ($scope, $http) {
+wardMapApp.controller("wardMapCtrl", function ($scope, $http, $routeParams) {
+    var date = moment().subtract('days', 1).startOf('day'); // Last Saturday
+    if ($routeParams.date) {
+        date = moment($routeParams.date);
+    }
 
+    $scope.serviceType = window.lookupSlug($routeParams.serviceSlug);
+    $scope.date = date.format('MMMM DD, YYYY');
+
+    var st = $scope.serviceType;
+    var numOfDays = 7;
+    var url = window.apiDomain + 'requests/' + st.code + '/counts.json?end_date=' + currWeekEnd.format(dateFormat) + '&count=' + numOfDays + '&callback=JSON_CALLBACK';
+
+
+    $http.jsonp(url).
+        success(function(data, status, headers, config) {
+        }).
+        error(function(data, status, headers, config) {
+            // called asynchronously if an error occurs
+            // or server returns response with an error status.
+        }
+    );
 });
