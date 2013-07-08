@@ -60,7 +60,7 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $routeParams
         success(function(response, status, headers, config) {
             var cityAverage = response['0'].Count / 50;
             var counts = _.rest(_.pluck(response, 'Count'));
-            var categories = _.map(_.rest(_.pluck(response, 'Ward')), function (wardNum) { return "Ward " + wardNum; });
+            var categories = _.map(_.rest(_.keys(response)), function (wardNum) { return "Ward " + wardNum; });
             var averages = _.map(_.rest(_.pluck(response, 'Average')), Math.round);
 
             new Highcharts.Chart({
