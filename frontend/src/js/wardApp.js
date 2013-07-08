@@ -30,65 +30,6 @@ $(function () {
     $('.this-week a').click(function(evt) {
         evt.preventDefault();
     });
-
-    // HIGHCHARTS
-
-    Highcharts.setOptions({
-        chart: {
-            marginBottom: 80,
-            type: 'column'
-        },
-        title: {
-            text: ''
-        },
-        xAxis: {
-            minPadding: 0.05,
-            maxPadding: 0.05,
-            tickmarkPlacement: 'between',
-            labels: {
-                style: {
-                    fontFamily: 'Roboto, sans-serif',
-                    fontSize: '13px'
-                },
-                y: 22
-            }
-        },
-        yAxis: {
-            title: {
-                text: ''
-            },
-            minPadding: 0.1,
-            labels: {
-                style: {
-                    fontFamily: 'Roboto, sans-serif',
-                    fontWeight: 'bold'
-                },
-                align: 'left',
-                x: 0,
-                y: -2
-            }
-        },
-        plotOptions: {
-            column: {
-                groupPadding: 0.1
-            }
-        },
-        tooltip: {
-            headerFormat: '',
-            pointFormat: '<b>{point.y:,.0f}</b> tickets',
-            shadow: false,
-            style: {
-                fontFamily: 'Roboto, sans-serif',
-                fontSize: '15px'
-            }
-        },
-        legend: {
-            enabled: true,
-            borderWidth: 0,
-            backgroundColor: "#f7f7f7",
-            padding: 10
-        }
-    });
 });
 
 // ANGULAR
@@ -180,4 +121,63 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $routeParams) {
             // or server returns response with an error status.
         }
     );
+});
+
+// HIGHCHARTS
+
+Highcharts.setOptions({
+    chart: {
+        marginBottom: 80,
+        type: 'column'
+    },
+    title: {
+        text: ''
+    },
+    xAxis: {
+        minPadding: 0.05,
+        maxPadding: 0.05,
+        tickmarkPlacement: 'between',
+        labels: {
+            style: {
+                fontFamily: 'Roboto, sans-serif',
+                fontSize: '13px'
+            },
+            y: 22
+        }
+    },
+    yAxis: {
+        title: {
+            text: ''
+        },
+        minPadding: 0.1,
+        labels: {
+            style: {
+                fontFamily: 'Roboto, sans-serif',
+                fontWeight: 'bold'
+            },
+            align: 'left',
+            x: 0,
+            y: -2
+        }
+    },
+    plotOptions: {
+        column: {
+            groupPadding: 0.1
+        }
+    },
+    tooltip: {
+        headerFormat: '',
+        pointFormat: '<b>{point.y:,.0f}</b> tickets',
+        shadow: false,
+        style: {
+            fontFamily: 'Roboto, sans-serif',
+            fontSize: '15px'
+        }
+    },
+    legend: {
+        enabled: true,
+        borderWidth: 0,
+        backgroundColor: "#f7f7f7",
+        padding: 10
+    }
 });
