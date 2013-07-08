@@ -25,16 +25,6 @@ $(function () {
         offset: { top: 70 }
     });
 
-    // ALDERMAN NAME
-
-    $.getJSON(
-        'http://data.cityofchicago.org/resource/htai-wnw4.json?ward=' + wardNum,
-        function(response) {
-            var wardInfo = response[0];
-            $('.alderman').append('<a href="' + wardInfo.website.url + '"><i class="icon icon-user"></i> ' + wardInfo.alderman + '</a>');
-        }
-    );
-
     // EVENT CONTROL
 
     $('.this-week a').click(function(evt) {
