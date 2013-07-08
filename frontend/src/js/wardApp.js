@@ -14,7 +14,7 @@ $(function () {
         maxZoom: 18
     }).addTo(map);
     map.zoomControl.setPosition('bottomleft');
-    var polygon = L.polygon(wardPaths[wardNum - 1]).addTo(map);
+    var polygon = L.polygon(wardPath).addTo(map);
 
     // MAKE SUBNAV STICK
 

@@ -12,7 +12,10 @@ module Jekyll
       self.process(@name)
       self.read_yaml(File.join(base, '_layouts'), 'ward.html')
       aldermen = read_data_object(base, 'aldermen.json')
+      ward_paths = read_data_object(base, 'wards.json')
       ward_data = aldermen['data'][ward]
+
+      self.data['points'] = ward_paths['data'][ward]
       self.data['alderman'] = ward_data['alderman']
       self.data['website'] = ward_data['website']['url']
       self.data['ward'] = ward
