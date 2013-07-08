@@ -110,8 +110,6 @@ wardApp.config(function($routeProvider) {
         });
 });
 
-// WARD DETAIL
-
 wardApp.factory('Data', function () {
     return {};
 });
