@@ -177,6 +177,10 @@ func DayCountsHandler(response http.ResponseWriter, request *http.Request) {
 		if err := rows.Scan(&sc, &avg); err != nil {
 			// handle
 		}
+
+		tmp := counts[sc]
+		tmp.Average = avg
+		counts[sc] = tmp
 	}
 
 	jsn, _ := json.MarshalIndent(counts, "", "  ")
