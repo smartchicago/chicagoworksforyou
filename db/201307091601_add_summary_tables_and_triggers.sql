@@ -11,62 +11,60 @@ CREATE OR REPLACE FUNCTION update_daily_counts() RETURNS TRIGGER AS $update_dail
 -- mostly cribbed from http://www.postgresql.org/docs/9.2/static/plpgsql-trigger.html
 	DECLARE
 		change	integer;
-		day_to_update date;
-		sr_ward integer;
-		sr_service_code varchar(225);			
+		day_to_update DATE;
+        foo     integer; -- throwaway
 	BEGIN
-		IF (TG_OP = 'DELETE') THEN
+		IF (TG_OP = 'DELETE' AND OLD.duplicate IS NULL) THEN
 			-- DECREMENT
-			sr_ward = NEW.ward;
-			day_to_update = DATE(NEW.requested_datetime);
-			sr_service_code = NEW.service_code;
-			change = -1;
+            -- FIXME: this codepath is never traversed -- we never delete!
+			foo = update_daily_count_bucket( DATE(OLD.requested_datetime), OLD.ward, OLD.service_code, -1 );
+
 		ELSIF (TG_OP = 'UPDATE') THEN
-			-- HANDLE CASE WHERE NON-DUP BECOMES DUP, THEN DECREMENT
-			-- HANDLE CASE WHERE WARD CHANGES, DEC THEN INC
-			
-			sr_ward = NEW.ward;
-			day_to_update = DATE(NEW.requested_datetime);
-			sr_service_code = NEW.service_code;
-			change = 1;
-			
+		
+            IF (OLD.duplicate IS NULL) THEN
+        		day_to_update = DATE(OLD.requested_datetime);
+        		foo = update_daily_count_bucket( day_to_update, OLD.ward, OLD.service_code, -1 );
+            END IF;
+
+    		IF (NEW.duplicate IS NULL) THEN
+        		day_to_update = DATE(NEW.requested_datetime);
+    			foo = update_daily_count_bucket( day_to_update, NEW.ward, NEW.service_code, 1 );
+            END IF;
+            
 		ELSIF (TG_OP = 'INSERT' AND NEW.duplicate IS NULL) THEN
-			-- INC IF VALID SR
-			sr_ward = NEW.ward;
-			day_to_update = DATE(NEW.requested_datetime);
-			sr_service_code = NEW.service_code;
-			change = -1;
-		END IF;		
+    		foo = update_daily_count_bucket(DATE(NEW.requested_datetime), NEW.ward, NEW.service_code, 1 );
+		END IF;
 
-		<<insert_update>>
+		RETURN NULL;	
+	END;
+$update_daily_counts$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION update_daily_count_bucket (day DATE, w INTEGER, sc VARCHAR, change INTEGER) RETURNS INTEGER AS $$
+    BEGIN
+        <<insert_update>>
 		LOOP
-			UPDATE daily_counts
-			SET total = total + change
-			WHERE daily_counts.ward = sr_ward 
-				AND daily_counts.requested_date = day_to_update 
-				AND daily_counts.service_code = sr_service_code;
-			EXIT insert_update WHEN found;
-
+            UPDATE daily_counts
+    		SET total = total + change
+    		WHERE daily_counts.ward = w 
+    			AND daily_counts.requested_date = day 
+    			AND daily_counts.service_code = sc;
+            
+            EXIT insert_update WHEN found;
+            	
 			BEGIN
-				INSERT INTO daily_counts (
-					requested_date,
-					service_code,
-					total,
-					ward) 
-				VALUES (
-					day_to_update,
-					sr_service_code,
-					change,
-					sr_ward);
+				INSERT INTO daily_counts ( requested_date, service_code, total, ward) 
+				VALUES ( day, sc, change, w);
+				
 			EXCEPTION WHEN not_null_violation THEN
 				-- ignore
 			END;
-	
+
 			EXIT insert_update;		
 		END LOOP insert_update;
-		RETURN NULL;
-	END;
-$update_daily_counts$ LANGUAGE plpgsql;
+
+        RETURN NULL;
+    END;
+$$ LANGUAGE plpgsql;
 
 DROP TRIGGER IF EXISTS update_daily_counts ON service_requests;
 CREATE TRIGGER update_daily_counts
