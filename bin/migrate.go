@@ -51,8 +51,8 @@ func main() {
 	//
 	// Usage:
 	//
-	// go run bin/migrate.go 		# apply migrations
-	// go run bin/migrate.go --dry=true 	# show what will be run, do not execute statements.
+	// go run bin/migrate.go --environment=development 		# apply migrations
+	// go run bin/migrate.go --environment=development --dry=true 	# show what will be run, do not execute statements.
 	//
 	// TODO:
 	// - rollback
