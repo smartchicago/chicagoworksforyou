@@ -12,60 +12,63 @@ CREATE OR REPLACE FUNCTION update_daily_counts() RETURNS TRIGGER AS $update_dail
 	DECLARE
 		change	integer;
 		day_to_update date;
-		ward integer;
-		service_code varchar(225);			
+		sr_ward integer;
+		sr_service_code varchar(225);			
 	BEGIN
 		IF (TG_OP = 'DELETE') THEN
 			-- DECREMENT
-			ward = NEW.ward;
+			sr_ward = NEW.ward;
 			day_to_update = DATE(NEW.requested_datetime);
-			service_code = NEW.service_code;
+			sr_service_code = NEW.service_code;
 			change = -1;
 		ELSIF (TG_OP = 'UPDATE') THEN
 			-- HANDLE CASE WHERE NON-DUP BECOMES DUP, THEN DECREMENT
 			-- HANDLE CASE WHERE WARD CHANGES, DEC THEN INC
 			
-			ward = NEW.ward;
+			sr_ward = NEW.ward;
 			day_to_update = DATE(NEW.requested_datetime);
-			service_code = NEW.service_code;
+			sr_service_code = NEW.service_code;
 			change = 1;
 			
 		ELSIF (TG_OP = 'INSERT' AND NEW.duplicate IS NULL) THEN
 			-- INC IF VALID SR
-			ward = NEW.ward;
+			sr_ward = NEW.ward;
 			day_to_update = DATE(NEW.requested_datetime);
-			service_code = NEW.service_code;
+			sr_service_code = NEW.service_code;
 			change = -1;
 		END IF;		
-	END;
+
+		<<insert_update>>
+		LOOP
+			UPDATE daily_counts
+			SET total = total + change
+			WHERE daily_counts.ward = sr_ward 
+				AND daily_counts.requested_date = day_to_update 
+				AND daily_counts.service_code = sr_service_code;
+			EXIT insert_update WHEN found;
+
+			BEGIN
+				INSERT INTO daily_counts (
+					requested_date,
+					service_code,
+					total,
+					ward) 
+				VALUES (
+					day_to_update,
+					sr_service_code,
+					change,
+					sr_ward);
+			EXCEPTION WHEN not_null_violation THEN
+				-- ignore
+			END;
 	
-	<<insert_update>>
-	LOOP
-		UPDATE daily_counts
-		SET count = count + change
-		WHERE daily_counts.ward = ward 
-			AND daily_counts.requested_date = day_to_update 
-			AND daily_counts.service_code = service_code;
-		EXIT insert_update WHEN found;
-
-		INSERT INTO daily_counts (
-			requested_date,
-			service_code,
-			total,
-			ward) 
-		VALUES (
-			day_to_update,
-			service_code,
-			change,
-			ward);
-		
-		EXIT insert_update;		
-	END LOOP insert_update;
-	RETURN NULL;
-
+			EXIT insert_update;		
+		END LOOP insert_update;
+		RETURN NULL;
 	END;
 $update_daily_counts$ LANGUAGE plpgsql;
 
+DROP TRIGGER IF EXISTS update_daily_counts ON service_requests;
 CREATE TRIGGER update_daily_counts
 	AFTER INSERT OR UPDATE OR DELETE ON service_requests
 	FOR EACH ROW EXECUTE PROCEDURE update_daily_counts();
