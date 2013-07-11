@@ -196,30 +196,20 @@ func RequestCountsHandler(response http.ResponseWriter, request *http.Request) {
 	// The city total for the time interval is assigned to ward #0
 	//
 	// Sample request and output:
-	// $ curl "http://localhost:5000/requests/4fd3b167e750846744000005/counts.json?end_date=2013-06-19&count=1&callback=foo"
-	//         foo({
-	//           "0": 398,
-	//           "1": 9,
-	//           "10": 1,
-	//           "11": 20,
-	//           "12": 22,
-	//           "13": 1,
-	//           "14": 44,
-	//           "15": 8,
-	//           "16": 2,
-	//           "17": 0,
-	//           "18": 1,
-	//           "19": 2,
-	//           "2": 0,
-	//           "20": 2,
-	//           "21": 2,
-	//           "22": 10,
-	//           "23": 14,
-	//           "24": 2,
-	//           "25": 77,
-	//           "26": 6,
-	//           "27": 11,
-	//
+	// $ curl "http://localhost:5000/requests/4fd3b167e750846744000005/counts.json?end_date=2013-06-10&count=1"
+	// {
+	// 	  "0": {
+	// 	    "Count": 1107,
+	// 	    "Average": 3.0328767
+	// 	  },
+	// 	  "1": {
+	// 	    "Count": 63,
+	// 	    "Average": 17.495846
+	// 	  },
+	// 	  "10": {
+	// 	    "Count": 21,
+	// 	    "Average": 7.6055045
+	// 	  },
 
 	response.Header().Set("Content-type", "application/json; charset=utf-8")
 
@@ -236,12 +226,15 @@ func RequestCountsHandler(response http.ResponseWriter, request *http.Request) {
 	start := end.AddDate(0, 0, -days)
 
 	log.Printf("RequestCountsHandler: service_code: %s params: %+v", service_code, params)
-
 	log.Printf("searching with times: %s to %s", start, end)
 
-	rows, err := api.Db.Query("SELECT COUNT(*), ward FROM service_requests WHERE service_code "+
-		"= $1 AND duplicate IS NULL AND requested_datetime >= $2 "+
-		" AND requested_datetime <= $3 GROUP BY ward ORDER BY ward;",
+	rows, err := api.Db.Query(`SELECT SUM(total), ward 
+		FROM daily_counts
+		WHERE service_code = $1 
+			AND requested_date >= $2 
+			AND requested_date < $3
+		GROUP BY ward 
+		ORDER BY ward`,
 		string(service_code), start, end)
 
 	if err != nil {
@@ -265,12 +258,10 @@ func RequestCountsHandler(response http.ResponseWriter, request *http.Request) {
 		counts[wc.Ward] = wc
 	}
 
-	// load the 1 year rolling average for number opened per day
-	rows, err = api.Db.Query(`SELECT COUNT(*) AS cnt, ward 
-		FROM service_requests 
-		WHERE service_code = $1 
-			AND requested_datetime >= (NOW() - INTERVAL '1 year')
-			AND duplicate IS NULL 
+	rows, err = api.Db.Query(`SELECT AVG(total), ward 
+		FROM daily_counts 
+		WHERE requested_date >= DATE(NOW() - INTERVAL '1 year') 
+			AND service_code = $1 
 		GROUP BY ward;`, service_code)
 
 	if err != nil {
@@ -278,22 +269,28 @@ func RequestCountsHandler(response http.ResponseWriter, request *http.Request) {
 	}
 
 	for rows.Next() {
-		var count int
+		var count float32
 		var ward int
 		if err := rows.Scan(&count, &ward); err != nil {
 			log.Print("error loading ward counts ", err, count, ward)
 		}
 
 		tmp := counts[ward]
-		tmp.Average = float32(count) / 365.0
+		tmp.Average = count
 		counts[ward] = tmp
 	}
 
 	// find total opened for the entire city for date range
 	city_total := WardCount{Ward: 0, Count: 0, Average: 0.0}
-	err = api.Db.QueryRow("SELECT COUNT(*) FROM service_requests WHERE service_code "+
-		"= $1 AND duplicate IS NULL AND requested_datetime >= $2 "+
-		" AND requested_datetime <= $3;",
+	// err = api.Db.QueryRow("SELECT COUNT(*) FROM service_requests WHERE service_code "+
+	// 	"= $1 AND duplicate IS NULL AND requested_datetime >= $2 "+
+	// 	" AND requested_datetime <= $3;",
+	// 	string(service_code), start, end).Scan(&city_total.Count)
+	err = api.Db.QueryRow(`SELECT SUM(total) 
+		FROM daily_counts 
+		WHERE service_code = $1 
+			AND requested_date >= $2 
+			AND requested_date < $3;`,
 		string(service_code), start, end).Scan(&city_total.Count)
 
 	if err != nil {
@@ -310,13 +307,13 @@ func RequestCountsHandler(response http.ResponseWriter, request *http.Request) {
 		Count   int
 		Average float32
 	}
-	
+
 	data := make(map[string]WC)
 	for i := 0; i < 51; i++ {
 		k := strconv.Itoa(i)
-		tmp := data[k]		
+		tmp := data[k]
 		tmp.Count = counts[i].Count
-		tmp.Average = counts[i].Average	
+		tmp.Average = counts[i].Average
 		data[k] = tmp
 	}
 
