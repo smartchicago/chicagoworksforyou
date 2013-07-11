@@ -7,13 +7,42 @@ import (
 	_ "github.com/lib/pq"
 	"io/ioutil"
 	"regexp"
+	"github.com/kylelemons/go-gypsy/yaml"
+	"log"	
 )
 
-var dry bool
+var (
+        dry     =       flag.Bool("dry", false, "dry run: show what will be run but do not execute statements")
+        environment = flag.String("environment", "", "Environment to run in, e.g. staging, production")
+	config      = flag.String("config", "./config/database.yml", "database configuration file")
+	db *sql.DB
+)
 
-func init() {
-	flag.BoolVar(&dry, "dry", false, "dry run: show what will be run but do not execute statements")
+func init() {	
 	flag.Parse()
+	
+	log.Printf("running in %s environment, configuration file %s", *environment, *config)
+	settings := yaml.ConfigFile(*config)
+
+	// setup database connection
+	driver, err := settings.Get(fmt.Sprintf("%s.driver", *environment))
+	if err != nil {
+		log.Fatal("error loading db driver", err)
+	}
+
+	connstr, err := settings.Get(fmt.Sprintf("%s.connstr", *environment))
+	if err != nil {
+		log.Fatal("error loading db connstr", err)
+	}
+
+	_db, err := sql.Open(driver, connstr)
+	if err != nil {
+		log.Fatal("Cannot open database connection", err)
+	}
+
+	log.Printf("database connstr: %s", connstr)
+	
+	db = _db
 }
 
 func main() {
@@ -22,8 +51,8 @@ func main() {
 	//
 	// Usage:
 	//
-	// go run bin/migrate.go 		# apply migrations
-	// go run bin/migrate.go --dry=true 	# show what will be run, do not execute statements.
+	// go run bin/migrate.go --environment=development 		# apply migrations
+	// go run bin/migrate.go --environment=development --dry=true 	# show what will be run, do not execute statements.
 	//
 	// TODO:
 	// - rollback
@@ -49,11 +78,6 @@ func main() {
 	fmt.Println("found versions: ", all_migrations)
 
 	// find migrations to apply
-	db, err := sql.Open("postgres", "dbname=cwfy sslmode=disable")
-	if err != nil {
-		fmt.Println("Cannot open database connection", err)
-	}
-
 	rows, err := db.Query("SELECT * FROM schema_info ORDER BY version DESC;")
 	if err != nil {
 		fmt.Println("error loading applied migrations", err)
@@ -84,7 +108,7 @@ func main() {
 
 		fmt.Printf("===== executing migration %s =====\n\n%s\n\n", migration, string(raw_sql))
 
-		if !dry {
+		if !*dry {
 			_, err = db.Exec(string(raw_sql))
 			if err != nil {
 				fmt.Printf("error migrating %s: %s", migration, err)
