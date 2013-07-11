@@ -161,12 +161,11 @@ func DayCountsHandler(response http.ResponseWriter, request *http.Request) {
 
 	// fetch daily averages
 
-	rows, err = api.Db.Query(`SELECT service_code, COUNT(*) AS cnt 
-		FROM service_requests 
-		WHERE requested_datetime >= (NOW() - INTERVAL '1 year')
-			AND duplicate IS NULL
+	rows, err = api.Db.Query(`SELECT service_code, AVG(total) AS avg_reports 
+		FROM daily_counts 
+		WHERE requested_date >= (NOW() - INTERVAL '1 year')
 		GROUP BY service_code
-		ORDER BY cnt;`)
+		ORDER BY avg_reports;`)
 
 	if err != nil {
 		log.Print("error loading averages", err)
@@ -180,7 +179,7 @@ func DayCountsHandler(response http.ResponseWriter, request *http.Request) {
 		}
 
 		tmp := counts[sc]
-		tmp.Average = avg / 365.0
+		tmp.Average = avg
 		counts[sc] = tmp
 	}
 
