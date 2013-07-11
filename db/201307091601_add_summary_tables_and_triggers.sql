@@ -7,6 +7,12 @@ CREATE TABLE daily_counts(
 	ward INTEGER NOT NULL
 );
 
+-- index for quick lookups of dates 
+DROP INDEX IF EXISTS dc_request_date,dc_ward,dc_service_code;
+CREATE INDEX dc_request_date ON daily_counts(requested_date);
+CREATE INDEX dc_ward ON daily_counts(ward);
+CREATE INDEX dc_service_code ON daily_counts(service_code);
+
 CREATE OR REPLACE FUNCTION update_daily_counts() RETURNS TRIGGER AS $update_daily_counts$
 -- mostly cribbed from http://www.postgresql.org/docs/9.2/static/plpgsql-trigger.html
 	DECLARE
