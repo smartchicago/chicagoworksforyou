@@ -282,10 +282,6 @@ func RequestCountsHandler(response http.ResponseWriter, request *http.Request) {
 
 	// find total opened for the entire city for date range
 	city_total := WardCount{Ward: 0, Count: 0, Average: 0.0}
-	// err = api.Db.QueryRow("SELECT COUNT(*) FROM service_requests WHERE service_code "+
-	// 	"= $1 AND duplicate IS NULL AND requested_datetime >= $2 "+
-	// 	" AND requested_datetime <= $3;",
-	// 	string(service_code), start, end).Scan(&city_total.Count)
 	err = api.Db.QueryRow(`SELECT SUM(total) 
 		FROM daily_counts 
 		WHERE service_code = $1 
