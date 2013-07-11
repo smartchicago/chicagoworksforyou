@@ -466,18 +466,47 @@ func WardCountsHandler(response http.ResponseWriter, request *http.Request) {
 		log.Fatal("error fetching data for WardCountsHandler", err)
 	}
 
-	counts := make(map[string]int)
-	for rows.Next() {
-		var c int
-		var rd time.Time
-		if err := rows.Scan(&c, &rd); err != nil {
-			log.Print("error reading row of ward count", err)
-		}
-		counts[rd.Format("2006-01-02")] = c
+	type WardCount struct {
+		Count       int
+		CityTotal   int
+		CityAverage float32
 	}
 
-	resp := make(map[string]int)
+	counts := make(map[string]WardCount)
+	for rows.Next() {
+		var wc WardCount
+		var rd time.Time
 
+		if err := rows.Scan(&wc.Count, &rd); err != nil {
+			log.Print("error reading row of ward count", err)
+		}
+
+		counts[rd.Format("2006-01-02")] = wc
+	}
+
+	// calculate the citywide average for each day
+	rows, err = api.Db.Query("SELECT COUNT(*), DATE(requested_datetime) as requested_date FROM service_requests WHERE "+
+		"duplicate IS NULL AND service_code = $1 AND requested_datetime >= $2::date AND requested_datetime <= $3::date "+
+		"GROUP BY DATE(requested_datetime) ORDER BY requested_date;", params["service_code"][0], start, end)
+	if err != nil {
+		log.Fatal("error fetching data for WardCountsHandler", err)
+	}
+
+	for rows.Next() {
+		var rd time.Time
+		var city_total int
+		if err := rows.Scan(&city_total, &rd); err != nil {
+			log.Print("error reading row of ward count", err)
+		}
+
+		k := rd.Format("2006-01-02")
+		tmp := counts[k]
+		tmp.CityTotal = city_total
+		tmp.CityAverage = float32(city_total) / 50.0
+		counts[k] = tmp
+	}
+
+	resp := make(map[string]WardCount)
 	for i := 1; i < days+1; i++ { // note: we inc. end to the following day above, so need to compensate here otherwise it's off-by-one
 		d := end.AddDate(0, 0, -i)
 		key := d.Format("2006-01-02")
