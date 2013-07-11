@@ -306,9 +306,18 @@ func RequestCountsHandler(response http.ResponseWriter, request *http.Request) {
 	log.Printf("city total: %+v", city_total)
 
 	// pluck data to return, ensure we return a number, even zero, for each ward
-	data := make(map[string]WardCount)
+	type WC struct {
+		Count   int
+		Average float32
+	}
+	
+	data := make(map[string]WC)
 	for i := 0; i < 51; i++ {
-		data[strconv.Itoa(i)] = counts[i]
+		k := strconv.Itoa(i)
+		tmp := data[k]		
+		tmp.Count = counts[i].Count
+		tmp.Average = counts[i].Average	
+		data[k] = tmp
 	}
 
 	jsn, _ := json.MarshalIndent(data, "", "  ")
