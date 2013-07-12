@@ -4,7 +4,7 @@ $(function () {
     drawChicagoMap();
 
     for (var path in wardPaths) {
-        var wardNum = parseInt(path,10);
+        var wardNum = parseInt(path,10) + 1;
         var poly = L.polygon(
             wardPaths[path],
             {
