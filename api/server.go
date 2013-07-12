@@ -99,27 +99,28 @@ func WrapJson(unwrapped []byte, callback []string) (jsn []byte) {
 }
 
 func DayCountsHandler(response http.ResponseWriter, request *http.Request) {
-	// Given day, return total # of each service type for that day,
-	// along with daily average for each service type.
+	// Given day, return total # of each service type,
+	// along with daily average for each service type and 
+        // wards that opened the most requests that day.
 	//
-	// $ curl "http://localhost:5000/requests/counts_by_day.json?day=2013-06-20"
-	// {
-	//   "4fd3b167e750846744000005": {
-	//     "Count": 384,
-	//     "Average": 315.22467
-	//   },
-	//   "4fd3b656e750846c53000004": {
-	//     "Count": 226,
-	//     "Average": 135.1589
-	//   },
-	//   "4fd3b750e750846c5300001d": {
-	//     "Count": 78,
-	//     "Average": 47.221916
-	//   },
-	//   "4fd3b9bce750846c5300004a": {
-	//     "Count": 118,
-	//     "Average": 90.120544
-
+	// $ curl "http://localhost:5000/requests/counts_by_day.json?day=2013-06-21"
+	//         {
+	//           "4fd3b167e750846744000005": {
+	//             "Count": 379,
+	//             "Average": 8.694054,
+	//             "TopWards": [
+	//               14
+	//             ]
+	//           },
+	//           "4fd3b9bce750846c5300004a": {
+	//             "Count": 86,
+	//             "Average": 2.774941,
+	//             "TopWards": [
+	//               32,
+	//               50
+	//             ]
+	//           },
+	
 	response.Header().Set("Content-type", "application/json; charset=utf-8")
 
 	params := request.URL.Query()
