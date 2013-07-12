@@ -19,7 +19,7 @@ $(function () {
     // MAKE SUBNAV STICK
 
     $(".filter").affix({
-        offset: { top: 510 }
+        offset: { top: 530 }
     });
     $(".subnav-wrap").affix({
         offset: { top: 70 }
@@ -85,10 +85,13 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $routeParams) {
 
     $scope.data = Data;
 
-    // CHART
+    var serviceCode = window.lookupSlug(Data.currServiceSlug).code;
+    var ticketsURL = window.apiDomain + 'wards/' + window.wardNum + '/counts.json?count=7&service_code=' + serviceCode + '&end_date=' + Data.dateFormatted + '&callback=JSON_CALLBACK';
+    var ttcURL = window.apiDomain + 'requests/time_to_close.json?count=7&service_code=' + serviceCode + '&end_date=' + Data.dateFormatted + '&callback=JSON_CALLBACK';
 
-    var url = window.apiDomain + 'wards/' + window.wardNum + '/counts.json?count=7&service_code=' + window.lookupSlug(Data.currServiceSlug).code + '&end_date=' + Data.dateFormatted + '&callback=JSON_CALLBACK';
-    $http.jsonp(url).
+    // CHARTS
+
+    $http.jsonp(ticketsURL).
         success(function(response, status, headers, config) {
             var categories = [];
             var counts = [];
@@ -117,10 +120,11 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $routeParams) {
                     dashStyle: 'longdash'
                 }]
             });
-        }).
-        error(function(data, status, headers, config) {
-            // called asynchronously if an error occurs
-            // or server returns response with an error status.
+        }
+    );
+
+    $http.jsonp(ttcURL).
+        success(function(response, status, headers, config) {
         }
     );
 });
