@@ -19,7 +19,7 @@ $(function () {
     // MAKE SUBNAV STICK
 
     $(".filter").affix({
-        offset: { top: 510 }
+        offset: { top: 530 }
     });
     $(".subnav-wrap").affix({
         offset: { top: 70 }

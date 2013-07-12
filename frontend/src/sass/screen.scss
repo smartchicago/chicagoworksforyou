@@ -242,11 +242,15 @@ ul.nav .alderman {
 
 .wardApp {
     #map {
-        height:450px;
+        height:400px;
     }
 
     .filter.affix {
-        top: 75px;
+        top: 12px;
+    }
+
+    .pagination {
+        margin-bottom: 10px;
     }
 
     section {

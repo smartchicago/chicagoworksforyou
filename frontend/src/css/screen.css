@@ -160,9 +160,11 @@ ul.nav .alderman a {
     background: #d7d7d7; }
 
 .wardApp #map {
-  height: 450px; }
+  height: 400px; }
 .wardApp .filter.affix {
-  top: 75px; }
+  top: 12px; }
+.wardApp .pagination {
+  margin-bottom: 10px; }
 .wardApp section {
   margin-bottom: 30px;
   border-bottom: 1px solid #ddd; }
