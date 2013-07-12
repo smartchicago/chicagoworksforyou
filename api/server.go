@@ -99,27 +99,28 @@ func WrapJson(unwrapped []byte, callback []string) (jsn []byte) {
 }
 
 func DayCountsHandler(response http.ResponseWriter, request *http.Request) {
-	// Given day, return total # of each service type for that day,
-	// along with daily average for each service type.
+	// Given day, return total # of each service type,
+	// along with daily average for each service type and 
+        // wards that opened the most requests that day.
 	//
-	// $ curl "http://localhost:5000/requests/counts_by_day.json?day=2013-06-20"
-	// {
-	//   "4fd3b167e750846744000005": {
-	//     "Count": 384,
-	//     "Average": 315.22467
-	//   },
-	//   "4fd3b656e750846c53000004": {
-	//     "Count": 226,
-	//     "Average": 135.1589
-	//   },
-	//   "4fd3b750e750846c5300001d": {
-	//     "Count": 78,
-	//     "Average": 47.221916
-	//   },
-	//   "4fd3b9bce750846c5300004a": {
-	//     "Count": 118,
-	//     "Average": 90.120544
-
+	// $ curl "http://localhost:5000/requests/counts_by_day.json?day=2013-06-21"
+	//         {
+	//           "4fd3b167e750846744000005": {
+	//             "Count": 379,
+	//             "Average": 8.694054,
+	//             "TopWards": [
+	//               14
+	//             ]
+	//           },
+	//           "4fd3b9bce750846c5300004a": {
+	//             "Count": 86,
+	//             "Average": 2.774941,
+	//             "TopWards": [
+	//               32,
+	//               50
+	//             ]
+	//           },
+	
 	response.Header().Set("Content-type", "application/json; charset=utf-8")
 
 	params := request.URL.Query()
@@ -131,24 +132,26 @@ func DayCountsHandler(response http.ResponseWriter, request *http.Request) {
 
 	log.Printf("DayCountsHandler: params: %+v. start %s, end %s", params, start, end)
 
-	rows, err := api.Db.Query(`SELECT service_code, COUNT(*) AS cnt 
-		FROM service_requests 
-		WHERE requested_datetime >= $1 
-			AND requested_datetime <= $2
-			AND duplicate IS NULL
-		GROUP BY service_code
-		ORDER BY cnt;`, start, end)
+	type DayCount struct {
+		Count    int
+		Average  float32
+		TopWards []int
+	}
+
+	counts := make(map[string]DayCount)
+
+	// fetch the total number of SR opened by service code
+
+	rows, err := api.Db.Query(`SELECT service_code, SUM(total) AS cnt 
+             FROM daily_counts
+             WHERE requested_date >= $1 
+                     AND requested_date < $2
+             GROUP BY service_code
+             ORDER BY cnt;`, start, end)
 
 	if err != nil {
 		log.Print("error loading day counts: ", err)
 	}
-
-	type DayCount struct {
-		Count   int
-		Average float32
-	}
-
-	counts := make(map[string]DayCount)
 
 	for rows.Next() {
 		var dc DayCount
@@ -159,8 +162,49 @@ func DayCountsHandler(response http.ResponseWriter, request *http.Request) {
 		counts[sc] = dc
 	}
 
-	// fetch daily averages
+	// fetch top ward(s) for each service_code
+	// for each service code, find the ward (or wards) with the most SR opened
 
+	// for each service code, fetch wards for day sorted by # SR opened
+
+	service_codes := []string{"4fd3bd72e750846c530000cd", "4ffa9cad6018277d4000007b", "4ffa4c69601827691b000018", "4fd3b167e750846744000005", "4fd3b656e750846c53000004", "4ffa971e6018277d4000000b", "4fd3bd3de750846c530000b9", "4fd6e4ece750840569000019", "4fd3b9bce750846c5300004a", "4ffa9db16018277d400000a2", "4ffa995a6018277d4000003c", "4fd3bbf8e750846c53000069", "4fd3b750e750846c5300001d", "4ffa9f2d6018277d400000c8"} //FIXME: don't hard code this
+
+	top_wards := make(map[string][]int)
+
+	for _, sc := range service_codes {
+		rows, err := api.Db.Query(`SELECT total, ward 
+                     FROM daily_counts
+                     WHERE requested_date >= $1 
+                             AND requested_date < $2
+                             AND service_code = $3
+                     ORDER BY total DESC;`, start, end, sc)
+
+		if err != nil {
+			log.Print("error loading top wards: ", err)
+		}
+
+		previous_max := 0
+		for rows.Next() {
+			var ward, total int
+			if err := rows.Scan(&total, &ward); err != nil {
+				log.Print("error loading daily counts from DB", err)
+			}
+
+			if total >= previous_max {
+				log.Printf("%s max: %d (ward %d)", sc, total, ward)
+				top_wards[sc] = append(top_wards[sc], ward)
+				previous_max = total
+			} else {
+				tmp := counts[sc]
+				tmp.TopWards = top_wards[sc]
+				counts[sc] = tmp
+				rows.Close()
+				break
+			}
+		}
+	}
+
+	// fetch daily averages
 	rows, err = api.Db.Query(`SELECT service_code, AVG(total) AS avg_reports 
 		FROM daily_counts 
 		WHERE requested_date >= (NOW() - INTERVAL '1 year')
