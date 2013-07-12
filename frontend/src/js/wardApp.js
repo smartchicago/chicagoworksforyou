@@ -92,10 +92,12 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $routeParams) {
         success(function(response, status, headers, config) {
             var categories = [];
             var counts = [];
+            var cityAverages = [];
 
             for (var d in response) {
                 categories.push(moment(d).format("MMM DD"));
-                counts.push(response[d]);
+                counts.push(response[d].Count);
+                cityAverages.push(response[d].CityAverage);
             }
 
             var countsChart = new Highcharts.Chart({
@@ -110,7 +112,7 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $routeParams) {
                     data: counts
                 },{
                     name: "City average",
-                    data: [5, 6, 7, 8, 4, 3, 9],
+                    data: cityAverages,
                     type: 'line',
                     dashStyle: 'longdash'
                 }]
