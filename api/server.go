@@ -81,6 +81,7 @@ func main() {
 	router.HandleFunc("/wards/{id}/counts.json", WardCountsHandler)
 	router.HandleFunc("/requests/{service_code}/counts.json", RequestCountsHandler)
 	router.HandleFunc("/requests/counts_by_day.json", DayCountsHandler)
+	router.HandleFunc("/requests/media.json", RequestsMediaHandler)
 	log.Printf("CWFY ready for battle on port %d", *port)
 	err := http.ListenAndServe(fmt.Sprintf(":%d", *port), router)
 	if err != nil {
@@ -96,6 +97,70 @@ func WrapJson(unwrapped []byte, callback []string) (jsn []byte) {
 	}
 
 	return
+}
+
+func RequestsMediaHandler(response http.ResponseWriter, request *http.Request) {
+	// Return 500 most recent SR that have media "attached"
+	//
+	// Sample:
+	//
+	// $ curl "http://localhost:5000/requests/media.json"
+	// [
+	//   {
+	//     "Service_name": "Graffiti Removal",
+	//     "Address": "1000 W Cullerton St Pilsen",
+	//     "Media_url": "http://311request.cityofchicago.org/media/chicago/report/photos/51586114016382d1fed662a3/image.jpg",
+	//     "Service_request_id": "13-00358810",
+	//     "Ward": 25
+	//   },
+	//   {
+	//     "Service_name": "Sanitation Code Violation",
+	//     "Address": "2168 n parkside ave",
+	//     "Media_url": "http://311request.cityofchicago.org/media/chicago/report/photos/516086be0163865707dd2e40/pic_5023_2111.png",
+	//     "Service_request_id": "13-00389663",
+	//     "Ward": 29
+	//   },
+	//   {
+	//     "Service_name": "Graffiti Removal",
+	//     "Address": "2133 S Union Ave East Pilsen",
+	//     "Media_url": "http://311request.cityofchicago.org/media/chicago/report/photos/5161b7cb0163865707dd48f2/area.png",
+	//     "Service_request_id": "13-00391264",
+	//     "Ward": 25
+	//   },
+
+	response.Header().Set("Content-type", "application/json; charset=utf-8")
+	params := request.URL.Query()
+
+	type SR struct {
+		Service_name, Address, Media_url, Service_request_id string
+		Ward                                                 int
+	}
+
+	var sr_with_media []SR
+
+	rows, err := api.Db.Query(`SELECT service_name,address,media_url,service_request_id,ward 
+                FROM service_requests
+                WHERE media_url != ''
+                ORDER BY requested_datetime DESC
+                LIMIT 500;`)
+
+	if err != nil {
+		log.Print("error laoding media objects", err)
+	}
+
+	for rows.Next() {
+		sr := SR{}
+		if err := rows.Scan(&sr.Service_name, &sr.Address, &sr.Media_url, &sr.Service_request_id, &sr.Ward); err != nil {
+			log.Print("error", err)
+		}
+
+		sr_with_media = append(sr_with_media, sr)
+	}
+
+	jsn, _ := json.MarshalIndent(sr_with_media, "", "  ")
+	jsn = WrapJson(jsn, params["callback"])
+
+	response.Write(jsn)
 }
 
 func DayCountsHandler(response http.ResponseWriter, request *http.Request) {
