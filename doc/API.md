@@ -321,21 +321,78 @@ Input:
 
 Output:
 
-    $ curl "http://localhost:5000/requests/counts_by_day.json?day=2013-06-20"
+    $ curl "http://localhost:5000/requests/counts_by_day.json?day=2013-06-21"
     {
-       "4fd3b167e750846744000005": {
-         "Count": 384,
-         "Average": 315.22467
-       },
-       "4fd3b656e750846c53000004": {
-         "Count": 226,
-         "Average": 135.1589
-       },
-       "4fd3b750e750846c5300001d": {
-         "Count": 78,
-         "Average": 47.221916
-       },
-       "4fd3b9bce750846c5300004a": {
-         "Count": 118,
-         "Average": 90.120544
+      "4fd3b167e750846744000005": {
+        "Count": 379,
+        "Average": 8.694054,
+        "TopWards": [
+          14
+        ]
+      },
+      "4fd3b656e750846c53000004": {
+        "Count": 140,
+        "Average": 4.195414,
+        "TopWards": [
+          31
+        ]
+      },
+      "4fd3b750e750846c5300001d": {
+        "Count": 82,
+        "Average": 1.9250441,
+        "TopWards": [
+          18
+        ]
+      },
+      "4fd3b9bce750846c5300004a": {
+        "Count": 86,
+        "Average": 2.774941,
+        "TopWards": [
+          32,
+          50
+        ]
+      },
       (response truncated)
+
+
+Requests with media
+-------------------
+
+Path: `/requests/media.json`
+
+Description: Return the 500 most recent service requests that have an associated media object.
+
+Input: none
+
+Output:
+
+    $ curl "http://localhost:5000/requests/media.json?callback=foo"
+    foo([
+      {
+        "Service_name": "Pothole in Street",
+        "Address": "4552 n Lockwood",
+        "Media_url": "http://311request.cityofchicago.org/media/chicago/report/photos/51ded6f0016305b6f8ba12ea/pic_8092_960.png",
+        "Service_request_id": "13-00921084",
+        "Ward": 45
+      },
+      {
+        "Service_name": "Graffiti Removal",
+        "Address": "1545 w Cortez",
+        "Media_url": "http://311request.cityofchicago.org/media/chicago/report/photos/51ded522016305b6f8ba12b0/pic_8089_1010.png",
+        "Service_request_id": "13-00920959",
+        "Ward": 27
+      },
+      {
+        "Service_name": "Sanitation Code Violation",
+        "Address": "2031 w 23rd street",
+        "Media_url": "http://311request.cityofchicago.org/media/chicago/report/photos/51dece78016305b6f8ba11f8/pic_8086_2356.png",
+        "Service_request_id": "13-00920544",
+        "Ward": 25
+      },
+      {
+        "Service_name": "Pothole in Street",
+        "Address": "4816 - 18 n Linder.",
+        "Media_url": "http://311request.cityofchicago.org/media/chicago/report/photos/51decd21016305b6f8ba11ca/pic_8085_960.png",
+        "Service_request_id": "13-00920440",
+        "Ward": 45
+      },

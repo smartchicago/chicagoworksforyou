@@ -28,7 +28,7 @@ window.currServiceType = '{{ page.service_code }}';
             </p>
             {% raw %}
             <ul class="nav nav-tabs nav-stacked">
-                <li ng-class="{active: service.slug == data.currServiceSlug}" ng-repeat="service in data.services | orderBy:'name'"><a ng-href="{{ service.slug }}.html#/{{ data.dateFormatted }}" ng-bind="service.name"></a></li>
+                <li ng-class="{active: service.slug == data.currServiceSlug}" ng-repeat="service in data.services | orderBy:'name'"><a ng-href="/service/{{ service.slug }}/#/{{ data.dateFormatted }}" ng-bind="service.name"></a></li>
             </ul>
             {% endraw %}
         </div>

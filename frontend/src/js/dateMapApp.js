@@ -2,20 +2,6 @@
 
 $(function () {
     drawChicagoMap();
-
-    for (var path in wardPaths) {
-        var wardNum = parseInt(path,10);
-        var poly = L.polygon(
-            wardPaths[path],
-            {
-                color: '#0873AD',
-                opacity: 1,
-                weight: 2,
-                fillOpacity: 0.1
-            }
-        ).addTo(window.map);
-        poly.bindPopup('<a href="/ward/' + wardNum + '/">Ward ' + wardNum + '</a>');
-    }
 });
 
 // ANGULAR
@@ -91,7 +77,7 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $routeParams) {
             }
 
             for (var path in wardPaths) {
-                var wardNum = parseInt(path,10);
+                var wardNum = parseInt(path,10) + 1;
                 var poly = L.polygon(
                     wardPaths[path],
                     {
