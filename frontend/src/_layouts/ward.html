@@ -17,11 +17,17 @@ window.wardNum = "{{ page.ward }}";
 <div class="container body">
     <div class="row">
         <div class="span3" ng-controller="sidebarCtrl">
+
+            <div>
+                <h1><a class="brand" href="#">Ward {{ page.ward }}</a></h1>
+                <div class="alderman"><a href="{{ page.website }}">{{ page.alderman }}</a></div>
+            </div>
+
             <div class="filter">
                 <div class="pagination">
                     <ul>
                         <li class="prev-week"><a ng-click="prevWeek()">&larr;</a></li>
-                        <li class="this-week"><a href="" ng-bind="data.thisWeek"></a></li>
+                        <li class="this-week"><a href="#" ng-bind="data.thisWeek"></a></li>
                         <li class="next-week"><a ng-click="nextWeek()">&rarr;</a></li>
                     </ul>
                 </div>

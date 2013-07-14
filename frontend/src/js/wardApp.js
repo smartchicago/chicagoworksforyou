@@ -19,7 +19,7 @@ $(function () {
     // MAKE SUBNAV STICK
 
     $(".filter").affix({
-        offset: { top: 510 }
+        offset: { top: 530 }
     });
     $(".subnav-wrap").affix({
         offset: { top: 70 }
@@ -29,65 +29,6 @@ $(function () {
 
     $('.this-week a').click(function(evt) {
         evt.preventDefault();
-    });
-
-    // HIGHCHARTS
-
-    Highcharts.setOptions({
-        chart: {
-            marginBottom: 80,
-            type: 'column'
-        },
-        title: {
-            text: ''
-        },
-        xAxis: {
-            minPadding: 0.05,
-            maxPadding: 0.05,
-            tickmarkPlacement: 'between',
-            labels: {
-                style: {
-                    fontFamily: 'Roboto, sans-serif',
-                    fontSize: '13px'
-                },
-                y: 22
-            }
-        },
-        yAxis: {
-            title: {
-                text: ''
-            },
-            minPadding: 0.1,
-            labels: {
-                style: {
-                    fontFamily: 'Roboto, sans-serif',
-                    fontWeight: 'bold'
-                },
-                align: 'left',
-                x: 0,
-                y: -2
-            }
-        },
-        plotOptions: {
-            column: {
-                groupPadding: 0.1
-            }
-        },
-        tooltip: {
-            headerFormat: '',
-            pointFormat: '<b>{point.y:,.0f}</b> tickets',
-            shadow: false,
-            style: {
-                fontFamily: 'Roboto, sans-serif',
-                fontSize: '15px'
-            }
-        },
-        legend: {
-            enabled: true,
-            borderWidth: 0,
-            backgroundColor: "#f7f7f7",
-            padding: 10
-        }
     });
 });
 
@@ -109,8 +50,6 @@ wardApp.config(function($routeProvider) {
             redirectTo: '/graffiti_removal'
         });
 });
-
-// WARD DETAIL
 
 wardApp.factory('Data', function () {
     return {};
@@ -146,17 +85,22 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $routeParams) {
 
     $scope.data = Data;
 
-    // CHART
+    var serviceCode = window.lookupSlug(Data.currServiceSlug).code;
+    var ticketsURL = window.apiDomain + 'wards/' + window.wardNum + '/counts.json?count=7&service_code=' + serviceCode + '&end_date=' + Data.dateFormatted + '&callback=JSON_CALLBACK';
+    var ttcURL = window.apiDomain + 'requests/time_to_close.json?count=7&service_code=' + serviceCode + '&end_date=' + Data.dateFormatted + '&callback=JSON_CALLBACK';
 
-    var url = window.apiDomain + 'wards/' + window.wardNum + '/counts.json?count=7&service_code=' + window.lookupSlug(Data.currServiceSlug).code + '&end_date=' + Data.dateFormatted + '&callback=JSON_CALLBACK';
-    $http.jsonp(url).
+    // CHARTS
+
+    $http.jsonp(ticketsURL).
         success(function(response, status, headers, config) {
             var categories = [];
             var counts = [];
+            var cityAverages = [];
 
             for (var d in response) {
                 categories.push(moment(d).format("MMM DD"));
-                counts.push(response[d]);
+                counts.push(response[d].Count);
+                cityAverages.push(response[d].CityAverage);
             }
 
             var countsChart = new Highcharts.Chart({
@@ -171,7 +115,7 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $routeParams) {
                     data: counts
                 },{
                     name: "City average",
-                    data: [5, 6, 7, 8, 4, 3, 9],
+                    data: cityAverages,
                     type: 'line',
                     dashStyle: 'longdash'
                 }]
@@ -191,4 +135,68 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $routeParams) {
             });
         }
     );
+
+    $http.jsonp(ttcURL).
+        success(function(response, status, headers, config) {
+        }
+    );
+});
+
+// HIGHCHARTS
+
+Highcharts.setOptions({
+    chart: {
+        marginBottom: 80,
+        type: 'column'
+    },
+    title: {
+        text: ''
+    },
+    xAxis: {
+        minPadding: 0.05,
+        maxPadding: 0.05,
+        tickmarkPlacement: 'between',
+        labels: {
+            style: {
+                fontFamily: 'Roboto, sans-serif',
+                fontSize: '13px'
+            },
+            y: 22
+        }
+    },
+    yAxis: {
+        title: {
+            text: ''
+        },
+        minPadding: 0.1,
+        labels: {
+            style: {
+                fontFamily: 'Roboto, sans-serif',
+                fontWeight: 'bold'
+            },
+            align: 'left',
+            x: 0,
+            y: -2
+        }
+    },
+    plotOptions: {
+        column: {
+            groupPadding: 0.1
+        }
+    },
+    tooltip: {
+        headerFormat: '',
+        pointFormat: '<b>{point.y:,.0f}</b> tickets',
+        shadow: false,
+        style: {
+            fontFamily: 'Roboto, sans-serif',
+            fontSize: '15px'
+        }
+    },
+    legend: {
+        enabled: true,
+        borderWidth: 0,
+        backgroundColor: "#f7f7f7",
+        padding: 10
+    }
 });

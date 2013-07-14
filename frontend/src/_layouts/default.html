@@ -39,22 +39,6 @@
 </div>
 
 <div class="subnav-wrap">
-{% if page.app == 'wardApp' %}
-    <div class="navbar container subnav wardnav">
-      <div class="navbar-inner">
-        <a class="brand" href="#">Ward {{ page.ward }}</a>
-        <ul class="nav">
-            <li><a href="#map">Map</a></li>
-          <li><a href="#counts">Tickets submitted</a></li>
-          <li><a href="#ttc">Time to close</a></li>
-          <li><a href="#rankings">Rankings</a></li>
-        </ul>
-        <ul class="nav pull-right">
-          <li class="alderman"><a href="{{ page.website }}">{{ page.alderman }}</a></li>
-        </ul>
-      </div>
-    </div>
-{% endif %}
 {% if page.app == 'wardMapApp' %}
     <div class="navbar container subnav">
         <form class="search-form" action="/search/">
