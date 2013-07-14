@@ -9,11 +9,10 @@ has_js: true
 <div class="map-overlay-wrap st-list container">
     {% raw %}
     <ul class="nav nav-tabs nav-stacked" ng-controller="serviceListCtrl">
-        <li ng-class="{active: isActive(service.slug)}" ng-repeat="service in services | orderBy:orderProp"><a href="#/{{ service.slug }}">{{ service.name }} <i class="icon-chevron-right"></i></a></li>
+        <li ng-class="{active: service.slug == data.currServiceSlug}" ng-repeat="service in data.services | orderBy:'name'"><a ng-click="selectService(service.slug)"><span ng-bind="service.name"></span><i class="icon-chevron-right"></i></a></li>
     </ul>
     {% endraw %}
     <div ng-view></div>
 </div>
-
 
 <div class="wards-map" id="map"></div>
