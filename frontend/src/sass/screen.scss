@@ -268,6 +268,51 @@ ul.nav .alderman {
     }
 }
 
+.ranking {
+    font-size: 0;
+
+    div {
+        display: inline-block;
+        width: 13px;
+        height: 20px;
+        background:#333;
+        margin-right: 1px;
+        position: relative;
+        vertical-align: middle;
+
+        &.on {
+            height: 40px;
+        }
+
+        b {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            width: 40px;
+            height: auto;
+            line-height: 1;
+            margin-left: -20px;
+            display: none;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        &:hover {
+            b {
+                display: block;
+            }
+        }
+
+        &:first-child {
+            border-radius: 6px 0 0 6px;
+        }
+
+        &:last-child {
+            border-radius: 0 6px 6px 0;
+        }
+    }
+}
+
 // ABOUT
 
 .about {

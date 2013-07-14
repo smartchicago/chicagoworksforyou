@@ -4,5 +4,7 @@
 </section>
 <section id="ttc">
     <h3>Time-to-close rankings</h3>
-    <div id="ttc-chart" class="chart"></div>
+    <div class="ranking">
+        <div ng-class="{on: ward.Ward == data.wardNum}" ng-repeat="ward in data.ttc"><b><span ng-bind="ward.Ward"></span></b></div>
+    </div>
 </section>

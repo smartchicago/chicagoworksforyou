@@ -77,6 +77,7 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $routeParams) {
         date = moment($routeParams.date);
     }
 
+    Data.wardNum = window.wardNum;
     Data.currServiceSlug = $routeParams.serviceSlug;
     Data.dateFormatted = date.format(dateFormat);
     Data.prevWeek = moment(date).subtract('week',1).format(dateFormat);
@@ -120,24 +121,14 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $routeParams) {
                     dashStyle: 'longdash'
                 }]
             });
-
-            var ttcChart = new Highcharts.Chart({
-                chart: {
-                    renderTo: 'ttc-chart'
-                },
-                xAxis: {
-                    categories: categories
-                },
-                series: [{
-                    name: "Ward " + wardNum,
-                    data: counts
-                }]
-            });
         }
     );
 
     $http.jsonp(ttcURL).
         success(function(response, status, headers, config) {
+            var values = _.rest(_.values(response));
+            var sorted = _.sortBy(values, function (obj) { return obj.Time; });
+            Data.ttc = sorted.reverse();
         }
     );
 });
