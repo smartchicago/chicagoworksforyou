@@ -14,3 +14,6 @@ Per the City of Chicago [data portal](https://data.cityofchicago.org/Service-Req
 4. Is a hazardous dilapidated vehicle left in full view of the general public, whether on public or private property.
 
 For some Open service requests, the vehicle has been towed but further action is required before the request may be closed. 311 sometimes receives duplicate abandoned vehicle complaints. If a vehicle is towed it remains an open "work in progress" issue until the vehcile is transferred or disposed of. The service request is not closed until there is a final disposition for the vehicle.
+
+<i>See the original source for this data on the [City of Chicago data portal.](https://data.cityofchicago.org/Service-Requests/311-Service-Requests-Abandoned-Vehicles/3c9v-pnva)<i>
+
