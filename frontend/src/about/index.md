@@ -12,7 +12,7 @@ This data comes directly from the City of Chicago's [data portal](data.cityofchi
 
 #### Why is this data available?
 
-In 2011, the City of Chicago became a [Code for America](http://codeforamerica.org/2012-partners/chicago/) partner city. A team of four technologists worked to build an [Open311](http://open311.org/) system for Chicago that would help residents track what was happening with their service requests. Through a grant from [Smart Chicago](smartchicagocollaborative.org) the team built Chicago [Service Tracker](http://servicetracker.cityofchicago.org/) which shows each step the city takes to resolve a 311 request. This also enabled all the 311 data to be accesssible on the city's data portal.
+In 2012, the City of Chicago became a [Code for America](http://codeforamerica.org/2012-partners/chicago/) partner city. A team of four technologists worked to build an [Open311](http://open311.org/) system for Chicago that would help residents track what was happening with their service requests. Through a grant from [Smart Chicago](smartchicagocollaborative.org) the team built Chicago [Service Tracker](http://servicetracker.cityofchicago.org/) which shows each step the city takes to resolve a 311 request. This also enabled all the 311 data to be accesssible on the city's data portal.
 
 ### Chicago
 
