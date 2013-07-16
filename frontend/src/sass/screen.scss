@@ -158,6 +158,23 @@ html, body {
     }
 }
 
+// HOMEPAGE
+
+.service-list {
+    list-style-type: none;
+    margin: 0;
+    margin-left: -20px;
+    width: 260px;
+    border-top: 1px solid #ddd;
+
+    li {
+        padding: 7px 20px;
+        width: 260px;
+        border-bottom: 1px solid #ddd;
+        line-height: 1;
+    }
+}
+
 // SERVICES
 
 .serviceApp {

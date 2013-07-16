@@ -10,12 +10,12 @@
     Some text about how to read the following…
 </p>
 <strong>Above-average number of requests:</strong>
-<ul>
-    <li ng-repeat="service in aboveAverage"><a href="service/{{ service.Slug }}">{{ service.Name }} ({{ service.Diff }})</a></li>
+<ul class="service-list above-average">
+    <li ng-repeat="service in aboveAverage"><a ng-href="#/{{ date }}/{{ service.Slug }}">{{ service.Name }} ({{ service.Diff }})</a></li>
 </ul>
 <strong>Below-average number of requests:</strong>
-<ul>
-    <li ng-repeat="service in belowAverage"><a href="service/{{ service.Slug }}">{{ service.Name }} ({{ service.Diff }})</a></li>
+<ul class="service-list below-average">
+    <li ng-repeat="service in belowAverage"><a ng-href="#/{{ date }}/{{ service.Slug }}">{{ service.Name }} ({{ service.Diff }})</a></li>
 </ul>
 <p>
     <a href="{{ currURL }}">Share this map</a>
