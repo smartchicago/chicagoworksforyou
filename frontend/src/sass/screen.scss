@@ -173,31 +173,6 @@ html, body {
 
 // WARDS
 
-.wardMapApp {
-    .st-list {
-        ul {
-            position: absolute;
-            top: 150px;
-            left: 0;
-            z-index: 3000;
-            @include box-shadow(0 0 10px fade-out(black,.7));
-
-            li {
-                background:white;
-
-                a {
-                    width: 230px;
-                }
-            }
-        }
-
-        .icon-chevron-right {
-            float: right;
-            opacity: .5;
-        }
-    }
-}
-
 .search-form {
     margin: 0;
 
