@@ -133,7 +133,7 @@ func RequestsMediaHandler(response http.ResponseWriter, request *http.Request) {
 
 	// sensible defaults
 	limit := 100
-	since := time.Now()
+	before := time.Now()
 
 	// override defaults
 	client_limit := params.Get("limit")
@@ -154,15 +154,14 @@ func RequestsMediaHandler(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	client_since := params.Get("since")
-	log.Printf("client since: %s", client_since)
-	if parsed_since, err := time.Parse("2006-01-02T15:04:05-0700", client_since); err == nil {
-		since = parsed_since
-		log.Printf("fetching SR with media since %s", since)
-	} else if client_since != "" {
-		log.Printf("warning: invalid since %s", client_since)
+	client_before := params.Get("before")
+	if parsed_before, err := time.Parse("2006-01-02T15:04:05-0700", client_before); err == nil {
+		before = parsed_before
+		log.Printf("fetching SR with media before %s", before)
+	} else if client_before != "" {
+		log.Printf("warning: invalid before %s", client_before)
 		response.WriteHeader(400)
-		response.Write([]byte("invalid since value. must be in format: YYYY-MM-DDTHH:MM:SSZ"))
+		response.Write([]byte("invalid before value. must be in format: YYYY-MM-DDTHH:MM:SSZ"))
 		return
 	}
 
@@ -178,7 +177,7 @@ func RequestsMediaHandler(response http.ResponseWriter, request *http.Request) {
                 WHERE media_url != ''
 			AND requested_datetime <= $1
                 ORDER BY requested_datetime DESC
-                LIMIT $2;`, since, limit)
+                LIMIT $2;`, before, limit)
 
 	if err != nil {
 		log.Print("error loading media objects", err)
