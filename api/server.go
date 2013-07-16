@@ -131,6 +131,41 @@ func RequestsMediaHandler(response http.ResponseWriter, request *http.Request) {
 	response.Header().Set("Content-type", "application/json; charset=utf-8")
 	params := request.URL.Query()
 
+	// sensible defaults
+	limit := 100
+	since := time.Now()
+
+	// override defaults
+	client_limit := params.Get("limit")
+	if integer_limit, err := strconv.Atoi(client_limit); err == nil {
+		if integer_limit <= 200 && integer_limit > 0 {
+			limit = integer_limit
+		} else {
+			// out of range
+			log.Printf("warning: limit out of range %d", integer_limit)
+			response.WriteHeader(400)
+			response.Write([]byte("limit is out of range. It must be between 1..200"))
+			return
+		}
+	} else if client_limit != "" {
+		log.Printf("warning: invalid limit %s", client_limit)
+		response.WriteHeader(400)
+		response.Write([]byte("limit is out of range. It must be between 1..200"))
+		return
+	}
+
+	client_since := params.Get("since")
+	log.Printf("client since: %s", client_since)
+	if parsed_since, err := time.Parse("2006-01-02T15:04:05-0700", client_since); err == nil {
+		since = parsed_since
+		log.Printf("fetching SR with media since %s", since)
+	} else if client_since != "" {
+		log.Printf("warning: invalid since %s", client_since)
+		response.WriteHeader(400)
+		response.Write([]byte("invalid since value. must be in format: YYYY-MM-DDTHH:MM:SSZ"))
+		return
+	}
+
 	type SR struct {
 		Service_name, Address, Media_url, Service_request_id string
 		Ward                                                 int
@@ -141,11 +176,12 @@ func RequestsMediaHandler(response http.ResponseWriter, request *http.Request) {
 	rows, err := api.Db.Query(`SELECT service_name,address,media_url,service_request_id,ward 
                 FROM service_requests
                 WHERE media_url != ''
+			AND requested_datetime <= $1
                 ORDER BY requested_datetime DESC
-                LIMIT 500;`)
+                LIMIT $2;`, since, limit)
 
 	if err != nil {
-		log.Print("error laoding media objects", err)
+		log.Print("error loading media objects", err)
 	}
 
 	for rows.Next() {
@@ -165,8 +201,8 @@ func RequestsMediaHandler(response http.ResponseWriter, request *http.Request) {
 
 func DayCountsHandler(response http.ResponseWriter, request *http.Request) {
 	// Given day, return total # of each service type,
-	// along with daily average for each service type and 
-        // wards that opened the most requests that day.
+	// along with daily average for each service type and
+	// wards that opened the most requests that day.
 	//
 	// $ curl "http://localhost:5000/requests/counts_by_day.json?day=2013-06-21"
 	//         {
@@ -185,7 +221,7 @@ func DayCountsHandler(response http.ResponseWriter, request *http.Request) {
 	//               50
 	//             ]
 	//           },
-	
+
 	response.Header().Set("Content-type", "application/json; charset=utf-8")
 
 	params := request.URL.Query()
@@ -586,9 +622,9 @@ func WardCountsHandler(response http.ResponseWriter, request *http.Request) {
 			AND requested_datetime >= $3::date 
 			AND requested_datetime <= $4::date
 		GROUP BY DATE(requested_datetime) 
-		ORDER BY requested_date;`, 
+		ORDER BY requested_date;`,
 		string(ward_id), service_code, start, end)
-		
+
 	if err != nil {
 		log.Fatal("error fetching data for WardCountsHandler", err)
 	}
@@ -619,9 +655,9 @@ func WardCountsHandler(response http.ResponseWriter, request *http.Request) {
 			AND requested_datetime >= $2::date 
 			AND requested_datetime <= $3::date
 		GROUP BY DATE(requested_datetime) 
-		ORDER BY requested_date;`, 
+		ORDER BY requested_date;`,
 		service_code, start, end)
-		
+
 	if err != nil {
 		log.Fatal("error fetching data for WardCountsHandler", err)
 	}
