@@ -22,7 +22,8 @@ html, body {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); }
 
 .topnav {
-  background: black; }
+  background: black;
+  z-index: 5000; }
   .topnav .brand {
     font-size: 18px;
     padding: 12px 0 0;
@@ -40,6 +41,13 @@ html, body {
     width: 940px;
     padding: 0;
     border: none; }
+
+.dropdown-menu {
+  top: 88%;
+  z-index: 5000; }
+
+.navbar .nav > li > .dropdown-menu:after {
+  left: 40px; }
 
 .subnav {
   left: 0;
@@ -65,7 +73,7 @@ html, body {
   position: absolute;
   top: 70px;
   width: 100%;
-  z-index: 9000; }
+  z-index: 4000; }
   .subnav-wrap .subnav {
     top: 0; }
   .subnav-wrap.affix {
