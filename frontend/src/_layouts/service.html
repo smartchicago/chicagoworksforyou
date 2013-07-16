@@ -26,11 +26,6 @@ window.currServiceType = '{{ page.service_code }}';
                 Black = ward average<br>
                 Red stripe = city average for this week
             </p>
-            {% raw %}
-            <ul class="nav nav-tabs nav-stacked">
-                <li ng-class="{active: service.slug == data.currServiceSlug}" ng-repeat="service in data.services | orderBy:'name'"><a ng-href="/service/{{ service.slug }}/#/{{ data.dateFormatted }}" ng-bind="service.name"></a></li>
-            </ul>
-            {% endraw %}
         </div>
         <div class="span8" ng-view>
         </div>

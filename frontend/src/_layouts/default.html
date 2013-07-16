@@ -29,11 +29,34 @@
     <div class="navbar-inner">
       <a class="brand" href="/">CW4U</a>
       <ul class="nav">
-        <li {% if page.section == 'yesterday' %}class="active"{% endif %}><a href="/">Yesterday</a></li>
-        <li {% if page.section == 'services' %}class="active"{% endif %}><a href="/service-map/">Services</a></li>
-        <li {% if page.section == 'wards' %}class="active"{% endif %}><a href="/ward-map/">Wards</a></li>
-        <li {% if page.section == 'annotations' %}class="active"{% endif %}><a href="/annotations/">Annotations</a></li>
-        <li {% if page.section == 'about' %}class="active"{% endif %}><a href="/about/">About</a></li>
+        <li class="{% if page.section == 'yesterday' %}active{% endif %}"><a href="/">Yesterday</a></li>
+        <li class="{% if page.section == 'services' %}active{% endif %} dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" data-target="#" href="/service/">Services <b class="caret"></b></a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                <li><a href="/service/abandoned_vehicle/">Abandoned Vehicle</a></li>
+                <li><a href="/service/alley_light_out/">Alley Light Out</a></li>
+                <li><a href="/service/building_violation/">Building Violation</a></li>
+                <li><a href="/service/graffiti_removal/">Graffiti Removal</a></li>
+                <li><a href="/service/pavement_cavein_survey/">Pavement Cave-In Survey</a></li>
+                <li><a href="/service/pothole_in_street/">Pothole in Street</a></li>
+                <li><a href="/service/restaurant_complaint/">Restaurant Complaint</a></li>
+                <li><a href="/service/rodent_baiting_rat_complaint/">Rodent Baiting / Rat Complaint</a></li>
+                <li><a href="/service/sanitation_code_violation/">Sanitation Code Violation</a></li>
+                <li><a href="/service/street_cut_complaint/">Street Cut Complaints</a></li>
+                <li><a href="/service/street_light_1_out/">Street Light 1 / Out</a></li>
+                <li><a href="/service/street_lights_all_out/">Street Lights All / Out</a></li>
+                <li><a href="/service/traffic_signal_out/">Traffic Signal Out</a></li>
+                <li><a href="/service/tree_debris/">Tree Debris</a></li>
+            </ul>
+        </li>
+        <li class="{% if page.section == 'wards' %}active{% endif %} dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" data-target="#" href="/ward/">Wards <b class="caret"></b></a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                <li><a href="/ward/1/">1</a></li>
+            </ul>
+        </li>
+        <li class="{% if page.section == 'annotations' %}active{% endif %}"><a href="/annotations/">Annotations</a></li>
+        <li class="{% if page.section == 'about' %}active{% endif %}"><a href="/about/">About</a></li>
       </ul>
     </div>
 </div>

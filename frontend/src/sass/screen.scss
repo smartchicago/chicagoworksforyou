@@ -29,6 +29,7 @@ html, body {
 
 .topnav {
     background:black;
+    z-index: 5000;
 
     .brand {
         font-size: 18px;
@@ -52,6 +53,16 @@ html, body {
         padding: 0;
         border: none;
     }
+}
+
+.dropdown-menu {
+    top: 88%;
+    // left: 20px;
+    z-index: 5000;
+}
+
+.navbar .nav > li > .dropdown-menu:after {
+    left: 40px;
 }
 
 .subnav {
@@ -84,7 +95,7 @@ html, body {
     position: absolute;
     top: 70px;
     width: 100%;
-    z-index: 9000;
+    z-index: 4000;
 
     .subnav {
         top: 0;
