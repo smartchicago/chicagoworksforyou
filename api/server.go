@@ -495,6 +495,11 @@ func TimeToCloseHandler(response http.ResponseWriter, request *http.Request) {
 
 	times := make(map[string]TimeToClose)
 
+	// zero init the times map
+	for i := 1; i < 51; i++ {
+		times[strconv.Itoa(i)] = TimeToClose{Time: 0.0, Total: 0, Ward: i}
+	}
+
 	for rows.Next() {
 		var ttc TimeToClose
 		if err := rows.Scan(&ttc.Time, &ttc.Total, &ttc.Ward); err != nil {
