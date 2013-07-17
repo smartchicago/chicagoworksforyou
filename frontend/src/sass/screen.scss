@@ -300,6 +300,8 @@ ul.nav .alderman {
         position: relative;
         vertical-align: middle;
 
+        $baseColor: #111;
+
         &.color0 {background:#eee;}
         &.color1 {background:#ddd;}
         &.color2 {background:#ccc;}
