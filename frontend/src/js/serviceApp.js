@@ -22,10 +22,6 @@ serviceApp.config(function($routeProvider) {
 });
 
 serviceApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
-    $http.get('/data/services.json').success(function(data) {
-        Data.services = data;
-    });
-
     $scope.data = Data;
 
     $scope.prevWeek = function () {
