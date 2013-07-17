@@ -192,7 +192,7 @@ ul.nav .alderman a {
 .ranking {
   font-size: 0;
   margin-bottom: 20px; }
-  .ranking div {
+  .ranking a {
     display: inline-block;
     width: 13px;
     height: 20px;
@@ -200,31 +200,31 @@ ul.nav .alderman a {
     margin-right: 1px;
     position: relative;
     vertical-align: middle; }
-    .ranking div.color0 {
+    .ranking a.color0 {
       background: #eee; }
-    .ranking div.color1 {
+    .ranking a.color1 {
       background: #ddd; }
-    .ranking div.color2 {
+    .ranking a.color2 {
       background: #ccc; }
-    .ranking div.color3 {
+    .ranking a.color3 {
       background: #bbb; }
-    .ranking div.color4 {
+    .ranking a.color4 {
       background: #aaa; }
-    .ranking div.color5 {
+    .ranking a.color5 {
       background: #999; }
-    .ranking div.color6 {
+    .ranking a.color6 {
       background: #888; }
-    .ranking div.color7 {
+    .ranking a.color7 {
       background: #777; }
-    .ranking div.color8 {
+    .ranking a.color8 {
       background: #666; }
-    .ranking div.color9 {
+    .ranking a.color9 {
       background: #555; }
-    .ranking div.color10 {
+    .ranking a.color10 {
       background: #333; }
-    .ranking div.page-ward {
+    .ranking a.page-ward {
       height: 40px; }
-    .ranking div b {
+    .ranking a b {
       position: absolute;
       top: -20px;
       left: 50%;
@@ -235,7 +235,7 @@ ul.nav .alderman a {
       display: none;
       font-size: 16px;
       text-align: center; }
-    .ranking div:hover b {
+    .ranking a:hover b {
       display: block; }
 
 .mediaApp .content {
