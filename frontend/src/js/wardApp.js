@@ -86,6 +86,14 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $routeParams) {
 
     $scope.data = Data;
 
+    $scope.ttcClass = function(ward, time) {
+        var classes = [];
+        if (ward == Data.wardNum) {
+            classes.push('page-ward');
+        }
+        return classes.join(" ");
+    };
+
     $scope.ttip = function(ward, time) {
         return ward + " / " + Math.round(time*10) / 10;
     };
