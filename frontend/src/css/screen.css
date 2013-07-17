@@ -200,6 +200,28 @@ ul.nav .alderman a {
     margin-right: 1px;
     position: relative;
     vertical-align: middle; }
+    .ranking div.color0 {
+      background: #eee; }
+    .ranking div.color1 {
+      background: #ddd; }
+    .ranking div.color2 {
+      background: #ccc; }
+    .ranking div.color3 {
+      background: #bbb; }
+    .ranking div.color4 {
+      background: #aaa; }
+    .ranking div.color5 {
+      background: #999; }
+    .ranking div.color6 {
+      background: #888; }
+    .ranking div.color7 {
+      background: #777; }
+    .ranking div.color8 {
+      background: #666; }
+    .ranking div.color9 {
+      background: #555; }
+    .ranking div.color10 {
+      background: #333; }
     .ranking div.page-ward {
       height: 40px; }
     .ranking div b {

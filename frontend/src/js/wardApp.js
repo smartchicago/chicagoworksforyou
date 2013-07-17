@@ -91,6 +91,7 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $routeParams) {
         if (ward == Data.wardNum) {
             classes.push('page-ward');
         }
+        classes.push("color" + Math.round(time * 10 / Data.maxTTC.Time));
         return classes.join(" ");
     };
 
@@ -140,6 +141,7 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $routeParams) {
         success(function(response, status, headers, config) {
             var values = _.rest(_.values(response));
             var sorted = _.sortBy(values, function (obj) { return obj.Time; });
+            Data.maxTTC = _.last(sorted);
             Data.ttc = sorted;
         }
     );

@@ -300,6 +300,18 @@ ul.nav .alderman {
         position: relative;
         vertical-align: middle;
 
+        &.color0 {background:#eee;}
+        &.color1 {background:#ddd;}
+        &.color2 {background:#ccc;}
+        &.color3 {background:#bbb;}
+        &.color4 {background:#aaa;}
+        &.color5 {background:#999;}
+        &.color6 {background:#888;}
+        &.color7 {background:#777;}
+        &.color8 {background:#666;}
+        &.color9 {background:#555;}
+        &.color10 {background:#333;}
+
         &.page-ward {
             height: 40px;
         }
