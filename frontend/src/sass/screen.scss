@@ -29,6 +29,7 @@ html, body {
 
 .topnav {
     background:black;
+    z-index: 5000;
 
     .brand {
         font-size: 18px;
@@ -52,6 +53,32 @@ html, body {
         padding: 0;
         border: none;
     }
+}
+
+.dropdown-menu {
+    top: 88%;
+    // left: 20px;
+    z-index: 5000;
+}
+
+.dropdown-set {
+    display: none;
+    min-width: 180px;
+
+    ul {
+        display: inline-block;
+        list-style-type: none;
+        margin: 0;
+
+        li {
+            padding: 0 8px;
+            text-align: right;
+        }
+    }
+}
+
+.navbar .nav > li > .dropdown-menu:after {
+    left: 40px;
 }
 
 .subnav {
@@ -84,7 +111,7 @@ html, body {
     position: absolute;
     top: 70px;
     width: 100%;
-    z-index: 9000;
+    z-index: 4000;
 
     .subnav {
         top: 0;
@@ -147,6 +174,23 @@ html, body {
     }
 }
 
+// HOMEPAGE
+
+.service-list {
+    list-style-type: none;
+    margin: 0;
+    margin-left: -20px;
+    width: 260px;
+    border-top: 1px solid #ddd;
+
+    li {
+        padding: 7px 20px;
+        width: 260px;
+        border-bottom: 1px solid #ddd;
+        line-height: 1;
+    }
+}
+
 // SERVICES
 
 .serviceApp {
@@ -161,31 +205,6 @@ html, body {
 }
 
 // WARDS
-
-.wardMapApp {
-    .st-list {
-        ul {
-            position: absolute;
-            top: 150px;
-            left: 0;
-            z-index: 3000;
-            @include box-shadow(0 0 10px fade-out(black,.7));
-
-            li {
-                background:white;
-
-                a {
-                    width: 230px;
-                }
-            }
-        }
-
-        .icon-chevron-right {
-            float: right;
-            opacity: .5;
-        }
-    }
-}
 
 .search-form {
     margin: 0;

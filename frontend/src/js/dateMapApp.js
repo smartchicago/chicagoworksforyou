@@ -43,6 +43,18 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $routeParams) {
 
     var url = window.apiDomain + 'requests/counts_by_day.json?day=' + date.format(dateFormat) + '&callback=JSON_CALLBACK';
 
+    var calculateLayerSettings = function(wardNum) {
+        // TODO: Add logic to this function
+
+        var fillOp = 0.1;
+        var col = '#0873AD';
+
+        return {
+            color: col,
+            fillOpacity: fillOp
+        };
+    };
+
     $http.jsonp(url).
         success(function(data, status, headers, config) {
             var mapped = _.map(_.pairs(data), function(pair) {
@@ -80,13 +92,13 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $routeParams) {
                 var wardNum = parseInt(path,10) + 1;
                 var poly = L.polygon(
                     wardPaths[path],
-                    {
-                        color: '#0873AD',
+                    _.extend({
+                        id: wardNum,
                         opacity: 1,
-                        weight: 2,
-                        fillOpacity: (((wardNum % 5) + 2) / 10)
-                    }
+                        weight: 2
+                    }, calculateLayerSettings(wardNum))
                 ).addTo(window.map);
+
                 poly.bindPopup('<a href="/ward/' + wardNum + '/">Ward ' + wardNum + '</a>');
                 window.allWards.addLayer(poly);
             }
