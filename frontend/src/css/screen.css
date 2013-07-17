@@ -46,6 +46,17 @@ html, body {
   top: 88%;
   z-index: 5000; }
 
+.dropdown-set {
+  display: none;
+  min-width: 180px; }
+  .dropdown-set ul {
+    display: inline-block;
+    list-style-type: none;
+    margin: 0; }
+    .dropdown-set ul li {
+      padding: 0 8px;
+      text-align: right; }
+
 .navbar .nav > li > .dropdown-menu:after {
   left: 40px; }
 
