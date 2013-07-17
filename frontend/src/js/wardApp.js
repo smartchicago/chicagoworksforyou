@@ -177,7 +177,9 @@ Highcharts.setOptions({
     },
     tooltip: {
         headerFormat: '',
-        pointFormat: '<b>{point.y:,.0f}</b> tickets',
+        formatter: function() {
+            return '<b>' + this.y + '</b> ' + ' ticket' + (this.y > 1 ? 's' : '');
+        },
         shadow: false,
         style: {
             fontFamily: 'Roboto, sans-serif',
