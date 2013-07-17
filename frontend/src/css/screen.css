@@ -174,20 +174,32 @@ ul.nav .alderman a {
   width: 100%;
   height: 350px; }
 
-.mediaApp .content .image {
-  display: inline-block;
-  width: 100px;
-  height: 100px;
-  position: relative;
-  overflow: hidden;
-  vertical-align: top;
-  margin: 0 10px 10px 0; }
-  .mediaApp .content .image span {
-    position: absolute;
-    top: 0;
-    left: 0;
-    color: white;
-    background: rgba(0, 0, 0, 0.2); }
+.mediaApp .content {
+  padding-top: 20px;
+  text-align: center; }
+  .mediaApp .content .image {
+    display: inline-block;
+    width: 150px;
+    height: 150px;
+    position: relative;
+    overflow: hidden;
+    vertical-align: top;
+    margin: 0 1px 1px 0; }
+    .mediaApp .content .image img {
+      min-height: 100%; }
+    .mediaApp .content .image span {
+      position: absolute;
+      width: 100%;
+      padding: 2px 0 2px 5px;
+      bottom: 0;
+      left: 0;
+      color: white;
+      background: rgba(0, 0, 0, 0.5);
+      transition: padding 400ms ease;
+      font-weight: bold;
+      font-size: 12px; }
+    .mediaApp .content .image:hover span {
+      padding-bottom: 10px; }
 
 .about h3 {
   padding: .5em 0 0;

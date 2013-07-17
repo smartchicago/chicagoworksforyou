@@ -272,24 +272,39 @@ ul.nav .alderman {
 
 .mediaApp {
     .content {
+        padding-top: 20px;
+        text-align: center;
+
         .image {
             display: inline-block;
-            width: 100px;
-            height: 100px;
+            width: 150px;
+            height: 150px;
             position: relative;
             overflow: hidden;
             vertical-align: top;
-            margin: 0 10px 10px 0;
+            margin: 0 1px 1px 0;
 
             img {
+                min-height: 100%;
             }
 
             span {
                 position: absolute;
-                top: 0;
+                width: 100%;
+                padding: 2px 0 2px 5px;
+                bottom: 0;
                 left: 0;
                 color: white;
-                background: rgba(0,0,0,.2);
+                background: fade-out(black,.5);
+                transition: padding 400ms ease;
+                font-weight: bold;
+                font-size: 12px;
+            }
+
+            &:hover {
+                span {
+                    padding-bottom: 10px;
+                }
             }
         }
     }
