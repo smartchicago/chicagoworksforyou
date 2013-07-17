@@ -190,7 +190,8 @@ ul.nav .alderman a {
   height: 350px; }
 
 .ranking {
-  font-size: 0; }
+  font-size: 0;
+  margin-bottom: 20px; }
   .ranking div {
     display: inline-block;
     width: 13px;
@@ -205,19 +206,15 @@ ul.nav .alderman a {
       position: absolute;
       top: -20px;
       left: 50%;
-      width: 40px;
+      width: 80px;
       height: auto;
       line-height: 1;
-      margin-left: -20px;
+      margin-left: -40px;
       display: none;
       font-size: 16px;
       text-align: center; }
     .ranking div:hover b {
       display: block; }
-    .ranking div:first-child {
-      border-radius: 6px 0 0 6px; }
-    .ranking div:last-child {
-      border-radius: 0 6px 6px 0; }
 
 .mediaApp .content {
   padding-top: 20px;

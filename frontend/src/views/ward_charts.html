@@ -3,8 +3,8 @@
     <div id="counts-chart" class="chart"></div>
 </section>
 <section id="ttc">
-    <h3>Time-to-close rankings</h3>
+    <h3>Time-to-close rankings <small>(in days)</small></h3>
     <div class="ranking">
-        <div ng-class="{on: ward.Ward == data.wardNum}" ng-repeat="ward in data.ttc"><b><span ng-bind="ward.Ward"></span></b></div>
+        <div ng-class="{on: ward.Ward == data.wardNum}" ng-repeat="ward in data.ttc"><b ng-bind="ttip(ward.Ward, ward.Time)"></b></div>
     </div>
 </section>

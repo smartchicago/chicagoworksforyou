@@ -86,6 +86,10 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $routeParams) {
 
     $scope.data = Data;
 
+    $scope.ttip = function(ward, time) {
+        return ward + " / " + Math.round(time*10) / 10;
+    };
+
     var serviceCode = window.lookupSlug(Data.currServiceSlug).code;
     var ticketsURL = window.apiDomain + 'wards/' + window.wardNum + '/counts.json?count=7&service_code=' + serviceCode + '&end_date=' + Data.dateFormatted + '&callback=JSON_CALLBACK';
     var ttcURL = window.apiDomain + 'requests/time_to_close.json?count=7&service_code=' + serviceCode + '&end_date=' + Data.dateFormatted + '&callback=JSON_CALLBACK';
@@ -128,7 +132,7 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $routeParams) {
         success(function(response, status, headers, config) {
             var values = _.rest(_.values(response));
             var sorted = _.sortBy(values, function (obj) { return obj.Time; });
-            Data.ttc = sorted.reverse();
+            Data.ttc = sorted;
         }
     );
 });
