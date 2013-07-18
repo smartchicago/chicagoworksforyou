@@ -277,8 +277,10 @@ ul.nav .alderman {
         border-bottom: 1px solid #ddd;
     }
 
-    h3 {
-        margin: 0 0 1em;
+    .counts {
+        h3 {
+            margin: 0 0 1em;
+        }
     }
 
     .chart {
@@ -286,11 +288,11 @@ ul.nav .alderman {
          height:350px;
     }
 
-    .ttc {
-        .explanation {
-            b {
-                font-weight: bold;
-            }
+    .explanation {
+        margin-bottom: 2em;
+
+        b {
+            font-weight: bold;
         }
     }
 }
