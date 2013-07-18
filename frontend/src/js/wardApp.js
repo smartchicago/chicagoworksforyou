@@ -89,19 +89,6 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $routeParams) {
 
     $scope.data = Data;
 
-    $scope.ttcClass = function(ward, time) {
-        var classes = [];
-        if (ward == Data.wardNum) {
-            classes.push('page-ward');
-        }
-        classes.push("color" + Math.round(time * 10 / Data.maxTTC.Time));
-        return classes.join(" ");
-    };
-
-    $scope.ttip = function(ward, time) {
-        return ward + " / " + Math.round(time * 10) / 10;
-    };
-
     var serviceCode = serviceObj.code;
     var ticketsURL = window.apiDomain + 'wards/' + window.wardNum + '/counts.json?count=7&service_code=' + serviceCode + '&end_date=' + Data.dateFormatted + '&callback=JSON_CALLBACK';
     var ttcURL = window.apiDomain + 'requests/time_to_close.json?count=7&service_code=' + serviceCode + '&end_date=' + Data.dateFormatted + '&callback=JSON_CALLBACK';
