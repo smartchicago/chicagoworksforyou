@@ -32,8 +32,15 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
 
     $scope.date = date.format(dateFormat);
     $scope.dateFormatted = date.format('MMM D, YYYY');
-    $scope.prevDay = "#/" + moment(date).subtract('days', 1).format(dateFormat);
     $scope.currURL = "#/" + date.format('YYYY-MM-DD');
+
+    $scope.prevDay = function() {
+        var prevDay = moment(date).subtract('days', 1);
+        if (prevDay.isBefore(window.earliestDate)) {
+            return false;
+        }
+        $location.path(prevDay.format(dateFormat));
+    };
 
     $scope.nextDay = function() {
         var nextDay = moment(date).add('days', 1);
