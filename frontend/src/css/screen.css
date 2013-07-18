@@ -158,11 +158,14 @@ html, body {
 .pagination .this-week {
   font-weight: bold; }
   .pagination .this-week a {
-    color: #333; }
+    color: #333;
+    width: 134px;
+    text-align: center; }
 .pagination .prev-week a, .pagination .next-week a {
   font-size: 13px;
   color: #666;
-  padding: 4px 8px; }
+  padding: 4px 8px;
+  width: 13px; }
 
 ul.nav .alderman a {
   font-weight: bold;
