@@ -198,6 +198,20 @@ html, body {
         padding-top: 15px;
     }
 
+    .pagination {
+        li {
+            a {
+                width: 20px;
+            }
+        }
+
+        .this-week {
+            a {
+                width: 200px;
+            }
+        }
+    }
+
     .chart {
          width:100%;
          height:2500px;
@@ -223,13 +237,14 @@ html, body {
 // PAGINATION
 
 .pagination {
+    text-align: center;
+
     .this-week {
         font-weight: bold;
 
         a {
             color: #333;
             width: 134px;
-            text-align: center;
         }
     }
 

@@ -140,6 +140,10 @@ html, body {
 
 .serviceApp .content {
   padding-top: 15px; }
+.serviceApp .pagination li a {
+  width: 20px; }
+.serviceApp .pagination .this-week a {
+  width: 200px; }
 .serviceApp .chart {
   width: 100%;
   height: 2500px; }
@@ -155,17 +159,18 @@ html, body {
     text-indent: 40px;
     border-radius: 6px 6px; }
 
-.pagination .this-week {
-  font-weight: bold; }
-  .pagination .this-week a {
-    color: #333;
-    width: 134px;
-    text-align: center; }
-.pagination .prev-week a, .pagination .next-week a {
-  font-size: 13px;
-  color: #666;
-  padding: 4px 8px;
-  width: 13px; }
+.pagination {
+  text-align: center; }
+  .pagination .this-week {
+    font-weight: bold; }
+    .pagination .this-week a {
+      color: #333;
+      width: 134px; }
+  .pagination .prev-week a, .pagination .next-week a {
+    font-size: 13px;
+    color: #666;
+    padding: 4px 8px;
+    width: 13px; }
 
 ul.nav .alderman a {
   font-weight: bold;
