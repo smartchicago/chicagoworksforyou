@@ -34,7 +34,7 @@ serviceApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
 });
 
 serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $routeParams) {
-    var date = moment().subtract('days', 1).startOf('day'); // Last Saturday
+    var date = window.prevSaturday;
     if ($routeParams.date) {
         date = moment($routeParams.date);
     }
