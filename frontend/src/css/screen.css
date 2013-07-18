@@ -183,11 +183,15 @@ ul.nav .alderman a {
 .wardApp section {
   margin-bottom: 30px;
   border-bottom: 1px solid #ddd; }
-.wardApp h3 {
+.wardApp .counts h3 {
   margin: 0 0 1em; }
 .wardApp .chart {
   width: 100%;
   height: 350px; }
+.wardApp .explanation {
+  margin-bottom: 2em; }
+  .wardApp .explanation b {
+    font-weight: bold; }
 
 .mediaApp .content {
   padding-top: 20px;

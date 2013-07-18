@@ -77,7 +77,11 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $routeParams) {
         date = moment($routeParams.date);
     }
 
+    var serviceObj = window.lookupSlug($routeParams.serviceSlug);
+
+    Data.wardNum = window.wardNum;
     Data.currServiceSlug = $routeParams.serviceSlug;
+    Data.currServiceName = serviceObj.name;
     Data.dateFormatted = date.format(dateFormat);
     Data.prevWeek = moment(date).subtract('week',1).format(dateFormat);
     Data.nextWeek = moment(date).add('week',1).format(dateFormat);
@@ -85,7 +89,7 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $routeParams) {
 
     $scope.data = Data;
 
-    var serviceCode = window.lookupSlug(Data.currServiceSlug).code;
+    var serviceCode = serviceObj.code;
     var ticketsURL = window.apiDomain + 'wards/' + window.wardNum + '/counts.json?count=7&service_code=' + serviceCode + '&end_date=' + Data.dateFormatted + '&callback=JSON_CALLBACK';
     var ttcURL = window.apiDomain + 'requests/time_to_close.json?count=7&service_code=' + serviceCode + '&end_date=' + Data.dateFormatted + '&callback=JSON_CALLBACK';
 
@@ -110,6 +114,11 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $routeParams) {
                 xAxis: {
                     categories: categories
                 },
+                plotOptions: {
+                    column: {
+                        groupPadding: 0.1
+                    }
+                },
                 series: [{
                     name: "Ward " + wardNum,
                     data: counts
@@ -118,13 +127,69 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $routeParams) {
                     data: cityAverages,
                     type: 'line',
                     dashStyle: 'longdash'
-                }]
+                }],
+                tooltip: {
+                    formatter: function() {
+                        return '<b>' + this.y + '</b> ' + ' ticket' + (this.y > 1 ? 's' : '');
+                    }
+                }
             });
         }
     );
 
     $http.jsonp(ttcURL).
         success(function(response, status, headers, config) {
+            var MIN_TTC_COUNT = 5;
+            var values = _.rest(_.values(response));
+            var filtered = _.filter(values, function(obj) { return obj.Total >= MIN_TTC_COUNT; });
+            var sorted = _.sortBy(filtered, function (obj) { return obj.Time; });
+            var wards = _.pluck(sorted, 'Ward');
+            var times = _.pluck(sorted, 'Time');
+            var colors = _.map(wards, function(w) { return w == Data.wardNum ? 'black' : '#BED0DE'; });
+            var position = _.indexOf(wards, Data.wardNum);
+
+            Data.inTTCchart = position >= 0;
+            Data.totalTTCWards = wards.length;
+            Data.minTTCcount = MIN_TTC_COUNT;
+
+            if (Data.inTTCchart) {
+                Data.wardRank = window.getOrdinal(position + 1);
+                Data.wardTime = Math.round(sorted[position].Time * 10) / 10;
+            }
+
+            var ttcChart = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'ttc-chart'
+                },
+                xAxis: {
+                    labels: {
+                        enabled: false
+                    },
+                    minPadding: 0.03,
+                    maxPadding: 0
+                },
+                plotOptions: {
+                    column: {
+                        groupPadding: 0,
+                        pointPadding: 0,
+                        borderWidth: 0,
+                        colorByPoint: true,
+                        colors: colors
+                    }
+                },
+                legend: {
+                    enabled: false
+                },
+                series: [{
+                    name: "Time-to-close for " + Data.thisWeek,
+                    data: times
+                }],
+                tooltip: {
+                    formatter: function() {
+                        return '<b>' + Math.round(this.y * 10) / 10 + ' day' + (this.y == 1 ? '' : 's') + ' </b><br>Ward ' + wards[this.x];
+                    }
+                }
+            });
         }
     );
 });
@@ -166,16 +231,8 @@ Highcharts.setOptions({
             y: -2
         }
     },
-    plotOptions: {
-        column: {
-            groupPadding: 0.1
-        }
-    },
     tooltip: {
         headerFormat: '',
-        formatter: function() {
-            return '<b>' + this.y + '</b> ' + ' ticket' + (this.y > 1 ? 's' : '');
-        },
         shadow: false,
         style: {
             fontFamily: 'Roboto, sans-serif',
