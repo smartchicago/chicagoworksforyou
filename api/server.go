@@ -165,8 +165,8 @@ func RequestsMediaHandler(response http.ResponseWriter, request *http.Request) {
 
 func DayCountsHandler(response http.ResponseWriter, request *http.Request) {
 	// Given day, return total # of each service type,
-	// along with daily average for each service type and 
-        // wards that opened the most requests that day.
+	// along with daily average for each service type and
+	// wards that opened the most requests that day.
 	//
 	// $ curl "http://localhost:5000/requests/counts_by_day.json?day=2013-06-21"
 	//         {
@@ -185,7 +185,7 @@ func DayCountsHandler(response http.ResponseWriter, request *http.Request) {
 	//               50
 	//             ]
 	//           },
-	
+
 	response.Header().Set("Content-type", "application/json; charset=utf-8")
 
 	params := request.URL.Query()
@@ -198,9 +198,9 @@ func DayCountsHandler(response http.ResponseWriter, request *http.Request) {
 	log.Printf("DayCountsHandler: params: %+v. start %s, end %s", params, start, end)
 
 	type DayCount struct {
-		Count    int
-		Average  float32
-		TopWards []int
+		Count   int
+		Average float32
+		Wards   map[string]int
 	}
 
 	counts := make(map[string]DayCount)
@@ -234,9 +234,9 @@ func DayCountsHandler(response http.ResponseWriter, request *http.Request) {
 
 	service_codes := []string{"4fd3bd72e750846c530000cd", "4ffa9cad6018277d4000007b", "4ffa4c69601827691b000018", "4fd3b167e750846744000005", "4fd3b656e750846c53000004", "4ffa971e6018277d4000000b", "4fd3bd3de750846c530000b9", "4fd6e4ece750840569000019", "4fd3b9bce750846c5300004a", "4ffa9db16018277d400000a2", "4ffa995a6018277d4000003c", "4fd3bbf8e750846c53000069", "4fd3b750e750846c5300001d", "4ffa9f2d6018277d400000c8"} //FIXME: don't hard code this
 
-	top_wards := make(map[string][]int)
-
 	for _, sc := range service_codes {
+		wards := make(map[int]int) // map the ward to its total number of reqs for the service code for the day
+
 		rows, err := api.Db.Query(`SELECT total, ward 
                      FROM daily_counts
                      WHERE requested_date >= $1 
@@ -248,25 +248,26 @@ func DayCountsHandler(response http.ResponseWriter, request *http.Request) {
 			log.Print("error loading top wards: ", err)
 		}
 
-		previous_max := 0
 		for rows.Next() {
 			var ward, total int
 			if err := rows.Scan(&total, &ward); err != nil {
 				log.Print("error loading daily counts from DB", err)
 			}
-
-			if total >= previous_max {
-				log.Printf("%s max: %d (ward %d)", sc, total, ward)
-				top_wards[sc] = append(top_wards[sc], ward)
-				previous_max = total
-			} else {
-				tmp := counts[sc]
-				tmp.TopWards = top_wards[sc]
-				counts[sc] = tmp
-				rows.Close()
-				break
-			}
+			wards[ward] = total
 		}
+
+		// zero fill wards that are not present, append to response struct
+		tmp := counts[sc]
+		tmp.Wards = make(map[string]int)
+		for i := 1; i < 51; i++ {
+			if _, present := wards[i]; !present {
+				wards[i] = 0
+			}
+
+			tmp.Wards[strconv.Itoa(i)] = wards[i]
+		}
+		counts[sc] = tmp
+
 	}
 
 	// fetch daily averages
@@ -494,6 +495,11 @@ func TimeToCloseHandler(response http.ResponseWriter, request *http.Request) {
 
 	times := make(map[string]TimeToClose)
 
+	// zero init the times map
+	for i := 1; i < 51; i++ {
+		times[strconv.Itoa(i)] = TimeToClose{Time: 0.0, Total: 0, Ward: i}
+	}
+
 	for rows.Next() {
 		var ttc TimeToClose
 		if err := rows.Scan(&ttc.Time, &ttc.Total, &ttc.Ward); err != nil {
@@ -586,9 +592,9 @@ func WardCountsHandler(response http.ResponseWriter, request *http.Request) {
 			AND requested_datetime >= $3::date 
 			AND requested_datetime <= $4::date
 		GROUP BY DATE(requested_datetime) 
-		ORDER BY requested_date;`, 
+		ORDER BY requested_date;`,
 		string(ward_id), service_code, start, end)
-		
+
 	if err != nil {
 		log.Fatal("error fetching data for WardCountsHandler", err)
 	}
@@ -619,9 +625,9 @@ func WardCountsHandler(response http.ResponseWriter, request *http.Request) {
 			AND requested_datetime >= $2::date 
 			AND requested_datetime <= $3::date
 		GROUP BY DATE(requested_datetime) 
-		ORDER BY requested_date;`, 
+		ORDER BY requested_date;`,
 		service_code, start, end)
-		
+
 	if err != nil {
 		log.Fatal("error fetching data for WardCountsHandler", err)
 	}

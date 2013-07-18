@@ -1,0 +1,4 @@
+<a class="image" ng-href="http://servicetracker.cityofchicago.org/requests/{{ img.Service_request_id }}" ng-repeat="img in media">
+    <img ng-src="{{ img.Media_url }}" alt="{{ img.Address }}">
+    <span ng-bind="img.Service_name"></span>
+</a>
