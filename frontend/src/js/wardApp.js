@@ -109,7 +109,8 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $routeParams) {
 
             var countsChart = new Highcharts.Chart({
                 chart: {
-                    renderTo: 'counts-chart'
+                    renderTo: 'counts-chart',
+                    marginBottom: 80
                 },
                 xAxis: {
                     categories: categories
@@ -159,7 +160,8 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $routeParams) {
 
             var ttcChart = new Highcharts.Chart({
                 chart: {
-                    renderTo: 'ttc-chart'
+                    renderTo: 'ttc-chart',
+                    marginBottom: 30
                 },
                 xAxis: {
                     labels: {
@@ -198,7 +200,6 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $routeParams) {
 
 Highcharts.setOptions({
     chart: {
-        marginBottom: 80,
         type: 'column'
     },
     title: {
