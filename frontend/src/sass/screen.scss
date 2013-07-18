@@ -237,7 +237,9 @@ html, body {
 // PAGINATION
 
 .pagination {
-    text-align: center;
+    a {
+        text-align: center;
+    }
 
     .this-week {
         font-weight: bold;

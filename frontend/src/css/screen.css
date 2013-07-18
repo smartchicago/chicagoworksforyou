@@ -159,18 +159,18 @@ html, body {
     text-indent: 40px;
     border-radius: 6px 6px; }
 
-.pagination {
+.pagination a {
   text-align: center; }
-  .pagination .this-week {
-    font-weight: bold; }
-    .pagination .this-week a {
-      color: #333;
-      width: 134px; }
-  .pagination .prev-week a, .pagination .next-week a {
-    font-size: 13px;
-    color: #666;
-    padding: 4px 8px;
-    width: 13px; }
+.pagination .this-week {
+  font-weight: bold; }
+  .pagination .this-week a {
+    color: #333;
+    width: 134px; }
+.pagination .prev-week a, .pagination .next-week a {
+  font-size: 13px;
+  color: #666;
+  padding: 4px 8px;
+  width: 13px; }
 
 ul.nav .alderman a {
   font-weight: bold;
