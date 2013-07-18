@@ -28,9 +28,15 @@ dateMapApp.config(function($routeProvider) {
 });
 
 dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeParams) {
+    var yesterday = moment().subtract('days', 1);
     var date = moment().subtract('days', 1).startOf('day'); // Last Saturday
     if ($routeParams.date) {
         date = moment($routeParams.date);
+        if (!date.isValid()) {
+            $location.path('/');
+        } else if (date.isAfter(yesterday)) {
+            $location.path(yesterday.format(dateFormat));
+        }
     }
 
     window.date = date;
@@ -42,7 +48,7 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
 
     $scope.nextDay = function() {
         var nextDay = moment(date).add('days', 1);
-        if (nextDay.isAfter(moment().subtract('days', 1))) {
+        if (nextDay.isAfter(yesterday)) {
             return false;
         }
         $location.path(nextDay.format(dateFormat));
