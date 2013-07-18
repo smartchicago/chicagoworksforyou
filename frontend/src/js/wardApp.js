@@ -71,12 +71,8 @@ wardApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
     };
 });
 
-wardApp.controller("wardCtrl", function ($scope, Data, $http, $routeParams) {
-    var date = window.prevSaturday;
-    if ($routeParams.date) {
-        date = moment($routeParams.date);
-    }
-
+wardApp.controller("wardCtrl", function ($scope, Data, $http, $location, $routeParams) {
+    var date = parseDate($routeParams.date, window.prevSaturday, $location);
     var serviceObj = window.lookupSlug($routeParams.serviceSlug);
 
     Data.wardNum = window.wardNum;

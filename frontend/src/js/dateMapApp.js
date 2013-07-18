@@ -28,17 +28,7 @@ dateMapApp.config(function($routeProvider) {
 });
 
 dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeParams) {
-    var date = moment().subtract('days', 1).startOf('day'); // Yesterday
-    if ($routeParams.date) {
-        date = moment($routeParams.date);
-        if (!date.isValid()) {
-            $location.path('/');
-        } else if (date.isAfter(window.yesterday)) {
-            $location.path(window.yesterday.format(dateFormat));
-        }
-    }
-
-    window.date = date;
+    var date = parseDate($routeParams.date, window.yesterday, $location);
 
     $scope.date = date.format(dateFormat);
     $scope.dateFormatted = date.format('MMM D, YYYY');

@@ -80,20 +80,17 @@ window.serviceTypesJSON = [
 
 window.stSlugs = _.pluck(serviceTypesJSON, 'slug');
 
-window.prevST = function(slug) {
-    var i = stSlugs.indexOf(slug) - 1;
-    if (i < 0) {
-        i = serviceTypesJSON.length - 1;
+window.parseDate = function(passedDate, defaultDate, locationModule) {
+    var date = defaultDate;
+    if (passedDate) {
+        date = moment(passedDate);
+        if (!date.isValid()) {
+            locationModule.path('/');
+        } else if (date.isAfter(defaultDate)) {
+            locationModule.path(defaultDate.format(dateFormat));
+        }
     }
-    return serviceTypesJSON[i];
-};
-
-window.nextST = function(slug) {
-    var i = stSlugs.indexOf(slug) + 1;
-    if (i >= serviceTypesJSON.length) {
-        i = 0;
-    }
-    return serviceTypesJSON[i];
+    return date;
 };
 
 window.lookupSlug = function(slug) {
