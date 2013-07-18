@@ -108,3 +108,9 @@ window.drawChicagoMap = function() {
     }).addTo(map);
     map.zoomControl.setPosition('bottomright');
 };
+
+window.getOrdinal = function(n) {
+    var s = ["th","st","nd","rd"];
+    var v = n % 100;
+    return n + (s[(v - 20) % 10] || s[v] || s[0]);
+};
