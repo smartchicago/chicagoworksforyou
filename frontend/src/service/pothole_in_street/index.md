@@ -5,6 +5,8 @@ title: Pothole in Street
 ---
 ![Pothole repair](http://farm8.staticflickr.com/7005/6484097529_e76e822357_n.jpg "Pothole being repaired. Photo by Steve Vance")
 
+<sub>Pothole being repaired. Photo by [Steve Vance](http://www.flickr.com/photos/75698896@N00/6484097529/in/photolist-aSYGhZ-dqMoGE-dqLZXn-dqM99E-dHsmCb-dHmVng-dHsoaw-dHspUJ-dHmYvk-dHsqUm-dHssFL-dHstuw-dHsrNC-dhZtdF-dZTrW4-dhZq6m-9ti8bN-bwoFcK-dpsxNz-dpsFL5-eQ84bB-b1UAfn-aZtCig-aTyuVV-aTyuQx-aU3qdz-8odASc-8mszU3)</sub>
+
 Per the [City of Chicago](https://data.cityofchicago.org/Service-Requests/311-Service-Requests-Pot-Holes-Reported/7as2-ds3y), the [Chicago Department of Transportation (CDOT)](http://www.cityofchicago.org/city/en/depts/cdot.html) oversees the patching of potholes on over 4,000 miles of arterial and residential streets in Chicago. 
 
 CDOT receives reports of potholes through the 311 call center and uses a computerized mapping and tracking system to identify pothole locations and efficiently schedule crews. One call to 311 can generate multiple pothole repairs. When a crew arrives to repair a 311 pothole, it fills all the other potholes within the block. Pothole repairs are generally completed within 7 days from the first report of a pothole to 311. Weather conditions, particularly frigid temps and precipitation, influence how long a repair takes. On days when weather is cooperative and there is no precipitation, crews can fill several thousand potholes. 
