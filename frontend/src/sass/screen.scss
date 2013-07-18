@@ -277,13 +277,23 @@ ul.nav .alderman {
         border-bottom: 1px solid #ddd;
     }
 
-    h3 {
-        margin: 0 0 1em;
+    .counts {
+        h3 {
+            margin: 0 0 1em;
+        }
     }
 
     .chart {
          width:100%;
          height:350px;
+    }
+
+    .explanation {
+        margin-bottom: 2em;
+
+        b {
+            font-weight: bold;
+        }
     }
 }
 
