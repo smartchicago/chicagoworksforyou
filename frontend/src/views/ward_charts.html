@@ -2,8 +2,9 @@
     <h3>Tickets submitted</h3>
     <div id="counts-chart" class="chart"></div>
 </section>
-<section id="ttc">
-    <h3>Time-to-close rankings <small>(in days)</small></h3>
+<section id="ttc" class="ttc">
+    <h3>Time-to-close ranking <small>(in days)</small></h3>
+    <p class="explanation">For all <b ng-bind="data.currServiceName"></b> tickets closed during the week of <b ng-bind="data.thisWeek"></b>, Ward <span ng-bind="data.wardNum"></span> ranked <b ng-bind="data.wardRank"></b> among the 50 wards, with an average time-to-close of <b ng-bind="data.wardTime"></b> <b>days</b>. </p>
     <div class="ranking">
         <a ng-href="/ward/{{ ward.Ward }}/#/{{ data.currServiceSlug }}/{{ data.dateFormatted }}" ng-class="ttcClass(ward.Ward, ward.Time)" ng-repeat="ward in data.ttc"><b ng-bind="ttip(ward.Ward, ward.Time)"></b></a>
     </div>

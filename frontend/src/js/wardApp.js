@@ -77,8 +77,11 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $routeParams) {
         date = moment($routeParams.date);
     }
 
+    var serviceObj = window.lookupSlug($routeParams.serviceSlug);
+
     Data.wardNum = window.wardNum;
     Data.currServiceSlug = $routeParams.serviceSlug;
+    Data.currServiceName = serviceObj.name;
     Data.dateFormatted = date.format(dateFormat);
     Data.prevWeek = moment(date).subtract('week',1).format(dateFormat);
     Data.nextWeek = moment(date).add('week',1).format(dateFormat);
@@ -96,10 +99,10 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $routeParams) {
     };
 
     $scope.ttip = function(ward, time) {
-        return ward + " / " + Math.round(time*10) / 10;
+        return ward + " / " + Math.round(time * 10) / 10;
     };
 
-    var serviceCode = window.lookupSlug(Data.currServiceSlug).code;
+    var serviceCode = serviceObj.code;
     var ticketsURL = window.apiDomain + 'wards/' + window.wardNum + '/counts.json?count=7&service_code=' + serviceCode + '&end_date=' + Data.dateFormatted + '&callback=JSON_CALLBACK';
     var ttcURL = window.apiDomain + 'requests/time_to_close.json?count=7&service_code=' + serviceCode + '&end_date=' + Data.dateFormatted + '&callback=JSON_CALLBACK';
 
@@ -141,6 +144,10 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $routeParams) {
         success(function(response, status, headers, config) {
             var values = _.rest(_.values(response));
             var sorted = _.sortBy(values, function (obj) { return obj.Time; });
+            var wards = _.pluck(sorted, 'Ward');
+            var position = _.indexOf(wards, Data.wardNum);
+            Data.wardRank = window.getOrdinal(position + 1);
+            Data.wardTime = Math.round(sorted[position].Time * 10) / 10;
             Data.maxTTC = _.last(sorted);
             Data.ttc = sorted;
         }
