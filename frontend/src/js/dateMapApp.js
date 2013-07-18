@@ -27,7 +27,7 @@ dateMapApp.config(function($routeProvider) {
         });
 });
 
-dateMapApp.controller("dateMapCtrl", function ($scope, $http, $routeParams) {
+dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeParams) {
     var date = moment().subtract('days', 1).startOf('day'); // Last Saturday
     if ($routeParams.date) {
         date = moment($routeParams.date);
@@ -37,9 +37,16 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $routeParams) {
 
     $scope.date = date.format(dateFormat);
     $scope.dateFormatted = date.format('MMM D, YYYY');
-    $scope.nextDay = "#/" + moment(date).add('days', 1).format(dateFormat);
     $scope.prevDay = "#/" + moment(date).subtract('days', 1).format(dateFormat);
     $scope.currURL = "#/" + date.format('YYYY-MM-DD');
+
+    $scope.nextDay = function() {
+        var nextDay = moment(date).add('days', 1);
+        if (nextDay.isAfter(moment().subtract('days', 1))) {
+            return false;
+        }
+        $location.path(nextDay.format(dateFormat));
+    };
 
     var url = window.apiDomain + 'requests/counts_by_day.json?day=' + date.format(dateFormat) + '&callback=JSON_CALLBACK';
 
