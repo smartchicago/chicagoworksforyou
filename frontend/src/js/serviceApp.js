@@ -141,7 +141,7 @@ Highcharts.setOptions({
     },
     tooltip: {
         headerFormat: '',
-        pointFormat: '<b>{point.y:,.0f}</b> tickets',
+        pointFormat: '<b>{point.y:,.0f}</b> requests',
         shadow: false,
         style: {
             fontFamily: 'Roboto, sans-serif',
