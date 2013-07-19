@@ -28,21 +28,25 @@ dateMapApp.config(function($routeProvider) {
 });
 
 dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeParams) {
-    var date = moment().subtract('days', 1).startOf('day'); // Last Saturday
-    if ($routeParams.date) {
-        date = moment($routeParams.date);
-    }
-
-    window.date = date;
+    var date = parseDate($routeParams.date, window.yesterday, $location);
+    var prevDay = moment(date).subtract('days', 1);
+    var nextDay = moment(date).add('days', 1);
 
     $scope.date = date.format(dateFormat);
     $scope.dateFormatted = date.format('MMM D, YYYY');
-    $scope.prevDay = "#/" + moment(date).subtract('days', 1).format(dateFormat);
+    $scope.prevDayFormatted = prevDay.format('MMM D');
+    $scope.nextDayFormatted = nextDay.format('MMM D');
     $scope.currURL = "#/" + date.format('YYYY-MM-DD');
 
-    $scope.nextDay = function() {
-        var nextDay = moment(date).add('days', 1);
-        if (nextDay.isAfter(moment().subtract('days', 1))) {
+    $scope.goToPrevDay = function() {
+        if (prevDay.isBefore(window.earliestDate)) {
+            return false;
+        }
+        $location.path(prevDay.format(dateFormat));
+    };
+
+    $scope.goToNextDay = function() {
+        if (nextDay.isAfter(window.yesterday)) {
             return false;
         }
         $location.path(nextDay.format(dateFormat));

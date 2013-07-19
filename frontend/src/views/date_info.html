@@ -1,11 +1,11 @@
 <div class="pagination">
     <ul>
-        <li class="prevDay"><a href="{{ prevDay }}">&larr; Prev day</a></li>
-        <li class="nextDay"><a ng-click="nextDay()">Next day&rarr;</a></li>
+        <li class="prevDay"><a ng-click="goToPrevDay()">&larr; <span ng-bind="prevDayFormatted"></span></a></li>
+        <li class="nextDay"><a ng-click="goToNextDay()"><span ng-bind="nextDayFormatted"></span> &rarr;</a></li>
     </ul>
 </div>
 
-<h2>{{ dateFormatted }}</h2>
+<h2>Here's what happened in Chicago on<br>{{ dateFormatted }}</h2>
 <p>
     Some text about how to read the following…
 </p>
