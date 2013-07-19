@@ -131,6 +131,40 @@ func RequestsMediaHandler(response http.ResponseWriter, request *http.Request) {
 	response.Header().Set("Content-type", "application/json; charset=utf-8")
 	params := request.URL.Query()
 
+	// sensible defaults
+	limit := 100
+	before := time.Now()
+
+	// override defaults
+	client_limit := params.Get("limit")
+	if integer_limit, err := strconv.Atoi(client_limit); err == nil {
+		if integer_limit <= 200 && integer_limit > 0 {
+			limit = integer_limit
+		} else {
+			// out of range
+			log.Printf("warning: limit out of range %d", integer_limit)
+			response.WriteHeader(400)
+			response.Write([]byte("limit is out of range. It must be between 1..200"))
+			return
+		}
+	} else if client_limit != "" {
+		log.Printf("warning: invalid limit %s", client_limit)
+		response.WriteHeader(400)
+		response.Write([]byte("limit is out of range. It must be between 1..200"))
+		return
+	}
+
+	client_before := params.Get("before")
+	if parsed_before, err := time.Parse("2006-01-02T15:04:05-0700", client_before); err == nil {
+		before = parsed_before
+		log.Printf("fetching SR with media before %s", before)
+	} else if client_before != "" {
+		log.Printf("warning: invalid before %s", client_before)
+		response.WriteHeader(400)
+		response.Write([]byte("invalid before value. must be in format: YYYY-MM-DDTHH:MM:SSZ"))
+		return
+	}
+
 	type SR struct {
 		Service_name, Address, Media_url, Service_request_id string
 		Ward                                                 int
@@ -141,11 +175,12 @@ func RequestsMediaHandler(response http.ResponseWriter, request *http.Request) {
 	rows, err := api.Db.Query(`SELECT service_name,address,media_url,service_request_id,ward 
                 FROM service_requests
                 WHERE media_url != ''
+			AND requested_datetime <= $1
                 ORDER BY requested_datetime DESC
-                LIMIT 500;`)
+                LIMIT $2;`, before, limit)
 
 	if err != nil {
-		log.Print("error laoding media objects", err)
+		log.Print("error loading media objects", err)
 	}
 
 	for rows.Next() {

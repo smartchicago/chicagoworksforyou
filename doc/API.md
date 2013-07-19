@@ -362,7 +362,10 @@ Path: `/requests/media.json`
 
 Description: Return the 500 most recent service requests that have an associated media object.
 
-Input: none
+Input: 
+
+    limit: (optional) integer between 1..200, limits the number of records returned. Default: 100
+    before: (optional) limit response to SR opened on or before the given time. Default is the time of the request. Format: YYYY-MM-DDTHH:MM:SS-offset, e.g. 2013-01-20T16:00:00-0700. Note: time zone offset is required.
 
 Output:
 
