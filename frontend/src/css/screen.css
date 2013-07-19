@@ -53,9 +53,15 @@ html, body {
     display: inline-block;
     list-style-type: none;
     margin: 0; }
-    .dropdown-set ul li {
+    .dropdown-set ul li a {
+      text-align: right;
       padding: 0 8px;
-      text-align: right; }
+      display: block; }
+      .dropdown-set ul li a:hover {
+        background: #0081c2;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 4px; }
 
 .navbar .nav > li > .dropdown-menu:after {
   left: 40px; }

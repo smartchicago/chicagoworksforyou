@@ -71,8 +71,18 @@ html, body {
         margin: 0;
 
         li {
-            padding: 0 8px;
-            text-align: right;
+            a {
+                text-align: right;
+                padding: 0 8px;
+                display: block;
+
+                &:hover {
+                    background:#0081c2;
+                    color: #fff;
+                    text-decoration: none;
+                    border-radius: 4px;
+                }
+            }
         }
     }
 }
