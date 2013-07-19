@@ -33,11 +33,8 @@ serviceApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
     };
 });
 
-serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $routeParams) {
-    var date = moment().subtract('days', 1).startOf('day'); // Last Saturday
-    if ($routeParams.date) {
-        date = moment($routeParams.date);
-    }
+serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $routeParams) {
+    var date = parseDate($routeParams.date, window.prevSaturday, $location);
 
     Data.currServiceSlug = $routeParams.serviceSlug;
     Data.dateFormatted = date.format(dateFormat);
