@@ -136,11 +136,34 @@ html, body {
 .dateMapApp h1 {
   font-size: 33px;
   line-height: 41px;
-  color: #333; }
+  color: #333;
+  margin: 0 0 12px 0; }
   .dateMapApp h1 a {
     color: #333; }
 .dateMapApp a {
   display: block; }
+.dateMapApp .pagination {
+  position: relative;
+  left: -20px;
+  top: -12px;
+  margin: 0;
+  width: 260px; }
+  .dateMapApp .pagination ul {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    border-bottom: 1px solid #eee; }
+  .dateMapApp .pagination li a {
+    width: 110px;
+    border: none;
+    border-radius: 0;
+    padding: 6px 0;
+    text-align: left; }
+  .dateMapApp .pagination li:first-child a {
+    padding-left: 20px; }
+  .dateMapApp .pagination li:last-child a {
+    padding-right: 20px;
+    text-align: right; }
 
 .service-list {
   list-style-type: none;

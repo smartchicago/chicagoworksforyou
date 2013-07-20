@@ -193,6 +193,7 @@ html, body {
         font-size: 33px;
         line-height: 41px;
         color: #333;
+        margin: 0 0 12px 0;
 
         a {
             color: #333;
@@ -201,6 +202,42 @@ html, body {
 
     a {
         display: block;
+    }
+
+    .pagination {
+        position: relative;
+        left: -20px;
+        top: -12px;
+        margin: 0;
+        width: 260px;
+
+        ul {
+            @include box-shadow(none);
+            border-bottom: 1px solid #eee;
+        }
+
+        li {
+            a {
+                width: 110px;
+                border: none;
+                border-radius: 0;
+                padding: 6px 0;
+                text-align: left;
+            }
+
+            &:first-child {
+                a {
+                    padding-left: 20px;
+                }
+            }
+
+            &:last-child {
+                a {
+                    padding-right: 20px;
+                    text-align: right;
+                }
+            }
+        }
     }
 }
 
