@@ -149,6 +149,10 @@ html, body {
       text-decoration: none; }
       .service-list li a:hover {
         background: #f7f7f7; }
+    .service-list li.up a:before {
+      content: "↑ "; }
+    .service-list li.down a:before {
+      content: "↓ "; }
     .service-list li.active a {
       background: #0088cc;
       color: white; }

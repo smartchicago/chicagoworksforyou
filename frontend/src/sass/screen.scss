@@ -209,6 +209,18 @@ html, body {
             }
         }
 
+        &.up {
+            a:before {
+                content: "↑ ";
+            }
+        }
+
+        &.down {
+            a:before {
+                content: "↓ ";
+            }
+        }
+
         &.active {
             a {
                 background:#0088cc;

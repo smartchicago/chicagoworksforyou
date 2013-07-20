@@ -11,7 +11,7 @@
 </p>
 
 <ul class="service-list">
-    <li ng-repeat="service in serviceList" ng-class="{active: service.Slug == serviceSlug}"><a ng-href="#/{{ date }}/{{ service.Slug }}">{{ service.Name }} ({{ service.Diff }})</a></li>
+    <li ng-repeat="service in serviceList" ng-class="{active: service.Slug == serviceSlug, up: service.Diff > 0, down: service.Diff < 0}"><a ng-href="#/{{ date }}/{{ service.Slug }}">{{ service.Name }} ({{ service.Diff }})</a></li>
 </ul>
 
 <p>
