@@ -31,7 +31,7 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
     var date = parseDate($routeParams.date, window.yesterday, $location);
     var prevDay = moment(date).subtract('days', 1);
     var nextDay = moment(date).add('days', 1);
-    var serviceSlug = $routeParams.serviceSlug || "graffiti_removal"
+    var serviceSlug = $routeParams.serviceSlug;
 
     $scope.date = date.format(dateFormat);
     $scope.dateFormatted = date.format('MMM D, YYYY');
@@ -100,6 +100,11 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
             var belowAverage = _.sortBy(split['false'], function(obj) {
                 return obj.Diff;
             }).reverse();
+
+            if (!serviceSlug) {
+                var featuredService = aboveAverage[0] || belowAverage[0];
+                $location.path(date.format(window.dateFormat) + "/" + featuredService.Slug);
+            }
 
             $scope.aboveAverage = aboveAverage;
             $scope.belowAverage = belowAverage;
