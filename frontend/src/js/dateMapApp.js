@@ -32,6 +32,7 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
     var prevDay = moment(date).subtract('days', 1);
     var nextDay = moment(date).add('days', 1);
     var serviceSlug = $routeParams.serviceSlug;
+    var countsURL = window.apiDomain + 'requests/counts_by_day.json?day=' + date.format(dateFormat) + '&callback=JSON_CALLBACK';
 
     $scope.date = date.format(dateFormat);
     $scope.dateFormatted = date.format('MMM D, YYYY');
@@ -54,8 +55,6 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
         $location.path(nextDay.format(dateFormat) + '/' + serviceSlug);
     };
 
-    var url = window.apiDomain + 'requests/counts_by_day.json?day=' + date.format(dateFormat) + '&callback=JSON_CALLBACK';
-
     var calculateLayerSettings = function(ward, serviceData) {
         // serviceData is in form:
         // { Average, Code, Count, Diff, Name, Slug, Wards}
@@ -74,7 +73,7 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
         };
     };
 
-    $http.jsonp(url).
+    $http.jsonp(countsURL).
         success(function(data, status, headers, config) {
             var mapped = _.map(_.pairs(data), function(pair) {
                 service = _.find(serviceTypesJSON, function(obj) { return obj.code == pair[0]; });
