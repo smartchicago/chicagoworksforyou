@@ -157,7 +157,7 @@ html, body {
 
 .wards-map {
     margin-top: -46px; // Height of navbar
-    height: 100%;
+    min-height: 100%;
 }
 
 .map-overlay-wrap {
