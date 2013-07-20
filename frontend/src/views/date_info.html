@@ -11,11 +11,11 @@
 </p>
 <strong>Above-average number of requests:</strong>
 <ul class="service-list above-average">
-    <li ng-repeat="service in aboveAverage"><a ng-href="#/{{ date }}/{{ service.Slug }}">{{ service.Name }} ({{ service.Diff }})</a></li>
+    <li ng-repeat="service in aboveAverage" ng-class="{active: service.Slug == serviceSlug}"><a ng-href="#/{{ date }}/{{ service.Slug }}">{{ service.Name }} ({{ service.Diff }})</a></li>
 </ul>
 <strong>Below-average number of requests:</strong>
 <ul class="service-list below-average">
-    <li ng-repeat="service in belowAverage"><a ng-href="#/{{ date }}/{{ service.Slug }}">{{ service.Name }} ({{ service.Diff }})</a></li>
+    <li ng-repeat="service in belowAverage" ng-class="{active: service.Slug == serviceSlug}"><a ng-href="#/{{ date }}/{{ service.Slug }}">{{ service.Name }} ({{ service.Diff }})</a></li>
 </ul>
 <p>
     <a href="{{ currURL }}">Share this map</a>

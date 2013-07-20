@@ -195,10 +195,26 @@ html, body {
     border-top: 1px solid #ddd;
 
     li {
-        padding: 7px 20px;
-        width: 260px;
         border-bottom: 1px solid #ddd;
         line-height: 1;
+
+        a {
+            width: 220px;
+            display: block;
+            padding: 7px 20px;
+            text-decoration: none;
+
+            &:hover {
+                background:#f7f7f7;
+            }
+        }
+
+        &.active {
+            a {
+                background:#0088cc;
+                color: white;
+            }
+        }
     }
 }
 
