@@ -87,26 +87,17 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
             // mapped is of form:
             // [ { Average, Code, Count, Diff, Name, Slug, Wards}, ...]
 
-            var split = _.groupBy(mapped, function(obj) {
-                //  FIXME: this should actually look at the average of the set
-                return obj.Diff > 0;
+            var serviceList = _.sortBy(mapped, function(obj) {
+                return obj.Slug;
             });
 
-            var aboveAverage = _.sortBy(split['true'], function(obj) {
-                return obj.Diff;
-            }).reverse();
-
-            var belowAverage = _.sortBy(split['false'], function(obj) {
-                return obj.Diff;
-            }).reverse();
-
-                var featuredService = aboveAverage[0] || belowAverage[0];
-                $location.path(date.format(window.dateFormat) + "/" + featuredService.Slug);
             if (!$scope.serviceSlug) {
+                //  FIXME: this should actually look at the average of the set?
+                var max = _.max(serviceList, function(obj) { return obj.Diff; });
+                $scope.serviceSlug = max.Slug;
             }
 
-            $scope.aboveAverage = aboveAverage;
-            $scope.belowAverage = belowAverage;
+            $scope.serviceList = serviceList;
 
             if (window.allWards) {
                 window.allWards.clearLayers();
