@@ -37,6 +37,7 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
     $scope.dateFormatted = date.format('MMM D, YYYY');
     $scope.prevDayFormatted = prevDay.format('MMM D');
     $scope.nextDayFormatted = nextDay.format('MMM D');
+    $scope.serviceSlug = serviceSlug;
     $scope.currURL = "#/" + date.format(window.dateFormat);
 
     $scope.goToPrevDay = function() {
@@ -126,7 +127,7 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
                     }, calculateLayerSettings(wardNum, _.find(mapped, function(o) { return o.Slug == serviceSlug; })))
                 ).addTo(window.map);
 
-                poly.bindPopup('<a href="/ward/' + wardNum + '/">Ward ' + wardNum + '</a>');
+                poly.bindPopup('<a href="/ward/' + wardNum + '/#/' + serviceSlug + '/' + $scope.date + '">Ward ' + wardNum + '</a>');
                 window.allWards.addLayer(poly);
             }
 

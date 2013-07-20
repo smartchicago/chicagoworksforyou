@@ -140,10 +140,18 @@ html, body {
   width: 260px;
   border-top: 1px solid #ddd; }
   .service-list li {
-    padding: 7px 20px;
-    width: 260px;
     border-bottom: 1px solid #ddd;
     line-height: 1; }
+    .service-list li a {
+      width: 220px;
+      display: block;
+      padding: 7px 20px;
+      text-decoration: none; }
+      .service-list li a:hover {
+        background: #f7f7f7; }
+    .service-list li.active a {
+      background: #0088cc;
+      color: white; }
 
 .serviceApp .content {
   padding-top: 15px; }
