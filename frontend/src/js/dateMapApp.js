@@ -31,6 +31,7 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
     var date = parseDate($routeParams.date, window.yesterday, $location);
     var prevDay = moment(date).subtract('days', 1);
     var nextDay = moment(date).add('days', 1);
+    var serviceSlug = $routeParams.serviceSlug || "graffiti_removal"
 
     $scope.date = date.format(dateFormat);
     $scope.dateFormatted = date.format('MMM D, YYYY');
@@ -54,15 +55,21 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
 
     var url = window.apiDomain + 'requests/counts_by_day.json?day=' + date.format(dateFormat) + '&callback=JSON_CALLBACK';
 
-    var calculateLayerSettings = function(wardNum) {
-        // TODO: Add logic to this function
+    var calculateLayerSettings = function(ward, serviceData) {
+        // serviceData is in form:
+        // { Average, Code, Count, Diff, Name, Slug, Wards}
+        // console.log("ward: %d", ward)
+        // console.log("serviceData %o", serviceData)
 
-        var fillOp = 0.1;
+        var maxFillOp = 0.9;
         var col = '#0873AD';
+
+        var max = _.max(serviceData.Wards)
+        var opac = ((serviceData.Wards[ward]) / (max)) * maxFillOp
 
         return {
             color: col,
-            fillOpacity: fillOp
+            fillOpacity: opac
         };
     };
 
@@ -78,7 +85,11 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
                 });
             });
 
+            // mapped is of form:
+            // [ { Average, Code, Count, Diff, Name, Slug, Wards}, ...]
+
             var split = _.groupBy(mapped, function(obj) {
+                //  FIXME: this should actually look at the average of the set
                 return obj.Diff > 0;
             });
 
@@ -107,7 +118,7 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
                         id: wardNum,
                         opacity: 1,
                         weight: 2
-                    }, calculateLayerSettings(wardNum))
+                    }, calculateLayerSettings(wardNum, _.find(mapped, function(o){return o["Slug"] == serviceSlug }) ))
                 ).addTo(window.map);
 
                 poly.bindPopup('<a href="/ward/' + wardNum + '/">Ward ' + wardNum + '</a>');
