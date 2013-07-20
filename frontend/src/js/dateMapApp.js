@@ -54,9 +54,22 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
         $location.path(nextDay.format(dateFormat) + ($routeParams.serviceSlug ? '/' + $scope.serviceSlug : ''));
     };
 
+    $scope.serviceClass = function(service) {
+        var classes = [];
+        if (service.Slug == $scope.serviceSlug) {
+            classes.push('active');
+        }
+        if (service.Count > service.Average) {
+            classes.push('up');
+        } else if (service.Count < service.Average) {
+            classes.push('down');
+        }
+        return classes.join(" ");
+    };
+
     var calculateLayerSettings = function(ward, serviceData) {
         // serviceData is in form:
-        // { Average, Code, Count, Diff, Percent, Name, Slug, Wards}
+        // { Average, Code, Count, Percent, Name, Slug, Wards}
         // console.log("ward: %d", ward)
         // console.log("serviceData %o", serviceData)
 
@@ -81,13 +94,12 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
                     "Slug": service.slug,
                     "Name": service.name,
                     "AvgRounded": Math.round(pair[1].Average * 10) / 10,
-                    "Diff": Math.round(pair[1].Count - pair[1].Average),
                     "Percent": Math.min(Math.round((pair[1].Count - pair[1].Average) * 100 / pair[1].Average), 100)
                 });
             });
 
             // mapped is of form:
-            // [ { Average, Code, Count, Diff, Percent, Name, Slug, Wards}, ...]
+            // [ { Average, Code, Count, Percent, Name, Slug, Wards}, ...]
 
             var serviceList = _.sortBy(mapped, function(obj) {
                 return obj.Slug;
