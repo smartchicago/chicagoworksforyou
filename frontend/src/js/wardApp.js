@@ -72,7 +72,7 @@ wardApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
 });
 
 wardApp.controller("wardCtrl", function ($scope, Data, $http, $location, $routeParams) {
-    var date = parseDate($routeParams.date, window.prevSaturday, $location);
+    var date = parseDate($routeParams.date, window.yesterday, $location);
     var serviceObj = window.lookupSlug($routeParams.serviceSlug);
 
     Data.wardNum = window.wardNum;
