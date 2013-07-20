@@ -44,14 +44,14 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
         if (prevDay.isBefore(window.earliestDate)) {
             return false;
         }
-        $location.path(prevDay.format(dateFormat));
+        $location.path(prevDay.format(dateFormat) + '/' + serviceSlug);
     };
 
     $scope.goToNextDay = function() {
         if (nextDay.isAfter(window.yesterday)) {
             return false;
         }
-        $location.path(nextDay.format(dateFormat));
+        $location.path(nextDay.format(dateFormat) + '/' + serviceSlug);
     };
 
     var url = window.apiDomain + 'requests/counts_by_day.json?day=' + date.format(dateFormat) + '&callback=JSON_CALLBACK';
