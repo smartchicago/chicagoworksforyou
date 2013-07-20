@@ -188,6 +188,22 @@ html, body {
 
 // HOMEPAGE
 
+.dateMapApp {
+    h1 {
+        font-size: 33px;
+        line-height: 41px;
+        color: #333;
+
+        a {
+            color: #333;
+        }
+    }
+
+    a {
+        display: block;
+    }
+}
+
 .service-list {
     list-style-type: none;
     margin: 0;
@@ -201,10 +217,12 @@ html, body {
 
         a {
             width: 220px;
+            color: #555;
             display: block;
             padding: 7px 20px;
             text-decoration: none;
             position: relative;
+            line-height: 16px;
 
             &:hover {
                 background:#f7f7f7;
@@ -213,13 +231,17 @@ html, body {
 
         &.up {
             a:before {
-                content: "↑ ";
+                // content: "↑ ";
             }
         }
 
         &.down {
+            a {
+                color: #888;
+            }
+
             a:before {
-                content: "↓ ";
+                // content: "↓ ";
             }
         }
 
@@ -227,6 +249,7 @@ html, body {
             a {
                 background:#0088cc;
                 color: white;
+                font-size: 16px;
             }
 
             .metadata {
@@ -237,6 +260,8 @@ html, body {
 
     .metadata {
         display: none;
+        font-size: 13px;
+        padding-top: 4px;
     }
 
     .bar {
@@ -246,6 +271,11 @@ html, body {
         height: 1px;
         background: black;
     }
+}
+
+.share-this {
+    padding-top: 10px;
+    margin: 0;
 }
 
 // SERVICES

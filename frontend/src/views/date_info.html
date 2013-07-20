@@ -5,9 +5,9 @@
     </ul>
 </div>
 
-<h2>Here's what happened in Chicago on<br>{{ dateFormatted }}</h2>
+<h1>Here's what happened in Chicago on <a href="#">{{ dateFormatted }}</a></h1>
 <p>
-    Some text about how to read the following…
+    Choose a service type to see which wards saw the most requests.
 </p>
 
 <ul class="service-list">
@@ -15,14 +15,14 @@
         <a ng-href="#/{{ date }}/{{ service.Slug }}">
             {{ service.Name }}
             <span class="metadata">
-                <b>Requests:</b> {{ service.Count }}
-                <b>Average:</b> {{ service.AvgRounded }}
+                <b>{{ service.Count }}</b> requests this day
+                vs <b>{{ service.AvgRounded }}</b> average
             </span>
             <span class="bar" style="width:{{ service.Percent }}%;"></span>
         </a>
     </li>
 </ul>
 
-<p>
+<p class="share-this">
     <a href="{{ currURL }}">Share this map</a>
 </p>
