@@ -1,4 +1,5 @@
 @import "compass/css3/box-shadow";
+@import "compass/css3/transition";
 
 html, body {
     height: 100%;
@@ -203,6 +204,7 @@ html, body {
             display: block;
             padding: 7px 20px;
             text-decoration: none;
+            position: relative;
 
             &:hover {
                 background:#f7f7f7;
@@ -226,7 +228,23 @@ html, body {
                 background:#0088cc;
                 color: white;
             }
+
+            .metadata {
+                display: block;
+            }
         }
+    }
+
+    .metadata {
+        display: none;
+    }
+
+    .bar {
+        position: absolute;
+        left: 0;
+        bottom: -1px;
+        height: 1px;
+        background: black;
     }
 }
 

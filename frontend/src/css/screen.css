@@ -146,7 +146,8 @@ html, body {
       width: 220px;
       display: block;
       padding: 7px 20px;
-      text-decoration: none; }
+      text-decoration: none;
+      position: relative; }
       .service-list li a:hover {
         background: #f7f7f7; }
     .service-list li.up a:before {
@@ -156,6 +157,16 @@ html, body {
     .service-list li.active a {
       background: #0088cc;
       color: white; }
+    .service-list li.active .metadata {
+      display: block; }
+  .service-list .metadata {
+    display: none; }
+  .service-list .bar {
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    height: 1px;
+    background: black; }
 
 .serviceApp .content {
   padding-top: 15px; }

@@ -11,7 +11,16 @@
 </p>
 
 <ul class="service-list">
-    <li ng-repeat="service in serviceList" ng-class="{active: service.Slug == serviceSlug, up: service.Diff > 0, down: service.Diff < 0}"><a ng-href="#/{{ date }}/{{ service.Slug }}">{{ service.Name }} ({{ service.Percent }}%)</a></li>
+    <li ng-repeat="service in serviceList" ng-class="{active: service.Slug == serviceSlug, up: service.Diff > 0, down: service.Diff < 0}">
+        <a ng-href="#/{{ date }}/{{ service.Slug }}">
+            {{ service.Name }}
+            <span class="metadata">
+                <b>Requests:</b> {{ service.Count }}
+                <b>Average:</b> {{ service.AvgRounded }}
+            </span>
+            <span class="bar" style="width:{{ service.Percent }}%;"></span>
+        </a>
+    </li>
 </ul>
 
 <p>

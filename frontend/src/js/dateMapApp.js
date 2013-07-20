@@ -80,8 +80,9 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
                     "Code": pair[0],
                     "Slug": service.slug,
                     "Name": service.name,
+                    "AvgRounded": Math.round(pair[1].Average * 10) / 10,
                     "Diff": Math.round(pair[1].Count - pair[1].Average),
-                    "Percent": Math.round((pair[1].Count - pair[1].Average) / pair[1].Average)
+                    "Percent": Math.min(Math.round((pair[1].Count - pair[1].Average) * 100 / pair[1].Average), 100)
                 });
             });
 
