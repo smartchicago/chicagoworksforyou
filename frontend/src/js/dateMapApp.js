@@ -56,7 +56,7 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
 
     var calculateLayerSettings = function(ward, serviceData) {
         // serviceData is in form:
-        // { Average, Code, Count, Diff, Name, Slug, Wards}
+        // { Average, Code, Count, Diff, Percent, Name, Slug, Wards}
         // console.log("ward: %d", ward)
         // console.log("serviceData %o", serviceData)
 
@@ -80,12 +80,13 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
                     "Code": pair[0],
                     "Slug": service.slug,
                     "Name": service.name,
-                    "Diff": Math.round(pair[1].Count - pair[1].Average)
+                    "Diff": Math.round(pair[1].Count - pair[1].Average),
+                    "Percent": Math.round((pair[1].Count - pair[1].Average) / pair[1].Average)
                 });
             });
 
             // mapped is of form:
-            // [ { Average, Code, Count, Diff, Name, Slug, Wards}, ...]
+            // [ { Average, Code, Count, Diff, Percent, Name, Slug, Wards}, ...]
 
             var serviceList = _.sortBy(mapped, function(obj) {
                 return obj.Slug;
@@ -93,7 +94,7 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
 
             if (!$scope.serviceSlug) {
                 //  FIXME: this should actually look at the average of the set?
-                var max = _.max(serviceList, function(obj) { return obj.Diff; });
+                var max = _.max(serviceList, function(obj) { return obj.Percent; });
                 $scope.serviceSlug = max.Slug;
             }
 
