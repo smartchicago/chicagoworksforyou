@@ -64,8 +64,8 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
         var maxFillOp = 0.9;
         var col = '#0873AD';
 
-        var max = _.max(serviceData.Wards)
-        var opac = ((serviceData.Wards[ward]) / (max)) * maxFillOp
+        var max = _.max(serviceData.Wards);
+        var opac = ((serviceData.Wards[ward]) / (max)) * maxFillOp;
 
         return {
             color: col,
@@ -76,7 +76,7 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
     $http.jsonp(url).
         success(function(data, status, headers, config) {
             var mapped = _.map(_.pairs(data), function(pair) {
-                service = _.find(serviceTypesJSON,function(obj) {return obj.code == pair[0];});
+                service = _.find(serviceTypesJSON, function(obj) { return obj.code == pair[0]; });
                 return _.extend(pair[1], {
                     "Code": pair[0],
                     "Slug": service.slug,
@@ -123,7 +123,7 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
                         id: wardNum,
                         opacity: 1,
                         weight: 2
-                    }, calculateLayerSettings(wardNum, _.find(mapped, function(o){return o["Slug"] == serviceSlug }) ))
+                    }, calculateLayerSettings(wardNum, _.find(mapped, function(o) { return o.Slug == serviceSlug; })))
                 ).addTo(window.map);
 
                 poly.bindPopup('<a href="/ward/' + wardNum + '/">Ward ' + wardNum + '</a>');
