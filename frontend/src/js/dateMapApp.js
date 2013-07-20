@@ -31,28 +31,27 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
     var date = parseDate($routeParams.date, window.yesterday, $location);
     var prevDay = moment(date).subtract('days', 1);
     var nextDay = moment(date).add('days', 1);
-    var serviceSlug = $routeParams.serviceSlug;
     var countsURL = window.apiDomain + 'requests/counts_by_day.json?day=' + date.format(dateFormat) + '&callback=JSON_CALLBACK';
 
     $scope.date = date.format(dateFormat);
     $scope.dateFormatted = date.format('MMM D, YYYY');
     $scope.prevDayFormatted = prevDay.format('MMM D');
     $scope.nextDayFormatted = nextDay.format('MMM D');
-    $scope.serviceSlug = serviceSlug;
+    $scope.serviceSlug = $routeParams.serviceSlug;
     $scope.currURL = "#/" + date.format(window.dateFormat);
 
     $scope.goToPrevDay = function() {
         if (prevDay.isBefore(window.earliestDate)) {
             return false;
         }
-        $location.path(prevDay.format(dateFormat) + '/' + serviceSlug);
+        $location.path(prevDay.format(dateFormat) + ($routeParams.serviceSlug ? '/' + $scope.serviceSlug : ''));
     };
 
     $scope.goToNextDay = function() {
         if (nextDay.isAfter(window.yesterday)) {
             return false;
         }
-        $location.path(nextDay.format(dateFormat) + '/' + serviceSlug);
+        $location.path(nextDay.format(dateFormat) + ($routeParams.serviceSlug ? '/' + $scope.serviceSlug : ''));
     };
 
     var calculateLayerSettings = function(ward, serviceData) {
@@ -101,9 +100,9 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
                 return obj.Diff;
             }).reverse();
 
-            if (!serviceSlug) {
                 var featuredService = aboveAverage[0] || belowAverage[0];
                 $location.path(date.format(window.dateFormat) + "/" + featuredService.Slug);
+            if (!$scope.serviceSlug) {
             }
 
             $scope.aboveAverage = aboveAverage;
@@ -123,10 +122,10 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
                         id: wardNum,
                         opacity: 1,
                         weight: 2
-                    }, calculateLayerSettings(wardNum, _.find(mapped, function(o) { return o.Slug == serviceSlug; })))
+                    }, calculateLayerSettings(wardNum, _.find(mapped, function(o) { return o.Slug == $scope.serviceSlug; })))
                 ).addTo(window.map);
 
-                poly.bindPopup('<a href="/ward/' + wardNum + '/#/' + serviceSlug + '/' + $scope.date + '">Ward ' + wardNum + '</a>');
+                poly.bindPopup('<a href="/ward/' + wardNum + '/#/' + $scope.serviceSlug + '/' + $scope.date + '">Ward ' + wardNum + '</a>');
                 window.allWards.addLayer(poly);
             }
 
