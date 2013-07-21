@@ -98,7 +98,11 @@ window.parseDate = function(passedDate, defaultDate, locationModule) {
 };
 
 window.lookupSlug = function(slug) {
-    return _.find(serviceTypesJSON,function(obj) {return obj.slug == slug;});
+    return _.find(serviceTypesJSON, function(obj) {return obj.slug == slug;});
+};
+
+window.lookupCode = function(code) {
+    return _.find(serviceTypesJSON, function(obj) {return obj.code == code;});
 };
 
 window.drawChicagoMap = function() {

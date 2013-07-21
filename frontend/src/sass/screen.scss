@@ -1,4 +1,5 @@
 @import "compass/css3/box-shadow";
+@import "compass/css3/transition";
 
 html, body {
     height: 100%;
@@ -157,7 +158,7 @@ html, body {
 
 .wards-map {
     margin-top: -46px; // Height of navbar
-    height: 100%;
+    min-height: 100%;
 }
 
 .map-overlay-wrap {
@@ -187,6 +188,59 @@ html, body {
 
 // HOMEPAGE
 
+.dateMapApp {
+    h1 {
+        font-size: 33px;
+        line-height: 41px;
+        color: #333;
+        margin: 0 0 12px 0;
+
+        a {
+            color: #333;
+        }
+    }
+
+    a {
+        display: block;
+    }
+
+    .pagination {
+        position: relative;
+        left: -20px;
+        top: -12px;
+        margin: 0;
+        width: 260px;
+
+        ul {
+            @include box-shadow(none);
+            border-bottom: 1px solid #eee;
+        }
+
+        li {
+            a {
+                width: 110px;
+                border: none;
+                border-radius: 0;
+                padding: 6px 0;
+                text-align: left;
+            }
+
+            &:first-child {
+                a {
+                    padding-left: 20px;
+                }
+            }
+
+            &:last-child {
+                a {
+                    padding-right: 20px;
+                    text-align: right;
+                }
+            }
+        }
+    }
+}
+
 .service-list {
     list-style-type: none;
     margin: 0;
@@ -195,14 +249,17 @@ html, body {
     border-top: 1px solid #ddd;
 
     li {
-        border-bottom: 1px solid #ddd;
+        border-bottom: 1px dashed #d7d7d7;
         line-height: 1;
 
         a {
             width: 220px;
+            color: #555;
             display: block;
             padding: 7px 20px;
             text-decoration: none;
+            position: relative;
+            line-height: 16px;
 
             &:hover {
                 background:#f7f7f7;
@@ -211,13 +268,17 @@ html, body {
 
         &.up {
             a:before {
-                content: "↑ ";
+                // content: "↑ ";
             }
         }
 
         &.down {
+            a {
+                color: #888;
+            }
+
             a:before {
-                content: "↓ ";
+                // content: "↓ ";
             }
         }
 
@@ -225,9 +286,33 @@ html, body {
             a {
                 background:#0088cc;
                 color: white;
+                font-size: 16px;
+            }
+
+            .metadata {
+                display: block;
             }
         }
     }
+
+    .metadata {
+        display: none;
+        font-size: 13px;
+        padding-top: 4px;
+    }
+
+    .bar {
+        position: absolute;
+        left: 0;
+        bottom: -1px;
+        height: 1px;
+        background: black;
+    }
+}
+
+.share-this {
+    padding-top: 10px;
+    margin: 0;
 }
 
 // SERVICES
