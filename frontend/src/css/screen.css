@@ -111,7 +111,7 @@ html, body {
 
 .wards-map {
   margin-top: -46px;
-  height: 100%; }
+  min-height: 100%; }
 
 .map-overlay-wrap {
   height: 0;
@@ -133,6 +133,38 @@ html, body {
   .map-overlay-wrap .pagination {
     margin: 10px 0; }
 
+.dateMapApp h1 {
+  font-size: 33px;
+  line-height: 41px;
+  color: #333;
+  margin: 0 0 12px 0; }
+  .dateMapApp h1 a {
+    color: #333; }
+.dateMapApp a {
+  display: block; }
+.dateMapApp .pagination {
+  position: relative;
+  left: -20px;
+  top: -12px;
+  margin: 0;
+  width: 260px; }
+  .dateMapApp .pagination ul {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    border-bottom: 1px solid #eee; }
+  .dateMapApp .pagination li a {
+    width: 110px;
+    border: none;
+    border-radius: 0;
+    padding: 6px 0;
+    text-align: left; }
+  .dateMapApp .pagination li:first-child a {
+    padding-left: 20px; }
+  .dateMapApp .pagination li:last-child a {
+    padding-right: 20px;
+    text-align: right; }
+
 .service-list {
   list-style-type: none;
   margin: 0;
@@ -140,22 +172,40 @@ html, body {
   width: 260px;
   border-top: 1px solid #ddd; }
   .service-list li {
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px dashed #d7d7d7;
     line-height: 1; }
     .service-list li a {
       width: 220px;
+      color: #555;
       display: block;
       padding: 7px 20px;
-      text-decoration: none; }
+      text-decoration: none;
+      position: relative;
+      line-height: 16px; }
       .service-list li a:hover {
         background: #f7f7f7; }
-    .service-list li.up a:before {
-      content: "↑ "; }
-    .service-list li.down a:before {
-      content: "↓ "; }
+    .service-list li.down a {
+      color: #888; }
     .service-list li.active a {
       background: #0088cc;
-      color: white; }
+      color: white;
+      font-size: 16px; }
+    .service-list li.active .metadata {
+      display: block; }
+  .service-list .metadata {
+    display: none;
+    font-size: 13px;
+    padding-top: 4px; }
+  .service-list .bar {
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    height: 1px;
+    background: black; }
+
+.share-this {
+  padding-top: 10px;
+  margin: 0; }
 
 .serviceApp .content {
   padding-top: 15px; }
