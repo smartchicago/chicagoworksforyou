@@ -83,10 +83,7 @@ func main() {
 	router.HandleFunc("/requests/counts_by_day.json", DayCountsHandler)
 	router.HandleFunc("/requests/media.json", RequestsMediaHandler)
 	log.Printf("CWFY ready for battle on port %d", *port)
-	err := http.ListenAndServe(fmt.Sprintf(":%d", *port), router)
-	if err != nil {
-		log.Fatal(err)
-	}
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), router))
 }
 
 func WrapJson(unwrapped []byte, callback []string) (jsn []byte) {
