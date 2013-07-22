@@ -74,16 +74,26 @@ func main() {
 	}()
 
 	router := mux.NewRouter()
-	router.HandleFunc("/health_check", HealthCheckHandler)
-	router.HandleFunc("/services.json", ServicesHandler)
-	router.HandleFunc("/requests/time_to_close.json", TimeToCloseHandler)
-	router.HandleFunc("/wards/{id}/requests.json", WardRequestsHandler)
-	router.HandleFunc("/wards/{id}/counts.json", WardCountsHandler)
-	router.HandleFunc("/requests/{service_code}/counts.json", RequestCountsHandler)
-	router.HandleFunc("/requests/counts_by_day.json", DayCountsHandler)
-	router.HandleFunc("/requests/media.json", RequestsMediaHandler)
+	router.HandleFunc("/health_check", endpoint(HealthCheckHandler))
+	router.HandleFunc("/services.json", endpoint(ServicesHandler))
+	router.HandleFunc("/requests/time_to_close.json", endpoint(TimeToCloseHandler))
+	router.HandleFunc("/wards/{id}/requests.json", endpoint(WardRequestsHandler))
+	router.HandleFunc("/wards/{id}/counts.json", endpoint(WardCountsHandler))
+	router.HandleFunc("/requests/{service_code}/counts.json", endpoint(RequestCountsHandler))
+	router.HandleFunc("/requests/counts_by_day.json", endpoint(DayCountsHandler))
+	router.HandleFunc("/requests/media.json", endpoint(RequestsMediaHandler))
 	log.Printf("CWFY ready for battle on port %d", *port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), router))
+}
+
+func endpoint(f http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, req *http.Request) {
+		t := time.Now()
+		log.Printf("[cwfy %s] %s%s\t%+v", api.Version, req.URL.Host, req.URL.RequestURI(), req.URL.Query())
+		f(w, req)
+		diff := time.Now()
+		log.Printf("[cwfy %s] %s%s completed in %v", api.Version, req.URL.Host, req.URL.RequestURI(), diff.Sub(t))
+	}
 }
 
 func WrapJson(unwrapped []byte, callback []string) (jsn []byte) {
