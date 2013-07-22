@@ -276,10 +276,10 @@ html, body {
         position: relative;
 
         a {
-            width: 220px;
+            width: 224px;
             color: #555;
             display: block;
-            padding: 7px 20px;
+            padding: 7px 18px;
             text-decoration: none;
             position: relative;
             line-height: 16px;
@@ -292,7 +292,6 @@ html, body {
         &.max {
             &:after {
                 content: "▲";
-                background:white;
                 border-radius: 20px;
                 width: 18px;
                 height: 18px;
@@ -303,6 +302,20 @@ html, body {
                 position: absolute;
                 right: 6px;
                 top: 6px;
+                opacity: .7;
+            }
+        }
+
+        &.active {
+            &:after {
+                opacity: 1;
+                background:white;
+            }
+        }
+
+        &.in-url {
+            &:after {
+                background:none;
             }
         }
 
@@ -329,14 +342,14 @@ html, body {
                 font-size: 16px;
             }
 
-            &.in-url {
-                a {
-                    background:lighten(#0088cc,50%);
-                }
-            }
-
             .metadata {
                 display: block;
+            }
+        }
+
+        &.in-url {
+            a {
+                background:lighten(#0088cc,50%);
             }
         }
     }

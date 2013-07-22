@@ -194,10 +194,10 @@ html, body {
     line-height: 1;
     position: relative; }
     .service-list li a {
-      width: 220px;
+      width: 224px;
       color: #555;
       display: block;
-      padding: 7px 20px;
+      padding: 7px 18px;
       text-decoration: none;
       position: relative;
       line-height: 16px; }
@@ -205,7 +205,6 @@ html, body {
         background: #f7f7f7; }
     .service-list li.max:after {
       content: "▲";
-      background: white;
       border-radius: 20px;
       width: 18px;
       height: 18px;
@@ -215,17 +214,23 @@ html, body {
       font-size: 10px;
       position: absolute;
       right: 6px;
-      top: 6px; }
+      top: 6px;
+      opacity: .7; }
+    .service-list li.active:after {
+      opacity: 1;
+      background: white; }
+    .service-list li.in-url:after {
+      background: none; }
     .service-list li.down a {
       color: #888; }
     .service-list li.active a {
       background: #e5f6ff;
       color: #222;
       font-size: 16px; }
-    .service-list li.active.in-url a {
-      background: #cceeff; }
     .service-list li.active .metadata {
       display: block; }
+    .service-list li.in-url a {
+      background: #cceeff; }
   .service-list .metadata {
     display: none;
     font-size: 13px;
