@@ -139,9 +139,8 @@ html, body {
   color: #333;
   margin: 0 0 12px 0; }
   .dateMapApp h1 a {
-    color: #333; }
-.dateMapApp a {
-  display: block; }
+    color: #333;
+    display: block; }
 .dateMapApp .pagination {
   position: relative;
   left: -20px;
@@ -164,6 +163,25 @@ html, body {
   .dateMapApp .pagination li:last-child a {
     padding-right: 20px;
     text-align: right; }
+
+.leaflet-popup-content-wrapper {
+  border-radius: 8px; }
+
+.leaflet-container a.leaflet-popup-close-button {
+  padding: 2px 2px 0 0;
+  display: none; }
+
+.leaflet-popup-content {
+  margin: 8px 10px;
+  font-size: 13px; }
+  .leaflet-popup-content a {
+    display: block;
+    font-weight: bold;
+    font-size: 15px; }
+
+.leaflet-popup-tip {
+  width: 10px;
+  height: 10px; }
 
 .service-list {
   list-style-type: none;

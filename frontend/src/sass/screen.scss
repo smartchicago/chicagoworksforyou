@@ -197,11 +197,8 @@ html, body {
 
         a {
             color: #333;
+            display: block;
         }
-    }
-
-    a {
-        display: block;
     }
 
     .pagination {
@@ -239,6 +236,31 @@ html, body {
             }
         }
     }
+}
+
+.leaflet-popup-content-wrapper {
+    border-radius: 8px;
+}
+
+.leaflet-container a.leaflet-popup-close-button {
+    padding: 2px 2px 0 0;
+    display: none;
+}
+
+.leaflet-popup-content {
+    margin: 8px 10px;
+    font-size: 13px;
+
+    a {
+        display: block;
+        font-weight: bold;
+        font-size: 15px;
+    }
+}
+
+.leaflet-popup-tip {
+    width: 10px;
+    height: 10px;
 }
 
 .service-list {
