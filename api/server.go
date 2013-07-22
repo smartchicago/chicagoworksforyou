@@ -113,7 +113,7 @@ func endpoint(f ApiEndpoint) http.HandlerFunc {
 			http.Error(w, err.Msg, err.Code)			
 		}
 
-		w.Write(response)
+		w.Write(WrapJson(response, params["callback"]))
 		diff := time.Now()
 		log.Printf("[cwfy %s] %s%s completed in %v", api.Version, req.URL.Host, req.URL.RequestURI(), diff.Sub(t))
 	}
