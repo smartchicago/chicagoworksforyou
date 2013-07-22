@@ -58,6 +58,12 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
         var classes = [];
         if (service.Slug == $scope.serviceSlug) {
             classes.push('active');
+            if (service.Slug == $routeParams.serviceSlug) {
+                classes.push('in-url');
+            }
+        }
+        if (service.Slug == $scope.maxService.Slug) {
+            classes.push('max');
         }
         if (service.Count > service.Average) {
             classes.push('up');
@@ -105,10 +111,10 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
                 return obj.Slug;
             });
 
+            $scope.maxService = _.max(serviceList, function(obj) { return obj.Percent; });
             if (!$scope.serviceSlug) {
                 //  FIXME: this should actually look at the average of the set?
-                var max = _.max(serviceList, function(obj) { return obj.Percent; });
-                $scope.serviceSlug = max.Slug;
+                $scope.serviceSlug = $scope.maxService.Slug;
             }
 
             $scope.serviceList = serviceList;

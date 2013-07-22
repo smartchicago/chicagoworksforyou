@@ -191,7 +191,8 @@ html, body {
   border-top: 1px solid #ddd; }
   .service-list li {
     border-bottom: 1px dashed #d7d7d7;
-    line-height: 1; }
+    line-height: 1;
+    position: relative; }
     .service-list li a {
       width: 220px;
       color: #555;
@@ -202,12 +203,27 @@ html, body {
       line-height: 16px; }
       .service-list li a:hover {
         background: #f7f7f7; }
+    .service-list li.max:after {
+      content: "▲";
+      background: white;
+      border-radius: 20px;
+      width: 18px;
+      height: 18px;
+      display: inline-block;
+      text-align: center;
+      line-height: 2;
+      font-size: 10px;
+      position: absolute;
+      right: 6px;
+      top: 6px; }
     .service-list li.down a {
       color: #888; }
     .service-list li.active a {
-      background: #0088cc;
-      color: white;
+      background: #e5f6ff;
+      color: #222;
       font-size: 16px; }
+    .service-list li.active.in-url a {
+      background: #cceeff; }
     .service-list li.active .metadata {
       display: block; }
   .service-list .metadata {
