@@ -10,6 +10,7 @@ import (
 	"github.com/lib/pq"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"os/signal"
 	"strconv"
@@ -33,7 +34,7 @@ func init() {
 	log.Print("starting ChicagoWorksforYou.com API server")
 
 	// version
-	api.Version = "0.0.2"
+	api.Version = "0.9.0"
 
 	// load db config
 	flag.Parse()
@@ -75,28 +76,64 @@ func main() {
 
 	router := mux.NewRouter()
 	router.HandleFunc("/health_check", endpoint(HealthCheckHandler))
-	router.HandleFunc("/services.json", endpoint(ServicesHandler))
-	router.HandleFunc("/requests/time_to_close.json", endpoint(TimeToCloseHandler))
-	router.HandleFunc("/wards/{id}/requests.json", endpoint(WardRequestsHandler))
-	router.HandleFunc("/wards/{id}/counts.json", endpoint(WardCountsHandler))
-	router.HandleFunc("/requests/{service_code}/counts.json", endpoint(RequestCountsHandler))
-	router.HandleFunc("/requests/counts_by_day.json", endpoint(DayCountsHandler))
-	router.HandleFunc("/requests/media.json", endpoint(RequestsMediaHandler))
+	// router.HandleFunc("/services.json", endpoint(ServicesHandler))
+	// router.HandleFunc("/requests/time_to_close.json", endpoint(TimeToCloseHandler))
+	// router.HandleFunc("/wards/{id}/requests.json", endpoint(WardRequestsHandler))
+	// router.HandleFunc("/wards/{id}/counts.json", endpoint(WardCountsHandler))
+	// router.HandleFunc("/requests/{service_code}/counts.json", endpoint(RequestCountsHandler))
+	// router.HandleFunc("/requests/counts_by_day.json", endpoint(DayCountsHandler))
+	// router.HandleFunc("/requests/media.json", endpoint(RequestsMediaHandler))
+
 	log.Printf("CWFY ready for battle on port %d", *port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), router))
 }
 
-func endpoint(f http.HandlerFunc) http.HandlerFunc {
+type ApiEndpoint func(url.Values) ([]byte, *ApiError)
+type ApiError struct {
+	Msg  string // human readable error message
+	Code int    // http status code to use
+}
+
+func (e *ApiError) Error() string {
+	return fmt.Sprintf("api error %d: %s", e.Code, e.Msg)
+}
+
+func endpoint(f ApiEndpoint) http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
-		w.Header().Set("Content-type", "application/json; charset=utf-8")
-		w.Header().Set("Server", fmt.Sprintf("ChicagoWorksForYou.com/%s", api.Version))
+		w = setHeaders(w)
+		params := req.URL.Query()
+
+		log.Printf("[cwfy %s] %s%s\t%+v", api.Version, req.URL.Host, req.URL.RequestURI(), params)
 
 		t := time.Now()
-		log.Printf("[cwfy %s] %s%s\t%+v", api.Version, req.URL.Host, req.URL.RequestURI(), req.URL.Query())
-		f(w, req)
+		response, err := f(params)
+
+		if err != nil {
+			log.Printf(err.Error())
+			http.Error(w, err.Msg, err.Code)			
+		}
+
+		w.Write(response)
 		diff := time.Now()
 		log.Printf("[cwfy %s] %s%s completed in %v", api.Version, req.URL.Host, req.URL.RequestURI(), diff.Sub(t))
 	}
+}
+
+func setHeaders(w http.ResponseWriter) http.ResponseWriter {
+	// set HTTP headers on the response object
+	// TODO: add cache control headers
+
+	w.Header().Set("Content-type", "application/json; charset=utf-8")
+	w.Header().Set("Server", fmt.Sprintf("ChicagoWorksForYou.com/%s", api.Version))
+	return w
+}
+
+func dumpJson(in interface{}) []byte {
+	out, err := json.MarshalIndent(in, "", "  ")
+	if err != nil {
+		log.Printf("error marshalling to json: %s", err)
+	}
+	return out
 }
 
 func WrapJson(unwrapped []byte, callback []string) (jsn []byte) {
@@ -107,6 +144,39 @@ func WrapJson(unwrapped []byte, callback []string) (jsn []byte) {
 	}
 
 	return
+}
+
+// func HealthCheckHandler(response http.ResponseWriter, request *http.Request) {
+func HealthCheckHandler(params url.Values) ([]byte, *ApiError) {
+	// params := request.URL.Query()
+
+	type HealthCheck struct {
+		Count    int
+		Database bool
+		Healthy  bool
+		Version  string
+	}
+
+	health_check := HealthCheck{Version: api.Version}
+
+	health_check.Database = api.Db.Ping() == nil
+
+	rows, _ := api.Db.Query("SELECT COUNT(*) FROM service_requests;")
+	for rows.Next() {
+		if err := rows.Scan(&health_check.Count); err != nil {
+			log.Fatal("error fetching count", err)
+		}
+	}
+
+	// calculate overall health
+	health_check.Healthy = health_check.Count > 0 && health_check.Database
+
+	log.Printf("health_check: %+v", health_check)
+	if !health_check.Healthy {
+		log.Printf("health_check failed")
+	}
+
+	return dumpJson(health_check), nil
 }
 
 func RequestsMediaHandler(response http.ResponseWriter, request *http.Request) {
@@ -742,39 +812,5 @@ func ServicesHandler(response http.ResponseWriter, request *http.Request) {
 	}
 
 	jsn, _ := json.MarshalIndent(services, "", "  ")
-	response.Write(jsn)
-}
-
-func HealthCheckHandler(response http.ResponseWriter, request *http.Request) {
-
-	params := request.URL.Query()
-
-	type HealthCheck struct {
-		Count    int
-		Database bool
-		Healthy  bool
-		Version  string
-	}
-
-	health_check := HealthCheck{Version: api.Version}
-
-	health_check.Database = api.Db.Ping() == nil
-
-	rows, _ := api.Db.Query("SELECT COUNT(*) FROM service_requests;")
-	for rows.Next() {
-		if err := rows.Scan(&health_check.Count); err != nil {
-			log.Fatal("error fetching count", err)
-		}
-	}
-
-	// calculate overall health
-	health_check.Healthy = health_check.Count > 0 && health_check.Database
-
-	log.Printf("health_check: %+v", health_check)
-	if !health_check.Healthy {
-		log.Printf("health_check failed")
-	}
-	jsn, _ := json.MarshalIndent(health_check, "", "  ")
-	jsn = WrapJson(jsn, params["callback"])
 	response.Write(jsn)
 }
