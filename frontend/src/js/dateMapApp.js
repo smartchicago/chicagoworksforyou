@@ -113,6 +113,10 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
 
             $scope.serviceList = serviceList;
 
+            var serviceObj = _.find(mapped, function(obj) {
+                return obj.Slug == $scope.serviceSlug;
+            });
+
             if (window.allWards) {
                 window.allWards.clearLayers();
             } else {
@@ -127,10 +131,9 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
                         id: wardNum,
                         opacity: 1,
                         weight: 2
-                    }, calculateLayerSettings(wardNum, _.find(mapped, function(o) { return o.Slug == $scope.serviceSlug; })))
+                    }, calculateLayerSettings(wardNum, serviceObj))
                 ).addTo(window.map);
-
-                poly.bindPopup('<a href="/ward/' + wardNum + '/#/' + $scope.serviceSlug + '/' + $scope.date + '">Ward ' + wardNum + '</a>');
+                poly.bindPopup('<a href="/ward/' + wardNum + '/#/' + $scope.serviceSlug + '/' + $scope.date + '">Ward ' + wardNum + '</a><br>');
                 window.allWards.addLayer(poly);
             }
 
