@@ -82,7 +82,7 @@ func main() {
 	// router.HandleFunc("/wards/{id}/counts.json", endpoint(WardCountsHandler))
 	// router.HandleFunc("/requests/{service_code}/counts.json", endpoint(RequestCountsHandler))
 	// router.HandleFunc("/requests/counts_by_day.json", endpoint(DayCountsHandler))
-	// router.HandleFunc("/requests/media.json", endpoint(RequestsMediaHandler))
+	router.HandleFunc("/requests/media.json", endpoint(RequestsMediaHandler))
 
 	log.Printf("CWFY ready for battle on port %d", *port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), router))
@@ -179,7 +179,7 @@ func HealthCheckHandler(params url.Values) ([]byte, *ApiError) {
 	return dumpJson(health_check), nil
 }
 
-func RequestsMediaHandler(response http.ResponseWriter, request *http.Request) {
+func RequestsMediaHandler(params url.Values) ([]byte, *ApiError) {
 	// Return 500 most recent SR that have media "attached"
 	//
 	// Sample:
@@ -208,8 +208,6 @@ func RequestsMediaHandler(response http.ResponseWriter, request *http.Request) {
 	//     "Ward": 25
 	//   },
 
-	params := request.URL.Query()
-
 	type SR struct {
 		Service_name, Address, Media_url, Service_request_id string
 		Ward                                                 int
@@ -224,22 +222,19 @@ func RequestsMediaHandler(response http.ResponseWriter, request *http.Request) {
                 LIMIT 500;`)
 
 	if err != nil {
-		log.Print("error laoding media objects", err)
+		log.Print("error laoding media objects ", err)
 	}
 
 	for rows.Next() {
 		sr := SR{}
 		if err := rows.Scan(&sr.Service_name, &sr.Address, &sr.Media_url, &sr.Service_request_id, &sr.Ward); err != nil {
-			log.Print("error", err)
+			log.Print("error ", err)
 		}
 
 		sr_with_media = append(sr_with_media, sr)
 	}
 
-	jsn, _ := json.MarshalIndent(sr_with_media, "", "  ")
-	jsn = WrapJson(jsn, params["callback"])
-
-	response.Write(jsn)
+	return dumpJson(sr_with_media), nil
 }
 
 func DayCountsHandler(response http.ResponseWriter, request *http.Request) {
