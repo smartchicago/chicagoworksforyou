@@ -202,8 +202,6 @@ func DayCountsHandler(response http.ResponseWriter, request *http.Request) {
 	end = end.AddDate(0, 0, 1) // inc to the following day
 	start := end.AddDate(0, 0, -1)
 
-	log.Printf("DayCountsHandler: params: %+v. start %s, end %s", params, start, end)
-
 	type DayCount struct {
 		Count   int
 		Average float32
@@ -341,9 +339,6 @@ func RequestCountsHandler(response http.ResponseWriter, request *http.Request) {
 	end, _ := time.ParseInLocation("2006-01-02", params["end_date"][0], chi)
 	end = end.AddDate(0, 0, 1) // inc to the following day
 	start := end.AddDate(0, 0, -days)
-
-	log.Printf("RequestCountsHandler: service_code: %s params: %+v", service_code, params)
-	log.Printf("searching with times: %s to %s", start, end)
 
 	rows, err := api.Db.Query(`SELECT SUM(total), ward 
 		FROM daily_counts
@@ -588,9 +583,6 @@ func WardCountsHandler(response http.ResponseWriter, request *http.Request) {
 
 	service_code := params["service_code"][0]
 
-	log.Printf("fetching counts for ward %s code %s for past %d days", ward_id, service_code, days)
-	log.Printf("date range is %s to %s", start, end)
-
 	rows, err := api.Db.Query(`SELECT COUNT(*), DATE(requested_datetime) AS requested_date 
 		FROM service_requests 
 		WHERE ward = $1
@@ -673,7 +665,6 @@ func WardRequestsHandler(response http.ResponseWriter, request *http.Request) {
 	vars := mux.Vars(request)
 	ward_id := vars["id"]
 	params := request.URL.Query()
-	log.Print("fetch requests for ward ", ward_id)
 
 	rows, err := api.Db.Query("SELECT lat,long,ward,police_district,service_request_id,status,service_name,service_code,agency_responsible,address,channel,media_url,requested_datetime,updated_datetime,created_at,updated_at,duplicate,parent_service_request_id,id FROM service_requests WHERE duplicate IS NULL AND ward = $1 ORDER BY updated_at DESC LIMIT 100;", ward_id)
 
