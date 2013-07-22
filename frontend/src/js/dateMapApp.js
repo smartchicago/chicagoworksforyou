@@ -133,7 +133,7 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
                         weight: 2
                     }, calculateLayerSettings(wardNum, serviceObj))
                 ).addTo(window.map);
-                poly.bindPopup('<a href="/ward/' + wardNum + '/#/' + $scope.serviceSlug + '/' + $scope.date + '">Ward ' + wardNum + '</a><br>');
+                poly.bindPopup('<a href="/ward/' + wardNum + '/#/' + $scope.serviceSlug + '/' + $scope.date + '">Ward ' + wardNum + '</a><br>' + serviceObj.Wards[wardNum] + ' requests');
                 window.allWards.addLayer(poly);
             }
 
