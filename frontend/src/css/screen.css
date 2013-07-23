@@ -203,34 +203,35 @@ html, body {
       line-height: 16px; }
       .service-list li a:hover {
         background: #f7f7f7; }
-    .service-list li.max:after {
-      content: "▲";
-      border-radius: 20px;
+    .service-list li:before {
+      opacity: .3;
       width: 18px;
       height: 18px;
-      display: inline-block;
+      display: block;
       text-align: center;
       line-height: 2;
       font-size: 10px;
       position: absolute;
       right: 6px;
       top: 6px;
-      opacity: .7; }
-    .service-list li.active:after {
-      opacity: 1;
-      background: white; }
-    .service-list li.in-url:after {
-      background: none; }
-    .service-list li.down a {
-      color: #888; }
+      border-radius: 20px;
+      z-index: 100; }
+    .service-list li.up:before {
+      content: "▲"; }
+    .service-list li.down:before {
+      content: "▼"; }
+    .service-list li.max:before {
+      border: 1px dashed #777;
+      right: 5px;
+      top: 5px; }
     .service-list li.active a {
       background: #e5f6ff;
       color: #222;
       font-size: 16px; }
     .service-list li.active .metadata {
       display: block; }
-    .service-list li.in-url a {
-      background: #cceeff; }
+    .service-list li.active:before {
+      opacity: 1; }
   .service-list .metadata {
     display: none;
     font-size: 13px;
