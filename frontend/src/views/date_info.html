@@ -13,7 +13,7 @@
 <ul class="service-list">
     <li ng-repeat="service in serviceList" ng-class="serviceClass(service)">
         <a ng-href="#/{{ date }}/{{ service.Slug }}">
-            {{ service.Name }}
+            <span class="service-name">{{ service.Name }}</span>
             <span class="metadata">
                 <b>{{ service.Count }}</b> requests this day
                 vs <b>{{ service.AvgRounded }}</b> average

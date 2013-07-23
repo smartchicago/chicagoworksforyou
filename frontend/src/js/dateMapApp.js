@@ -58,6 +58,12 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
         var classes = [];
         if (service.Slug == $scope.serviceSlug) {
             classes.push('active');
+            if (service.Slug == $routeParams.serviceSlug) {
+                classes.push('in-url');
+            }
+        }
+        if (service.Slug == $scope.maxService.Slug) {
+            classes.push('max');
         }
         if (service.Count > service.Average) {
             classes.push('up');
@@ -105,13 +111,17 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
                 return obj.Slug;
             });
 
+            $scope.maxService = _.max(serviceList, function(obj) { return obj.Percent; });
             if (!$scope.serviceSlug) {
                 //  FIXME: this should actually look at the average of the set?
-                var max = _.max(serviceList, function(obj) { return obj.Percent; });
-                $scope.serviceSlug = max.Slug;
+                $scope.serviceSlug = $scope.maxService.Slug;
             }
 
             $scope.serviceList = serviceList;
+
+            var serviceObj = _.find(mapped, function(obj) {
+                return obj.Slug == $scope.serviceSlug;
+            });
 
             if (window.allWards) {
                 window.allWards.clearLayers();
@@ -127,10 +137,10 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
                         id: wardNum,
                         opacity: 1,
                         weight: 2
-                    }, calculateLayerSettings(wardNum, _.find(mapped, function(o) { return o.Slug == $scope.serviceSlug; })))
+                    }, calculateLayerSettings(wardNum, serviceObj))
                 ).addTo(window.map);
-
-                poly.bindPopup('<a href="/ward/' + wardNum + '/#/' + $scope.serviceSlug + '/' + $scope.date + '">Ward ' + wardNum + '</a>');
+                var requestCount = serviceObj.Wards[wardNum];
+                poly.bindPopup('<a href="/ward/' + wardNum + '/#/' + $scope.serviceSlug + '/' + $scope.date + '">Ward ' + wardNum + '</a>' + requestCount + ' request' + (requestCount > 1 ? 's' : ''));
                 window.allWards.addLayer(poly);
             }
 
