@@ -13,12 +13,14 @@ window.currServiceType = '{{ page.service_code }}';
     <div class="row">
         <div class="span4" ng-controller="sidebarCtrl">
             <h1><a href="#">{{ page.title }}</a></h1>
-            <div class="pagination">
-                <ul>
-                    <li class="prev-week"><a ng-click="prevWeek()">&larr;</a></li>
-                    <li class="this-week"><a href="#">Week of <span ng-bind="data.thisWeek"></span></a></li>
-                    <li class="next-week"><a ng-click="nextWeek()">&rarr;</a></li>
-                </ul>
+            <div class="pagination-wrap">
+                <div class="pagination">
+                    <ul>
+                        <li class="prev-week"><a ng-click="prevWeek()">&larr;</a></li>
+                        <li class="this-week"><a href="#">Week of <span ng-bind="data.thisWeek"></span></a></li>
+                        <li class="next-week"><a ng-click="nextWeek()">&rarr;</a></li>
+                    </ul>
+                </div>
             </div>
             {{ content }}
             <p>
