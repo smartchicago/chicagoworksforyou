@@ -53,7 +53,7 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
 
     var stCode = window.currServiceType;
     var stSlug = window.lookupCode(stCode).slug;
-    var numOfDays = 7;
+    var numOfDays = 28;
     var url = window.apiDomain + 'requests/' + stCode + '/counts.json?end_date=' + Data.dateFormatted + '&count=' + numOfDays + '&callback=JSON_CALLBACK';
     var chart = $('#chart').highcharts();
 
@@ -62,7 +62,7 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
             var cityAverage = response['0'].Count / 50;
             var counts = _.rest(_.pluck(response, 'Count'));
             var categories = _.map(_.rest(_.keys(response)), function (wardNum) { return '<a href="/ward/' + wardNum + '/#/' + stSlug + '">Ward ' + wardNum + '</a>'; });
-            var averages = _.map(_.rest(_.pluck(response, 'Average')), Math.round);
+            var averages = _.map(_.rest(_.pluck(response, 'Average')), function (avg) { return Math.round(avg * numOfDays); });
 
             new Highcharts.Chart({
                 chart: {
