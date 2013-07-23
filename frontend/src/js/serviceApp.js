@@ -48,6 +48,7 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
     Data.prevWeek = moment(date).subtract('week',1).format(dateFormat);
     Data.nextWeek = moment(date).add('week',1).format(dateFormat);
     Data.thisWeek = weekDuration.beforeMoment(date,true).format({implicitYear: false});
+    Data.thisMonth = date.format('MMM D, YYYY');
 
     $scope.data = Data;
 
