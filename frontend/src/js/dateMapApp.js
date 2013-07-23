@@ -28,66 +28,100 @@ dateMapApp.config(function($routeProvider) {
 });
 
 dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeParams) {
-    var date = moment().subtract('days', 1).startOf('day'); // Last Saturday
-    if ($routeParams.date) {
-        date = moment($routeParams.date);
-    }
-
-    window.date = date;
+    var date = parseDate($routeParams.date, window.yesterday, $location);
+    var prevDay = moment(date).subtract('days', 1);
+    var nextDay = moment(date).add('days', 1);
+    var countsURL = window.apiDomain + 'requests/counts_by_day.json?day=' + date.format(dateFormat) + '&callback=JSON_CALLBACK';
 
     $scope.date = date.format(dateFormat);
     $scope.dateFormatted = date.format('MMM D, YYYY');
-    $scope.prevDay = "#/" + moment(date).subtract('days', 1).format(dateFormat);
-    $scope.currURL = "#/" + date.format('YYYY-MM-DD');
+    $scope.prevDayFormatted = prevDay.format('MMM D');
+    $scope.nextDayFormatted = nextDay.format('MMM D');
+    $scope.serviceSlug = $routeParams.serviceSlug;
+    $scope.currURL = "#/" + date.format(window.dateFormat);
 
-    $scope.nextDay = function() {
-        var nextDay = moment(date).add('days', 1);
-        if (nextDay.isAfter(moment().subtract('days', 1))) {
+    $scope.goToPrevDay = function() {
+        if (prevDay.isBefore(window.earliestDate)) {
             return false;
         }
-        $location.path(nextDay.format(dateFormat));
+        $location.path(prevDay.format(dateFormat) + ($routeParams.serviceSlug ? '/' + $scope.serviceSlug : ''));
     };
 
-    var url = window.apiDomain + 'requests/counts_by_day.json?day=' + date.format(dateFormat) + '&callback=JSON_CALLBACK';
+    $scope.goToNextDay = function() {
+        if (nextDay.isAfter(window.yesterday)) {
+            return false;
+        }
+        $location.path(nextDay.format(dateFormat) + ($routeParams.serviceSlug ? '/' + $scope.serviceSlug : ''));
+    };
 
-    var calculateLayerSettings = function(wardNum) {
-        // TODO: Add logic to this function
+    $scope.serviceClass = function(service) {
+        var classes = [];
+        if (service.Slug == $scope.serviceSlug) {
+            classes.push('active');
+            if (service.Slug == $routeParams.serviceSlug) {
+                classes.push('in-url');
+            }
+        }
+        if (service.Slug == $scope.maxService.Slug) {
+            classes.push('max');
+        }
+        if (service.Count > service.Average) {
+            classes.push('up');
+        } else if (service.Count < service.Average) {
+            classes.push('down');
+        }
+        return classes.join(" ");
+    };
 
-        var fillOp = 0.1;
+    var calculateLayerSettings = function(ward, serviceData) {
+        // serviceData is in form:
+        // { Average, Code, Count, Percent, Name, Slug, Wards}
+        // console.log("ward: %d", ward)
+        // console.log("serviceData %o", serviceData)
+
+        var maxFillOp = 0.9;
         var col = '#0873AD';
+
+        var max = _.max(serviceData.Wards);
+        var opac = ((serviceData.Wards[ward]) / (max)) * maxFillOp;
 
         return {
             color: col,
-            fillOpacity: fillOp
+            fillOpacity: opac
         };
     };
 
-    $http.jsonp(url).
+    $http.jsonp(countsURL).
         success(function(data, status, headers, config) {
             var mapped = _.map(_.pairs(data), function(pair) {
-                service = _.find(serviceTypesJSON,function(obj) {return obj.code == pair[0];});
+                service = _.find(serviceTypesJSON, function(obj) { return obj.code == pair[0]; });
                 return _.extend(pair[1], {
                     "Code": pair[0],
                     "Slug": service.slug,
                     "Name": service.name,
-                    "Diff": Math.round(pair[1].Count - pair[1].Average)
+                    "AvgRounded": Math.round(pair[1].Average * 10) / 10,
+                    "Percent": Math.min(Math.round((pair[1].Count - pair[1].Average) * 100 / pair[1].Average), 100)
                 });
             });
 
-            var split = _.groupBy(mapped, function(obj) {
-                return obj.Diff > 0;
+            // mapped is of form:
+            // [ { Average, Code, Count, Percent, Name, Slug, Wards}, ...]
+
+            var serviceList = _.sortBy(mapped, function(obj) {
+                return obj.Slug;
             });
 
-            var aboveAverage = _.sortBy(split['true'], function(obj) {
-                return obj.Diff;
-            }).reverse();
+            $scope.maxService = _.max(serviceList, function(obj) { return obj.Percent; });
+            if (!$scope.serviceSlug) {
+                //  FIXME: this should actually look at the average of the set?
+                $scope.serviceSlug = $scope.maxService.Slug;
+            }
 
-            var belowAverage = _.sortBy(split['false'], function(obj) {
-                return obj.Diff;
-            }).reverse();
+            $scope.serviceList = serviceList;
 
-            $scope.aboveAverage = aboveAverage;
-            $scope.belowAverage = belowAverage;
+            var serviceObj = _.find(mapped, function(obj) {
+                return obj.Slug == $scope.serviceSlug;
+            });
 
             if (window.allWards) {
                 window.allWards.clearLayers();
@@ -103,10 +137,10 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
                         id: wardNum,
                         opacity: 1,
                         weight: 2
-                    }, calculateLayerSettings(wardNum))
+                    }, calculateLayerSettings(wardNum, serviceObj))
                 ).addTo(window.map);
-
-                poly.bindPopup('<a href="/ward/' + wardNum + '/">Ward ' + wardNum + '</a>');
+                var requestCount = serviceObj.Wards[wardNum];
+                poly.bindPopup('<a href="/ward/' + wardNum + '/#/' + $scope.serviceSlug + '/' + $scope.date + '">Ward ' + wardNum + '</a>' + requestCount + ' request' + (requestCount > 1 ? 's' : ''));
                 window.allWards.addLayer(poly);
             }
 

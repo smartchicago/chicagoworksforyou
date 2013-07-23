@@ -29,7 +29,7 @@
     <div class="navbar-inner">
       <a class="brand" href="/">CW4U</a>
       <ul class="nav">
-        <li class="{% if page.section == 'yesterday' %}active{% endif %}"><a href="/">Yesterday</a></li>
+        <li class="{% if page.section == 'home' %}active{% endif %}"><a href="/">Home</a></li>
         <li class="{% if page.section == 'services' %}active{% endif %} dropdown">
             <a class="dropdown-toggle" data-toggle="dropdown" data-target="#" href="/service/">Services <b class="caret"></b></a>
             <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
@@ -151,7 +151,7 @@ window.apiDomain = "http://localhost:5000/";
 window.apiDomain = "http://cwfy-api-staging.smartchicagoapps.org/";
 </script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.2/angular.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
 <script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
 {% endif %}

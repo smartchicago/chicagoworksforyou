@@ -1,22 +1,28 @@
 <div class="pagination">
     <ul>
-        <li class="prevDay"><a href="{{ prevDay }}">&larr; Prev day</a></li>
-        <li class="nextDay"><a ng-click="nextDay()">Next day&rarr;</a></li>
+        <li class="prevDay"><a href="" ng-click="goToPrevDay()">&larr; <span ng-bind="prevDayFormatted"></span></a></li>
+        <li class="nextDay"><a href="" ng-click="goToNextDay()"><span ng-bind="nextDayFormatted"></span> &rarr;</a></li>
     </ul>
 </div>
 
-<h2>{{ dateFormatted }}</h2>
+<h1>Here's what happened in Chicago on <a href="#">{{ dateFormatted }}</a></h1>
 <p>
-    Some text about how to read the following…
+    Choose a service type to see which wards saw the most requests.
 </p>
-<strong>Above-average number of requests:</strong>
-<ul class="service-list above-average">
-    <li ng-repeat="service in aboveAverage"><a ng-href="#/{{ date }}/{{ service.Slug }}">{{ service.Name }} ({{ service.Diff }})</a></li>
+
+<ul class="service-list">
+    <li ng-repeat="service in serviceList" ng-class="serviceClass(service)">
+        <a ng-href="#/{{ date }}/{{ service.Slug }}">
+            <span class="service-name">{{ service.Name }}</span>
+            <span class="metadata">
+                <b>{{ service.Count }}</b> requests this day
+                vs <b>{{ service.AvgRounded }}</b> average
+            </span>
+            <span class="bar" style="width:{{ service.Percent }}%;"></span>
+        </a>
+    </li>
 </ul>
-<strong>Below-average number of requests:</strong>
-<ul class="service-list below-average">
-    <li ng-repeat="service in belowAverage"><a ng-href="#/{{ date }}/{{ service.Slug }}">{{ service.Name }} ({{ service.Diff }})</a></li>
-</ul>
-<p>
+
+<p class="share-this">
     <a href="{{ currURL }}">Share this map</a>
 </p>

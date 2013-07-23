@@ -71,12 +71,8 @@ wardApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
     };
 });
 
-wardApp.controller("wardCtrl", function ($scope, Data, $http, $routeParams) {
-    var date = moment().subtract('days', 1).startOf('day'); // Last Saturday
-    if ($routeParams.date) {
-        date = moment($routeParams.date);
-    }
-
+wardApp.controller("wardCtrl", function ($scope, Data, $http, $location, $routeParams) {
+    var date = parseDate($routeParams.date, window.yesterday, $location);
     var serviceObj = window.lookupSlug($routeParams.serviceSlug);
 
     Data.wardNum = window.wardNum;
@@ -90,12 +86,12 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $routeParams) {
     $scope.data = Data;
 
     var serviceCode = serviceObj.code;
-    var ticketsURL = window.apiDomain + 'wards/' + window.wardNum + '/counts.json?count=7&service_code=' + serviceCode + '&end_date=' + Data.dateFormatted + '&callback=JSON_CALLBACK';
+    var requestsURL = window.apiDomain + 'wards/' + window.wardNum + '/counts.json?count=7&service_code=' + serviceCode + '&end_date=' + Data.dateFormatted + '&callback=JSON_CALLBACK';
     var ttcURL = window.apiDomain + 'requests/time_to_close.json?count=7&service_code=' + serviceCode + '&end_date=' + Data.dateFormatted + '&callback=JSON_CALLBACK';
 
     // CHARTS
 
-    $http.jsonp(ticketsURL).
+    $http.jsonp(requestsURL).
         success(function(response, status, headers, config) {
             var categories = [];
             var counts = [];
@@ -131,7 +127,7 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $routeParams) {
                 }],
                 tooltip: {
                     formatter: function() {
-                        return '<b>' + this.y + '</b> ' + ' ticket' + (this.y > 1 ? 's' : '');
+                        return '<b>' + this.y + '</b> ' + ' request' + (this.y > 1 ? 's' : '');
                     }
                 }
             });
