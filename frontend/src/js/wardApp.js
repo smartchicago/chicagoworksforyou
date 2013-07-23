@@ -21,9 +21,6 @@ $(function () {
     $(".filter").affix({
         offset: { top: 530 }
     });
-    $(".subnav-wrap").affix({
-        offset: { top: 70 }
-    });
 
     // EVENT CONTROL
 
