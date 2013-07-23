@@ -34,7 +34,7 @@ $(function () {
 
 // ANGULAR
 
-var wardApp = angular.module('wardApp', []);
+var wardApp = angular.module('wardApp', []).value('$anchorScroll', angular.noop);
 
 wardApp.config(function($routeProvider) {
     $routeProvider.

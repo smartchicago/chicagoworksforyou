@@ -6,7 +6,7 @@ $(function () {
 
 // ANGULAR
 
-var dateMapApp = angular.module('dateMapApp', []);
+var dateMapApp = angular.module('dateMapApp', []).value('$anchorScroll', angular.noop);
 
 dateMapApp.config(function($routeProvider) {
     $routeProvider.

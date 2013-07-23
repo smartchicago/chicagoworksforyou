@@ -8,7 +8,7 @@ $(function () {
 
 // ANGULAR
 
-var serviceApp = angular.module('serviceApp', []);
+var serviceApp = angular.module('serviceApp', []).value('$anchorScroll', angular.noop);
 
 serviceApp.factory('Data', function () {
     return {};
