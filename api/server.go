@@ -103,7 +103,7 @@ func endpoint(f ApiEndpoint) http.HandlerFunc {
 		w = setHeaders(w)
 		params := req.URL.Query()
 
-		log.Printf("[cwfy %s] %s%s\t%+v", api.Version, req.URL.Host, req.URL.RequestURI(), params)
+		log.Printf("[cwfy %s] %s %s%s %+v", api.Version, req.RemoteAddr, req.Host, req.RequestURI, params)
 
 		t := time.Now()
 		response, err := f(params, req)
@@ -115,7 +115,7 @@ func endpoint(f ApiEndpoint) http.HandlerFunc {
 
 		w.Write(WrapJson(response, params["callback"]))
 		diff := time.Now()
-		log.Printf("[cwfy %s] %s%s completed in %v", api.Version, req.URL.Host, req.URL.RequestURI(), diff.Sub(t))
+		log.Printf("[cwfy %s] %s %s%s completed in %v", api.Version, req.RemoteAddr, req.Host, req.RequestURI, diff.Sub(t))
 	}
 }
 
