@@ -197,11 +197,8 @@ html, body {
 
         a {
             color: #333;
+            display: block;
         }
-    }
-
-    a {
-        display: block;
     }
 
     .pagination {
@@ -241,6 +238,31 @@ html, body {
     }
 }
 
+.leaflet-popup-content-wrapper {
+    border-radius: 8px;
+}
+
+.leaflet-container a.leaflet-popup-close-button {
+    padding: 2px 2px 0 0;
+    display: none;
+}
+
+.leaflet-popup-content {
+    margin: 8px 10px;
+    font-size: 13px;
+
+    a {
+        display: block;
+        font-weight: bold;
+        font-size: 15px;
+    }
+}
+
+.leaflet-popup-tip {
+    width: 10px;
+    height: 10px;
+}
+
 .service-list {
     list-style-type: none;
     margin: 0;
@@ -251,18 +273,49 @@ html, body {
     li {
         border-bottom: 1px dashed #d7d7d7;
         line-height: 1;
+        position: relative;
 
         a {
-            width: 220px;
+            width: 224px;
             color: #555;
             display: block;
-            padding: 7px 20px;
+            padding: 7px 18px;
             text-decoration: none;
             position: relative;
             line-height: 16px;
 
             &:hover {
                 background:#f7f7f7;
+            }
+        }
+
+        &.max {
+            &:after {
+                content: "▲";
+                border-radius: 20px;
+                width: 18px;
+                height: 18px;
+                display: inline-block;
+                text-align: center;
+                line-height: 2;
+                font-size: 10px;
+                position: absolute;
+                right: 6px;
+                top: 6px;
+                opacity: .7;
+            }
+        }
+
+        &.active {
+            &:after {
+                opacity: 1;
+                background:white;
+            }
+        }
+
+        &.in-url {
+            &:after {
+                background:none;
             }
         }
 
@@ -284,13 +337,19 @@ html, body {
 
         &.active {
             a {
-                background:#0088cc;
-                color: white;
+                background:lighten(#0088cc,55%);
+                color: #222;
                 font-size: 16px;
             }
 
             .metadata {
                 display: block;
+            }
+        }
+
+        &.in-url {
+            a {
+                background:lighten(#0088cc,50%);
             }
         }
     }
@@ -322,7 +381,20 @@ html, body {
         padding-top: 15px;
     }
 
+    h1 {
+        margin-bottom: 20px;
+    }
+
+    .pagination-wrap.affix {
+        top: 0;
+        padding-top: 20px;
+        background:fade-out(white,0.1);
+        @include box-shadow(0 4px 30px white);
+    }
+
     .pagination {
+        margin: 0 0 1em;
+
         li {
             a {
                 width: 20px;
