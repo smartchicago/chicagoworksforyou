@@ -76,19 +76,19 @@ func main() {
 
 	router := mux.NewRouter()
 	router.HandleFunc("/health_check", endpoint(HealthCheckHandler))
-	// router.HandleFunc("/services.json", endpoint(ServicesHandler))
-	// router.HandleFunc("/requests/time_to_close.json", endpoint(TimeToCloseHandler))
+	router.HandleFunc("/services.json", endpoint(ServicesHandler))
+	router.HandleFunc("/requests/time_to_close.json", endpoint(TimeToCloseHandler))
 	// router.HandleFunc("/wards/{id}/requests.json", endpoint(WardRequestsHandler))
 	// router.HandleFunc("/wards/{id}/counts.json", endpoint(WardCountsHandler))
 	// router.HandleFunc("/requests/{service_code}/counts.json", endpoint(RequestCountsHandler))
-	// router.HandleFunc("/requests/counts_by_day.json", endpoint(DayCountsHandler))
+	router.HandleFunc("/requests/counts_by_day.json", endpoint(DayCountsHandler))
 	router.HandleFunc("/requests/media.json", endpoint(RequestsMediaHandler))
 
 	log.Printf("CWFY ready for battle on port %d", *port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), router))
 }
 
-type ApiEndpoint func(url.Values) ([]byte, *ApiError)
+type ApiEndpoint func(url.Values, *http.Request) ([]byte, *ApiError)
 type ApiError struct {
 	Msg  string // human readable error message
 	Code int    // http status code to use
@@ -106,11 +106,11 @@ func endpoint(f ApiEndpoint) http.HandlerFunc {
 		log.Printf("[cwfy %s] %s%s\t%+v", api.Version, req.URL.Host, req.URL.RequestURI(), params)
 
 		t := time.Now()
-		response, err := f(params)
+		response, err := f(params, req)
 
 		if err != nil {
 			log.Printf(err.Error())
-			http.Error(w, err.Msg, err.Code)			
+			http.Error(w, err.Msg, err.Code)
 		}
 
 		w.Write(WrapJson(response, params["callback"]))
@@ -147,11 +147,11 @@ func WrapJson(unwrapped []byte, callback []string) (jsn []byte) {
 }
 
 // func HealthCheckHandler(response http.ResponseWriter, request *http.Request) {
-func HealthCheckHandler(params url.Values) ([]byte, *ApiError) {
+func HealthCheckHandler(params url.Values, request *http.Request) ([]byte, *ApiError) {
 	type HealthCheck struct {
-		Count    int
-		Database, Healthy  bool
-		Version  string
+		Count             int
+		Database, Healthy bool
+		Version           string
 	}
 
 	health_check := HealthCheck{Version: api.Version}
@@ -175,7 +175,7 @@ func HealthCheckHandler(params url.Values) ([]byte, *ApiError) {
 	return dumpJson(health_check), nil
 }
 
-func RequestsMediaHandler(params url.Values) ([]byte, *ApiError) {
+func RequestsMediaHandler(params url.Values, request *http.Request) ([]byte, *ApiError) {
 	// Return 500 most recent SR that have media "attached"
 	//
 	// Sample:
@@ -233,7 +233,7 @@ func RequestsMediaHandler(params url.Values) ([]byte, *ApiError) {
 	return dumpJson(sr_with_media), nil
 }
 
-func DayCountsHandler(response http.ResponseWriter, request *http.Request) {
+func DayCountsHandler(params url.Values, request *http.Request) ([]byte, *ApiError) {
 	// Given day, return total # of each service type,
 	// along with daily average for each service type and
 	// wards that opened the most requests that day.
@@ -255,8 +255,6 @@ func DayCountsHandler(response http.ResponseWriter, request *http.Request) {
 	//               50
 	//             ]
 	//           },
-
-	params := request.URL.Query()
 
 	chi, _ := time.LoadLocation("America/Chicago")
 	end, _ := time.ParseInLocation("2006-01-02", params["day"][0], chi)
@@ -359,13 +357,10 @@ func DayCountsHandler(response http.ResponseWriter, request *http.Request) {
 		counts[sc] = tmp
 	}
 
-	jsn, _ := json.MarshalIndent(counts, "", "  ")
-	jsn = WrapJson(jsn, params["callback"])
-
-	response.Write(jsn)
+	return dumpJson(counts), nil
 }
 
-func RequestCountsHandler(response http.ResponseWriter, request *http.Request) {
+func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *ApiError) {
 	// for a given request service type and date, return the count
 	// of requests for that date, grouped by ward, and the city total
 	// The output is a map where keys are ward identifiers, and the value is the count.
@@ -389,7 +384,6 @@ func RequestCountsHandler(response http.ResponseWriter, request *http.Request) {
 
 	vars := mux.Vars(request)
 	service_code := vars["service_code"]
-	params := request.URL.Query()
 
 	// determine date range. default is last 7 days.
 	days, _ := strconv.Atoi(params["count"][0])
@@ -484,13 +478,10 @@ func RequestCountsHandler(response http.ResponseWriter, request *http.Request) {
 		data[k] = tmp
 	}
 
-	jsn, _ := json.MarshalIndent(data, "", "  ")
-	jsn = WrapJson(jsn, params["callback"])
-
-	response.Write(jsn)
+	return dumpJson(data), nil
 }
 
-func TimeToCloseHandler(response http.ResponseWriter, request *http.Request) {
+func TimeToCloseHandler(params url.Values, request *http.Request) ([]byte, *ApiError) {
 	// Given service type, date, length of time & increment,
 	// return time-to-close for that service type, for each
 	// increment over that length of time, going backwards from that date.
@@ -525,8 +516,6 @@ func TimeToCloseHandler(response http.ResponseWriter, request *http.Request) {
 	//            "Ward": 12
 	//          },
 	//      ... snipped ...
-
-	params := request.URL.Query()
 
 	// required
 	service_code := params["service_code"][0]
@@ -582,16 +571,10 @@ func TimeToCloseHandler(response http.ResponseWriter, request *http.Request) {
 	city_average.Time = city_average.Time / 86400.0 // convert to days
 	times["0"] = city_average
 
-	jsn, err := json.MarshalIndent(times, "", "  ")
-	if err != nil {
-		log.Print("error marshaling to JSON", err)
-	}
-	jsn = WrapJson(jsn, params["callback"])
-
-	response.Write(jsn)
+	return dumpJson(times), nil
 }
 
-func WardCountsHandler(response http.ResponseWriter, request *http.Request) {
+func WardCountsHandler(params url.Values, request *http.Request) ([]byte, *ApiError) {
 	// for a given ward, return the number of service requests opened
 	// grouped by day, then by service request type
 	//
@@ -626,7 +609,6 @@ func WardCountsHandler(response http.ResponseWriter, request *http.Request) {
 
 	vars := mux.Vars(request)
 	ward_id := vars["id"]
-	params := request.URL.Query()
 
 	// determine date range.
 	days, _ := strconv.Atoi(params["count"][0])
@@ -707,17 +689,13 @@ func WardCountsHandler(response http.ResponseWriter, request *http.Request) {
 		resp[key] = counts[key]
 	}
 
-	jsn, _ := json.MarshalIndent(resp, "", "  ")
-	jsn = WrapJson(jsn, params["callback"])
-
-	response.Write(jsn)
+	return dumpJson(resp), nil
 }
 
-func WardRequestsHandler(response http.ResponseWriter, request *http.Request) {
+func WardRequestsHandler(params url.Values, request *http.Request) ([]byte, *ApiError) {
 	// for a given ward, return recent service requests
 	vars := mux.Vars(request)
 	ward_id := vars["id"]
-	params := request.URL.Query()
 
 	rows, err := api.Db.Query("SELECT lat,long,ward,police_district,service_request_id,status,service_name,service_code,agency_responsible,address,channel,media_url,requested_datetime,updated_datetime,created_at,updated_at,duplicate,parent_service_request_id,id FROM service_requests WHERE duplicate IS NULL AND ward = $1 ORDER BY updated_at DESC LIMIT 100;", ward_id)
 
@@ -750,12 +728,10 @@ func WardRequestsHandler(response http.ResponseWriter, request *http.Request) {
 		result = append(result, row)
 	}
 
-	jsn, _ := json.MarshalIndent(result, "", "  ")
-	jsn = WrapJson(jsn, params["callback"])
-	response.Write(jsn)
+	return dumpJson(result), nil
 }
 
-func ServicesHandler(response http.ResponseWriter, request *http.Request) {
+func ServicesHandler(params url.Values, request *http.Request) ([]byte, *ApiError) {
 	// return counts of requests, grouped by service name
 	//
 	// Sample output:
@@ -802,6 +778,5 @@ func ServicesHandler(response http.ResponseWriter, request *http.Request) {
 		services = append(services, row)
 	}
 
-	jsn, _ := json.MarshalIndent(services, "", "  ")
-	response.Write(jsn)
+	return dumpJson(services), nil
 }
