@@ -148,17 +148,13 @@ func WrapJson(unwrapped []byte, callback []string) (jsn []byte) {
 
 // func HealthCheckHandler(response http.ResponseWriter, request *http.Request) {
 func HealthCheckHandler(params url.Values) ([]byte, *ApiError) {
-	// params := request.URL.Query()
-
 	type HealthCheck struct {
 		Count    int
-		Database bool
-		Healthy  bool
+		Database, Healthy  bool
 		Version  string
 	}
 
 	health_check := HealthCheck{Version: api.Version}
-
 	health_check.Database = api.Db.Ping() == nil
 
 	rows, _ := api.Db.Query("SELECT COUNT(*) FROM service_requests;")
