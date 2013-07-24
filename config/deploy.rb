@@ -34,7 +34,3 @@ namespace :deploy do
   task (:start) { sudo "sudo supervisorctl start #{supervisor_group}:*", pty: true }
   task (:stop) { sudo "sudo supervisorctl stop #{supervisor_group}:*", pty: true }
 end
-
-task :asdf do
-  run_locally 'pwd'
-end
