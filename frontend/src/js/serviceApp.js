@@ -32,12 +32,12 @@ serviceApp.config(function($routeProvider) {
 serviceApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
     $scope.data = Data;
 
-    $scope.prevWeek = function () {
-        $location.path(Data.prevWeek);
+    $scope.prevDay = function () {
+        $location.path(Data.prevDay);
     };
 
-    $scope.nextWeek = function () {
-        $location.path(Data.nextWeek);
+    $scope.nextDay = function () {
+        $location.path(Data.nextDay);
     };
 });
 
@@ -45,10 +45,9 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
     var date = parseDate($routeParams.date, window.prevSaturday, $location);
 
     Data.dateFormatted = date.format(dateFormat);
-    Data.prevWeek = moment(date).subtract('week',1).format(dateFormat);
-    Data.nextWeek = moment(date).add('week',1).format(dateFormat);
-    Data.thisWeek = weekDuration.beforeMoment(date,true).format({implicitYear: false});
-    Data.thisMonth = date.format('MMM D, YYYY');
+    Data.prevDay = moment(date).subtract('day',1).format(dateFormat);
+    Data.nextDay = moment(date).add('day',1).format(dateFormat);
+    Data.thisMonth = monthDuration.beforeMoment(date,true).format({implicitYear: false});
 
     $scope.data = Data;
 

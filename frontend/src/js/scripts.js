@@ -6,6 +6,7 @@ window.earliestDate = moment('2008-01-01');
 
 window.dateFormat = 'YYYY-MM-DD';
 window.weekDuration = moment.duration(6,"days");
+window.monthDuration = moment.duration(27,"days");
 
 window.serviceTypesJSON = [
     {

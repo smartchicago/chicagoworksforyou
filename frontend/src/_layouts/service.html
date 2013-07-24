@@ -16,9 +16,9 @@ window.currServiceType = '{{ page.service_code }}';
             <div class="pagination-wrap">
                 <div class="pagination">
                     <ul>
-                        <li class="prev-week"><a ng-click="prevWeek()">&larr;</a></li>
-                        <li class="this-week"><a href="#">4 weeks ending in <span ng-bind="data.thisMonth"></span></a></li>
-                        <li class="next-week"><a ng-click="nextWeek()">&rarr;</a></li>
+                        <li class="prev-week"><a ng-click="prevDay()">&larr;</a></li>
+                        <li class="this-week"><a href="#" ng-bind="data.thisMonth"></a></li>
+                        <li class="next-week"><a ng-click="nextDay()">&rarr;</a></li>
                     </ul>
                 </div>
             </div>
