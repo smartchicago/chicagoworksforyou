@@ -335,7 +335,7 @@ func DayCountsHandler(params url.Values, request *http.Request) ([]byte, *ApiErr
 	}
 
 	// fetch daily averages
-	rows, err = api.Db.Query(`SELECT service_code, AVG(total) AS avg_reports 
+	rows, err = api.Db.Query(`SELECT service_code, SUM(total)/365.0 AS avg_reports 
 		FROM daily_counts 
 		WHERE requested_date >= (NOW() - INTERVAL '1 year')
 		GROUP BY service_code
@@ -423,7 +423,7 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 		counts[wc.Ward] = wc
 	}
 
-	rows, err = api.Db.Query(`SELECT AVG(total), ward 
+	rows, err = api.Db.Query(`SELECT SUM(total)/365.0, ward 
 		FROM daily_counts 
 		WHERE requested_date >= DATE(NOW() - INTERVAL '1 year') 
 			AND service_code = $1 
