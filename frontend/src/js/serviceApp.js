@@ -72,7 +72,7 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
                 series: [{
                     data: counts,
                     id: 'counts',
-                    index: 2,
+                    index: 1,
                     dataLabels: {
                         style: {
                             fontWeight: 'bold'
@@ -80,7 +80,8 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
                     }
                 },{
                     data: averages,
-                    index: 1
+                    index: 2,
+                    type: 'line'
                 }],
                 xAxis: {
                     categories: categories
