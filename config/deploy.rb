@@ -1,5 +1,5 @@
-set :stages, [:staging, :production]
-set :default_stage, :staging
+set :stages, ['staging', 'production']
+set :default_stage, 'staging'
 require "capistrano/ext/multistage"
 
 set :application, "cwfy"
