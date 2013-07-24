@@ -202,8 +202,6 @@ html, body {
       z-index: 100; }
     .service-list li.up:before {
       content: "▲"; }
-    .service-list li.down:before {
-      content: "▼"; }
     .service-list li.max:before {
       border: 1px dashed #777;
       right: 5px;
