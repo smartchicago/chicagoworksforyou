@@ -1,13 +1,11 @@
+set :stages, [:staging, :production]
+set :default_stage, :staging
+require "capistrano/ext/multistage"
+
 set :application, "cwfy"
 set :repository,  "git@github.com:smartchicago/chicagoworksforyou.git"
 set :scm, :git
 
-server "cwfy-api.smartchicagoapps.org", :app, :db, primary: true                          # This may be the same as your `Web` server
-
-# if you want to clean up old releases on each deploy uncomment this:
-# after "deploy:restart", "deploy:cleanup"
-
-set :deploy_to, "/var/www/cwfy/staging"   #FIXME: multi env
 set :user, "ec2-user"
 set :use_sudo, false
 
@@ -32,9 +30,9 @@ namespace :deploy do
     end
   end
   
-  task (:restart) { sudo "supervisorctl restart all", pty: true }  # FIXME: scope to stage
-  task (:start) { sudo "sudo supervisorctl start all", pty: true }  # FIXME: scope to stage
-  task (:stop) { sudo "sudo supervisorctl stop all", pty: true }  # FIXME: scope to stage  
+  task (:restart) { sudo "supervisorctl restart #{supervisor_group}:*", pty: true } 
+  task (:start) { sudo "sudo supervisorctl start #{supervisor_group}:*", pty: true }
+  task (:stop) { sudo "sudo supervisorctl stop #{supervisor_group}:*", pty: true }
 end
 
 task :asdf do
