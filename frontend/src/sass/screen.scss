@@ -1,4 +1,5 @@
 @import "compass/css3/box-shadow";
+@import "compass/css3/transition";
 
 html, body {
     height: 100%;
@@ -43,6 +44,7 @@ html, body {
         padding: 12px 24px;
         font-size: 12px;
         text-transform: uppercase;
+        outline: none;
     }
 
     .navbar-inner {
@@ -71,8 +73,18 @@ html, body {
         margin: 0;
 
         li {
-            padding: 0 8px;
-            text-align: right;
+            a {
+                text-align: right;
+                padding: 0 8px;
+                display: block;
+
+                &:hover {
+                    background:#0081c2;
+                    color: #fff;
+                    text-decoration: none;
+                    border-radius: 4px;
+                }
+            }
         }
     }
 }
@@ -106,33 +118,6 @@ html, body {
     }
 }
 
-.subnav-wrap {
-    height: 0;
-    position: absolute;
-    top: 70px;
-    width: 100%;
-    z-index: 4000;
-
-    .subnav {
-        top: 0;
-    }
-
-    &.affix {
-        position: fixed;
-        top: 0;
-
-        .subnav, .navbar-inner {
-            border-radius: 0 0 4px 4px;
-        }
-
-        .alderman {
-            a {
-                border-top-right-radius: 0;
-            }
-        }
-    }
-}
-
 .map iframe {
     border: none;
 }
@@ -146,7 +131,7 @@ html, body {
 
 .wards-map {
     margin-top: -46px; // Height of navbar
-    height: 100%;
+    min-height: 100%;
 }
 
 .map-overlay-wrap {
@@ -156,7 +141,7 @@ html, body {
     .map-overlay {
         position: absolute;
         background: white;
-        top: 100px;
+        top: 50px;
         left: 0;
         z-index: 3000;
         margin: 0;
@@ -176,6 +161,81 @@ html, body {
 
 // HOMEPAGE
 
+.dateMapApp {
+    h1 {
+        font-size: 33px;
+        line-height: 41px;
+        color: #333;
+        margin: 0 0 12px 0;
+
+        a {
+            color: #333;
+            display: block;
+        }
+    }
+
+    .pagination {
+        position: relative;
+        left: -20px;
+        top: -12px;
+        margin: 0;
+        width: 260px;
+
+        ul {
+            @include box-shadow(none);
+            border-bottom: 1px solid #eee;
+        }
+
+        li {
+            a {
+                width: 110px;
+                border: none;
+                border-radius: 0;
+                padding: 6px 0;
+                text-align: left;
+            }
+
+            &:first-child {
+                a {
+                    padding-left: 20px;
+                }
+            }
+
+            &:last-child {
+                a {
+                    padding-right: 20px;
+                    text-align: right;
+                }
+            }
+        }
+    }
+}
+
+.leaflet-popup-content-wrapper {
+    border-radius: 8px;
+}
+
+.leaflet-container a.leaflet-popup-close-button {
+    padding: 2px 2px 0 0;
+    display: none;
+}
+
+.leaflet-popup-content {
+    margin: 8px 10px;
+    font-size: 13px;
+
+    a {
+        display: block;
+        font-weight: bold;
+        font-size: 15px;
+    }
+}
+
+.leaflet-popup-tip {
+    width: 10px;
+    height: 10px;
+}
+
 .service-list {
     list-style-type: none;
     margin: 0;
@@ -184,11 +244,100 @@ html, body {
     border-top: 1px solid #ddd;
 
     li {
-        padding: 7px 20px;
-        width: 260px;
-        border-bottom: 1px solid #ddd;
+        border-bottom: 1px dashed #d7d7d7;
         line-height: 1;
+        position: relative;
+
+        a {
+            width: 224px;
+            color: #555;
+            display: block;
+            padding: 7px 18px;
+            text-decoration: none;
+            position: relative;
+            line-height: 16px;
+
+            &:hover {
+                background:#f7f7f7;
+            }
+        }
+
+        &:before {
+            opacity: .3;
+            width: 18px;
+            height: 18px;
+            display: block;
+            text-align: center;
+            line-height: 2;
+            font-size: 10px;
+            position: absolute;
+            right: 6px;
+            top: 6px;
+            border-radius: 20px;
+            z-index: 100;
+        }
+
+        &.up {
+            &:before {
+                content: "▲";
+            }
+        }
+
+        &.down {
+            &:before {
+                // content: "▼";
+            }
+        }
+
+        &.max {
+            &:before {
+                border: 1px dashed #777;
+                right: 5px;
+                top: 5px;
+            }
+        }
+
+        &.active {
+            a {
+                background:lighten(#0088cc,55%);
+                color: #222;
+                font-size: 16px;
+            }
+
+            .metadata {
+                display: block;
+            }
+
+            &:before {
+                opacity: 1;
+            }
+        }
+
+        &.in-url {
+            a {
+                // background:lighten(#0088cc,50%);
+            }
+        }
     }
+
+    .metadata {
+        display: none;
+        font-size: 13px;
+        padding-top: 4px;
+    }
+
+    .bar {
+        position: absolute;
+        left: 0;
+        bottom: -1px;
+        height: 1px;
+        background: black;
+    }
+}
+
+.share-this {
+    padding-top: 10px;
+    margin: 0;
 }
 
 // SERVICES
@@ -196,6 +345,33 @@ html, body {
 .serviceApp {
     .content {
         padding-top: 15px;
+    }
+
+    h1 {
+        margin-bottom: 20px;
+    }
+
+    .pagination-wrap.affix {
+        top: 0;
+        padding-top: 20px;
+        background:fade-out(white,0.1);
+        @include box-shadow(0 4px 30px white);
+    }
+
+    .pagination {
+        margin: 0 0 1em;
+
+        li {
+            a {
+                width: 20px;
+            }
+        }
+
+        .this-week {
+            a {
+                width: 200px;
+            }
+        }
     }
 
     .chart {
@@ -223,11 +399,16 @@ html, body {
 // PAGINATION
 
 .pagination {
+    a {
+        text-align: center;
+    }
+
     .this-week {
         font-weight: bold;
 
         a {
             color: #333;
+            width: 134px;
         }
     }
 
@@ -236,6 +417,7 @@ html, body {
             font-size: 13px;
             color: #666;
             padding: 4px 8px;
+            width: 13px;
         }
     }
 }
@@ -320,7 +502,7 @@ ul.nav .alderman {
             span {
                 position: absolute;
                 width: 100%;
-                padding: 2px 0 2px 5px;
+                padding: 2px 0;
                 bottom: 0;
                 left: 0;
                 color: white;
