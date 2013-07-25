@@ -42,7 +42,7 @@ serviceApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
 });
 
 serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $routeParams) {
-    var date = parseDate($routeParams.date, window.prevSaturday, $location);
+    var date = parseDate($routeParams.date, window.prevSaturday, $location, '');
 
     Data.dateFormatted = date.format(dateFormat);
     Data.prevWeek = moment(date).subtract('week',1).format(dateFormat);

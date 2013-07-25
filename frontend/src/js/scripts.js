@@ -82,16 +82,16 @@ window.serviceTypesJSON = [
 
 window.stSlugs = _.pluck(serviceTypesJSON, 'slug');
 
-window.parseDate = function(passedDate, defaultDate, locationModule) {
+window.parseDate = function(passedDate, defaultDate, locationModule, locationPrefix) {
     var date = defaultDate;
     if (passedDate) {
         date = moment(passedDate);
         if (!date.isValid()) {
-            locationModule.path('/');
+            document.location = "./#/" + locationPrefix;
         } else if (date.isBefore(window.earliestDate)) {
-            locationModule.path(window.earliestDate.format(dateFormat));
+            locationModule.path(locationPrefix + window.earliestDate.format(dateFormat));
         } else if (date.isAfter(defaultDate)) {
-            locationModule.path(defaultDate.format(dateFormat));
+            locationModule.path(locationPrefix + defaultDate.format(dateFormat));
         }
     }
     return date;
