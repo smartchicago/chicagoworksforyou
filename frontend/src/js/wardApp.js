@@ -35,11 +35,11 @@ var wardApp = angular.module('wardApp', []).value('$anchorScroll', angular.noop)
 
 wardApp.config(function($routeProvider) {
     $routeProvider.
-        when('/:serviceSlug', {
+        when('/:serviceSlug/:date', {
             controller: "wardCtrl",
             templateUrl: "/views/ward_charts.html"
         }).
-        when('/:serviceSlug/:date', {
+        when('/:serviceSlug', {
             controller: "wardCtrl",
             templateUrl: "/views/ward_charts.html"
         }).
@@ -69,8 +69,11 @@ wardApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
 });
 
 wardApp.controller("wardCtrl", function ($scope, Data, $http, $location, $routeParams) {
-    var date = parseDate($routeParams.date, window.yesterday, $location);
     var serviceObj = window.lookupSlug($routeParams.serviceSlug);
+    if (!serviceObj) {
+        document.location = "#";
+    }
+    var date = parseDate($routeParams.date, window.yesterday, $location, $routeParams.serviceSlug + '/');
 
     Data.wardNum = window.wardNum;
     Data.currServiceSlug = $routeParams.serviceSlug;
