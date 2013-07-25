@@ -400,9 +400,9 @@ Output:
 Historic Highs
 --------------
 
-Path:
+Path: `/wards/32/historic_highs.json`
 
-Description: For a given ward and service code, return the n-many days with the most service requests opened. 
+Description: For a given ward and service code, return the n-many days with the most service requests opened.
 
 Input:
 
