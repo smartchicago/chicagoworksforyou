@@ -80,6 +80,7 @@ func main() {
 	router.HandleFunc("/requests/time_to_close.json", endpoint(TimeToCloseHandler))
 	router.HandleFunc("/wards/{id}/requests.json", endpoint(WardRequestsHandler))
 	router.HandleFunc("/wards/{id}/counts.json", endpoint(WardCountsHandler))
+	router.HandleFunc("/wards/{id}/historic_highs.json", endpoint(WardHistoricHighsHandler))
 	router.HandleFunc("/requests/{service_code}/counts.json", endpoint(RequestCountsHandler))
 	router.HandleFunc("/requests/counts_by_day.json", endpoint(DayCountsHandler))
 	router.HandleFunc("/requests/media.json", endpoint(RequestsMediaHandler))
@@ -572,6 +573,48 @@ func TimeToCloseHandler(params url.Values, request *http.Request) ([]byte, *ApiE
 	times["0"] = city_average
 
 	return dumpJson(times), nil
+}
+
+func WardHistoricHighsHandler(params url.Values, request *http.Request) ([]byte, *ApiError) {
+	// given a ward and service type, return the set of days with the most SR opened
+	// 
+	// Parameters:
+	// 	count: 		number of days to return
+	//	service_code:   the code used by the City of Chicago to categorize service requests
+	//	callback:       function to wrap response in (for JSONP functionality)
+	// 
+	vars := mux.Vars(request)
+	ward_id := vars["id"]
+
+	days, _ := strconv.Atoi(params["count"][0])
+	service_code := params["service_code"][0]
+
+	rows, err := api.Db.Query(`SELECT total,requested_date
+		FROM daily_counts
+		WHERE service_code = $1
+			AND ward = $2
+		ORDER BY total DESC, requested_date DESC
+		LIMIT $3;`, service_code, ward_id, days)
+
+	if err != nil {
+		log.Print("error fetching historic highs ", err)
+	}
+
+	counts := []map[string]int{}
+
+	for rows.Next() {
+		var date time.Time
+		var count int
+
+		if err := rows.Scan(&count, &date); err != nil {
+			// handle
+		}
+		log.Printf("%s:%d", date, count)
+
+		counts = append(counts, map[string]int{date.Format("2006-01-02"):count})
+	}
+
+	return dumpJson(counts), nil
 }
 
 func WardCountsHandler(params url.Values, request *http.Request) ([]byte, *ApiError) {
