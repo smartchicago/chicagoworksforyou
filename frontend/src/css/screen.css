@@ -244,7 +244,7 @@ html, body {
   margin: 0 0 1em; }
   .serviceApp .pagination li a {
     width: 20px; }
-  .serviceApp .pagination .this-week a {
+  .serviceApp .pagination .this-date a {
     width: 200px; }
 .serviceApp .chart {
   width: 100%;
