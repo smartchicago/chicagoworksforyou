@@ -59,12 +59,12 @@ wardApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
 
     $scope.data = Data;
 
-    $scope.prevWeek = function () {
-        $location.path(Data.currServiceSlug + "/" + Data.prevWeek);
+    $scope.prevDay = function () {
+        $location.path(Data.currServiceSlug + "/" + Data.prevDay);
     };
 
-    $scope.nextWeek = function () {
-        $location.path(Data.currServiceSlug + "/" + Data.nextWeek);
+    $scope.nextDay = function () {
+        $location.path(Data.currServiceSlug + "/" + Data.nextDay);
     };
 });
 
@@ -75,16 +75,17 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $location, $routeP
     Data.wardNum = window.wardNum;
     Data.currServiceSlug = $routeParams.serviceSlug;
     Data.currServiceName = serviceObj.name;
-    Data.dateFormatted = date.format(dateFormat);
-    Data.prevWeek = moment(date).subtract('week',1).format(dateFormat);
-    Data.nextWeek = moment(date).add('week',1).format(dateFormat);
+    Data.date = date.format(dateFormat);
+    Data.dateFormatted = date.format('MMM D, YYYY');
+    Data.prevDay = moment(date).subtract('day',1).format(dateFormat);
+    Data.nextDay = moment(date).add('day',1).format(dateFormat);
     Data.thisWeek = weekDuration.beforeMoment(date,true).format({implicitYear: false});
 
     $scope.data = Data;
 
     var serviceCode = serviceObj.code;
-    var requestsURL = window.apiDomain + 'wards/' + window.wardNum + '/counts.json?count=7&service_code=' + serviceCode + '&end_date=' + Data.dateFormatted + '&callback=JSON_CALLBACK';
-    var ttcURL = window.apiDomain + 'requests/time_to_close.json?count=7&service_code=' + serviceCode + '&end_date=' + Data.dateFormatted + '&callback=JSON_CALLBACK';
+    var requestsURL = window.apiDomain + 'wards/' + window.wardNum + '/counts.json?count=7&service_code=' + serviceCode + '&end_date=' + Data.date + '&callback=JSON_CALLBACK';
+    var ttcURL = window.apiDomain + 'requests/time_to_close.json?count=7&service_code=' + serviceCode + '&end_date=' + Data.date + '&callback=JSON_CALLBACK';
 
     // CHARTS
 

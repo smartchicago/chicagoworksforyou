@@ -263,12 +263,12 @@ html, body {
 
 .pagination a {
   text-align: center; }
-.pagination .this-week {
+.pagination .this-date {
   font-weight: bold; }
-  .pagination .this-week a {
+  .pagination .this-date a {
     color: #333;
     width: 134px; }
-.pagination .prev-week a, .pagination .next-week a {
+.pagination .prev-date a, .pagination .next-date a {
   font-size: 13px;
   color: #666;
   padding: 4px 8px;
