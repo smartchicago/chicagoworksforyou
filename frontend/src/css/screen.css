@@ -86,22 +86,6 @@ html, body {
     color: #555;
     padding: 15px 20px; }
 
-.subnav-wrap {
-  height: 0;
-  position: absolute;
-  top: 70px;
-  width: 100%;
-  z-index: 4000; }
-  .subnav-wrap .subnav {
-    top: 0; }
-  .subnav-wrap.affix {
-    position: fixed;
-    top: 0; }
-    .subnav-wrap.affix .subnav, .subnav-wrap.affix .navbar-inner {
-      border-radius: 0 0 4px 4px; }
-    .subnav-wrap.affix .alderman a {
-      border-top-right-radius: 0; }
-
 .map iframe {
   border: none; }
 
@@ -119,7 +103,7 @@ html, body {
   .map-overlay-wrap .map-overlay {
     position: absolute;
     background: white;
-    top: 100px;
+    top: 50px;
     left: 0;
     z-index: 3000;
     margin: 0;
@@ -218,8 +202,6 @@ html, body {
       z-index: 100; }
     .service-list li.up:before {
       content: "▲"; }
-    .service-list li.down:before {
-      content: "▼"; }
     .service-list li.max:before {
       border: 1px dashed #777;
       right: 5px;

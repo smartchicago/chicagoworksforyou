@@ -118,33 +118,6 @@ html, body {
     }
 }
 
-.subnav-wrap {
-    height: 0;
-    position: absolute;
-    top: 70px;
-    width: 100%;
-    z-index: 4000;
-
-    .subnav {
-        top: 0;
-    }
-
-    &.affix {
-        position: fixed;
-        top: 0;
-
-        .subnav, .navbar-inner {
-            border-radius: 0 0 4px 4px;
-        }
-
-        .alderman {
-            a {
-                border-top-right-radius: 0;
-            }
-        }
-    }
-}
-
 .map iframe {
     border: none;
 }
@@ -168,7 +141,7 @@ html, body {
     .map-overlay {
         position: absolute;
         background: white;
-        top: 100px;
+        top: 50px;
         left: 0;
         z-index: 3000;
         margin: 0;
@@ -312,7 +285,7 @@ html, body {
 
         &.down {
             &:before {
-                content: "▼";
+                // content: "▼";
             }
         }
 
