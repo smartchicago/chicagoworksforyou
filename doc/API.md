@@ -396,3 +396,55 @@ Output:
         "Service_request_id": "13-00920440",
         "Ward": 45
       },
+      
+Historic Highs
+--------------
+
+Path:
+
+Description: For a given ward and service code, return the n-many days with the most service requests opened. 
+
+Input:
+
+   	count: 		      number of historical high days to return.
+  	service_code:   the code used by the City of Chicago to categorize service requests
+   	include_today:  if equal to "true" or "1", include the current day (in Chicago) counts as the first element of the result set
+
+Output: 
+
+    $ curl "http://localhost:5000/wards/32/historic_highs.json?service_code=4fd3b167e750846744000005&count=10&include_today=true"
+    [
+      {
+        "2013-07-25": 0
+      },
+      {
+        "2010-10-27": 94
+      },
+      {
+        "2008-07-01": 75
+      },
+      {
+        "2010-10-25": 70
+      },
+      {
+        "2008-05-16": 68
+      },
+      {
+        "2010-10-14": 65
+      },
+      {
+        "2008-03-20": 64
+      },
+      {
+        "2009-01-16": 60
+      },
+      {
+        "2008-07-30": 60
+      },
+      {
+        "2008-05-27": 60
+      },
+      {
+        "2008-02-18": 60
+      }
+    ]
