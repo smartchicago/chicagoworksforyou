@@ -28,7 +28,7 @@ dateMapApp.config(function($routeProvider) {
 });
 
 dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeParams) {
-    var date = parseDate($routeParams.date, window.yesterday, $location);
+    var date = parseDate($routeParams.date, window.yesterday, $location, '');
     var prevDay = moment(date).subtract('days', 1);
     var nextDay = moment(date).add('days', 1);
     var countsURL = window.apiDomain + 'requests/counts_by_day.json?day=' + date.format(dateFormat) + '&callback=JSON_CALLBACK';
