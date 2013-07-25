@@ -1,6 +1,6 @@
 html, body {
   height: 100%;
-  font-family: 'Roboto', sans-serif; }
+  font-family: 'Monda', sans-serif; }
 
 .navbar {
   margin-bottom: 0;
@@ -31,7 +31,7 @@ html, body {
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
     color: white; }
   .topnav .nav > li > a {
-    padding: 12px 24px;
+    padding: 12px 20px;
     font-size: 12px;
     text-transform: uppercase;
     outline: none; }
