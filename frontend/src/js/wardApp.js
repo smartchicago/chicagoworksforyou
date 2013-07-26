@@ -82,7 +82,7 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $location, $routeP
     Data.dateFormatted = date.format('MMM D, YYYY');
     Data.prevDay = moment(date).subtract('day',1).format(dateFormat);
     Data.nextDay = moment(date).add('day',1).format(dateFormat);
-    Data.thisWeek = weekDuration.beforeMoment(date,true).format({implicitYear: false});
+    Data.thisWeek = moment.duration(7,"days").beforeMoment(date,true).format({implicitYear: false});
 
     $scope.data = Data;
 
