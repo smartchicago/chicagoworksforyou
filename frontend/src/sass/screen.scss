@@ -65,7 +65,8 @@ html, body {
 
 .dropdown-set {
     display: none;
-    min-width: 180px;
+    min-width: 188px;
+    padding: 5px 10px;
 
     ul {
         display: inline-block;
@@ -167,6 +168,7 @@ html, body {
         line-height: 41px;
         color: #333;
         margin: 0 0 12px 0;
+        letter-spacing: -1px;
 
         a {
             color: #333;
@@ -349,6 +351,7 @@ html, body {
 
     h1 {
         margin-bottom: 20px;
+        letter-spacing: -1px;
     }
 
     .pagination-wrap.affix {
