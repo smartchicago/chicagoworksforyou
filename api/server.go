@@ -556,13 +556,30 @@ func TimeToCloseHandler(params url.Values, request *http.Request) ([]byte, *ApiE
 	// increment over that length of time, going backwards from that date.
 	//
 	// Response data:
-	//      The city-wide average will be returned as ward "0".
-	//      "Total" is the number of service requests closed in the given time period.
+	//      The city-wide average will be returned in the CityData map.
+	//      "Count" is the number of service requests closed in the given time period.
 	//      "Time" is the average difference, in days, between closed and requested datetimes.
-	//      NOTE: This value may be negative, due to wonky data from the City. Go figure.
 	//
 	// Sample request and output:
 	// $ curl "http://localhost:5000/requests/time_to_close.json?end_date=2013-06-19&count=7&service_code=4fd3b167e750846744000005"
+	// {
+	//   "WardData": {
+	//     "1": {
+	//       "Time": 6.586492353553241,
+	//       "Count": 643
+	//     },
+	// 	( .. truncated ...)
+	//     "9": {
+	//       "Time": 2.469373385011574,
+	//       "Count": 43
+	//     }
+	//   },
+	//   "CityData": {
+	//     "Time": 3.8197868124884256,
+	//     "Count": 11123
+	//   },
+	//   "Threshold": 27.537741650677532
+	// }
 
 	// required
 	service_code := params["service_code"][0]
