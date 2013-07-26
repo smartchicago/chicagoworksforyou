@@ -16,7 +16,7 @@ $(function () {
     map.zoomControl.setPosition('bottomleft');
     var polygon = L.polygon(wardPaths[wardNum - 1]).addTo(map);
 
-    // MAKE SUBNAV STICK
+    // MAKE FILTER STICK
 
     $(".filter").affix({
         offset: { top: 530 }
