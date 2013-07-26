@@ -60,24 +60,35 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
 
     $http.jsonp(url).
         success(function(response, status, headers, config) {
-            var cityAverage = response['0'].Count / 50;
-            var counts = _.rest(_.pluck(response, 'Count'));
-            var categories = _.map(_.rest(_.keys(response)), function (wardNum) { return '<a href="/ward/' + wardNum + '/#/' + stSlug + '">Ward ' + wardNum + '</a>'; });
+            var cityAverage = response.CityData.Count / 50;
+            var wardData = response.WardData;
+            var categories = _.map(_.keys(wardData), function (wardNum) { return '<a href="/ward/' + wardNum + '/#/' + stSlug + '/' + endDate.format(dateFormat) + '">Ward ' + wardNum + '</a>'; });
+            var days = [[],[],[],[],[],[],[]];
+            for (var ward in wardData) {
+                var i = 0;
+                for (var count in wardData[ward].Counts) {
+                    days[i++].push(wardData[ward].Counts[count]);
+                }
+            }
+
+            var weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            var series = [];
+            for (var day in days) {
+                if (days[day].length > 0) {
+                    series.push({
+                        name: weekdays[day],
+                        data: days[day],
+                        stack: 0,
+                        legendIndex: day + 1
+                    });
+                }
+            }
 
             new Highcharts.Chart({
                 chart: {
                     renderTo: 'chart'
                 },
-                series: [{
-                    data: counts,
-                    id: 'counts',
-                    index: 1,
-                    dataLabels: {
-                        style: {
-                            fontWeight: 'bold'
-                        }
-                    }
-                }],
+                series: series.reverse(),
                 xAxis: {
                     categories: categories
                 },
@@ -87,7 +98,7 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
                         value: cityAverage,
                         color: 'brown',
                         width: 3,
-                        zIndex:5
+                        zIndex: 5
                     }]
                 }
             });
@@ -109,9 +120,10 @@ Highcharts.setOptions({
         tickmarkPlacement: 'between',
         labels: {
             style: {
-                fontFamily: 'Monda, sans-serif',
+                fontFamily: 'Monda, Helvetica, sans-serif',
                 fontSize: '13px'
-            }
+            },
+            y: 5
         }
     },
     yAxis: {
@@ -121,7 +133,7 @@ Highcharts.setOptions({
         minPadding: 0.1,
         labels: {
             style: {
-                fontFamily: 'Monda, sans-serif',
+                fontFamily: 'Monda, Helvetica, sans-serif',
                 fontWeight: 'bold'
             }
         }
@@ -131,14 +143,16 @@ Highcharts.setOptions({
             borderWidth: 0,
             groupPadding: 0.08,
             dataLabels: {
-                enabled: true,
+                enabled: false,
                 color: "#000000",
                 style: {
-                    fontFamily: "Monda, sans-serif",
-                    fontSize: '13px'
+                    fontFamily: "Monda, Helvetica, sans-serif",
+                    fontSize: '13px',
+                    fontWeight: 'bold'
                 }
             },
-            pointPadding: 0
+            pointPadding: 0,
+            stacking: 'normal'
         }
     },
     tooltip: {
@@ -146,11 +160,16 @@ Highcharts.setOptions({
         pointFormat: '<b>{point.y:,.0f}</b> requests',
         shadow: false,
         style: {
-            fontFamily: 'Monda, sans-serif',
+            fontFamily: 'Monda, Helvetica, sans-serif',
             fontSize: '15px'
         }
     },
     legend: {
-        enabled: false
+        enabled: true,
+        borderWidth: 0,
+        backgroundColor: "#f7f7f7",
+        padding: 10,
+        verticalAlign: 'top',
+        y: 10
     }
 });
