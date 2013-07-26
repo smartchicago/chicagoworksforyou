@@ -16,7 +16,7 @@ $(function () {
     map.zoomControl.setPosition('bottomleft');
     var polygon = L.polygon(wardPaths[wardNum - 1]).addTo(map);
 
-    // MAKE SUBNAV STICK
+    // MAKE FILTER STICK
 
     $(".filter").affix({
         offset: { top: 530 }
@@ -207,7 +207,7 @@ Highcharts.setOptions({
         tickmarkPlacement: 'between',
         labels: {
             style: {
-                fontFamily: 'Roboto, sans-serif',
+                fontFamily: 'Monda, sans-serif',
                 fontSize: '13px'
             },
             y: 22
@@ -220,7 +220,7 @@ Highcharts.setOptions({
         minPadding: 0.1,
         labels: {
             style: {
-                fontFamily: 'Roboto, sans-serif',
+                fontFamily: 'Monda, sans-serif',
                 fontWeight: 'bold'
             },
             align: 'left',
@@ -232,7 +232,7 @@ Highcharts.setOptions({
         headerFormat: '',
         shadow: false,
         style: {
-            fontFamily: 'Roboto, sans-serif',
+            fontFamily: 'Monda, sans-serif',
             fontSize: '15px'
         }
     },
