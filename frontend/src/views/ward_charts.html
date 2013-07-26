@@ -1,14 +1,14 @@
 <section id="counts" class="counts">
-    <h3>Requests submitted</h3>
+    <h3>All-time highs <small>vs. <span ng-bind="data.dateFormatted"></span></small></h3>
     <div id="counts-chart" class="chart"></div>
 </section>
 <section id="ttc" class="ttc">
     <h3>Time-to-close ranking <small>(in days)</small></h3>
     <p class="explanation" ng-show="data.inTTCchart">
-        Among the <span ng-bind="data.totalTTCWards"></span> wards that closed <span ng-bind="data.minTTCcount"></span> or more <b ng-bind="data.currServiceName"></b> requests during the week of <b ng-bind="data.thisWeek"></b>, Ward <span ng-bind="data.wardNum"></span> ranked <b ng-bind="data.wardRank"></b>, with an average time-to-close of <b ng-bind="data.wardTime"></b> <b>days</b>.
+        Among the <span ng-bind="data.totalTTCWards"></span> wards that closed <span ng-bind="data.minTTCcount"></span> or more <b ng-bind="data.currServiceName"></b> requests in the week ending <b ng-bind="data.dateFormatted"></b>, Ward <span ng-bind="data.wardNum"></span> ranked <b ng-bind="data.wardRank"></b>, with an average time-to-close of <b ng-bind="data.wardTime"></b> <b>days</b>.
     </p>
     <p class="explanation" ng-show="!data.inTTCchart">
-        Ward <span ng-bind="data.wardNum"></span> didn't close <span ng-bind="data.minTTCcount"></span> or more <span ng-bind="data.currServiceName"></span> requests during the week of <span ng-bind="data.thisWeek"></span>, so it's not shown on this chart.
+        Ward <span ng-bind="data.wardNum"></span> didn't close <span ng-bind="data.minTTCcount"></span> or more <span ng-bind="data.currServiceName"></span> requests in the week ending <span ng-bind="data.dateFormatted"></span>, so it's not shown on this chart.
     </p>
     <div id="ttc-chart" class="chart"></div>
 </section>

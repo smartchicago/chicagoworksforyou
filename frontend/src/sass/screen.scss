@@ -3,7 +3,7 @@
 
 html, body {
     height: 100%;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Monda', Helvetica, sans-serif;
 }
 
 .navbar {
@@ -22,12 +22,6 @@ html, body {
     z-index: 2000;
 }
 
-.sticky-wrapper.is-sticky {
-    .subnav {
-        @include box-shadow(0 0 10px fade-out(black,.7));
-    }
-}
-
 .topnav {
     background:black;
     z-index: 5000;
@@ -41,7 +35,7 @@ html, body {
     }
 
     .nav > li > a {
-        padding: 12px 24px;
+        padding: 12px 20px;
         font-size: 12px;
         text-transform: uppercase;
         outline: none;
@@ -65,7 +59,8 @@ html, body {
 
 .dropdown-set {
     display: none;
-    min-width: 180px;
+    min-width: 188px;
+    padding: 5px 10px;
 
     ul {
         display: inline-block;
@@ -93,28 +88,10 @@ html, body {
     left: 40px;
 }
 
-.subnav {
-    left: 0;
-    right: 0;
-    border-radius: 4px;
-    background: #fff;
-    @include box-shadow(0 0 10px fade-out(black,.8));
-
-
-    .brand {
-        padding: 14px 20px 16px;
-        margin: 0;
-    }
-
-    .navbar-inner {
-        border: none;
-        background:white;
-        padding: 0;
-    }
-
-    .nav > li > a {
-        color: #555;
-        padding: 15px 20px;
+.navbar-search {
+    .search-query {
+        font-family: 'Monda', Helvetica, sans-serif;
+        line-height: 21px;
     }
 }
 
@@ -167,6 +144,7 @@ html, body {
         line-height: 41px;
         color: #333;
         margin: 0 0 12px 0;
+        letter-spacing: -1px;
 
         a {
             color: #333;
@@ -349,6 +327,7 @@ html, body {
 
     h1 {
         margin-bottom: 20px;
+        letter-spacing: -1px;
     }
 
     .pagination-wrap.affix {
@@ -367,7 +346,7 @@ html, body {
             }
         }
 
-        .this-week {
+        .this-date {
             a {
                 width: 200px;
             }
@@ -376,7 +355,7 @@ html, body {
 
     .chart {
          width:100%;
-         height:2500px;
+         height:1300px;
     }
 }
 
@@ -403,7 +382,7 @@ html, body {
         text-align: center;
     }
 
-    .this-week {
+    .this-date {
         font-weight: bold;
 
         a {
@@ -412,7 +391,7 @@ html, body {
         }
     }
 
-    .prev-week, .next-week {
+    .prev-date, .next-date {
         a {
             font-size: 13px;
             color: #666;
