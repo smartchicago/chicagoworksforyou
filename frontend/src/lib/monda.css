@@ -1,0 +1,12 @@
+@font-face {
+  font-family: 'Monda';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Monda Regular'), local('Monda-Regular'), url(http://themes.googleusercontent.com/static/fonts/monda/v1/BCkqvgzsZBWk5KG2t2pUL6CWcynf_cDxXwCLxiixG1c.woff) format('woff');
+}
+@font-face {
+  font-family: 'Monda';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Monda Bold'), local('Monda-Bold'), url(http://themes.googleusercontent.com/static/fonts/monda/v1/uCFS-jQepl-zVlhjycME2XYhjbSpvc47ee6xR_80Hnw.woff) format('woff');
+}

@@ -113,7 +113,7 @@ Highcharts.setOptions({
         tickmarkPlacement: 'between',
         labels: {
             style: {
-                fontFamily: 'Roboto, sans-serif',
+                fontFamily: 'Monda, sans-serif',
                 fontSize: '13px'
             }
         }
@@ -125,7 +125,7 @@ Highcharts.setOptions({
         minPadding: 0.1,
         labels: {
             style: {
-                fontFamily: 'Roboto, sans-serif',
+                fontFamily: 'Monda, sans-serif',
                 fontWeight: 'bold'
             }
         }
@@ -138,7 +138,7 @@ Highcharts.setOptions({
                 enabled: true,
                 color: "#000000",
                 style: {
-                    fontFamily: "Roboto, sans-serif",
+                    fontFamily: "Monda, sans-serif",
                     fontSize: '13px'
                 }
             },
@@ -150,7 +150,7 @@ Highcharts.setOptions({
         pointFormat: '<b>{point.y:,.0f}</b> requests',
         shadow: false,
         style: {
-            fontFamily: 'Roboto, sans-serif',
+            fontFamily: 'Monda, sans-serif',
             fontSize: '15px'
         }
     },
