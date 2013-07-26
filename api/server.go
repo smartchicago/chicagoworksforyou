@@ -9,6 +9,7 @@ import (
 	"github.com/kylelemons/go-gypsy/yaml"
 	"github.com/lib/pq"
 	"log"
+	"math"
 	"net/http"
 	"net/url"
 	"os"
@@ -562,28 +563,6 @@ func TimeToCloseHandler(params url.Values, request *http.Request) ([]byte, *ApiE
 	//
 	// Sample request and output:
 	// $ curl "http://localhost:5000/requests/time_to_close.json?end_date=2013-06-19&count=7&service_code=4fd3b167e750846744000005"
-	//        {
-	//          "0": {
-	//            "Time": 0.8193135,
-	//            "Total": 275,
-	//            "Ward": 0
-	//          },
-	//          "1": {
-	//            "Time": 1.0570672,
-	//            "Total": 5,
-	//            "Ward": 1
-	//          },
-	//          "11": {
-	//            "Time": -0.015823688,
-	//            "Total": 12,
-	//            "Ward": 11
-	//          },
-	//          "12": {
-	//            "Time": -0.0120927375,
-	//            "Total": 16,
-	//            "Ward": 12
-	//          },
-	//      ... snipped ...
 
 	// required
 	service_code := params["service_code"][0]
@@ -594,17 +573,23 @@ func TimeToCloseHandler(params url.Values, request *http.Request) ([]byte, *ApiE
 	end = end.AddDate(0, 0, 1) // inc to the following day
 	start := end.AddDate(0, 0, -days)
 
-	rows, err := api.Db.Query("SELECT EXTRACT('EPOCH' FROM AVG(closed_datetime - requested_datetime)) AS avg_ttc, COUNT(service_request_id), ward "+
-		"FROM service_requests WHERE closed_datetime IS NOT NULL AND duplicate IS NULL "+
-		"AND service_code = $1 AND closed_datetime >= $2 AND closed_datetime <= $3"+
-		"GROUP BY ward ORDER BY avg_ttc DESC;", service_code, start, end)
+	rows, err := api.Db.Query(`SELECT EXTRACT('EPOCH' FROM AVG(closed_datetime - requested_datetime)) AS avg_ttc, COUNT(service_request_id), ward
+		FROM service_requests 
+		WHERE closed_datetime IS NOT NULL 
+			AND duplicate IS NULL
+			AND service_code = $1 
+			AND closed_datetime >= $2 
+			AND closed_datetime <= $3
+			AND ward IS NOT NULL
+		GROUP BY ward 
+		ORDER BY avg_ttc DESC;`, service_code, start, end)
 
 	if err != nil {
 		log.Print("error fetching time to close", err)
 	}
 
 	type TimeToClose struct {
-		Time  float32
+		Time  float64
 		Total int
 		Ward  int
 	}
@@ -627,19 +612,42 @@ func TimeToCloseHandler(params url.Values, request *http.Request) ([]byte, *ApiE
 
 	// find the city-wide average for the interval/service code
 	city_average := TimeToClose{Ward: 0}
-	err = api.Db.QueryRow("SELECT EXTRACT('EPOCH' FROM AVG(closed_datetime - requested_datetime)) AS avg_ttc, COUNT(service_request_id)"+
-		"FROM service_requests WHERE closed_datetime IS NOT NULL AND duplicate IS NULL "+
-		"AND service_code = $1 AND closed_datetime >= $2 AND closed_datetime <= $3",
-		service_code, start, end).Scan(&city_average.Time, &city_average.Total)
+	err = api.Db.QueryRow(`SELECT EXTRACT('EPOCH' FROM AVG(closed_datetime - requested_datetime)) AS avg_ttc, COUNT(service_request_id)
+		FROM service_requests 
+		WHERE closed_datetime IS NOT NULL 
+			AND duplicate IS NULL
+			AND service_code = $1 
+			AND closed_datetime >= $2
+			AND closed_datetime <= $3
+			AND ward IS NOT NULL`, service_code, start, end).Scan(&city_average.Time, &city_average.Total)
 
 	if err != nil {
 		log.Print("error fetching city average time to close", err)
 	}
 
 	city_average.Time = city_average.Time / 86400.0 // convert to days
-	times["0"] = city_average
+	// times["0"] = city_average
+	log.Printf("city average: %f", city_average.Time)
 
-	return dumpJson(times), nil
+	// calculate bottom threshold of values to display
+	var std_dev, sum float64
+	for i := 1; i < 51; i++ {
+		sum += math.Pow((times[strconv.Itoa(i)].Time - city_average.Time), 2)
+		log.Printf("%d: %f. sum: %f", i, times[strconv.Itoa(i)].Time, sum)
+	}
+	std_dev = math.Sqrt(sum / 50)
+
+	threshold := city_average.Time - std_dev
+
+	log.Printf("std_dev: %f", std_dev)
+
+	type resp_data struct {
+		WardData  map[string]TimeToClose
+		CityData  TimeToClose
+		Threshold float64
+	}
+
+	return dumpJson(resp_data{WardData: times, CityData: city_average, Threshold: threshold}), nil
 }
 
 func WardHistoricHighsHandler(params url.Values, request *http.Request) ([]byte, *ApiError) {
