@@ -371,6 +371,7 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 	// $ curl "http://localhost:5000/requests/4fd3b167e750846744000005/counts.json?end_date=2013-06-10&count=1"
 	// {
 	// 	  "0": {
+
 	// 	    "Count": 1107,
 	// 	    "Average": 3.0328767
 	// 	  },
@@ -394,44 +395,71 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 	end = end.AddDate(0, 0, 1) // inc to the following day
 	start := end.AddDate(0, 0, -days)
 
-	rows, err := api.Db.Query(`SELECT SUM(total), ward 
+	rows, err := api.Db.Query(`SELECT total,ward,requested_date 
 		FROM daily_counts
 		WHERE service_code = $1 
 			AND requested_date >= $2 
 			AND requested_date < $3
-		GROUP BY ward 
-		ORDER BY ward`,
+		ORDER BY ward DESC, requested_date DESC`,
 		string(service_code), start, end)
 
 	if err != nil {
 		log.Fatal("error fetching data for RequestCountsHandler", err)
 	}
 
+	data := make(map[int]map[string]int)
+	// { 32: { '2013-07-23': 42, '2013-07-24': 41 }, 3: { '2013-07-23': 42, '2013-07-24': 41 } }
+
+	for rows.Next() {
+		var ward, count int
+		var date time.Time
+
+		if err := rows.Scan(&count, &ward, &date); err != nil {
+			// FIXME: handle
+		}
+
+		if _, present := data[ward]; !present {
+			data[ward] = make(map[string]int)
+		}
+
+		data[ward][date.Format("2006-01-02")] = count
+	}
+
+	log.Printf("data\n\n%+v", data)
+
 	type WardCount struct {
 		Ward    int
-		Count   int
+		Counts  []int
 		Average float32
 	}
 
 	counts := make(map[int]WardCount)
-	for rows.Next() {
-		wc := WardCount{}
-		if err := rows.Scan(&wc.Count, &wc.Ward); err != nil {
-			log.Print("error reading row of ward count", err)
-		}
 
-		// trunc the requested time to just date
-		counts[wc.Ward] = wc
+	// for each ward, and each day, find the count and populate result
+	for i := 0; i < 50; i++ {
+		for day := 0; day < days; day++ {
+			d := start.AddDate(0, 0, day)
+			c := 0
+			if total_for_day, present := data[i][d.Format("2006-01-02")]; present {
+				c = total_for_day
+			}
+
+			tmp := counts[i]
+			tmp.Counts = append(counts[i].Counts, c)
+			counts[i] = tmp
+		}
 	}
 
-	rows, err = api.Db.Query(`SELECT SUM(total)/365.0, ward 
-		FROM daily_counts 
-		WHERE requested_date >= DATE(NOW() - INTERVAL '1 year') 
-			AND service_code = $1 
-		GROUP BY ward;`, service_code)
+	log.Printf("counts\n\n%+v", counts)
+
+	rows, err = api.Db.Query(`SELECT SUM(total)/365.0, ward
+             FROM daily_counts
+             WHERE requested_date >= DATE(NOW() - INTERVAL '1 year')
+                     AND service_code = $1
+             GROUP BY ward;`, service_code)
 
 	if err != nil {
-		log.Print("error querying for year counts", err)
+		log.Print("error querying for year average", err)
 	}
 
 	for rows.Next() {
@@ -447,39 +475,39 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 	}
 
 	// find total opened for the entire city for date range
-	city_total := WardCount{Ward: 0, Count: 0, Average: 0.0}
-	err = api.Db.QueryRow(`SELECT SUM(total) 
-		FROM daily_counts 
-		WHERE service_code = $1 
-			AND requested_date >= $2 
-			AND requested_date < $3;`,
-		string(service_code), start, end).Scan(&city_total.Count)
+	city_total := WardCount{Ward: 0, Average: 0.0}
+	err = api.Db.QueryRow(`SELECT SUM(total)
+             FROM daily_counts
+             WHERE service_code = $1
+                     AND requested_date >= $2
+                     AND requested_date < $3;`,
+		string(service_code), start, end).Scan(&city_total.Counts[0])
 
 	if err != nil {
 		log.Print("error loading city-wide total count for %s. err: %s", service_code, err)
 	}
 
-	city_total.Average = float32(city_total.Count) / 365.0
+	city_total.Average = float32(city_total.Counts[0]) / 365.0
 	counts[0] = city_total
 
-	log.Printf("city total: %+v", city_total)
-
+	// log.Printf("city total: %+v", city_total)
+	//
 	// pluck data to return, ensure we return a number, even zero, for each ward
 	type WC struct {
-		Count   int
+		Counts  []int
 		Average float32
 	}
 
-	data := make(map[string]WC)
+	resp_data := make(map[string]WC)
 	for i := 0; i < 51; i++ {
 		k := strconv.Itoa(i)
 		tmp := data[k]
-		tmp.Count = counts[i].Count
+		tmp.Counts = counts[i].Counts
 		tmp.Average = counts[i].Average
-		data[k] = tmp
+		resp_data[k] = tmp
 	}
 
-	return dumpJson(data), nil
+	return dumpJson(resp_data), nil
 }
 
 func TimeToCloseHandler(params url.Values, request *http.Request) ([]byte, *ApiError) {
