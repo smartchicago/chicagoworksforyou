@@ -1,6 +1,6 @@
 html, body {
   height: 100%;
-  font-family: 'Monda', sans-serif; }
+  font-family: 'Monda', Helvetica, sans-serif; }
 
 .navbar {
   margin-bottom: 0;
@@ -15,11 +15,6 @@ html, body {
   left: 0;
   right: 0;
   z-index: 2000; }
-
-.sticky-wrapper.is-sticky .subnav {
-  -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); }
 
 .topnav {
   background: black;
@@ -68,24 +63,9 @@ html, body {
 .navbar .nav > li > .dropdown-menu:after {
   left: 40px; }
 
-.subnav {
-  left: 0;
-  right: 0;
-  border-radius: 4px;
-  background: #fff;
-  -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); }
-  .subnav .brand {
-    padding: 14px 20px 16px;
-    margin: 0; }
-  .subnav .navbar-inner {
-    border: none;
-    background: white;
-    padding: 0; }
-  .subnav .nav > li > a {
-    color: #555;
-    padding: 15px 20px; }
+.navbar-search .search-query {
+  font-family: 'Monda', Helvetica, sans-serif;
+  line-height: 21px; }
 
 .map iframe {
   border: none; }

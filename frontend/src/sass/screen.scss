@@ -22,12 +22,6 @@ html, body {
     z-index: 2000;
 }
 
-.sticky-wrapper.is-sticky {
-    .subnav {
-        @include box-shadow(0 0 10px fade-out(black,.7));
-    }
-}
-
 .topnav {
     background:black;
     z-index: 5000;
@@ -94,28 +88,6 @@ html, body {
     left: 40px;
 }
 
-.subnav {
-    left: 0;
-    right: 0;
-    border-radius: 4px;
-    background: #fff;
-    @include box-shadow(0 0 10px fade-out(black,.8));
-
-
-    .brand {
-        padding: 14px 20px 16px;
-        margin: 0;
-    }
-
-    .navbar-inner {
-        border: none;
-        background:white;
-        padding: 0;
-    }
-
-    .nav > li > a {
-        color: #555;
-        padding: 15px 20px;
 .navbar-search {
     .search-query {
         font-family: 'Monda', Helvetica, sans-serif;
