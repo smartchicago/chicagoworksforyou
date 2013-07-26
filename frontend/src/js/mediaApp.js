@@ -32,17 +32,16 @@ mediaApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
 
 mediaApp.controller("mediaMapCtrl", function ($scope, $http, Data, $routeParams) {
     Data.currServiceSlug = "";
-    Data.currServiceName = "";
+    Data.search = {};
     var url = window.apiDomain + 'requests/media.json?callback=JSON_CALLBACK';
-
     var serviceObj = window.lookupSlug($routeParams.serviceSlug);
+
     if (serviceObj) {
         Data.currServiceSlug = $routeParams.serviceSlug;
-        Data.currServiceName = serviceObj.name;
+        Data.search.Service_name = serviceObj.name;
     }
 
     $scope.data = Data;
-
 
     $http.jsonp(url).
         success(function(response, status, headers, config) {
