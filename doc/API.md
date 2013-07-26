@@ -282,30 +282,48 @@ Input:
 
 Output:
 
-The output is a map where keys are ward identifiers, and the value is the count. The city total for the time interval is assigned to ward #0
+The output is a three element map, with keys `DayData`, `CityData`, `WardData`. `DayData` is an array of dates contained in the results. The last element of the array will equal the end_date URL parameter. `CityData` contains the total number of SR opened in the City for the date range (`Count`), and the average number opened per day, for the entire city, over the past 365 days (`Average`). `WardData` contains an array of number of SR opened per day (`Counts`) and average (`Average`) number opened per day over the past 365 days for each of the 50 wards.
 
     $ curl "http://localhost:5000/requests/4fd3b167e750846744000005/counts.json?end_date=2013-06-19&count=1"
     {
-      "0": {
-        "Ward": 0,
-        "Count": 488,
-        "Average": 1.3369863
+      "DayData": [
+        "2013-06-04",
+        "2013-06-05",
+        "2013-06-06",
+        "2013-06-07",
+        "2013-06-08",
+        "2013-06-09",
+        "2013-06-10"
+      ],
+      "CityData": {
+        "Average": 8.084931,
+        "Count": 2951
       },
-      "1": {
-        "Ward": 1,
-        "Count": 14,
-        "Average": 16.90959
-      },
-      "10": {
-        "Ward": 10,
-        "Count": 2,
-        "Average": 6.758904
-      },
-      "11": {
-        "Ward": 11,
-        "Count": 26,
-        "Average": 17.638355
-      },
+      "WardData": {
+        "1": {
+          "Counts": [
+            29,
+            19,
+            40,
+            60,
+            16,
+            2,
+            35
+          ],
+          "Average": 16.671232
+        },
+        "10": {
+          "Counts": [
+            22,
+            2,
+            28,
+            6,
+            2,
+            5,
+            6
+          ],
+          "Average": 6.60274
+        },
       (response truncated)
 
 Request Counts by Day
