@@ -16,16 +16,16 @@ window.currServiceType = '{{ page.service_code }}';
             <div class="pagination-wrap">
                 <div class="pagination">
                     <ul>
-                        <li class="prev-week"><a ng-click="prevWeek()">&larr;</a></li>
-                        <li class="this-week"><a href="#">Week of <span ng-bind="data.thisWeek"></span></a></li>
-                        <li class="next-week"><a ng-click="nextWeek()">&rarr;</a></li>
+                        <li class="prev-date"><a ng-click="prevDate()">&larr;</a></li>
+                        <li class="this-date"><a href="#" ng-bind="data.thisDate"></a></li>
+                        <li class="next-date"><a ng-click="nextDate()">&rarr;</a></li>
                     </ul>
                 </div>
             </div>
             {{ content }}
             <p>
                 Blue = total for this week<br>
-                Black = ward average<br>
+                Black line = historical ward average<br>
                 Red stripe = city average for this week
             </p>
         </div>

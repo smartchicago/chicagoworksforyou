@@ -346,7 +346,7 @@ html, body {
             }
         }
 
-        .this-week {
+        .this-date {
             a {
                 width: 200px;
             }
@@ -355,7 +355,7 @@ html, body {
 
     .chart {
          width:100%;
-         height:2500px;
+         height:1300px;
     }
 }
 
@@ -382,7 +382,7 @@ html, body {
         text-align: center;
     }
 
-    .this-week {
+    .this-date {
         font-weight: bold;
 
         a {
@@ -391,7 +391,7 @@ html, body {
         }
     }
 
-    .prev-week, .next-week {
+    .prev-date, .next-date {
         a {
             font-size: 13px;
             color: #666;

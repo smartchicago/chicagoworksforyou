@@ -3,9 +3,7 @@ window.wardPaths = [[[41.939485,-87.685623],[41.937666,-87.685579],[41.935872,-8
 window.yesterday = moment().subtract('days', 1);
 window.prevSaturday = moment().day(-1).startOf('day');
 window.earliestDate = moment('2008-01-01');
-
 window.dateFormat = 'YYYY-MM-DD';
-window.weekDuration = moment.duration(6,"days");
 
 window.serviceTypesJSON = [
     {
