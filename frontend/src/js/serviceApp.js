@@ -62,7 +62,6 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
             var cityAverage = response['0'].Count / 50;
             var counts = _.rest(_.pluck(response, 'Count'));
             var categories = _.map(_.rest(_.keys(response)), function (wardNum) { return '<a href="/ward/' + wardNum + '/#/' + stSlug + '">Ward ' + wardNum + '</a>'; });
-            var averages = _.map(_.rest(_.pluck(response, 'Average')), function (avg) { return Math.round(avg * numOfDays); });
 
             new Highcharts.Chart({
                 chart: {
@@ -77,10 +76,6 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
                             fontWeight: 'bold'
                         }
                     }
-                },{
-                    data: averages,
-                    index: 2,
-                    type: 'line'
                 }],
                 xAxis: {
                     categories: categories
