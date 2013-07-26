@@ -590,20 +590,20 @@ func TimeToCloseHandler(params url.Values, request *http.Request) ([]byte, *ApiE
 
 	type TimeToClose struct {
 		Time  float64
-		Total int
-		Ward  int
+		Count int
+		Ward  int `json:"-"`
 	}
 
 	times := make(map[string]TimeToClose)
 
 	// zero init the times map
 	for i := 1; i < 51; i++ {
-		times[strconv.Itoa(i)] = TimeToClose{Time: 0.0, Total: 0, Ward: i}
+		times[strconv.Itoa(i)] = TimeToClose{Time: 0.0, Count: 0, Ward: i}
 	}
 
 	for rows.Next() {
 		var ttc TimeToClose
-		if err := rows.Scan(&ttc.Time, &ttc.Total, &ttc.Ward); err != nil {
+		if err := rows.Scan(&ttc.Time, &ttc.Count, &ttc.Ward); err != nil {
 			log.Print("error loading time to close counts", err)
 		}
 		ttc.Time = ttc.Time / 86400.0 // convert from seconds to days
@@ -619,27 +619,22 @@ func TimeToCloseHandler(params url.Values, request *http.Request) ([]byte, *ApiE
 			AND service_code = $1 
 			AND closed_datetime >= $2
 			AND closed_datetime <= $3
-			AND ward IS NOT NULL`, service_code, start, end).Scan(&city_average.Time, &city_average.Total)
+			AND ward IS NOT NULL`, service_code, start, end).Scan(&city_average.Time, &city_average.Count)
 
 	if err != nil {
 		log.Print("error fetching city average time to close", err)
 	}
 
 	city_average.Time = city_average.Time / 86400.0 // convert to days
-	// times["0"] = city_average
-	log.Printf("city average: %f", city_average.Time)
 
 	// calculate bottom threshold of values to display
 	var std_dev, sum float64
 	for i := 1; i < 51; i++ {
-		sum += math.Pow((times[strconv.Itoa(i)].Time - city_average.Time), 2)
-		log.Printf("%d: %f. sum: %f", i, times[strconv.Itoa(i)].Time, sum)
+		sum += math.Pow((float64(times[strconv.Itoa(i)].Count) - (float64(city_average.Count) / 50.0)), 2)
 	}
-	std_dev = math.Sqrt(sum / 50)
 
-	threshold := city_average.Time - std_dev
-
-	log.Printf("std_dev: %f", std_dev)
+	std_dev = math.Sqrt(sum / 50.0)
+	threshold := (float64(city_average.Count) / 50.0) - std_dev
 
 	type resp_data struct {
 		WardData  map[string]TimeToClose
