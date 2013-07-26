@@ -59,12 +59,12 @@ wardApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
 
     $scope.data = Data;
 
-    $scope.prevWeek = function () {
-        $location.path(Data.currServiceSlug + "/" + Data.prevWeek);
+    $scope.prevDay = function () {
+        $location.path(Data.currServiceSlug + "/" + Data.prevDay);
     };
 
-    $scope.nextWeek = function () {
-        $location.path(Data.currServiceSlug + "/" + Data.nextWeek);
+    $scope.nextDay = function () {
+        $location.path(Data.currServiceSlug + "/" + Data.nextDay);
     };
 });
 
@@ -78,57 +78,72 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $location, $routeP
     Data.wardNum = window.wardNum;
     Data.currServiceSlug = $routeParams.serviceSlug;
     Data.currServiceName = serviceObj.name;
-    Data.dateFormatted = date.format(dateFormat);
-    Data.prevWeek = moment(date).subtract('week',1).format(dateFormat);
-    Data.nextWeek = moment(date).add('week',1).format(dateFormat);
-    Data.thisWeek = weekDuration.beforeMoment(date,true).format({implicitYear: false});
+    Data.date = date.format(dateFormat);
+    Data.dateFormatted = date.format('MMM D, YYYY');
+    Data.prevDay = moment(date).subtract('day',1).format(dateFormat);
+    Data.nextDay = moment(date).add('day',1).format(dateFormat);
+    Data.thisWeek = moment.duration(7,"days").beforeMoment(date,true).format({implicitYear: false});
 
     $scope.data = Data;
 
     var serviceCode = serviceObj.code;
-    var requestsURL = window.apiDomain + 'wards/' + window.wardNum + '/counts.json?count=7&service_code=' + serviceCode + '&end_date=' + Data.dateFormatted + '&callback=JSON_CALLBACK';
-    var ttcURL = window.apiDomain + 'requests/time_to_close.json?count=7&service_code=' + serviceCode + '&end_date=' + Data.dateFormatted + '&callback=JSON_CALLBACK';
+    var requestsURL = window.apiDomain + 'wards/' + window.wardNum + '/historic_highs.json?service_code=' + serviceCode + '&day=' + Data.date + '&count=8&include_today=true&callback=JSON_CALLBACK';
+    var ttcURL = window.apiDomain + 'requests/time_to_close.json?count=7&service_code=' + serviceCode + '&end_date=' + Data.date + '&callback=JSON_CALLBACK';
 
     // CHARTS
 
     $http.jsonp(requestsURL).
         success(function(response, status, headers, config) {
-            var categories = [];
-            var counts = [];
-            var cityAverages = [];
-
-            for (var d in response) {
-                categories.push(moment(d).format("MMM DD"));
-                counts.push(response[d].Count);
-                cityAverages.push(response[d].CityAverage);
-            }
+            var todaysCount = _.values(_.first(response))[0];
+            var highs = _.rest(response);
+            var highCounts = _.map(highs, function(d) { return _.values(d)[0]; });
+            var categories = _.map(highs, function(d) { return moment(_.keys(d)[0]).format("MMM D YYYY"); });
 
             var countsChart = new Highcharts.Chart({
                 chart: {
                     renderTo: 'counts-chart',
-                    marginBottom: 80
-                },
-                xAxis: {
-                    categories: categories
+                    marginBottom: 70
                 },
                 plotOptions: {
                     column: {
-                        groupPadding: 0.1
+                        groupPadding: 0.05,
+                        pointPadding: 0,
+                        color: "#4897F1"
                     }
                 },
                 series: [{
-                    name: "Ward " + wardNum,
-                    data: counts
-                },{
-                    name: "City average",
-                    data: cityAverages,
-                    type: 'line',
-                    dashStyle: 'longdash'
+                    name: "All-time highs for Ward " + wardNum,
+                    data: highCounts
                 }],
                 tooltip: {
                     formatter: function() {
                         return '<b>' + this.y + '</b> ' + ' request' + (this.y > 1 ? 's' : '');
                     }
+                },
+                xAxis: {
+                    categories: categories
+                },
+                yAxis: {
+                    plotLines: [{
+                        id: 'avg',
+                        value: todaysCount,
+                        color: 'black',
+                        width: 2,
+                        zIndex: 5,
+                        label: {
+                            align: 'right',
+                            color: 'black',
+                            text: date.format("MMM D: ") + todaysCount + " request" + (todaysCount == 1 ? "" : "s"),
+                            y: -8,
+                            x: 0,
+                            style: {
+
+                                fontWeight: 'bold',
+                                fontFamily: 'Monda, Helvetica, sans-serif',
+                                fontSize: '14px'
+                            }
+                        }
+                    }]
                 }
             });
         }
@@ -156,8 +171,7 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $location, $routeP
 
             var ttcChart = new Highcharts.Chart({
                 chart: {
-                    renderTo: 'ttc-chart',
-                    marginBottom: 30
+                    renderTo: 'ttc-chart'
                 },
                 xAxis: {
                     labels: {
@@ -174,9 +188,6 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $location, $routeP
                         colorByPoint: true,
                         colors: colors
                     }
-                },
-                legend: {
-                    enabled: false
                 },
                 series: [{
                     name: "Time-to-close for " + Data.thisWeek,
@@ -196,7 +207,8 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $location, $routeP
 
 Highcharts.setOptions({
     chart: {
-        type: 'column'
+        type: 'column',
+        marginBottom: 30
     },
     title: {
         text: ''
@@ -225,8 +237,9 @@ Highcharts.setOptions({
             },
             align: 'left',
             x: 0,
-            y: -2
-        }
+            y: 3
+        },
+        offset: 30
     },
     tooltip: {
         headerFormat: '',
@@ -237,7 +250,7 @@ Highcharts.setOptions({
         }
     },
     legend: {
-        enabled: true,
+        enabled: false,
         borderWidth: 0,
         backgroundColor: "#f7f7f7",
         padding: 10
