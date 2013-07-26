@@ -3,7 +3,7 @@
 
 html, body {
     height: 100%;
-    font-family: 'Monda', sans-serif;
+    font-family: 'Monda', Helvetica, sans-serif;
 }
 
 .navbar {
@@ -116,6 +116,10 @@ html, body {
     .nav > li > a {
         color: #555;
         padding: 15px 20px;
+.navbar-search {
+    .search-query {
+        font-family: 'Monda', Helvetica, sans-serif;
+        line-height: 21px;
     }
 }
 
