@@ -43,18 +43,19 @@ serviceApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
 
 serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $routeParams) {
     var date = parseDate($routeParams.date, window.yesterday, $location, '');
+    var startDate = moment(date).day(0);
+    var endDate = moment(date).day(6).max(window.yesterday);
+    var duration = endDate.diff(startDate, 'days');
 
-    Data.dateFormatted = date.format(dateFormat);
-    Data.prevWeek = moment(date).subtract('day',7).format(dateFormat);
-    Data.nextWeek = moment(date).add('day',7).format(dateFormat);
-    Data.thisMonth = weekDuration.beforeMoment(date,true).format({implicitYear: false});
+    Data.prevWeek = moment(startDate).subtract('day',1).format(dateFormat);
+    Data.nextWeek = moment(endDate).add('day',7).format(dateFormat);
+    Data.thisDate = moment.duration(duration,"days").beforeMoment(endDate,true).format({implicitYear: false});
 
     $scope.data = Data;
 
     var stCode = window.currServiceType;
     var stSlug = window.lookupCode(stCode).slug;
-    var numOfDays = 7;
-    var url = window.apiDomain + 'requests/' + stCode + '/counts.json?end_date=' + Data.dateFormatted + '&count=' + numOfDays + '&callback=JSON_CALLBACK';
+    var url = window.apiDomain + 'requests/' + stCode + '/counts.json?end_date=' + endDate.format(dateFormat) + '&count=' + (duration + 1) + '&callback=JSON_CALLBACK';
     var chart = $('#chart').highcharts();
 
     $http.jsonp(url).
