@@ -467,7 +467,7 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 	}
 
 	// for each ward, and each day, find the count and populate result
-	for i := 0; i < 50; i++ {
+	for i := 1; i < 51; i++ {
 		for day := 0; day < days; day++ {
 			d := start.AddDate(0, 0, day)
 			c := 0
