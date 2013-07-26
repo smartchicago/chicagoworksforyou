@@ -371,7 +371,6 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 	// $ curl "http://localhost:5000/requests/4fd3b167e750846744000005/counts.json?end_date=2013-06-10&count=1"
 	// {
 	// 	  "0": {
-
 	// 	    "Count": 1107,
 	// 	    "Average": 3.0328767
 	// 	  },
@@ -434,6 +433,13 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 	}
 
 	counts := make(map[int]WardCount)
+        var day_data []string
+
+        // generate a list of days returned in the results
+        for day := 0; day < days; day++ {
+                day_data = append(day_data, start.AddDate(0, 0, day).Format("2006-01-02"))
+        }
+	
 
 	// for each ward, and each day, find the count and populate result
 	for i := 0; i < 50; i++ {
@@ -511,11 +517,12 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 
 
         type RespData struct {
+                DayData  []string
                 CityData CityCount
                 WardData map[string]WC
         }
         
-	return dumpJson(RespData{CityData: city_total, WardData: complete_wards}), nil
+	return dumpJson(RespData{CityData: city_total, WardData: complete_wards, DayData: day_data}), nil
 }
 
 func TimeToCloseHandler(params url.Values, request *http.Request) ([]byte, *ApiError) {
