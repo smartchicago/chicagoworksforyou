@@ -32,28 +32,28 @@ serviceApp.config(function($routeProvider) {
 serviceApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
     $scope.data = Data;
 
-    $scope.prevDay = function () {
-        $location.path(Data.prevDay);
+    $scope.prevDate = function () {
+        $location.path(Data.prevWeek);
     };
 
-    $scope.nextDay = function () {
-        $location.path(Data.nextDay);
+    $scope.nextDate = function () {
+        $location.path(Data.nextWeek);
     };
 });
 
 serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $routeParams) {
-    var date = parseDate($routeParams.date, window.prevSaturday, $location, '');
+    var date = parseDate($routeParams.date, window.yesterday, $location, '');
 
     Data.dateFormatted = date.format(dateFormat);
-    Data.prevDay = moment(date).subtract('day',1).format(dateFormat);
-    Data.nextDay = moment(date).add('day',1).format(dateFormat);
-    Data.thisMonth = monthDuration.beforeMoment(date,true).format({implicitYear: false});
+    Data.prevWeek = moment(date).subtract('day',7).format(dateFormat);
+    Data.nextWeek = moment(date).add('day',7).format(dateFormat);
+    Data.thisMonth = weekDuration.beforeMoment(date,true).format({implicitYear: false});
 
     $scope.data = Data;
 
     var stCode = window.currServiceType;
     var stSlug = window.lookupCode(stCode).slug;
-    var numOfDays = 28;
+    var numOfDays = 7;
     var url = window.apiDomain + 'requests/' + stCode + '/counts.json?end_date=' + Data.dateFormatted + '&count=' + numOfDays + '&callback=JSON_CALLBACK';
     var chart = $('#chart').highcharts();
 
