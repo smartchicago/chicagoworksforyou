@@ -3,22 +3,17 @@
 var mediaApp = angular.module('mediaApp', []);
 
 mediaApp.factory('Data', function () {
-    return {};
-});
+    var data = {
+        currServiceSlug: "",
+        search: {}
+    };
 
-mediaApp.config(function($routeProvider) {
-    $routeProvider.
-        when('/:serviceSlug', {
-            controller: "mediaMapCtrl",
-            templateUrl: "/views/media.html"
-        }).
-        when('/', {
-            controller: "mediaMapCtrl",
-            templateUrl: "/views/media.html"
-        }).
-        otherwise({
-            redirectTo: '/'
-        });
+    data.setService = function(slug, name) {
+        data.currServiceSlug = slug;
+        data.search.Service_name = name;
+    };
+
+    return data;
 });
 
 mediaApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
@@ -27,18 +22,23 @@ mediaApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
     });
 
     $scope.data = Data;
+
+    $scope.filterByService = function(service) {
+        if (!service) {
+            service = {slug:'', name:''};
+        }
+        $location.path(service.slug);
+        Data.setService(service.slug, service.name);
+    };
 });
 
-
-mediaApp.controller("mediaMapCtrl", function ($scope, $http, Data, $routeParams) {
-    Data.currServiceSlug = "";
-    Data.search = {};
+mediaApp.controller("mediaCtrl", function ($scope, $http, Data, $location) {
     var url = window.apiDomain + 'requests/media.json?callback=JSON_CALLBACK';
-    var serviceObj = window.lookupSlug($routeParams.serviceSlug);
+    var slug = $location.path().split("/")[1];
+    var serviceObj = window.lookupSlug(slug);
 
     if (serviceObj) {
-        Data.currServiceSlug = $routeParams.serviceSlug;
-        Data.search.Service_name = serviceObj.name;
+        Data.setService(slug, serviceObj.name);
     }
 
     $scope.data = Data;
