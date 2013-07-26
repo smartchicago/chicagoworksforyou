@@ -424,7 +424,7 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 		data[ward][date.Format("2006-01-02")] = count
 	}
 
-        // log.Printf("data\n\n%+v", data)
+	// log.Printf("data\n\n%+v", data)
 
 	type WardCount struct {
 		Ward    int
@@ -433,13 +433,12 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 	}
 
 	counts := make(map[int]WardCount)
-        var day_data []string
+	var day_data []string
 
-        // generate a list of days returned in the results
-        for day := 0; day < days; day++ {
-                day_data = append(day_data, start.AddDate(0, 0, day).Format("2006-01-02"))
-        }
-	
+	// generate a list of days returned in the results
+	for day := 0; day < days; day++ {
+		day_data = append(day_data, start.AddDate(0, 0, day).Format("2006-01-02"))
+	}
 
 	// for each ward, and each day, find the count and populate result
 	for i := 0; i < 50; i++ {
@@ -456,7 +455,7 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 		}
 	}
 
-        // log.Printf("counts\n\n%+v", counts)
+	// log.Printf("counts\n\n%+v", counts)
 
 	rows, err = api.Db.Query(`SELECT SUM(total)/365.0, ward
              FROM daily_counts
@@ -480,25 +479,25 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 		counts[ward] = tmp
 	}
 
-        type CityCount struct {
-                Average float32
-                Count   int
-        }
+	type CityCount struct {
+		Average float32
+		Count   int
+	}
 
 	// find total opened for the entire city for date range
-        var city_total CityCount
-        err = api.Db.QueryRow(`SELECT SUM(total)
+	var city_total CityCount
+	err = api.Db.QueryRow(`SELECT SUM(total)
                      FROM daily_counts
                      WHERE service_code = $1
                              AND requested_date >= $2
                              AND requested_date < $3;`,
-             string(service_code), start, end).Scan(&city_total.Count)
-        
-        if err != nil {
-             log.Print("error loading city-wide total count for %s. err: %s", service_code, err)
-        }
-        
-        city_total.Average = float32(city_total.Count) / 365.0
+		string(service_code), start, end).Scan(&city_total.Count)
+
+	if err != nil {
+		log.Print("error loading city-wide total count for %s. err: %s", service_code, err)
+	}
+
+	city_total.Average = float32(city_total.Count) / 365.0
 
 	// pluck data to return, ensure we return a number, even zero, for each ward
 	type WC struct {
@@ -515,13 +514,12 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 		complete_wards[k] = tmp
 	}
 
+	type RespData struct {
+		DayData  []string
+		CityData CityCount
+		WardData map[string]WC
+	}
 
-        type RespData struct {
-                DayData  []string
-                CityData CityCount
-                WardData map[string]WC
-        }
-        
 	return dumpJson(RespData{CityData: city_total, WardData: complete_wards, DayData: day_data}), nil
 }
 
