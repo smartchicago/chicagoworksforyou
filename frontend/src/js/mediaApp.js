@@ -2,9 +2,13 @@
 
 var mediaApp = angular.module('mediaApp', []);
 
+mediaApp.factory('Data', function () {
+    return {};
+});
+
 mediaApp.config(function($routeProvider) {
     $routeProvider.
-        when('/:mediaID', {
+        when('/:serviceSlug', {
             controller: "mediaMapCtrl",
             templateUrl: "/views/media.html"
         }).
@@ -17,9 +21,29 @@ mediaApp.config(function($routeProvider) {
         });
 });
 
-var url = window.apiDomain + 'requests/media.json?callback=JSON_CALLBACK';
+mediaApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
+    $http.get('/data/services.json').success(function(response) {
+        Data.services = response;
+    });
 
-mediaApp.controller("mediaMapCtrl", function ($scope, $http) {
+    $scope.data = Data;
+});
+
+
+mediaApp.controller("mediaMapCtrl", function ($scope, $http, Data, $routeParams) {
+    Data.currServiceSlug = "";
+    Data.currServiceName = "";
+    var url = window.apiDomain + 'requests/media.json?callback=JSON_CALLBACK';
+
+    var serviceObj = window.lookupSlug($routeParams.serviceSlug);
+    if (serviceObj) {
+        Data.currServiceSlug = $routeParams.serviceSlug;
+        Data.currServiceName = serviceObj.name;
+    }
+
+    $scope.data = Data;
+
+
     $http.jsonp(url).
         success(function(response, status, headers, config) {
             $scope.media = response;
