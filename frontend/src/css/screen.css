@@ -1,6 +1,6 @@
 html, body {
   height: 100%;
-  font-family: 'Roboto', sans-serif; }
+  font-family: 'Monda', Helvetica, sans-serif; }
 
 .navbar {
   margin-bottom: 0;
@@ -16,11 +16,6 @@ html, body {
   right: 0;
   z-index: 2000; }
 
-.sticky-wrapper.is-sticky .subnav {
-  -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); }
-
 .topnav {
   background: black;
   z-index: 5000; }
@@ -31,7 +26,7 @@ html, body {
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
     color: white; }
   .topnav .nav > li > a {
-    padding: 12px 24px;
+    padding: 12px 20px;
     font-size: 12px;
     text-transform: uppercase;
     outline: none; }
@@ -49,7 +44,8 @@ html, body {
 
 .dropdown-set {
   display: none;
-  min-width: 180px; }
+  min-width: 188px;
+  padding: 5px 10px; }
   .dropdown-set ul {
     display: inline-block;
     list-style-type: none;
@@ -67,24 +63,9 @@ html, body {
 .navbar .nav > li > .dropdown-menu:after {
   left: 40px; }
 
-.subnav {
-  left: 0;
-  right: 0;
-  border-radius: 4px;
-  background: #fff;
-  -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); }
-  .subnav .brand {
-    padding: 14px 20px 16px;
-    margin: 0; }
-  .subnav .navbar-inner {
-    border: none;
-    background: white;
-    padding: 0; }
-  .subnav .nav > li > a {
-    color: #555;
-    padding: 15px 20px; }
+.navbar-search .search-query {
+  font-family: 'Monda', Helvetica, sans-serif;
+  line-height: 21px; }
 
 .map iframe {
   border: none; }
@@ -121,7 +102,8 @@ html, body {
   font-size: 33px;
   line-height: 41px;
   color: #333;
-  margin: 0 0 12px 0; }
+  margin: 0 0 12px 0;
+  letter-spacing: -1px; }
   .dateMapApp h1 a {
     color: #333;
     display: block; }
@@ -232,7 +214,8 @@ html, body {
 .serviceApp .content {
   padding-top: 15px; }
 .serviceApp h1 {
-  margin-bottom: 20px; }
+  margin-bottom: 20px;
+  letter-spacing: -1px; }
 .serviceApp .pagination-wrap.affix {
   top: 0;
   padding-top: 20px;
