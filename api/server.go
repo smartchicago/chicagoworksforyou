@@ -649,8 +649,7 @@ func WardHistoricHighsHandler(params url.Values, request *http.Request) ([]byte,
 	// 	count: 		number of historicl high days to return.
 	//	service_code:   the code used by the City of Chicago to categorize service requests
 	//	callback:       function to wrap response in (for JSONP functionality)
-	// 	include_today:  if equal to "true" or "1", include the current day (in Chicago) counts as the first element of the result set
-	//			Note: if set to true, the number of results returned will be count + 1.
+	// 	include_date:  	pass a YYYY-MM-DD string and the count for that day will be included
 	//
 
 	vars := mux.Vars(request)
@@ -659,34 +658,35 @@ func WardHistoricHighsHandler(params url.Values, request *http.Request) ([]byte,
 	days, _ := strconv.Atoi(params["count"][0])
 	service_code := params["service_code"][0]
 
-	include_today := false
-	if val, present := params["include_today"]; present {
-		if val[0] == "true" || val[0] == "1" {
-			include_today = true
+	var day time.Time	
+	if _, present := params["include_date"]; present {
+		chi, _ := time.LoadLocation("America/Chicago")
+		d, err := time.ParseInLocation("2006-01-02", params["include_date"][0], chi)
+		
+		if err != nil {
+			// FIXME: handle bad dates
 		}
+		day = d
 	}
 
 	counts := []map[string]int{}
 
-	if include_today {
+	if !day.IsZero() {
 		var count int
-
-		loc, _ := time.LoadLocation("America/Chicago")
-		today := time.Now().In(loc)
 
 		err := api.Db.QueryRow(`SELECT total
 			FROM daily_counts
 			WHERE service_code = $1
 				AND ward = $2
 				AND requested_date = $3;
-			`, service_code, ward_id, today).Scan(&count)
+			`, service_code, ward_id, day).Scan(&count)
 
 		if err != nil {
 			// no rows
 			count = 0
 		}
 
-		counts = append(counts, map[string]int{today.Format("2006-01-02"): count})
+		counts = append(counts, map[string]int{day.Format("2006-01-02"): count})
 	}
 
 	rows, err := api.Db.Query(`SELECT total,requested_date
