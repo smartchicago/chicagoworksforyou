@@ -463,12 +463,13 @@ ul.nav .alderman {
 .mediaApp {
     .content {
         padding-top: 20px;
-        text-align: center;
+    }
 
+    .images {
         .image {
             display: inline-block;
-            width: 150px;
-            height: 150px;
+            width: 138px;
+            height: 138px;
             position: relative;
             overflow: hidden;
             vertical-align: top;
@@ -480,6 +481,7 @@ ul.nav .alderman {
 
             span {
                 position: absolute;
+                text-align: center;
                 width: 100%;
                 padding: 2px 0;
                 bottom: 0;
