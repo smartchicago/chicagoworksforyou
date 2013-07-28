@@ -106,6 +106,7 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $location, $routeP
                 },
                 plotOptions: {
                     column: {
+                        animation: false,
                         groupPadding: 0.05,
                         pointPadding: 0,
                         color: "#4897F1"
@@ -182,6 +183,7 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $location, $routeP
                 },
                 plotOptions: {
                     column: {
+                        animation: false,
                         groupPadding: 0,
                         pointPadding: 0,
                         borderWidth: 0,
