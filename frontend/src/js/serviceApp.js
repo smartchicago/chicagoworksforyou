@@ -88,6 +88,15 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
                 chart: {
                     renderTo: 'chart'
                 },
+                colors: [
+                    '#420100',
+                    '#860200',
+                    '#CC2200',
+                    '#E24800',
+                    '#FF7701',
+                    '#FF9C00',
+                    '#FFCD2E'
+                ].reverse(),
                 series: series.reverse(),
                 xAxis: {
                     categories: categories
@@ -97,7 +106,7 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
                     plotLines: [{
                         id: 'avg',
                         value: cityAverage,
-                        color: 'brown',
+                        color: 'black',
                         width: 3,
                         zIndex: 5
                     }]
