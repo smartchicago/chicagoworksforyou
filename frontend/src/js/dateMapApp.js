@@ -124,9 +124,6 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
             }
 
             $timeout(function() {
-                // var overlay = $('.map-overlay');
-                // var minHeight = overlay.position().top + overlay.outerHeight();
-                // $('.wards-map').css('minHeight', minHeight + 'px');
                 drawChicagoMap();
 
                 for (var path in wardPaths) {
@@ -145,8 +142,6 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
                 }
 
                 window.allWards.addTo(window.map);
-
-
             });
         }
     );
