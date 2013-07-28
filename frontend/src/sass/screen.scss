@@ -106,26 +106,30 @@ html, body {
 
 // MAP
 
-.wards-map {
-    margin-top: -46px; // Height of navbar
+.home-wrap {
+    position: relative;
     min-height: 100%;
 }
 
-.map-overlay-wrap {
-    height: 0;
-    position: relative;
+.wards-map {
+    margin-top: -46px; // Height of navbar
+    min-height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2000;
+}
 
-    .map-overlay {
-        position: absolute;
-        background: white;
-        top: 50px;
-        left: 0;
-        z-index: 3000;
-        margin: 0;
-        padding: 12px 20px;
-        border-radius: 6px;
-        @include box-shadow(0 0 10px fade-out(black,.7));
-    }
+.map-overlay {
+    position: relative;
+    background: white;
+    margin: 50px 0 100px 0; //100px to cover height of navbar
+    z-index: 3000;
+    padding: 12px 20px;
+    border-radius: 6px;
+    @include box-shadow(0 0 10px fade-out(black,.7));
+
 
     h2 {
         margin: 0 0 10px;
