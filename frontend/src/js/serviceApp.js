@@ -93,6 +93,7 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
                     categories: categories
                 },
                 yAxis: {
+                    opposite: true,
                     plotLines: [{
                         id: 'avg',
                         value: cityAverage,
