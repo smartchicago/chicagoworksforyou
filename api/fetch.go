@@ -88,7 +88,7 @@ func main() {
 				request.Save()
 			}
 
-			start_backfill_from = requests[len(requests)-1].Updated_datetime // FIXME: is it safe to assume the items are sorted?
+			start_backfill_from = requests[len(requests)-1].Updated_datetime
 
 		case time.Since(worker.LastRunAt) > (30 * time.Second):
 			// load requests from open311
