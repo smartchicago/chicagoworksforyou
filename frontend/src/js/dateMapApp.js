@@ -67,24 +67,6 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
         return classes.join(" ");
     };
 
-    var calculateLayerSettings = function(ward, serviceData) {
-        // serviceData is in form:
-        // { Average, Code, Count, Percent, Name, Slug, Wards}
-        // console.log("ward: %d", ward)
-        // console.log("serviceData %o", serviceData)
-
-        var maxFillOp = 0.9;
-        var col = '#0873AD';
-
-        var max = _.max(serviceData.Wards);
-        var opac = ((serviceData.Wards[ward]) / (max)) * maxFillOp;
-
-        return {
-            color: col,
-            fillOpacity: opac
-        };
-    };
-
     $http.jsonp(countsURL).
         success(function(data, status, headers, config) {
             var mapped = _.map(_.pairs(data), function(pair) {
@@ -117,6 +99,18 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
                 return obj.Slug == $scope.serviceSlug;
             });
 
+            var wardColors = [
+                '#265F7A',
+                '#2F799B',
+                '#3893BC',
+                '#52A6CC',
+                '#72B7D7',
+                '#93C8E1'
+            ].reverse();
+
+            var allCounts = _.toArray(serviceObj.Wards);
+            var maxCount = _.max(allCounts);
+
             if (window.allWards) {
                 window.allWards.clearLayers();
             } else {
@@ -124,24 +118,39 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
             }
 
             $timeout(function() {
-                drawChicagoMap();
+                if (!window.chicagoMap) {
+                    window.chicagoMap = L.map('map',{scrollWheelZoom: false}).setView([41.83, -87.81], 11);
+
+                    L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png', {
+                        attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
+                        key: '302C8A713FF3456987B21FAAE639A13B',
+                        maxZoom: 18,
+                        styleId: 82946
+                    }).addTo(window.chicagoMap);
+                    window.chicagoMap.zoomControl.setPosition('bottomright');
+                }
 
                 for (var path in wardPaths) {
                     var wardNum = parseInt(path,10) + 1;
+                    var wardCount = serviceObj.Wards[wardNum];
                     var poly = L.polygon(
                         wardPaths[path],
-                        _.extend({
+                        {
                             id: wardNum,
                             opacity: 1,
-                            weight: 2
-                        }, calculateLayerSettings(wardNum, serviceObj))
-                    ).addTo(window.map);
-                    var requestCount = serviceObj.Wards[wardNum];
-                    poly.bindPopup('<a href="/ward/' + wardNum + '/#/' + $scope.serviceSlug + '/' + $scope.date + '">Ward ' + wardNum + '</a>' + requestCount + ' request' + (requestCount > 1 ? 's' : ''));
+                            weight: 1,
+                            dashArray: '3',
+                            color: 'white',
+                            fillOpacity: 0.8,
+                            fillColor: wardColors[Math.round((wardCount * (wardColors.length - 1)) / maxCount)]
+                        }
+                    ).addTo(window.chicagoMap);
+                    var requestCount = wardCount;
+                    poly.bindPopup('<a href="/ward/' + wardNum + '/#/' + $scope.serviceSlug + '/' + $scope.date + '">Ward ' + wardNum + '</a>' + requestCount + ' request' + (requestCount == 1 ? '' : 's'));
                     window.allWards.addLayer(poly);
                 }
 
-                window.allWards.addTo(window.map);
+                window.allWards.addTo(window.chicagoMap);
             });
         }
     );
