@@ -144,7 +144,7 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
                         }
                     ).addTo(window.map);
                     var requestCount = wardCount;
-                    poly.bindPopup('<a href="/ward/' + wardNum + '/#/' + $scope.serviceSlug + '/' + $scope.date + '">Ward ' + wardNum + '</a>' + requestCount + ' request' + (requestCount > 1 ? 's' : ''));
+                    poly.bindPopup('<a href="/ward/' + wardNum + '/#/' + $scope.serviceSlug + '/' + $scope.date + '">Ward ' + wardNum + '</a>' + requestCount + ' request' + (requestCount == 1 ? '' : 's'));
                     window.allWards.addLayer(poly);
                 }
 
