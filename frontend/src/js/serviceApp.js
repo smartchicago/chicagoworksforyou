@@ -88,15 +88,25 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
                 chart: {
                     renderTo: 'chart'
                 },
+                colors: [
+                    '#420100',
+                    '#860200',
+                    '#CC2200',
+                    '#E24800',
+                    '#FF7701',
+                    '#FF9C00',
+                    '#FFCD2E'
+                ].reverse(),
                 series: series.reverse(),
                 xAxis: {
                     categories: categories
                 },
                 yAxis: {
+                    opposite: true,
                     plotLines: [{
                         id: 'avg',
                         value: cityAverage,
-                        color: 'brown',
+                        color: 'black',
                         width: 3,
                         zIndex: 5
                     }]
@@ -157,11 +167,14 @@ Highcharts.setOptions({
     },
     tooltip: {
         headerFormat: '',
-        pointFormat: '<b>{point.y:,.0f}</b> requests',
+        // pointFormat: '<b>{point.y:,.0f}</b> requests',
         shadow: false,
         style: {
             fontFamily: 'Monda, Helvetica, sans-serif',
             fontSize: '15px'
+        },
+        formatter: function() {
+            return this.series.name + ': <b>' + this.y + '</b>';
         }
     },
     legend: {

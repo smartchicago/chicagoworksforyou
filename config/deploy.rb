@@ -13,6 +13,27 @@ after 'deploy:update', 'deploy:compile:api'
 after 'deploy:update', 'deploy:compile:worker'
 after 'deploy:update', 'deploy:restart'
 
+namespace :db do
+  desc "prepare a snapshot of the CWFY database, store to S3"
+  task :snapshot do
+    timestamp = Time.now.strftime("%Y-%m-%d-%H%M")
+    backup_file = "/tmp/cwfy-#{stage}-#{timestamp}.dump"
+    run "pg_dump -O -C -c --format=custom -f #{backup_file} #{database} && \
+      s3cmd --no-encrypt --acl-public --reduced-redundancy put #{backup_file} s3://cwfy-database-backups/#{stage}.dump && \
+      rm -f #{backup_file}"
+  end
+  
+  desc "download latest snapshot and load into local database"
+  task :restore do
+    run_locally "dropdb #{database} && \
+      createdb #{database} && \
+      curl -o /tmp/cwfy-restore-#{stage}.dump http://cwfy-database-backups.s3.amazonaws.com/#{stage}.dump
+      pg_restore -d #{database} -O -c /tmp/cwfy-restore-#{stage}.dump && \
+      rm -f /tmp/cwfy-restore-#{stage}.dump"
+  end
+  
+end
+
 namespace :deploy do
   namespace :compile do
     task :api do
@@ -30,7 +51,7 @@ namespace :deploy do
     end
   end
   
-  task (:restart) { sudo "supervisorctl restart #{supervisor_group}:*", pty: true } 
-  task (:start) { sudo "sudo supervisorctl start #{supervisor_group}:*", pty: true }
-  task (:stop) { sudo "sudo supervisorctl stop #{supervisor_group}:*", pty: true }
+  task (:restart) { sudo "supervisorctl restart #{stage}:*", pty: true } 
+  task (:start) { sudo "sudo supervisorctl start #{stage}:*", pty: true }
+  task (:stop) { sudo "sudo supervisorctl stop #{stage}:*", pty: true }
 end

@@ -1,9 +1,3 @@
-// JQUERY
-
-$(function () {
-    drawChicagoMap();
-});
-
 // ANGULAR
 
 var dateMapApp = angular.module('dateMapApp', []).value('$anchorScroll', angular.noop);
@@ -27,7 +21,7 @@ dateMapApp.config(function($routeProvider) {
         });
 });
 
-dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeParams) {
+dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeParams, $timeout) {
     var date = parseDate($routeParams.date, window.yesterday, $location, '');
     var prevDay = moment(date).subtract('days', 1);
     var nextDay = moment(date).add('days', 1);
@@ -129,22 +123,26 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
                 window.allWards = L.layerGroup();
             }
 
-            for (var path in wardPaths) {
-                var wardNum = parseInt(path,10) + 1;
-                var poly = L.polygon(
-                    wardPaths[path],
-                    _.extend({
-                        id: wardNum,
-                        opacity: 1,
-                        weight: 2
-                    }, calculateLayerSettings(wardNum, serviceObj))
-                ).addTo(window.map);
-                var requestCount = serviceObj.Wards[wardNum];
-                poly.bindPopup('<a href="/ward/' + wardNum + '/#/' + $scope.serviceSlug + '/' + $scope.date + '">Ward ' + wardNum + '</a>' + requestCount + ' request' + (requestCount > 1 ? 's' : ''));
-                window.allWards.addLayer(poly);
-            }
+            $timeout(function() {
+                drawChicagoMap();
 
-            window.allWards.addTo(window.map);
+                for (var path in wardPaths) {
+                    var wardNum = parseInt(path,10) + 1;
+                    var poly = L.polygon(
+                        wardPaths[path],
+                        _.extend({
+                            id: wardNum,
+                            opacity: 1,
+                            weight: 2
+                        }, calculateLayerSettings(wardNum, serviceObj))
+                    ).addTo(window.map);
+                    var requestCount = serviceObj.Wards[wardNum];
+                    poly.bindPopup('<a href="/ward/' + wardNum + '/#/' + $scope.serviceSlug + '/' + $scope.date + '">Ward ' + wardNum + '</a>' + requestCount + ' request' + (requestCount > 1 ? 's' : ''));
+                    window.allWards.addLayer(poly);
+                }
+
+                window.allWards.addTo(window.map);
+            });
         }
     );
 });

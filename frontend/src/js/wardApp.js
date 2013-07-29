@@ -87,7 +87,7 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $location, $routeP
     $scope.data = Data;
 
     var serviceCode = serviceObj.code;
-    var requestsURL = window.apiDomain + 'wards/' + window.wardNum + '/historic_highs.json?service_code=' + serviceCode + '&day=' + Data.date + '&count=8&include_today=true&callback=JSON_CALLBACK';
+    var requestsURL = window.apiDomain + 'wards/' + window.wardNum + '/historic_highs.json?service_code=' + serviceCode + '&include_date=' + Data.date + '&count=8&callback=JSON_CALLBACK';
     var ttcURL = window.apiDomain + 'requests/time_to_close.json?count=7&service_code=' + serviceCode + '&end_date=' + Data.date + '&callback=JSON_CALLBACK';
 
     // CHARTS
@@ -97,7 +97,10 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $location, $routeP
             var todaysCount = _.values(_.first(response))[0];
             var highs = _.rest(response);
             var highCounts = _.map(highs, function(d) { return _.values(d)[0]; });
-            var categories = _.map(highs, function(d) { return moment(_.keys(d)[0]).format("MMM D YYYY"); });
+            var categories = _.map(highs, function(d) {
+                var m = moment(_.keys(d)[0]);
+                return "<a href='/#/" + m.format(dateFormat) + "/" + Data.currServiceSlug + "'>" + m.format("MMM D<br>YYYY") + "</a>";
+            });
 
             var countsChart = new Highcharts.Chart({
                 chart: {
@@ -106,6 +109,7 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $location, $routeP
                 },
                 plotOptions: {
                     column: {
+                        animation: false,
                         groupPadding: 0.05,
                         pointPadding: 0,
                         color: "#4897F1"
@@ -182,6 +186,7 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $location, $routeP
                 },
                 plotOptions: {
                     column: {
+                        animation: false,
                         groupPadding: 0,
                         pointPadding: 0,
                         borderWidth: 0,
@@ -222,6 +227,7 @@ Highcharts.setOptions({
                 fontFamily: 'Monda, sans-serif',
                 fontSize: '13px'
             },
+            useHTML: true,
             y: 22
         }
     },

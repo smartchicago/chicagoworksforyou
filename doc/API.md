@@ -420,13 +420,13 @@ Description: For a given ward and service code, return the n-many days with the 
 
 Input:
 
-   	count: 		      number of historical high days to return.
-  	service_code:   the code used by the City of Chicago to categorize service requests
-   	include_today:  if equal to "true" or "1", include the current day (in Chicago) counts as the first element of the result set
+   	count: 		        number of historical high days to return.
+  	service_code:       the code used by the City of Chicago to categorize service requests
+   	include_date:       (optional) a YYYY-MM-DD formatted string. If present, the results will include the counts for that day, too. 
 
 Output: 
 
-    $ curl "http://localhost:5000/wards/32/historic_highs.json?service_code=4fd3b167e750846744000005&count=10&include_today=true"
+    $ curl "http://localhost:5000/wards/32/historic_highs.json?service_code=4fd3b167e750846744000005&count=10&include_date=2013-07-25"
     [
       {
         "2013-07-25": 0
