@@ -145,7 +145,7 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
                             weight: 1,
                             dashArray: '3',
                             color: 'white',
-                            fillOpacity: 0.7,
+                            fillOpacity: 0.8,
                             fillColor: wardColors[Math.round((wardCount * (wardColors.length - 1)) / maxCount)]
                         }
                     ).addTo(window.chicagoMap);
