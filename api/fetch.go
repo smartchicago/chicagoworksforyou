@@ -39,7 +39,7 @@ var (
 	config        = flag.String("config", "./config/database.yml", "database configuration file")
 	sr_number     = flag.String("sr-number", "", "SR number to fetch")
 	backfill      = flag.Bool("backfill", false, "run in reverse and backfill data")
-	backfill_date = flag.String("backfill-from", "", "date to start backfilling data from. Use RFC3339 format. Default will be the time of the least recently updated SR in the database.")
+	backfill_date = flag.String("backfill-from", time.Now().Format(time.RFC3339), "date to start backfilling data from. Use RFC3339 format. Default will be the current time.")
 )
 
 func init() {
