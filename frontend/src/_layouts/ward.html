@@ -24,9 +24,9 @@ window.wardNum = {{ page.ward }};
             <div class="filter">
                 <div class="pagination">
                     <ul>
-                        <li class="prev-date"><a ng-click="prevDay()">&larr;</a></li>
-                        <li class="this-date"><a href="#" ng-bind="data.dateFormatted"></a></li>
-                        <li class="next-date"><a ng-click="nextDay()">&rarr;</a></li>
+                        <li class="prev-date"><a href="" ng-click="prevDay()">&larr;</a></li>
+                        <li class="this-date"><a href="" ng-click="currDay()" ng-bind="data.dateFormatted"></a></li>
+                        <li class="next-date"><a href="" ng-click="nextDay()">&rarr;</a></li>
                     </ul>
                 </div>
                 {% raw %}

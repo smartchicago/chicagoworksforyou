@@ -8,24 +8,28 @@ $(function () {
     // WARD MAP
 
     var map = L.map('map', {scrollWheelZoom: false}).setView(wardCenter, 13);
-    L.tileLayer('http://{s}.tile.cloudmade.com/{key}/997/256/{z}/{x}/{y}.png', {
+    L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png', {
         attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
         key: '302C8A713FF3456987B21FAAE639A13B',
-        maxZoom: 18
+        maxZoom: 18,
+        styleId: 82946
     }).addTo(map);
     map.zoomControl.setPosition('bottomleft');
-    var polygon = L.polygon(wardPaths[wardNum - 1]).addTo(map);
+    var polygon = L.polygon(wardPaths[wardNum - 1],
+        {
+            opacity: 1,
+            weight: 2,
+            dashArray: '3',
+            color: '#265F7A',
+            fillOpacity: 0.7,
+            fillColor: '#3893BC'
+        }
+    ).addTo(map);
 
     // MAKE FILTER STICK
 
     $(".filter").affix({
         offset: { top: 530 }
-    });
-
-    // EVENT CONTROL
-
-    $('.this-week a').click(function(evt) {
-        evt.preventDefault();
     });
 });
 
@@ -61,6 +65,10 @@ wardApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
 
     $scope.prevDay = function () {
         $location.path(Data.currServiceSlug + "/" + Data.prevDay);
+    };
+
+    $scope.currPage = function () {
+        return false;
     };
 
     $scope.nextDay = function () {
