@@ -8,10 +8,11 @@ $(function () {
     // WARD MAP
 
     var map = L.map('map', {scrollWheelZoom: false}).setView(wardCenter, 13);
-    L.tileLayer('http://{s}.tile.cloudmade.com/{key}/997/256/{z}/{x}/{y}.png', {
+    L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png', {
         attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
         key: '302C8A713FF3456987B21FAAE639A13B',
-        maxZoom: 18
+        maxZoom: 18,
+        styleId: 82946
     }).addTo(map);
     map.zoomControl.setPosition('bottomleft');
     var polygon = L.polygon(wardPaths[wardNum - 1]).addTo(map);
