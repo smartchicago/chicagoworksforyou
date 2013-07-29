@@ -163,7 +163,7 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $location, $routeP
 
     $http.jsonp(ttcURL).
         success(function(response, status, headers, config) {
-            var threshold = Math.round(Math.max(response.Threshold,0));
+            var threshold = Math.round(Math.max(response.Threshold,1));
             var extended = _.map(response.WardData, function(val, key) { return _.extend(val,{'Ward':parseInt(key,10)}); });
             var filtered = _.filter(extended, function(ward) { return ward.Count >= threshold; });
             var sorted = _.sortBy(filtered, 'Time');
