@@ -534,14 +534,14 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
                      LIMIT 7;`,
 		string(service_code))
 
-        for rows.Next() {
-                var daily_max int
-                if err := rows.Scan(&daily_max); err != nil {
-        		log.Print("error loading city-wide daily max for %s. err: %s", service_code, err)
-        	}
-        	
-        	city_total.DailyMax = append(city_total.DailyMax, daily_max)
-        }
+	for rows.Next() {
+		var daily_max int
+		if err := rows.Scan(&daily_max); err != nil {
+			log.Print("error loading city-wide daily max for %s. err: %s", service_code, err)
+		}
+
+		city_total.DailyMax = append(city_total.DailyMax, daily_max)
+	}
 
 	// pluck data to return, ensure we return a number, even zero, for each ward
 	type WC struct {
