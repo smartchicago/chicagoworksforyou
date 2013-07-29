@@ -100,12 +100,12 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
             });
 
             var wardColors = [
-                '#265F7A',
-                '#2F799B',
-                '#3893BC',
-                '#52A6CC',
-                '#72B7D7',
-                '#93C8E1'
+                '#182A35',
+                '#244153',
+                '#315971',
+                '#3C7090',
+                '#4888AF',
+                '#629CBF'
             ].reverse();
 
             var allCounts = _.toArray(serviceObj.Wards);

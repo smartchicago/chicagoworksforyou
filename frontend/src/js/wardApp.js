@@ -20,9 +20,9 @@ $(function () {
             opacity: 1,
             weight: 2,
             dashArray: '3',
-            color: '#265F7A',
+            color: '#182A35',
             fillOpacity: 0.7,
-            fillColor: '#3893BC'
+            fillColor: '#4888AF'
         }
     ).addTo(map);
 
