@@ -21,12 +21,6 @@ $(function () {
     $(".filter").affix({
         offset: { top: 530 }
     });
-
-    // EVENT CONTROL
-
-    $('.this-week a').click(function(evt) {
-        evt.preventDefault();
-    });
 });
 
 // ANGULAR
@@ -62,6 +56,10 @@ wardApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
     $scope.prevDay = function () {
         $location.path(Data.currServiceSlug + "/" + Data.prevDay);
     };
+
+    $scope.currPage = function () {
+        return false;
+    }
 
     $scope.nextDay = function () {
         $location.path(Data.currServiceSlug + "/" + Data.nextDay);
