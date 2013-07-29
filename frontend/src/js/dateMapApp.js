@@ -139,7 +139,7 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
                             weight: 1,
                             dashArray: '3',
                             color: 'white',
-                            fillOpacity: 0.6,
+                            fillOpacity: 0.7,
                             fillColor: wardColors[_.sortedIndex(jenks_cutoffs, wardCount)]
                         }
                     ).addTo(window.map);

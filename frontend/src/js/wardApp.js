@@ -21,7 +21,7 @@ $(function () {
             weight: 2,
             dashArray: '3',
             color: '#265F7A',
-            fillOpacity: 0.6,
+            fillOpacity: 0.7,
             fillColor: '#3893BC'
         }
     ).addTo(map);
