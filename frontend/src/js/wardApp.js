@@ -15,7 +15,16 @@ $(function () {
         styleId: 82946
     }).addTo(map);
     map.zoomControl.setPosition('bottomleft');
-    var polygon = L.polygon(wardPaths[wardNum - 1]).addTo(map);
+    var polygon = L.polygon(wardPaths[wardNum - 1],
+        {
+            opacity: 1,
+            weight: 2,
+            dashArray: '3',
+            color: '#265F7A',
+            fillOpacity: 0.6,
+            fillColor: '#3893BC'
+        }
+    ).addTo(map);
 
     // MAKE FILTER STICK
 
@@ -60,7 +69,7 @@ wardApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
 
     $scope.currPage = function () {
         return false;
-    }
+    };
 
     $scope.nextDay = function () {
         $location.path(Data.currServiceSlug + "/" + Data.nextDay);
