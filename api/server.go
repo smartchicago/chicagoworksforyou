@@ -508,7 +508,7 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 
 	type CityCount struct {
 		Average  float32
-		DailyMax int
+		DailyMax []int
 		Count    int
 	}
 
@@ -527,14 +527,21 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 
 	city_total.Average = float32(city_total.Count) / 365.0
 
-	// find the max daily total of all time
-	err = api.Db.QueryRow(`SELECT MAX(total)
+	// find the seven largest days of all time
+	rows, err = api.Db.Query(`SELECT total
                      FROM daily_counts
-                     WHERE service_code = $1;`,
-		string(service_code)).Scan(&city_total.DailyMax)
+                     WHERE service_code = $1
+                     ORDER BY total DESC
+                     LIMIT 7;`,
+		string(service_code))
 
-	if err != nil {
-		log.Print("error loading city-wide daily max for %s. err: %s", service_code, err)
+	for rows.Next() {
+		var daily_max int
+		if err := rows.Scan(&daily_max); err != nil {
+			log.Print("error loading city-wide daily max for %s. err: %s", service_code, err)
+		}
+
+		city_total.DailyMax = append(city_total.DailyMax, daily_max)
 	}
 
 	// pluck data to return, ensure we return a number, even zero, for each ward
