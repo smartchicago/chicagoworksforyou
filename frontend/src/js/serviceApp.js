@@ -89,13 +89,13 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
                     renderTo: 'chart'
                 },
                 colors: [
-                    '#420100',
-                    '#860200',
-                    '#CC2200',
-                    '#E24800',
-                    '#FF7701',
-                    '#FF9C00',
-                    '#FFCD2E'
+                    '#37c0b9',
+                    '#37acc3',
+                    '#3790c7',
+                    '#3973c9',
+                    '#3a56ca',
+                    '#403ccc',
+                    '#603fce'
                 ].reverse(),
                 series: series.reverse(),
                 xAxis: {
