@@ -99,15 +99,10 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
                 return obj.Slug == $scope.serviceSlug;
             });
 
-            if (window.allWards) {
-                window.allWards.clearLayers();
-            } else {
-                window.allWards = L.layerGroup();
-            }
+            // var jenks_cutoffs = jenks(_.toArray(serviceObj.Wards), 5);
+            // jenks_cutoffs.pop(); // last item is the max value, so dont use it
+            // jenks_cutoffs[0] = 0; // ensure the bottom value is 0
 
-            var jenks_cutoffs = jenks(_.toArray(serviceObj.Wards), 5);
-            jenks_cutoffs[0] = 0; // ensure the bottom value is 0
-            jenks_cutoffs.pop(); // last item is the max value, so dont use it
             var wardColors = [
                 '#265F7A',
                 '#2F799B',
@@ -117,16 +112,27 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
                 '#93C8E1'
             ].reverse();
 
-            $timeout(function() {
-                window.map = L.map('map',{scrollWheelZoom: false}).setView([41.83, -87.81], 11);
+            var allCounts = _.toArray(serviceObj.Wards);
+            var maxCount = _.max(allCounts);
 
-                L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png', {
-                    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
-                    key: '302C8A713FF3456987B21FAAE639A13B',
-                    maxZoom: 18,
-                    styleId: 82946
-                }).addTo(map);
-                map.zoomControl.setPosition('bottomright');
+            if (window.allWards) {
+                window.allWards.clearLayers();
+            } else {
+                window.allWards = L.layerGroup();
+            }
+
+            $timeout(function() {
+                if (!window.chicagoMap) {
+                    window.chicagoMap = L.map('map',{scrollWheelZoom: false}).setView([41.83, -87.81], 11);
+
+                    L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png', {
+                        attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
+                        key: '302C8A713FF3456987B21FAAE639A13B',
+                        maxZoom: 18,
+                        styleId: 82946
+                    }).addTo(window.chicagoMap);
+                    window.chicagoMap.zoomControl.setPosition('bottomright');
+                }
 
                 for (var path in wardPaths) {
                     var wardNum = parseInt(path,10) + 1;
@@ -140,15 +146,15 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
                             dashArray: '3',
                             color: 'white',
                             fillOpacity: 0.7,
-                            fillColor: wardColors[_.sortedIndex(jenks_cutoffs, wardCount)]
+                            fillColor: wardColors[Math.round((wardCount * (wardColors.length - 1)) / maxCount)]
                         }
-                    ).addTo(window.map);
+                    ).addTo(window.chicagoMap);
                     var requestCount = wardCount;
                     poly.bindPopup('<a href="/ward/' + wardNum + '/#/' + $scope.serviceSlug + '/' + $scope.date + '">Ward ' + wardNum + '</a>' + requestCount + ' request' + (requestCount == 1 ? '' : 's'));
                     window.allWards.addLayer(poly);
                 }
 
-                window.allWards.addTo(window.map);
+                window.allWards.addTo(window.chicagoMap);
             });
         }
     );
