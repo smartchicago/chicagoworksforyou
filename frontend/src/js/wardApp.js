@@ -97,7 +97,10 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $location, $routeP
             var todaysCount = _.values(_.first(response))[0];
             var highs = _.rest(response);
             var highCounts = _.map(highs, function(d) { return _.values(d)[0]; });
-            var categories = _.map(highs, function(d) { return moment(_.keys(d)[0]).format("MMM D<br>YYYY"); });
+            var categories = _.map(highs, function(d) {
+                var m = moment(_.keys(d)[0]);
+                return "<a href='/#/" + m.format(dateFormat) + "/" + Data.currServiceSlug + "'>" + m.format("MMM D<br>YYYY") + "</a>";
+            });
 
             var countsChart = new Highcharts.Chart({
                 chart: {
@@ -224,6 +227,7 @@ Highcharts.setOptions({
                 fontFamily: 'Monda, sans-serif',
                 fontSize: '13px'
             },
+            useHTML: true,
             y: 22
         }
     },
