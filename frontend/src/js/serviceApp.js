@@ -167,11 +167,14 @@ Highcharts.setOptions({
     },
     tooltip: {
         headerFormat: '',
-        pointFormat: '<b>{point.y:,.0f}</b> requests',
+        // pointFormat: '<b>{point.y:,.0f}</b> requests',
         shadow: false,
         style: {
             fontFamily: 'Monda, Helvetica, sans-serif',
             fontSize: '15px'
+        },
+        formatter: function() {
+            return this.series.name + ': <b>' + this.y + '</b>';
         }
     },
     legend: {
