@@ -365,7 +365,6 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 	// for a given request service type and date, return the count
 	// of requests for that date, grouped by ward, and the city total
 	// The output is a map where keys are ward identifiers, and the value is the count.
-	// The city total for the time interval is assigned to ward #0
 	//
 	// Sample request and output:
 	// $ curl "http://localhost:5000/requests/4fd3b167e750846744000005/counts.json?end_date=2013-06-10&count=1"
@@ -381,7 +380,8 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 	//   ],
 	//   "CityData": {
 	//     "Average": 8.084931,
-	//     "Count": 2951
+	//     "Count": 2951,
+	//     "DailyMax": 1234
 	//   },
 	//   "WardData": {
 	//     "1": {
@@ -506,8 +506,9 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 	}
 
 	type CityCount struct {
-		Average float32
-		Count   int
+		Average  float32
+		DailyMax int
+		Count    int
 	}
 
 	// find total opened for the entire city for date range
@@ -524,6 +525,16 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 	}
 
 	city_total.Average = float32(city_total.Count) / 365.0
+
+	// find the max daily total of all time
+	err = api.Db.QueryRow(`SELECT MAX(total)
+                     FROM daily_counts
+                     WHERE service_code = $1;`,
+		string(service_code)).Scan(&city_total.DailyMax)
+
+	if err != nil {
+		log.Print("error loading city-wide daily max for %s. err: %s", service_code, err)
+	}
 
 	// pluck data to return, ensure we return a number, even zero, for each ward
 	type WC struct {
@@ -658,11 +669,11 @@ func WardHistoricHighsHandler(params url.Values, request *http.Request) ([]byte,
 	days, _ := strconv.Atoi(params["count"][0])
 	service_code := params["service_code"][0]
 
-	var day time.Time	
+	var day time.Time
 	if _, present := params["include_date"]; present {
 		chi, _ := time.LoadLocation("America/Chicago")
 		d, err := time.ParseInLocation("2006-01-02", params["include_date"][0], chi)
-		
+
 		if err != nil {
 			// FIXME: handle bad dates
 		}
