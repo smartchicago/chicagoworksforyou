@@ -67,24 +67,6 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
         return classes.join(" ");
     };
 
-    var calculateLayerSettings = function(ward, serviceData) {
-        // serviceData is in form:
-        // { Average, Code, Count, Percent, Name, Slug, Wards}
-        // console.log("ward: %d", ward)
-        // console.log("serviceData %o", serviceData)
-
-        var maxFillOp = 0.9;
-        var col = '#0873AD';
-
-        var max = _.max(serviceData.Wards);
-        var opac = (serviceData.Wards[ward] / max) * maxFillOp;
-
-        return {
-            color: col,
-            fillOpacity: opac
-        };
-    };
-
     $http.jsonp(countsURL).
         success(function(data, status, headers, config) {
             var mapped = _.map(_.pairs(data), function(pair) {
@@ -123,6 +105,18 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
                 window.allWards = L.layerGroup();
             }
 
+            var jenks_cutoffs = jenks(_.toArray(serviceObj.Wards), 5);
+            jenks_cutoffs[0] = 0; // ensure the bottom value is 0
+            jenks_cutoffs.pop(); // last item is the max value, so dont use it
+            var wardColors = [
+                '#265F7A',
+                '#2F799B',
+                '#3893BC',
+                '#52A6CC',
+                '#72B7D7',
+                '#93C8E1'
+            ].reverse();
+
             $timeout(function() {
                 window.map = L.map('map',{scrollWheelZoom: false}).setView([41.83, -87.81], 11);
 
@@ -136,15 +130,20 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
 
                 for (var path in wardPaths) {
                     var wardNum = parseInt(path,10) + 1;
+                    var wardCount = serviceObj.Wards[wardNum];
                     var poly = L.polygon(
                         wardPaths[path],
-                        _.extend({
+                        {
                             id: wardNum,
                             opacity: 1,
-                            weight: 2
-                        }, calculateLayerSettings(wardNum, serviceObj))
+                            weight: 1,
+                            dashArray: '3',
+                            color: 'white',
+                            fillOpacity: 0.6,
+                            fillColor: wardColors[_.sortedIndex(jenks_cutoffs, wardCount)]
+                        }
                     ).addTo(window.map);
-                    var requestCount = serviceObj.Wards[wardNum];
+                    var requestCount = wardCount;
                     poly.bindPopup('<a href="/ward/' + wardNum + '/#/' + $scope.serviceSlug + '/' + $scope.date + '">Ward ' + wardNum + '</a>' + requestCount + ' request' + (requestCount > 1 ? 's' : ''));
                     window.allWards.addLayer(poly);
                 }
