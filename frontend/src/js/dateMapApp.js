@@ -99,10 +99,6 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
                 return obj.Slug == $scope.serviceSlug;
             });
 
-            // var jenks_cutoffs = jenks(_.toArray(serviceObj.Wards), 5);
-            // jenks_cutoffs.pop(); // last item is the max value, so dont use it
-            // jenks_cutoffs[0] = 0; // ensure the bottom value is 0
-
             var wardColors = [
                 '#265F7A',
                 '#2F799B',
