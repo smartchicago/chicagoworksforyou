@@ -165,7 +165,7 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $location, $routeP
         success(function(response, status, headers, config) {
             var threshold = Math.round(Math.max(response.Threshold,1));
             var extended = _.map(response.WardData, function(val, key) { return _.extend(val,{'Ward':parseInt(key,10)}); });
-            var filtered = _.filter(extended, function(ward) { return ward.Count >= threshold; });
+            var filtered = _.filter(extended, function(ward) { return ward.Count >= threshold && ward.Ward > 0; });
             var sorted = _.sortBy(filtered, 'Time');
             var wards = _.pluck(sorted, 'Ward');
             var times = _.pluck(sorted, 'Time');
