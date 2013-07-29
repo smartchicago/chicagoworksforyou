@@ -178,7 +178,7 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $location, $routeP
 
             if (Data.inTTCchart) {
                 Data.wardRank = window.getOrdinal(position + 1);
-                Data.wardTime = Math.round(sorted[position].Time * 10) / 10;
+                Data.wardTime = Math.round(sorted[position].Time * 100) / 100;
             }
 
             var ttcChart = new Highcharts.Chart({
