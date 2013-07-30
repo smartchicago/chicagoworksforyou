@@ -88,8 +88,8 @@ window.parseDate = function(passedDate, defaultDate, locationModule, locationPre
             document.location = "./#/" + locationPrefix;
         } else if (date.isBefore(window.earliestDate)) {
             locationModule.path(locationPrefix + window.earliestDate.format(dateFormat));
-        } else if (date.isAfter(defaultDate)) {
-            locationModule.path(locationPrefix + defaultDate.format(dateFormat));
+        } else if (date.isAfter(window.yesterday)) {
+            locationModule.path(locationPrefix + window.yesterday.format(dateFormat));
         }
     }
     return date;
