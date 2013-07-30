@@ -22,10 +22,11 @@ window.currServiceType = '{{ page.service_code }}';
                     </ul>
                 </div>
             </div>
-            {{ content }}
-            <hr>
-            <p>
-                Black vertical line = city average for this week
+            <div class="description">
+                {{ content }}
+            </div>
+            <p class="city-average">
+                Average number of requests opened in a ward this week: <span ng-bind="data.cityAverage"></span>
             </p>
         </div>
         <div class="span8" ng-view>
