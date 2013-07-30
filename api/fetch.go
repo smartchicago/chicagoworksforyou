@@ -283,9 +283,9 @@ func fetchRequests() (requests []Open311Request) {
 	open311_api_endpoint := OPEN311_API_URI + "&updated_after=" + last_updated_at.Format(time.RFC3339)
 
 	log.Printf("[fetchRequests] fetching from %s", open311_api_endpoint)
-	
+
 	http.DefaultTransport.(*http.Transport).ResponseHeaderTimeout = time.Second * 60
-	
+
 	resp, err := http.Get(open311_api_endpoint)
 
 	if err != nil {
@@ -341,7 +341,7 @@ func backFillRequests(start_from string) (requests []Open311Request) {
 		log.Fatalln("[backfill] error fetching from Open311 endpoint", err)
 	}
 	defer resp.Body.Close()
-	
+
 	// load response body
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
