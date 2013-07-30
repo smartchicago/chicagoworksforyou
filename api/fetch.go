@@ -285,11 +285,12 @@ func fetchRequests() (requests []Open311Request) {
 
 	log.Printf("[fetchRequests] fetching from %s", open311_api_endpoint)
 	resp, err := http.Get(open311_api_endpoint)
-	defer resp.Body.Close()
 
 	if err != nil {
 		log.Fatalln("[fetchRequests] error fetching from Open311 endpoint", err)
 	}
+
+	defer resp.Body.Close()
 
 	// load response body
 	body, err := ioutil.ReadAll(resp.Body)
