@@ -163,22 +163,22 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $location, $routeP
 
     $http.jsonp(ttcURL).
         success(function(response, status, headers, config) {
-            var MIN_TTC_COUNT = 5;
-            var values = _.rest(_.values(response));
-            var filtered = _.filter(values, function(obj) { return obj.Total >= MIN_TTC_COUNT; });
-            var sorted = _.sortBy(filtered, function (obj) { return obj.Time; });
+            var threshold = Math.round(Math.max(response.Threshold,1));
+            var extended = _.map(response.WardData, function(val, key) { return _.extend(val,{'Ward':parseInt(key,10)}); });
+            var filtered = _.filter(extended, function(ward) { return ward.Count >= threshold && ward.Ward > 0; });
+            var sorted = _.sortBy(filtered, 'Time');
             var wards = _.pluck(sorted, 'Ward');
             var times = _.pluck(sorted, 'Time');
-            var colors = _.map(wards, function(w) { return w == Data.wardNum ? 'black' : '#BED0DE'; });
             var position = _.indexOf(wards, Data.wardNum);
+            var colors = _.map(wards, function(ward) { return ward == Data.wardNum ? 'black' : '#BED0DE'; });
 
             Data.inTTCchart = position >= 0;
             Data.totalTTCWards = wards.length;
-            Data.minTTCcount = MIN_TTC_COUNT;
+            Data.minTTCcount = threshold;
 
             if (Data.inTTCchart) {
                 Data.wardRank = window.getOrdinal(position + 1);
-                Data.wardTime = Math.round(sorted[position].Time * 10) / 10;
+                Data.wardTime = Math.round(sorted[position].Time * 100) / 100;
             }
 
             var ttcChart = new Highcharts.Chart({
