@@ -130,32 +130,28 @@ Input:
 
 Output:
 
-The city-wide average time to close and count of requests opened is grouped under ward #0. Time to close is measured in days.
+The city-wide average time to close and count of requests opened is in the `CityData` object. Time to close is measured in days. The `Threshold` value is one standard deviation below the average number of service requests opened in a ward for the given time period. This value is useful for filtering low-volume wards from the result set.
 
     $ curl "http://localhost:5000/requests/time_to_close.json?end_date=2013-06-19&count=7&service_code=4fd3b167e750846744000005"
     {
-      "0": {
-        "Time": 2.8068197,
-        "Total": 2590,
-        "Ward": 0
+      "WardData": {
+         "1": {
+             "Time": 6.586492353553241,
+              "Count": 643
+            },
+         ( .. truncated ...)
+            "9": {
+              "Time": 2.469373385011574,
+              "Count": 43
+            }
+          },
+      "CityData": {
+        "Time": 3.8197868124884256,
+        "Count": 11123
       },
-      "1": {
-        "Time": 2.332114,
-        "Total": 102,
-        "Ward": 1
-      },
-      "10": {
-        "Time": 4.0669537,
-        "Total": 50,
-        "Ward": 10
-      },
-      "11": {
-        "Time": 0.5686893,
-        "Total": 151,
-        "Ward": 11
-      },
-
-      (result truncated)
+      "Threshold": 27.537741650677532
+    }
+	
 
 Ward Requests
 -------------
