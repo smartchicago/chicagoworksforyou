@@ -22,7 +22,7 @@ dateMapApp.config(function($routeProvider) {
 });
 
 dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeParams, $timeout) {
-    var date = parseDate($routeParams.date, window.yesterday, $location, '');
+    var date = parseDate($routeParams.date, window.yesterday, $location);
     var prevDay = moment(date).subtract('days', 1);
     var nextDay = moment(date).add('days', 1);
     var countsURL = window.apiDomain + 'requests/counts_by_day.json?day=' + date.format(dateFormat) + '&callback=JSON_CALLBACK';
@@ -146,7 +146,7 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
                         }
                     ).addTo(window.chicagoMap);
                     var requestCount = wardCount;
-                    poly.bindPopup('<a href="/ward/' + wardNum + '/#/' + $scope.serviceSlug + '/' + $scope.date + '">Ward ' + wardNum + '</a>' + requestCount + ' request' + (requestCount == 1 ? '' : 's'));
+                    poly.bindPopup('<a href="/ward/' + wardNum + '/#/' + $scope.date + '/' + $scope.serviceSlug + '">Ward ' + wardNum + '</a>' + requestCount + ' request' + (requestCount == 1 ? '' : 's'));
                     window.allWards.addLayer(poly);
                 }
 

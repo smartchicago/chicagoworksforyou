@@ -39,21 +39,37 @@ var wardApp = angular.module('wardApp', []).value('$anchorScroll', angular.noop)
 
 wardApp.config(function($routeProvider) {
     $routeProvider.
-        when('/:serviceSlug/:date', {
-            controller: "wardCtrl",
-            templateUrl: "/views/ward_charts.html"
+        when('/:date', {
+            controller: "wardOverviewCtrl",
+            templateUrl: "/views/ward_overview.html"
         }).
-        when('/:serviceSlug', {
+        when('/', {
+            controller: "wardOverviewCtrl",
+            templateUrl: "/views/ward_overview.html"
+        }).
+        when('/:date/:serviceSlug', {
             controller: "wardCtrl",
             templateUrl: "/views/ward_charts.html"
         }).
         otherwise({
-            redirectTo: '/graffiti_removal'
+            redirectTo: '/'
         });
 });
 
-wardApp.factory('Data', function () {
-    return {};
+wardApp.factory('Data', function ($location, $route, $routeParams) {
+    var data = {
+        wardNum: window.wardNum
+    };
+
+    data.setDate = function(date) {
+        data.date = date.format(dateFormat);
+        data.dateObj = date;
+        data.dateFormatted = date.format('MMM D, YYYY');
+        data.prevDay = moment(date).subtract('day',1).format(dateFormat);
+        data.nextDay = moment(date).add('day',1).format(dateFormat);
+    };
+
+    return data;
 });
 
 wardApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
@@ -64,7 +80,8 @@ wardApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
     $scope.data = Data;
 
     $scope.prevDay = function () {
-        $location.path(Data.currServiceSlug + "/" + Data.prevDay);
+        var urlSuffix = Data.serviceObj ? Data.serviceObj.slug : '';
+        $location.path(Data.prevDay + "/" + urlSuffix);
     };
 
     $scope.currPage = function () {
@@ -72,31 +89,30 @@ wardApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
     };
 
     $scope.nextDay = function () {
-        $location.path(Data.currServiceSlug + "/" + Data.nextDay);
+        var urlSuffix = Data.serviceObj ? Data.serviceObj.slug : '';
+        $location.path(Data.nextDay + "/" + urlSuffix);
     };
 });
 
-wardApp.controller("wardCtrl", function ($scope, Data, $http, $location, $routeParams) {
-    var serviceObj = window.lookupSlug($routeParams.serviceSlug);
-    if (!serviceObj) {
-        document.location = "#";
-    }
-    var date = parseDate($routeParams.date, window.yesterday, $location, $routeParams.serviceSlug + '/');
+wardApp.controller("wardOverviewCtrl", function ($scope, Data, $http, $location, $routeParams) {
+    Data.setDate(parseDate($routeParams.date, window.yesterday, $location));
 
-    Data.wardNum = window.wardNum;
-    Data.currServiceSlug = $routeParams.serviceSlug;
-    Data.currServiceName = serviceObj.name;
-    Data.date = date.format(dateFormat);
-    Data.dateFormatted = date.format('MMM D, YYYY');
-    Data.prevDay = moment(date).subtract('day',1).format(dateFormat);
-    Data.nextDay = moment(date).add('day',1).format(dateFormat);
-    Data.thisWeek = moment.duration(7,"days").beforeMoment(date,true).format({implicitYear: false});
+    $scope.data = Data;
+});
+
+wardApp.controller("wardCtrl", function ($scope, Data, $http, $location, $routeParams) {
+    Data.setDate(parseDate($routeParams.date, window.yesterday, $location));
+
+    var serviceObj = {};
+    if ($routeParams.serviceSlug) {
+        serviceObj = window.lookupSlug($routeParams.serviceSlug);
+    }
+    Data.serviceObj = serviceObj;
 
     $scope.data = Data;
 
-    var serviceCode = serviceObj.code;
-    var requestsURL = window.apiDomain + 'wards/' + window.wardNum + '/historic_highs.json?service_code=' + serviceCode + '&include_date=' + Data.date + '&count=8&callback=JSON_CALLBACK';
-    var ttcURL = window.apiDomain + 'requests/time_to_close.json?count=7&service_code=' + serviceCode + '&end_date=' + Data.date + '&callback=JSON_CALLBACK';
+    var requestsURL = window.apiDomain + 'wards/' + window.wardNum + '/historic_highs.json?service_code=' + serviceObj.code + '&include_date=' + Data.date + '&count=8&callback=JSON_CALLBACK';
+    var ttcURL = window.apiDomain + 'requests/time_to_close.json?count=7&service_code=' + serviceObj.code + '&end_date=' + Data.date + '&callback=JSON_CALLBACK';
 
     // CHARTS
 
@@ -107,7 +123,7 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $location, $routeP
             var highCounts = _.map(highs, function(d) { return _.values(d)[0]; });
             var categories = _.map(highs, function(d) {
                 var m = moment(_.keys(d)[0]);
-                return "<a href='/#/" + m.format(dateFormat) + "/" + Data.currServiceSlug + "'>" + m.format("MMM D<br>YYYY") + "</a>";
+                return "<a href='/#/" + m.format(dateFormat) + "/" + serviceObj.slug + "'>" + m.format("MMM D<br>YYYY") + "</a>";
             });
 
             var countsChart = new Highcharts.Chart({
@@ -145,7 +161,7 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $location, $routeP
                         label: {
                             align: 'right',
                             color: 'black',
-                            text: date.format("MMM D: ") + todaysCount + " request" + (todaysCount == 1 ? "" : "s"),
+                            text: Data.dateObj.format("MMM D: ") + todaysCount + " request" + (todaysCount == 1 ? "" : "s"),
                             y: -8,
                             x: 0,
                             style: {
