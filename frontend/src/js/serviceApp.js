@@ -60,6 +60,7 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
 
     $http.jsonp(url).
         success(function(response, status, headers, config) {
+            Data.cityCount = response.CityData.Count;
             Data.cityAverage = response.CityData.Count / 50;
             var wardData = response.WardData;
             var categories = _.map(_.keys(wardData), function (wardNum) { return '<a href="/ward/' + wardNum + '/#/' + stSlug + '/' + endDate.format(dateFormat) + '">Ward ' + wardNum + '</a>'; });
