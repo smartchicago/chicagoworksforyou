@@ -284,7 +284,7 @@ func fetchRequests() (requests []Open311Request) {
 
 	log.Printf("[fetchRequests] fetching from %s", open311_api_endpoint)
 	
-	http.DefaultTransport.(*http.Transport).ResponseHeaderTimeout = time.Second * 15
+	http.DefaultTransport.(*http.Transport).ResponseHeaderTimeout = time.Second * 60
 	
 	resp, err := http.Get(open311_api_endpoint)
 
@@ -334,7 +334,7 @@ func backFillRequests(start_from string) (requests []Open311Request) {
 	open311_api_endpoint := OPEN311_API_URI + "&updated_before=" + formatted_date_string_with_tz
 
 	log.Printf("[backfill] fetching from %s", open311_api_endpoint)
-	http.DefaultTransport.(*http.Transport).ResponseHeaderTimeout = time.Second * 15
+	http.DefaultTransport.(*http.Transport).ResponseHeaderTimeout = time.Second * 60
 
 	resp, err := http.Get(open311_api_endpoint)
 	if err != nil {
