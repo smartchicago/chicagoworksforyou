@@ -111,7 +111,7 @@ func (w *Worker) SetupStmts() {
 		VALUES ($1::varchar, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18);`)
 
 	if err != nil {
-		fmt.Print("error preparing insert statement ", err)
+		log.Fatal("error preparing insert statement ", err)
 	}
 	w.InsertStmt = insert
 
@@ -122,7 +122,7 @@ func (w *Worker) SetupStmts() {
 		parent_service_request_id = $16, updated_at = NOW(), closed_datetime = $17, notes = $18 WHERE service_request_id = $1;`)
 
 	if err != nil {
-		fmt.Print("error preparing update statement ", err)
+		log.Fatal("error preparing update statement ", err)
 	}
 	w.UpdateStmt = update
 }
@@ -150,7 +150,7 @@ func (req Open311Request) Save() (persisted bool) {
 	case err == sql.ErrNoRows:
 		// log.Printf("did not find existing record %s", req.Service_request_id)
 	case err != nil:
-		log.Print("error searching for existing SR", err)
+		log.Fatal("error searching for existing SR", err)
 	default:
 		persisted = true
 		// log.Printf("found existing sr %s", req.Service_request_id)
@@ -247,11 +247,10 @@ func fetchSingleRequest(sr_number string) (request Open311Request) {
 
 	log.Printf("fetching from %s", open311_api_endpoint)
 	resp, err := http.Get(open311_api_endpoint)
-	defer resp.Body.Close()
-
 	if err != nil {
-		log.Fatalln("error fetching from Open311 endpoint", err)
+		log.Fatal("error fetching from Open311 endpoint", err)
 	}
+	defer resp.Body.Close()
 
 	// load response body
 	body, err := ioutil.ReadAll(resp.Body)
@@ -284,6 +283,9 @@ func fetchRequests() (requests []Open311Request) {
 	open311_api_endpoint := OPEN311_API_URI + "&updated_after=" + last_updated_at.Format(time.RFC3339)
 
 	log.Printf("[fetchRequests] fetching from %s", open311_api_endpoint)
+	
+	http.DefaultTransport.(*http.Transport).ResponseHeaderTimeout = time.Second * 15
+	
 	resp, err := http.Get(open311_api_endpoint)
 
 	if err != nil {
@@ -332,13 +334,14 @@ func backFillRequests(start_from string) (requests []Open311Request) {
 	open311_api_endpoint := OPEN311_API_URI + "&updated_before=" + formatted_date_string_with_tz
 
 	log.Printf("[backfill] fetching from %s", open311_api_endpoint)
-	resp, err := http.Get(open311_api_endpoint)
-	defer resp.Body.Close()
+	http.DefaultTransport.(*http.Transport).ResponseHeaderTimeout = time.Second * 15
 
+	resp, err := http.Get(open311_api_endpoint)
 	if err != nil {
 		log.Fatalln("[backfill] error fetching from Open311 endpoint", err)
 	}
-
+	defer resp.Body.Close()
+	
 	// load response body
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
