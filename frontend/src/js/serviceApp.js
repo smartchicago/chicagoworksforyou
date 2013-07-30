@@ -42,7 +42,7 @@ serviceApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
 });
 
 serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $routeParams) {
-    var date = parseDate($routeParams.date, window.yesterday, $location, '');
+    var date = parseDate($routeParams.date, window.prevSaturday, $location, '');
     var startDate = moment(date).day(0);
     var endDate = moment(date).day(6).max(window.yesterday);
     var duration = endDate.diff(startDate, 'days');
