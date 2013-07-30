@@ -194,10 +194,38 @@ ALTER TABLE ONLY service_requests
 
 
 --
+-- Name: dc_request_date; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX dc_request_date ON daily_counts USING btree (requested_date);
+
+
+--
+-- Name: dc_service_code; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX dc_service_code ON daily_counts USING btree (service_code);
+
+
+--
+-- Name: dc_ward; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX dc_ward ON daily_counts USING btree (ward);
+
+
+--
 -- Name: sr_closed_code; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
 CREATE INDEX sr_closed_code ON service_requests USING btree (closed_datetime, service_code);
+
+
+--
+-- Name: sr_media_url; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX sr_media_url ON service_requests USING btree (media_url);
 
 
 --
@@ -252,6 +280,7 @@ INSERT INTO schema_info VALUES ('201306271128');
 INSERT INTO schema_info VALUES ('201306271346');
 INSERT INTO schema_info VALUES ('201307081428');
 INSERT INTO schema_info VALUES ('201307091601');
+INSERT INTO schema_info VALUES ('201307161527');
 
 
 --
