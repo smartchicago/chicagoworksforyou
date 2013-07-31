@@ -130,7 +130,7 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
             }
 
             var wardClick = function(e) {
-                document.location = 'ward/' + e.target.options.id + '/#/' + $scope.date + '/' + $scope.serviceSlug;
+                document.location = 'ward/' + e.target.options.id + '/#' + $location.path();
             };
 
             $timeout(function() {
