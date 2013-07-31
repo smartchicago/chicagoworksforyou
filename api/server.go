@@ -25,10 +25,11 @@ type Api struct {
 }
 
 var (
-	api         Api
-	environment = flag.String("environment", "", "Environment to run in, e.g. staging, production")
-	config      = flag.String("config", "./config/database.yml", "database configuration file")
-	port        = flag.Int("port", 5000, "port that server will listen to (default: 5000)")
+	api          Api
+	environment  = flag.String("environment", "", "Environment to run in, e.g. staging, production")
+	config       = flag.String("config", "./config/database.yml", "database configuration file")
+	port         = flag.Int("port", 5000, "port that server will listen to (default: 5000)")
+	ServiceCodes = []string{"4fd3bd72e750846c530000cd", "4ffa9cad6018277d4000007b", "4ffa4c69601827691b000018", "4fd3b167e750846744000005", "4fd3b656e750846c53000004", "4ffa971e6018277d4000000b", "4fd3bd3de750846c530000b9", "4fd6e4ece750840569000019", "4fd3b9bce750846c5300004a", "4ffa9db16018277d400000a2", "4ffa995a6018277d4000003c", "4fd3bbf8e750846c53000069", "4fd3b750e750846c5300001d", "4ffa9f2d6018277d400000c8"}
 )
 
 func init() {
@@ -298,9 +299,7 @@ func DayCountsHandler(params url.Values, request *http.Request) ([]byte, *ApiErr
 
 	// for each service code, fetch wards for day sorted by # SR opened
 
-	service_codes := []string{"4fd3bd72e750846c530000cd", "4ffa9cad6018277d4000007b", "4ffa4c69601827691b000018", "4fd3b167e750846744000005", "4fd3b656e750846c53000004", "4ffa971e6018277d4000000b", "4fd3bd3de750846c530000b9", "4fd6e4ece750840569000019", "4fd3b9bce750846c5300004a", "4ffa9db16018277d400000a2", "4ffa995a6018277d4000003c", "4fd3bbf8e750846c53000069", "4fd3b750e750846c5300001d", "4ffa9f2d6018277d400000c8"} //FIXME: don't hard code this
-
-	for _, sc := range service_codes {
+	for _, sc := range ServiceCodes {
 		wards := make(map[int]int) // map the ward to its total number of reqs for the service code for the day
 
 		rows, err := api.Db.Query(`SELECT total, ward 
@@ -685,7 +684,7 @@ func WardHistoricHighsHandler(params url.Values, request *http.Request) ([]byte,
 	//
 	// Parameters:
 	// 	count: 		number of historicl high days to return.
-	//	service_code:   the code used by the City of Chicago to categorize service requests
+	//	service_code:   (optional) the code used by the City of Chicago to categorize service requests. If omitted, all services codes will be returned
 	//	callback:       function to wrap response in (for JSONP functionality)
 	// 	include_date:  	pass a YYYY-MM-DD string and the count for that day will be included
 	//
@@ -694,7 +693,11 @@ func WardHistoricHighsHandler(params url.Values, request *http.Request) ([]byte,
 	ward_id := vars["id"]
 
 	days, _ := strconv.Atoi(params["count"][0])
-	service_code := params["service_code"][0]
+
+	var service_code string
+	if _, present := params["service_code"]; present {
+		service_code = params["service_code"][0]
+	}
 
 	var day time.Time
 	if _, present := params["include_date"]; present {
@@ -707,49 +710,101 @@ func WardHistoricHighsHandler(params url.Values, request *http.Request) ([]byte,
 		day = d
 	}
 
-	counts := []map[string]int{}
+	// if service_code provided, find highs for that code
+	// otherwise, find highs for each service code
 
-	if !day.IsZero() {
-		var count int
+	if service_code != "" {
+		counts := []map[string]int{}
 
-		err := api.Db.QueryRow(`SELECT total
-			FROM daily_counts
-			WHERE service_code = $1
-				AND ward = $2
-				AND requested_date = $3;
-			`, service_code, ward_id, day).Scan(&count)
+		rows, err := api.Db.Query(`SELECT total,requested_date
+        		FROM daily_counts
+        		WHERE service_code = $1
+        			AND ward = $2
+        		ORDER BY total DESC, requested_date DESC
+        		LIMIT $3;`, service_code, ward_id, days)
 
 		if err != nil {
-			// no rows
-			count = 0
+			log.Print("error fetching historic highs ", err)
 		}
 
-		counts = append(counts, map[string]int{day.Format("2006-01-02"): count})
+		for rows.Next() {
+			var date time.Time
+			var count int
+
+			if err := rows.Scan(&count, &date); err != nil {
+				// handle
+			}
+
+			counts = append(counts, map[string]int{date.Format("2006-01-02"): count})
+		}
+
+		if !day.IsZero() {
+			counts = append(counts, map[string]int{day.Format("2006-01-02"): findDayTotal(service_code, ward_id, day)})
+		}
+                
+                return dumpJson(counts), nil
+        	
+	} else {
+	        type DayCount struct {
+	                Date string
+	                Count int
+	        }
+	        
+	        type ResponseData struct {
+	                Highs   map[string][]DayCount
+	                Current map[string]DayCount
+	        }	        
+	        
+	        var resp ResponseData
+	        resp.Highs = make(map[string][]DayCount)
+	        resp.Current = make(map[string]DayCount)
+	        
+		for _, code := range ServiceCodes {
+		        
+			rows, err := api.Db.Query(`SELECT total,requested_date
+                		FROM daily_counts
+                		WHERE service_code = $1
+                			AND ward = $2
+                		ORDER BY total DESC, requested_date DESC
+                		LIMIT $3;`, code, ward_id, days)
+
+			if err != nil {
+				log.Print("error fetching historic highs ", err)
+			}
+
+			for rows.Next() {
+			        var d time.Time
+                                var dc DayCount
+
+				if err := rows.Scan(&dc.Count, &d); err != nil {
+					log.Print("error loading high value ", err)
+				}
+                                resp.Highs[code] = append(resp.Highs[code], DayCount{Date:d.Format("2006-01-02"), Count:dc.Count})
+			}
+
+                        if !day.IsZero() {
+                             resp.Current[code] = DayCount{Date:day.Format("2006-01-02"), Count:findDayTotal(code, ward_id, day)}
+                        }
+		}
+                return dumpJson(resp), nil        	
 	}
 
-	rows, err := api.Db.Query(`SELECT total,requested_date
+}
+
+func findDayTotal(service_code string, ward_id string, day time.Time) (count int) {
+	err := api.Db.QueryRow(`SELECT total
 		FROM daily_counts
 		WHERE service_code = $1
 			AND ward = $2
-		ORDER BY total DESC, requested_date DESC
-		LIMIT $3;`, service_code, ward_id, days)
+			AND requested_date = $3;
+		`, service_code, ward_id, day).Scan(&count)
 
 	if err != nil {
-		log.Print("error fetching historic highs ", err)
+		// no rows
+		count = 0
 	}
-
-	for rows.Next() {
-		var date time.Time
-		var count int
-
-		if err := rows.Scan(&count, &date); err != nil {
-			// handle
-		}
-
-		counts = append(counts, map[string]int{date.Format("2006-01-02"): count})
-	}
-
-	return dumpJson(counts), nil
+	
+	return
 }
 
 func WardCountsHandler(params url.Values, request *http.Request) ([]byte, *ApiError) {
