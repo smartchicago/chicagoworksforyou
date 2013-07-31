@@ -113,7 +113,8 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $location, $routeP
 
     $scope.data = Data;
 
-    var highsURL = window.apiDomain + 'wards/' + window.wardNum + '/historic_highs.json?service_code=' + serviceObj.code + '&include_date=' + Data.date + '&count=8&callback=JSON_CALLBACK';
+    var DAY_COUNT = 6;
+    var highsURL = window.apiDomain + 'wards/' + window.wardNum + '/historic_highs.json?service_code=' + serviceObj.code + '&include_date=' + Data.date + '&count=' + DAY_COUNT + '&callback=JSON_CALLBACK';
     var ttcURL = window.apiDomain + 'requests/time_to_close.json?count=7&service_code=' + serviceObj.code + '&end_date=' + Data.date + '&callback=JSON_CALLBACK';
 
     // CHARTS
