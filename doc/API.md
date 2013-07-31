@@ -421,7 +421,7 @@ Description: For a given ward and service code, return the n-many days with the 
 Input:
 
    	count: 		        number of historical high days to return.
-  	service_code:       the code used by the City of Chicago to categorize service requests
+  	service_code:       (optional) the code used by the City of Chicago to categorize service requests. If omitted, all service types will be returned
    	include_date:       (optional) a YYYY-MM-DD formatted string. If present, the results will include the counts for that day, too. 
 
 Output: 
@@ -462,3 +462,38 @@ Output:
         "2008-02-18": 60
       }
     ]
+    
+    # If service_code is omitted, all service_codes are returned:
+    
+    $ curl "http://localhost:5000/wards/2/historic_highs.json?&count=3&include_date=2013-05-23"
+    {
+      "Highs": {
+        "4fd3b167e750846744000005": [
+          {
+            "Date": "2008-10-14",
+            "Count": 55
+          },
+
+        ],
+        "4fd3b656e750846c53000004": [
+          {
+            "Date": "2008-01-07",
+            "Count": 79
+          },
+        ],
+        ( ... truncated ... )
+        ]
+      },
+      "Current": {
+        "4fd3b167e750846744000005": {
+          "Date": "2013-05-23",
+          "Count": 7
+        },
+        "4fd3b656e750846c53000004": {
+          "Date": "2013-05-23",
+          "Count": 2
+        },
+        ( ... truncated ... )
+
+      }
+    }

@@ -679,6 +679,11 @@ func TimeToCloseHandler(params url.Values, request *http.Request) ([]byte, *ApiE
 	return dumpJson(resp_data{WardData: times, CityData: city_average, Threshold: threshold}), nil
 }
 
+type HighDay struct {
+	Date  string
+	Count int
+}
+
 func WardHistoricHighsHandler(params url.Values, request *http.Request) ([]byte, *ApiError) {
 	// given a ward and service type, return the set of days with the most SR opened
 	//
@@ -714,81 +719,61 @@ func WardHistoricHighsHandler(params url.Values, request *http.Request) ([]byte,
 	// otherwise, find highs for each service code
 
 	if service_code != "" {
-		counts := []map[string]int{}
-
-		rows, err := api.Db.Query(`SELECT total,requested_date
-        		FROM daily_counts
-        		WHERE service_code = $1
-        			AND ward = $2
-        		ORDER BY total DESC, requested_date DESC
-        		LIMIT $3;`, service_code, ward_id, days)
-
-		if err != nil {
-			log.Print("error fetching historic highs ", err)
-		}
-
-		for rows.Next() {
-			var date time.Time
-			var count int
-
-			if err := rows.Scan(&count, &date); err != nil {
-				// handle
-			}
-
-			counts = append(counts, map[string]int{date.Format("2006-01-02"): count})
-		}
+		counts := findAllTimeHighs(service_code, ward_id, days)
 
 		if !day.IsZero() {
-			counts = append(counts, map[string]int{day.Format("2006-01-02"): findDayTotal(service_code, ward_id, day)})
+			counts = append(counts, HighDay{Date: day.Format("2006-01-02"), Count: findDayTotal(service_code, ward_id, day)})
 		}
-                
-                return dumpJson(counts), nil
-        	
+
+		return dumpJson(counts), nil
+
 	} else {
-	        type DayCount struct {
-	                Date string
-	                Count int
-	        }
-	        
-	        type ResponseData struct {
-	                Highs   map[string][]DayCount
-	                Current map[string]DayCount
-	        }	        
-	        
-	        var resp ResponseData
-	        resp.Highs = make(map[string][]DayCount)
-	        resp.Current = make(map[string]DayCount)
-	        
-		for _, code := range ServiceCodes {
-		        
-			rows, err := api.Db.Query(`SELECT total,requested_date
-                		FROM daily_counts
-                		WHERE service_code = $1
-                			AND ward = $2
-                		ORDER BY total DESC, requested_date DESC
-                		LIMIT $3;`, code, ward_id, days)
-
-			if err != nil {
-				log.Print("error fetching historic highs ", err)
-			}
-
-			for rows.Next() {
-			        var d time.Time
-                                var dc DayCount
-
-				if err := rows.Scan(&dc.Count, &d); err != nil {
-					log.Print("error loading high value ", err)
-				}
-                                resp.Highs[code] = append(resp.Highs[code], DayCount{Date:d.Format("2006-01-02"), Count:dc.Count})
-			}
-
-                        if !day.IsZero() {
-                             resp.Current[code] = DayCount{Date:day.Format("2006-01-02"), Count:findDayTotal(code, ward_id, day)}
-                        }
+		type ResponseData struct {
+			Highs   map[string][]HighDay
+			Current map[string]HighDay
 		}
-                return dumpJson(resp), nil        	
+
+		var resp ResponseData
+		resp.Highs = make(map[string][]HighDay)
+		resp.Current = make(map[string]HighDay)
+
+		for _, code := range ServiceCodes {
+			// find highs
+			resp.Highs[code] = findAllTimeHighs(code, ward_id, days)
+
+			// find date, if spec'd
+			if !day.IsZero() {
+				resp.Current[code] = HighDay{Date: day.Format("2006-01-02"), Count: findDayTotal(code, ward_id, day)}
+			}
+		}
+
+		return dumpJson(resp), nil
 	}
 
+}
+func findAllTimeHighs(service_code string, ward_id string, days int) (counts []HighDay) {
+	rows, err := api.Db.Query(`SELECT total,requested_date
+		FROM daily_counts
+		WHERE service_code = $1
+			AND ward = $2
+		ORDER BY total DESC, requested_date DESC
+		LIMIT $3;`, service_code, ward_id, days)
+
+	if err != nil {
+		log.Print("error fetching historic highs ", err)
+	}
+
+	for rows.Next() {
+		var d time.Time
+		var dc HighDay
+
+		if err := rows.Scan(&dc.Count, &d); err != nil {
+			log.Print("error loading high value ", err)
+		}
+		counts = append(counts, HighDay{Date: d.Format("2006-01-02"), Count: dc.Count})
+	}
+
+	return
 }
 
 func findDayTotal(service_code string, ward_id string, day time.Time) (count int) {
@@ -803,7 +788,7 @@ func findDayTotal(service_code string, ward_id string, day time.Time) (count int
 		// no rows
 		count = 0
 	}
-	
+
 	return
 }
 
