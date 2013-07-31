@@ -132,18 +132,15 @@
     © 2013 Smart Chicago Collaborative
 </footer>
 
-{% if site.debug %}
 <script>
-window.apiDomain = "http://localhost:5000/";
+window.apiDomain = "{{ site.api_domain }}";
 </script>
+{% if site.debug %}
 <script src="/lib/jquery.1.9.1.js"></script>
 <script src="/lib/angular.min.js"></script>
 <script src="/lib/highcharts.js"></script>
 <script src="/lib/leaflet.js"></script>
 {% else %}
-<script>
-window.apiDomain = "http://cwfy-api-staging.smartchicagoapps.org/";
-</script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
 <script src="http://code.highcharts.com/highcharts.js"></script>
@@ -153,6 +150,7 @@ window.apiDomain = "http://cwfy-api-staging.smartchicagoapps.org/";
 <script src="/lib/moment.min.js"></script>
 <script src="/lib/twix.min.js"></script>
 <script src="/lib/underscore-min.js"></script>
+<script src="/lib/leaflet.label.js"></script>
 <script src="/js/scripts.js"></script>
 {% if page.has_js %}
 <script src="/js/{{ page.app }}.js"></script>

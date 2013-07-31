@@ -67,6 +67,18 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
         return classes.join(" ");
     };
 
+    if (!window.chicagoMap) {
+        window.chicagoMap = L.map('map',{scrollWheelZoom: false}).setView([41.83, -87.81], 11);
+
+        L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png', {
+            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
+            key: '302C8A713FF3456987B21FAAE639A13B',
+            maxZoom: 18,
+            styleId: 82946
+        }).addTo(window.chicagoMap);
+        window.chicagoMap.zoomControl.setPosition('bottomright');
+    }
+
     $http.jsonp(countsURL).
         success(function(data, status, headers, config) {
             var mapped = _.map(_.pairs(data), function(pair) {
@@ -117,19 +129,11 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
                 window.allWards = L.layerGroup();
             }
 
+            var wardClick = function(e) {
+                document.location = 'ward/' + e.target.options.id + '/#/' + $scope.date + '/' + $scope.serviceSlug;
+            };
+
             $timeout(function() {
-                if (!window.chicagoMap) {
-                    window.chicagoMap = L.map('map',{scrollWheelZoom: false}).setView([41.83, -87.81], 11);
-
-                    L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png', {
-                        attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
-                        key: '302C8A713FF3456987B21FAAE639A13B',
-                        maxZoom: 18,
-                        styleId: 82946
-                    }).addTo(window.chicagoMap);
-                    window.chicagoMap.zoomControl.setPosition('bottomright');
-                }
-
                 for (var path in wardPaths) {
                     var wardNum = parseInt(path,10) + 1;
                     var wardCount = serviceObj.Wards[wardNum];
@@ -144,9 +148,9 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
                             fillOpacity: 0.8,
                             fillColor: wardColors[Math.round((wardCount * (wardColors.length - 1)) / maxCount)]
                         }
-                    ).addTo(window.chicagoMap);
-                    var requestCount = wardCount;
-                    poly.bindPopup('<a href="/ward/' + wardNum + '/#/' + $scope.date + '/' + $scope.serviceSlug + '">Ward ' + wardNum + '</a>' + requestCount + ' request' + (requestCount == 1 ? '' : 's'));
+                    )
+                    .bindLabel('<h4>Ward ' + wardNum + '</h4>' + wardCount + ' request' + (wardCount == 1 ? '' : 's'))
+                    .on('click', wardClick);
                     window.allWards.addLayer(poly);
                 }
 

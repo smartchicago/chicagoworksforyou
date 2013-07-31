@@ -60,7 +60,8 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
 
     $http.jsonp(url).
         success(function(response, status, headers, config) {
-            var cityAverage = response.CityData.Count / 50;
+            Data.cityCount = response.CityData.Count;
+            Data.cityAverage = response.CityData.Count / 50;
             var wardData = response.WardData;
             var categories = _.map(_.keys(wardData), function (wardNum) { return '<a href="/ward/' + wardNum + '/#/' + endDate.format(dateFormat) + '/' + stSlug + '">Ward ' + wardNum + '</a>'; });
             var days = [[],[],[],[],[],[],[]];
@@ -105,7 +106,7 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
                     opposite: true,
                     plotLines: [{
                         id: 'avg',
-                        value: cityAverage,
+                        value: Data.cityAverage,
                         color: 'black',
                         width: 3,
                         zIndex: 5

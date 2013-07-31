@@ -12,7 +12,10 @@ window.currServiceType = '{{ page.service_code }}';
 <div class="container content">
     <div class="row">
         <div class="span4" ng-controller="sidebarCtrl">
-            <h1><a href="#">{{ page.title }}</a></h1>
+            <h1><span ng-bind="data.cityCount"></span> <a href="#">{{ page.title }}</a> requests were opened this week</h1>
+            {% comment %}
+            <p>And XXX were closed. Here's how they break down.</p>
+            {% endcomment %}
             <div class="pagination-wrap">
                 <div class="pagination">
                     <ul>
@@ -22,10 +25,11 @@ window.currServiceType = '{{ page.service_code }}';
                     </ul>
                 </div>
             </div>
-            {{ content }}
-            <hr>
-            <p>
-                Black vertical line = city average for this week
+            <div class="description">
+                {{ content }}
+            </div>
+            <p class="city-average">
+                Average number of requests opened in a ward this week: <span ng-bind="data.cityAverage"></span>
             </p>
         </div>
         <div class="span8" ng-view>
