@@ -111,8 +111,8 @@ wardApp.controller("wardOverviewCtrl", function ($scope, Data, $http, $location,
             _.each(response.Highs, function(val, key) {
                 historicHighs.push({
                     'service': lookupCode(key).name,
-                    'y': val[0].Count,
-                    'name': moment(val[0].Date).format("MMM D, 'YY"),
+                    'y': val ? val[0].Count: 0,
+                    'name': val ? moment(val[0].Date).format("MMM D, 'YY") : '',
                     'current': response.Current[key].Count
                 });
             });
