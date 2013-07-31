@@ -302,7 +302,10 @@ ul.nav .alderman a {
 .wardApp .counts h3 {
   margin: 0 0 1em;
   line-height: 1.3; }
-.wardApp .chart {
+.wardApp .overview-chart {
+  width: 100%;
+  height: 600px; }
+.wardApp .service-chart {
   width: 100%;
   height: 350px; }
 .wardApp .explanation {

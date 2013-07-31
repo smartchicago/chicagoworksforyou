@@ -98,8 +98,97 @@ wardApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
 
 wardApp.controller("wardOverviewCtrl", function ($scope, Data, $http, $location, $routeParams) {
     Data.setDate(parseDate($routeParams.date, window.yesterday, $location));
+    Data.serviceObj = null;
 
     $scope.data = Data;
+
+    var DAY_COUNT = 1;
+    var highsURL = window.apiDomain + 'wards/' + window.wardNum + '/historic_highs.json?include_date=' + Data.date + '&count=' + DAY_COUNT + '&callback=JSON_CALLBACK';
+
+    $http.jsonp(highsURL).
+        success(function(response, status, headers, config) {
+            var historicHighs = [];
+            _.each(response.Highs, function(val, key) {
+                historicHighs.push({
+                    'service': lookupCode(key).name,
+                    'y': val[0].Count,
+                    'name': moment(val[0].Date).format("MMM D, 'YY"),
+                    'current': response.Current[key].Count
+                });
+            });
+            historicHighs = _.sortBy(historicHighs, 'service');
+
+            var categories = _.pluck(historicHighs, 'service');
+            var current = _.pluck(historicHighs, 'current');
+
+            var countsChart = new Highcharts.Chart({
+                chart: {
+                    type: 'bar',
+                    renderTo: 'highs-chart',
+                    marginBottom: 30
+                },
+                series: [{
+                    data: historicHighs,
+                    name: "Historic high"
+                },{
+                    data: current,
+                    type: 'scatter',
+                    name: Data.dateFormatted
+                }],
+                xAxis: {
+                    categories: categories,
+                    tickmarkPlacement: 'between',
+                    labels: {
+                        style: {
+                            fontFamily: 'Monda, sans-serif',
+                            fontSize: '15px'
+                        },
+                        useHTML: true,
+                        y: 5
+                    }
+                },
+                yAxis: {
+                    opposite: true,
+                    title: {
+                        text: ''
+                    }
+                },
+                plotOptions: {
+                    bar: {
+                        animation: false,
+                        borderWidth: 0,
+                        groupPadding: 0.08,
+                        dataLabels: {
+                            color: "#000000",
+                            enabled: true,
+                            format: "{point.name}",
+                            style: {
+                                fontFamily: "Monda, Helvetica, sans-serif",
+                                fontSize: '12px'
+                            }
+                        },
+                        pointPadding: 0
+                    },
+                    scatter: {
+                        animation: false
+                    }
+                },
+                legend: {
+                    enabled: false
+                },
+                title: {
+                    text: ''
+                },
+                tooltip: {
+                    headerFormat: '',
+                    shadow: false,
+                    style: {
+                        fontFamily: 'Monda, sans-serif',
+                        fontSize: '15px'
+                    }
+                }
+            });
+        });
 });
 
 wardApp.controller("wardCtrl", function ($scope, Data, $http, $location, $routeParams, $timeout) {
@@ -119,6 +208,59 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $location, $routeP
 
     // CHARTS
 
+    Highcharts.setOptions({
+        chart: {
+            marginBottom: 30
+        },
+        title: {
+            text: ''
+        },
+        xAxis: {
+            minPadding: 0.05,
+            maxPadding: 0.05,
+            tickmarkPlacement: 'between',
+            labels: {
+                style: {
+                    fontFamily: 'Monda, sans-serif',
+                    fontSize: '13px'
+                },
+                useHTML: true,
+                y: 22
+            }
+        },
+        yAxis: {
+            title: {
+                text: ''
+            },
+            minPadding: 0.1,
+            labels: {
+                style: {
+                    fontFamily: 'Monda, sans-serif',
+                    fontWeight: 'bold'
+                },
+                align: 'left',
+                x: 0,
+                y: 3
+            },
+            offset: 30
+        },
+        tooltip: {
+            headerFormat: '',
+            shadow: false,
+            style: {
+                fontFamily: 'Monda, sans-serif',
+                fontSize: '15px'
+            }
+        },
+        legend: {
+            enabled: false,
+            borderWidth: 0,
+            backgroundColor: "#f7f7f7",
+            padding: 10
+        }
+    });
+
+
     $http.jsonp(highsURL).
         success(function(response, status, headers, config) {
 
@@ -132,6 +274,7 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $location, $routeP
 
             var countsChart = new Highcharts.Chart({
                 chart: {
+                    type: 'column',
                     renderTo: 'counts-chart',
                     marginBottom: 70
                 },
@@ -178,8 +321,7 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $location, $routeP
                     }]
                 }
             });
-        }
-    );
+        });
 
     $http.jsonp(ttcURL).
         success(function(response, status, headers, config) {
@@ -205,6 +347,7 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $location, $routeP
 
             var ttcChart = new Highcharts.Chart({
                 chart: {
+                    type: 'column',
                     renderTo: 'ttc-chart'
                 },
                 xAxis: {
@@ -234,61 +377,5 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $location, $routeP
                     }
                 }
             });
-        }
-    );
-});
-
-// HIGHCHARTS
-
-Highcharts.setOptions({
-    chart: {
-        type: 'column',
-        marginBottom: 30
-    },
-    title: {
-        text: ''
-    },
-    xAxis: {
-        minPadding: 0.05,
-        maxPadding: 0.05,
-        tickmarkPlacement: 'between',
-        labels: {
-            style: {
-                fontFamily: 'Monda, sans-serif',
-                fontSize: '13px'
-            },
-            useHTML: true,
-            y: 22
-        }
-    },
-    yAxis: {
-        title: {
-            text: ''
-        },
-        minPadding: 0.1,
-        labels: {
-            style: {
-                fontFamily: 'Monda, sans-serif',
-                fontWeight: 'bold'
-            },
-            align: 'left',
-            x: 0,
-            y: 3
-        },
-        offset: 30
-    },
-    tooltip: {
-        headerFormat: '',
-        shadow: false,
-        style: {
-            fontFamily: 'Monda, sans-serif',
-            fontSize: '15px'
-        }
-    },
-    legend: {
-        enabled: false,
-        borderWidth: 0,
-        backgroundColor: "#f7f7f7",
-        padding: 10
-    }
+        });
 });
