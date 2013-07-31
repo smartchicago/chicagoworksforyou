@@ -7,6 +7,7 @@ server:
 	bundle exec jekyll serve --watch
 
 STAGING_BUCKET    = s3://cwfy-staging.smartchicagoapps.org/
+PRODUCTION_BUCKET = s3://cwfy-production.smartchicagoapps.org/
 
 S3CMD = s3cmd -c .s3cfg \
   --acl-public \
@@ -27,3 +28,4 @@ staging:
 
 production:
 	bundle exec jekyll build --config _config.yml,_config_production.yml
+	$(S3CMD) $(PRODUCTION_BUCKET)
