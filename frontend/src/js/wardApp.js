@@ -113,18 +113,19 @@ wardApp.controller("wardCtrl", function ($scope, Data, $http, $location, $routeP
 
     $scope.data = Data;
 
-    var requestsURL = window.apiDomain + 'wards/' + window.wardNum + '/historic_highs.json?service_code=' + serviceObj.code + '&include_date=' + Data.date + '&count=8&callback=JSON_CALLBACK';
+    var highsURL = window.apiDomain + 'wards/' + window.wardNum + '/historic_highs.json?service_code=' + serviceObj.code + '&include_date=' + Data.date + '&count=8&callback=JSON_CALLBACK';
     var ttcURL = window.apiDomain + 'requests/time_to_close.json?count=7&service_code=' + serviceObj.code + '&end_date=' + Data.date + '&callback=JSON_CALLBACK';
 
     // CHARTS
 
-    $http.jsonp(requestsURL).
+    $http.jsonp(highsURL).
         success(function(response, status, headers, config) {
-            var todaysCount = _.values(_.first(response))[0];
-            var highs = _.rest(response);
-            var highCounts = _.map(highs, function(d) { return _.values(d)[0]; });
+
+            var todaysCount = _.last(response).Count;
+            var highs = _.initial(response);
+            var highCounts = _.pluck(highs, "Count");
             var categories = _.map(highs, function(d) {
-                var m = moment(_.keys(d)[0]);
+                var m = moment(d.Date);
                 return "<a href='/#/" + m.format(dateFormat) + "/" + serviceObj.slug + "'>" + m.format("MMM D<br>YYYY") + "</a>";
             });
 
