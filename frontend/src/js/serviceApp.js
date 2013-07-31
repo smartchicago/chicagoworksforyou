@@ -42,7 +42,7 @@ serviceApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
 });
 
 serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $routeParams) {
-    var date = parseDate($routeParams.date, window.prevSaturday, $location, '');
+    var date = parseDate($routeParams.date, window.prevSaturday, $location);
     var startDate = moment(date).day(0);
     var endDate = moment(date).day(6).max(window.yesterday);
     var duration = endDate.diff(startDate, 'days');
@@ -63,7 +63,7 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
             Data.cityCount = response.CityData.Count;
             Data.cityAverage = response.CityData.Count / 50;
             var wardData = response.WardData;
-            var categories = _.map(_.keys(wardData), function (wardNum) { return '<a href="/ward/' + wardNum + '/#/' + stSlug + '/' + endDate.format(dateFormat) + '">Ward ' + wardNum + '</a>'; });
+            var categories = _.map(_.keys(wardData), function (wardNum) { return '<a href="/ward/' + wardNum + '/#/' + endDate.format(dateFormat) + '/' + stSlug + '">Ward ' + wardNum + '</a>'; });
             var days = [[],[],[],[],[],[],[]];
             for (var ward in wardData) {
                 var i = 0;
