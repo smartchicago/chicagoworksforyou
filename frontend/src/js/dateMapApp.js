@@ -129,6 +129,10 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
                 window.allWards = L.layerGroup();
             }
 
+            var wardClick = function(e) {
+                document.location = 'ward/' + e.target.options.id + '/#/' + $scope.date + '/' + $scope.serviceSlug;
+            };
+
             $timeout(function() {
                 for (var path in wardPaths) {
                     var wardNum = parseInt(path,10) + 1;
@@ -144,9 +148,9 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
                             fillOpacity: 0.8,
                             fillColor: wardColors[Math.round((wardCount * (wardColors.length - 1)) / maxCount)]
                         }
-                    ).addTo(window.chicagoMap);
-                    var requestCount = wardCount;
-                    poly.bindPopup('<a href="/ward/' + wardNum + '/#/' + $scope.serviceSlug + '/' + $scope.date + '">Ward ' + wardNum + '</a>' + requestCount + ' request' + (requestCount == 1 ? '' : 's'));
+                    )
+                    .bindLabel('<h4>Ward ' + wardNum + '</h4>' + wardCount + ' request' + (wardCount == 1 ? '' : 's'))
+                    .on('click', wardClick);
                     window.allWards.addLayer(poly);
                 }
 
