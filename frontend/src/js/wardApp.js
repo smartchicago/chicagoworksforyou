@@ -93,7 +93,7 @@ wardApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
     };
 });
 
-wardApp.controller("wardTestCtrl", function ($scope, Data, $http, $location, $route, $routeParams) {
+wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $route, $routeParams) {
     var renderOverview = function(render) {
         var DAY_COUNT = 1;
         var highsURL = window.apiDomain + 'wards/' + window.wardNum + '/historic_highs.json?include_date=' + Data.date + '&count=' + DAY_COUNT + '&callback=JSON_CALLBACK';
@@ -190,21 +190,22 @@ wardApp.controller("wardTestCtrl", function ($scope, Data, $http, $location, $ro
             });
     };
 
-    var render = function() {
-        Data.renderAction = $route.current.action;
-        Data.serviceObj = {};
-        if ($routeParams.serviceSlug) {
-            Data.serviceObj = window.lookupSlug($routeParams.serviceSlug);
-        }
+    var renderDetail = function (render) {
+    }
 
-        if (Data.renderAction == "overview") {
+    var changeService = function() {
+        if (Data.action == "overview") {
             renderOverview(true);
+        } else {
+            renderDetail(true);
         }
     };
 
     var changeDate = function() {
-        if (Data.renderAction == "overview") {
+        if (Data.action == "overview") {
             renderOverview(false);
+        } else {
+            renderDetail(true);
         }
     };
 
@@ -214,8 +215,14 @@ wardApp.controller("wardTestCtrl", function ($scope, Data, $http, $location, $ro
         "$routeChangeSuccess",
         function ($e, $currentRoute, $previousRoute) {
             Data.setDate(parseDate($routeParams.date, window.yesterday, $location));
+            Data.action = $route.current.action;
+            Data.serviceObj = {};
+            if ($routeParams.serviceSlug) {
+                Data.serviceObj = window.lookupSlug($routeParams.serviceSlug);
+            }
+
             if (!$previousRoute || $currentRoute.pathParams.serviceSlug != $previousRoute.pathParams.serviceSlug) {
-                render();
+                changeService();
             } else {
                 changeDate();
             }

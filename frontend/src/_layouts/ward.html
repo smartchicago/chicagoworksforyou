@@ -37,7 +37,7 @@ window.wardNum = {{ page.ward }};
                 {% endraw %}
             </div>
         </div>
-        <div class="span9" ng-controller="wardTestCtrl" ng-switch on="data.renderAction">
+        <div class="span9" ng-controller="wardChartCtrl" ng-switch on="data.action">
             <div ng-switch-when="overview">
                 <section id="counts" class="counts">
                     <h3>Days with the most requests <small>vs. <span ng-bind="data.dateFormatted"></span></small></h3>
