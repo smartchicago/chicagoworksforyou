@@ -123,6 +123,22 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
             var allCounts = _.toArray(serviceObj.Wards);
             var minCount = _.min(allCounts);
             var maxCount = _.max(allCounts);
+            var hasRanges = maxCount >= wardColors.length;
+
+            var grades = _.range(0, Math.min(wardColors.length, maxCount + 1));
+            if (hasRanges) {
+                grades = _.map(grades, function (grade) {
+                    return Math.round(grade * maxCount / (grades.length - 1)) - 0.00001;
+                });
+            }
+
+            var allColors = _.map(allCounts, function(count) {
+                var pos = Math.max(_.sortedIndex(grades, count) - 1, 0);
+                if (count == _.last(grades)) {
+                    pos = grades.length - 1;
+                }
+                return wardColors[pos];
+            });
 
             if (window.allWards) {
                 window.allWards.clearLayers();
@@ -132,11 +148,6 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
 
             var wardClick = function(e) {
                 document.location = 'ward/' + e.target.options.id + '/#' + $location.path();
-            };
-
-            var getColor = function(wardCount) {
-                var ratio = Math.round((wardCount * (wardColors.length - 1)) / maxCount);
-                return wardColors[Math.min(ratio,wardCount)]; // Only use the first N colors if maxCount is N < 6
             };
 
             var pluralize = function(n) {
@@ -156,7 +167,7 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
                             dashArray: '3',
                             color: 'white',
                             fillOpacity: 1,
-                            fillColor: getColor(wardCount)
+                            fillColor: allColors[wardNum-1]
                         }
                     )
                     .bindLabel('<h4>Ward ' + wardNum + '</h4>' + wardCount + ' request' + pluralize(wardCount))
@@ -171,15 +182,9 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
 
                 window.legend.onAdd = function(map) {
                     var div = L.DomUtil.create('div', 'legend');
-                    var grades = _.range(0, Math.min(wardColors.length, maxCount));
-                    if (maxCount > grades.length) {
-                        grades = _.map(grades, function (grade) {
-                            return grade * maxCount / (grades.length - 1);
-                        });
-                    }
-
                     var labels = _.map(grades, function (grade, i) {
-                        return '<i style="background:' + wardColors[i] + '"></i> <b>' + grade + "</b> request" + pluralize(grade);
+                        var actualGrade = Math.round(grade);
+                        return '<i style="background:' + wardColors[i] + '"></i> <b>' + actualGrade + (hasRanges && actualGrade < _.last(grades) ? '+': '') + "</b> request" + (grade == 1 && !hasRanges ? '' : 's');
                     });
 
                     div.innerHTML = labels.join('<br>');
