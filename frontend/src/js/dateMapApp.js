@@ -121,6 +121,7 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
             ].reverse();
 
             var allCounts = _.toArray(serviceObj.Wards);
+            var minCount = _.min(allCounts);
             var maxCount = _.max(allCounts);
 
             if (window.allWards) {
@@ -131,6 +132,15 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
 
             var wardClick = function(e) {
                 document.location = 'ward/' + e.target.options.id + '/#' + $location.path();
+            };
+
+            var getColor = function(wardCount) {
+                var ratio = Math.round((wardCount * (wardColors.length - 1)) / maxCount);
+                return wardColors[Math.min(ratio,wardCount)]; // Only use the first N colors if maxCount is N < 6
+            };
+
+            var pluralize = function(n) {
+                return n == 1 ? '' : 's';
             };
 
             $timeout(function() {
@@ -145,16 +155,39 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
                             weight: 1,
                             dashArray: '3',
                             color: 'white',
-                            fillOpacity: 0.8,
-                            fillColor: wardColors[Math.round((wardCount * (wardColors.length - 1)) / maxCount)]
+                            fillOpacity: 1,
+                            fillColor: getColor(wardCount)
                         }
                     )
-                    .bindLabel('<h4>Ward ' + wardNum + '</h4>' + wardCount + ' request' + (wardCount == 1 ? '' : 's'))
+                    .bindLabel('<h4>Ward ' + wardNum + '</h4>' + wardCount + ' request' + pluralize(wardCount))
                     .on('click', wardClick);
                     window.allWards.addLayer(poly);
                 }
 
+                if (window.legend) {
+                    window.legend.removeFrom(window.chicagoMap);
+                }
+                window.legend = L.control({position: 'topright'});
+
+                window.legend.onAdd = function(map) {
+                    var div = L.DomUtil.create('div', 'legend');
+                    var grades = _.range(0, Math.min(wardColors.length, maxCount));
+                    if (maxCount > grades.length) {
+                        grades = _.map(grades, function (grade) {
+                            return grade * maxCount / (grades.length - 1);
+                        });
+                    }
+
+                    var labels = _.map(grades, function (grade, i) {
+                        return '<i style="background:' + wardColors[i] + '"></i> <b>' + grade + "</b> request" + pluralize(grade);
+                    });
+
+                    div.innerHTML = labels.join('<br>');
+                    return div;
+                };
+
                 window.allWards.addTo(window.chicagoMap);
+                legend.addTo(window.chicagoMap);
             });
         }
     );
