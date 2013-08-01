@@ -18,17 +18,14 @@ var wardApp = angular.module('wardApp', []).value('$anchorScroll', angular.noop)
 
 wardApp.config(function($routeProvider) {
     $routeProvider.
-        when('/:date', {
-            controller: "wardOverviewCtrl",
-            templateUrl: "/views/ward_overview.html"
-        }).
         when('/', {
-            controller: "wardOverviewCtrl",
-            templateUrl: "/views/ward_overview.html"
+            action: "overview"
         }).
-        when('/:date/:serviceSlug', {
-            controller: "wardCtrl",
-            templateUrl: "/views/ward_charts.html"
+        when('/:date/', {
+            action: "overview"
+        }).
+        when('/:date/:serviceSlug/', {
+            action: "serviceView"
         }).
         otherwise({
             redirectTo: '/'
@@ -82,7 +79,7 @@ wardApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
     $scope.data = Data;
 
     $scope.prevDay = function () {
-        var urlSuffix = Data.serviceObj ? Data.serviceObj.slug : '';
+        var urlSuffix = Data.serviceObj.slug ? Data.serviceObj.slug : '';
         $location.path(Data.prevDay + "/" + urlSuffix);
     };
 
@@ -91,9 +88,139 @@ wardApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
     };
 
     $scope.nextDay = function () {
-        var urlSuffix = Data.serviceObj ? Data.serviceObj.slug : '';
+        var urlSuffix = Data.serviceObj.slug ? Data.serviceObj.slug : '';
         $location.path(Data.nextDay + "/" + urlSuffix);
     };
+});
+
+wardApp.controller("wardTestCtrl", function ($scope, Data, $http, $location, $route, $routeParams) {
+    var renderOverview = function(render) {
+        var DAY_COUNT = 1;
+        var highsURL = window.apiDomain + 'wards/' + window.wardNum + '/historic_highs.json?include_date=' + Data.date + '&count=' + DAY_COUNT + '&callback=JSON_CALLBACK';
+
+        $http.jsonp(highsURL).
+            success(function(response, status, headers, config) {
+                var historicHighs = [];
+                _.each(response.Highs, function(val, key) {
+                    historicHighs.push({
+                        'service': lookupCode(key).name,
+                        'y': val ? val[0].Count: 0,
+                        'name': val ? moment(val[0].Date).format("MMM D, 'YY") : '',
+                        'current': response.Current[key].Count
+                    });
+                });
+                historicHighs = _.sortBy(historicHighs, 'service');
+
+                var categories = _.pluck(historicHighs, 'service');
+                var current = _.pluck(historicHighs, 'current');
+
+                if (render) {
+                    var countsChart = new Highcharts.Chart({
+                        chart: {
+                            type: 'bar',
+                            renderTo: 'highs-chart',
+                            marginBottom: 30
+                        },
+                        series: [{
+                            data: historicHighs,
+                            name: "Historic high",
+                            id: 1
+                        },{
+                            data: current,
+                            type: 'scatter',
+                            name: Data.dateFormatted,
+                            id: 2
+                        }],
+                        xAxis: {
+                            categories: categories,
+                            tickmarkPlacement: 'between',
+                            labels: {
+                                style: {
+                                    fontFamily: 'Monda, sans-serif',
+                                    fontSize: '15px'
+                                },
+                                useHTML: true,
+                                y: 5
+                            }
+                        },
+                        yAxis: {
+                            opposite: true,
+                            title: {
+                                text: ''
+                            }
+                        },
+                        plotOptions: {
+                            bar: {
+                                animation: false,
+                                borderWidth: 0,
+                                groupPadding: 0.08,
+                                dataLabels: {
+                                    color: "#000000",
+                                    enabled: true,
+                                    format: "{point.name}",
+                                    style: {
+                                        fontFamily: "Monda, Helvetica, sans-serif",
+                                        fontSize: '12px'
+                                    }
+                                },
+                                pointPadding: 0
+                            },
+                            scatter: {
+                                animation: false
+                            }
+                        },
+                        legend: {
+                            enabled: false
+                        },
+                        title: {
+                            text: ''
+                        },
+                        tooltip: {
+                            headerFormat: '',
+                            shadow: false,
+                            style: {
+                                fontFamily: 'Monda, sans-serif',
+                                fontSize: '15px'
+                            }
+                        }
+                    });
+                } else {
+                    $('#highs-chart').highcharts().get(2).setData(current);
+                }
+            });
+    };
+
+    var render = function() {
+        Data.renderAction = $route.current.action;
+        Data.serviceObj = {};
+        if ($routeParams.serviceSlug) {
+            Data.serviceObj = window.lookupSlug($routeParams.serviceSlug);
+        }
+
+        if (Data.renderAction == "overview") {
+            renderOverview(true);
+        }
+    };
+
+    var changeDate = function() {
+        if (Data.renderAction == "overview") {
+            renderOverview(false);
+        }
+    };
+
+    $scope.data = Data;
+
+    $scope.$on(
+        "$routeChangeSuccess",
+        function ($e, $currentRoute, $previousRoute) {
+            Data.setDate(parseDate($routeParams.date, window.yesterday, $location));
+            if (!$previousRoute || $currentRoute.pathParams.serviceSlug != $previousRoute.pathParams.serviceSlug) {
+                render();
+            } else {
+                changeDate();
+            }
+        }
+    );
 });
 
 wardApp.controller("wardOverviewCtrl", function ($scope, Data, $http, $location, $routeParams) {
