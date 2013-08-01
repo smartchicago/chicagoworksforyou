@@ -128,12 +128,12 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
             var grades = _.range(0, Math.min(wardColors.length, maxCount + 1));
             if (hasRanges) {
                 grades = _.map(grades, function (grade) {
-                    return Math.round(grade * maxCount / (grades.length - 1)) - 0.00001;
+                    return Math.round(grade * maxCount / (grades.length - 1));
                 });
             }
 
             var allColors = _.map(allCounts, function(count) {
-                var pos = Math.max(_.sortedIndex(grades, count) - 1, 0);
+                var pos = Math.max(_.sortedIndex(grades, count + 0.0001) - 1, 0);
                 if (count == _.last(grades)) {
                     pos = grades.length - 1;
                 }
@@ -183,8 +183,7 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
                 window.legend.onAdd = function(map) {
                     var div = L.DomUtil.create('div', 'legend');
                     var labels = _.map(grades, function (grade, i) {
-                        var actualGrade = Math.round(grade);
-                        return '<i style="background:' + wardColors[i] + '"></i> <b>' + actualGrade + (hasRanges && actualGrade < _.last(grades) ? '+': '') + "</b> request" + (grade == 1 && !hasRanges ? '' : 's');
+                        return '<i style="background:' + wardColors[i] + '"></i> <b>' + grade + (hasRanges && grade < _.last(grades) ? '+': '') + "</b> request" + (grade == 1 && !hasRanges ? '' : 's');
                     });
 
                     div.innerHTML = labels.join('<br>');
