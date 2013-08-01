@@ -25,7 +25,7 @@ wardApp.config(function($routeProvider) {
             action: "overview"
         }).
         when('/:date/:serviceSlug/', {
-            action: "serviceView"
+            action: "detail"
         }).
         otherwise({
             redirectTo: '/'
@@ -196,7 +196,7 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
     var changeService = function() {
         if (Data.action == "overview") {
             renderOverview(true);
-        } else {
+        } else if (Data.action == "detail") {
             renderDetail(true);
         }
     };
@@ -205,7 +205,8 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
         if (Data.action == "overview") {
             renderOverview(false);
         } else {
-            renderDetail(true);
+        } else if (Data.action == "detail") {
+            renderDetail(false);
         }
     };
 

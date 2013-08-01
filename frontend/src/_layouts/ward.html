@@ -44,7 +44,7 @@ window.wardNum = {{ page.ward }};
                     <div id="highs-chart" class="overview-chart"></div>
                 </section>
             </div>
-            <div ng-switch-when="serviceView">
+            <div ng-switch-when="detail">
                 <section id="counts" class="counts">
                     <h3>Days with the most <span ng-bind="data.serviceObj.name"></span> requests <small>vs. <span ng-bind="data.dateFormatted"></span></small></h3>
                     <div id="counts-chart" class="service-chart"></div>
