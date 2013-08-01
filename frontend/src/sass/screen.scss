@@ -194,6 +194,30 @@ h1 {
             }
         }
     }
+
+    .legend {
+        background:fade-out(white,0.2);
+        border-radius: 4px;
+        padding: 8px 10px;
+        font-family: 'Monda', Helvetica, sans-serif;
+        font-size: 13px;
+        line-height: 18px;
+        right: 20px;
+        margin: 0;
+        @include box-shadow(0 0 10px fade-out(black,.7));
+
+        i {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            vertical-align: bottom;
+            margin-right: 4px;
+        }
+    }
+}
+
+.leaflet-top {
+    padding-top: 94px;
 }
 
 .leaflet-popup-content-wrapper {

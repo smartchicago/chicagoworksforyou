@@ -121,7 +121,24 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
             ].reverse();
 
             var allCounts = _.toArray(serviceObj.Wards);
+            var minCount = _.min(allCounts);
             var maxCount = _.max(allCounts);
+            var hasRanges = maxCount >= wardColors.length;
+
+            var grades = _.range(0, Math.min(wardColors.length, maxCount + 1));
+            if (hasRanges) {
+                grades = _.map(grades, function (grade) {
+                    return Math.round(grade * maxCount / (grades.length - 1)) - 0.00001;
+                });
+            }
+
+            var allColors = _.map(allCounts, function(count) {
+                var pos = Math.max(_.sortedIndex(grades, count) - 1, 0);
+                if (count == _.last(grades)) {
+                    pos = grades.length - 1;
+                }
+                return wardColors[pos];
+            });
 
             if (window.allWards) {
                 window.allWards.clearLayers();
@@ -131,6 +148,10 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
 
             var wardClick = function(e) {
                 document.location = 'ward/' + e.target.options.id + '/#' + $location.path();
+            };
+
+            var pluralize = function(n) {
+                return n == 1 ? '' : 's';
             };
 
             $timeout(function() {
@@ -145,16 +166,33 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
                             weight: 1,
                             dashArray: '3',
                             color: 'white',
-                            fillOpacity: 0.8,
-                            fillColor: wardColors[Math.round((wardCount * (wardColors.length - 1)) / maxCount)]
+                            fillOpacity: 1,
+                            fillColor: allColors[wardNum-1]
                         }
                     )
-                    .bindLabel('<h4>Ward ' + wardNum + '</h4>' + wardCount + ' request' + (wardCount == 1 ? '' : 's'))
+                    .bindLabel('<h4>Ward ' + wardNum + '</h4>' + wardCount + ' request' + pluralize(wardCount))
                     .on('click', wardClick);
                     window.allWards.addLayer(poly);
                 }
 
+                if (window.legend) {
+                    window.legend.removeFrom(window.chicagoMap);
+                }
+                window.legend = L.control({position: 'topright'});
+
+                window.legend.onAdd = function(map) {
+                    var div = L.DomUtil.create('div', 'legend');
+                    var labels = _.map(grades, function (grade, i) {
+                        var actualGrade = Math.round(grade);
+                        return '<i style="background:' + wardColors[i] + '"></i> <b>' + actualGrade + (hasRanges && actualGrade < _.last(grades) ? '+': '') + "</b> request" + (grade == 1 && !hasRanges ? '' : 's');
+                    });
+
+                    div.innerHTML = labels.join('<br>');
+                    return div;
+                };
+
                 window.allWards.addTo(window.chicagoMap);
+                legend.addTo(window.chicagoMap);
             });
         }
     );
