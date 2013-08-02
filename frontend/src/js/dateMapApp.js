@@ -92,9 +92,6 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
                 });
             });
 
-            // mapped is of form:
-            // [ { Average, Code, Count, Percent, Name, Slug, Wards}, ...]
-
             var serviceList = _.sortBy(mapped, function(obj) {
                 return obj.Slug;
             });
@@ -121,7 +118,6 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
             ].reverse();
 
             var allCounts = _.toArray(serviceObj.Wards);
-            var minCount = _.min(allCounts);
             var maxCount = _.max(allCounts);
             var hasRanges = maxCount >= wardColors.length;
 
@@ -133,10 +129,8 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
             }
 
             var allColors = _.map(allCounts, function(count) {
-                var pos = Math.max(_.sortedIndex(grades, count + 0.0001) - 1, 0);
-                if (count == _.last(grades)) {
-                    pos = grades.length - 1;
-                }
+                // Shift the count to be between grades, find the index (which'll never be 0), then move it back one slot.
+                var pos = _.sortedIndex(grades, count + 0.1) - 1;
                 return wardColors[pos];
             });
 
