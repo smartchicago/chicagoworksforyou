@@ -203,7 +203,7 @@ h1 {
         font-size: 13px;
         line-height: 18px;
         right: 20px;
-        margin: 0;
+        margin: 67px 0 0;
         @include box-shadow(0 0 10px fade-out(black,.7));
 
         i {
@@ -217,7 +217,7 @@ h1 {
 }
 
 .leaflet-top {
-    padding-top: 94px;
+    // padding-top: 94px;
 }
 
 .leaflet-popup-content-wrapper {

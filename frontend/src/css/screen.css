@@ -143,7 +143,7 @@ h1 {
   font-size: 13px;
   line-height: 18px;
   right: 20px;
-  margin: 0;
+  margin: 67px 0 0;
   -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); }
@@ -153,9 +153,6 @@ h1 {
     height: 18px;
     vertical-align: bottom;
     margin-right: 4px; }
-
-.leaflet-top {
-  padding-top: 94px; }
 
 .leaflet-popup-content-wrapper {
   border-radius: 8px; }
