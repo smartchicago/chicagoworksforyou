@@ -166,7 +166,7 @@ dateMapApp.controller("dateMapCtrl", function ($scope, $http, $location, $routeP
                             weight: 1,
                             dashArray: '3',
                             color: 'white',
-                            fillOpacity: 1,
+                            fillOpacity: 0.8,
                             fillColor: allColors[wardNum-1]
                         }
                     )
