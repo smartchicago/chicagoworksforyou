@@ -308,7 +308,7 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
                     var chart = $('#counts-chart').highcharts();
                     var pbOptions = chart.yAxis[0].plotLinesAndBands[0].options;
                     pbOptions.value = todaysCount;
-                    pbOptions.label.text = pbOptions.label.text.split(': ')[0] + ': ' + todaysCount + " request" + (todaysCount == 1 ? "" : "s");
+                    pbOptions.label.text = Data.dateObj.format("MMM D: ") + todaysCount + " request" + (todaysCount == 1 ? "" : "s");
                     chart.yAxis[0].update({plotLines: [pbOptions]});
                 }
             });
