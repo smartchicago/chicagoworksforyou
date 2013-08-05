@@ -31,6 +31,7 @@ window.wardNum = {{ page.ward }};
                 </div>
                 {% raw %}
                 <ul class="st-list nav nav-pills nav-stacked">
+                    <li ng-class="{active: !data.serviceObj}"><a href="#">All service types</a></li>
                     <li ng-class="{active: service.slug == data.serviceObj.slug}" ng-repeat="service in data.services | orderBy:'name'"><a ng-href="#/{{ data.date }}/{{ service.slug }}" ng-bind="service.name"></a></li>
                 </ul>
                 {% endraw %}
