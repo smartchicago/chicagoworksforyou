@@ -18,17 +18,14 @@ var wardApp = angular.module('wardApp', []).value('$anchorScroll', angular.noop)
 
 wardApp.config(function($routeProvider) {
     $routeProvider.
-        when('/:date', {
-            controller: "wardOverviewCtrl",
-            templateUrl: "/views/ward_overview.html"
-        }).
         when('/', {
-            controller: "wardOverviewCtrl",
-            templateUrl: "/views/ward_overview.html"
+            action: "overview"
         }).
-        when('/:date/:serviceSlug', {
-            controller: "wardCtrl",
-            templateUrl: "/views/ward_charts.html"
+        when('/:date/', {
+            action: "overview"
+        }).
+        when('/:date/:serviceSlug/', {
+            action: "detail"
         }).
         otherwise({
             redirectTo: '/'
@@ -39,8 +36,6 @@ wardApp.factory('Data', function ($location, $route, $routeParams) {
     var data = {
         wardNum: window.wardNum
     };
-
-    // WARD MAP
 
     if (!window.chicagoMap) {
         window.chicagoMap = L.map('map', {scrollWheelZoom: false}).setView(wardCenter, 13);
@@ -82,7 +77,7 @@ wardApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
     $scope.data = Data;
 
     $scope.prevDay = function () {
-        var urlSuffix = Data.serviceObj ? Data.serviceObj.slug : '';
+        var urlSuffix = Data.serviceObj.slug ? Data.serviceObj.slug + '/' : '';
         $location.path(Data.prevDay + "/" + urlSuffix);
     };
 
@@ -91,291 +86,322 @@ wardApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
     };
 
     $scope.nextDay = function () {
-        var urlSuffix = Data.serviceObj ? Data.serviceObj.slug : '';
+        var urlSuffix = Data.serviceObj.slug ? Data.serviceObj.slug + '/' : '';
         $location.path(Data.nextDay + "/" + urlSuffix);
     };
 });
 
-wardApp.controller("wardOverviewCtrl", function ($scope, Data, $http, $location, $routeParams) {
-    Data.setDate(parseDate($routeParams.date, window.yesterday, $location));
-    Data.serviceObj = null;
+wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $route, $routeParams) {
+    var renderOverview = function(render) {
+        var DAY_COUNT = 1;
+        var highsURL = window.apiDomain + 'wards/' + window.wardNum + '/historic_highs.json?include_date=' + Data.date + '&count=' + DAY_COUNT + '&callback=JSON_CALLBACK';
 
-    $scope.data = Data;
-
-    var DAY_COUNT = 1;
-    var highsURL = window.apiDomain + 'wards/' + window.wardNum + '/historic_highs.json?include_date=' + Data.date + '&count=' + DAY_COUNT + '&callback=JSON_CALLBACK';
-
-    $http.jsonp(highsURL).
-        success(function(response, status, headers, config) {
-            var historicHighs = [];
-            _.each(response.Highs, function(val, key) {
-                historicHighs.push({
-                    'service': lookupCode(key).name,
-                    'y': val ? val[0].Count: 0,
-                    'name': val ? moment(val[0].Date).format("MMM D, 'YY") : '',
-                    'current': response.Current[key].Count
+        $http.jsonp(highsURL).
+            success(function(response, status, headers, config) {
+                var historicHighs = [];
+                _.each(response.Highs, function(val, key) {
+                    historicHighs.push({
+                        'service': lookupCode(key).name,
+                        'y': val ? val[0].Count: 0,
+                        'name': val ? moment(val[0].Date).format("MMM D, 'YY") : '',
+                        'current': response.Current[key].Count
+                    });
                 });
-            });
-            historicHighs = _.sortBy(historicHighs, 'service');
+                historicHighs = _.sortBy(historicHighs, 'service');
 
-            var categories = _.pluck(historicHighs, 'service');
-            var current = _.pluck(historicHighs, 'current');
+                var categories = _.pluck(historicHighs, 'service');
+                var current = _.pluck(historicHighs, 'current');
 
-            var countsChart = new Highcharts.Chart({
-                chart: {
-                    type: 'bar',
-                    renderTo: 'highs-chart',
-                    marginBottom: 30
-                },
-                series: [{
-                    data: historicHighs,
-                    name: "Historic high"
-                },{
-                    data: current,
-                    type: 'scatter',
-                    name: Data.dateFormatted
-                }],
-                xAxis: {
-                    categories: categories,
-                    tickmarkPlacement: 'between',
-                    labels: {
-                        style: {
-                            fontFamily: 'Monda, sans-serif',
-                            fontSize: '15px'
+                if (render) {
+                    var countsChart = new Highcharts.Chart({
+                        chart: {
+                            type: 'bar',
+                            renderTo: 'highs-chart',
+                            marginBottom: 30
                         },
-                        useHTML: true,
-                        y: 5
-                    }
-                },
-                yAxis: {
-                    opposite: true,
-                    title: {
-                        text: ''
-                    }
-                },
-                plotOptions: {
-                    bar: {
-                        animation: false,
-                        borderWidth: 0,
-                        groupPadding: 0.08,
-                        dataLabels: {
-                            color: "#000000",
-                            enabled: true,
-                            format: "{point.name}",
-                            style: {
-                                fontFamily: "Monda, Helvetica, sans-serif",
-                                fontSize: '12px'
+                        series: [{
+                            data: historicHighs,
+                            name: "Historic high",
+                            id: 1
+                        },{
+                            data: current,
+                            type: 'scatter',
+                            name: Data.dateFormatted,
+                            id: 2
+                        }],
+                        xAxis: {
+                            categories: categories,
+                            tickmarkPlacement: 'between',
+                            labels: {
+                                style: {
+                                    fontFamily: 'Monda, sans-serif',
+                                    fontSize: '15px'
+                                },
+                                useHTML: true,
+                                y: 5
                             }
                         },
-                        pointPadding: 0
-                    },
-                    scatter: {
-                        animation: false
-                    }
-                },
-                legend: {
-                    enabled: false
-                },
-                title: {
-                    text: ''
-                },
-                tooltip: {
-                    headerFormat: '',
-                    shadow: false,
-                    style: {
-                        fontFamily: 'Monda, sans-serif',
-                        fontSize: '15px'
-                    }
+                        yAxis: {
+                            opposite: true,
+                            title: {
+                                text: ''
+                            }
+                        },
+                        plotOptions: {
+                            bar: {
+                                animation: false,
+                                borderWidth: 0,
+                                groupPadding: 0.08,
+                                dataLabels: {
+                                    color: "#000000",
+                                    enabled: true,
+                                    format: "{point.name}",
+                                    style: {
+                                        fontFamily: "Monda, Helvetica, sans-serif",
+                                        fontSize: '12px'
+                                    }
+                                },
+                                pointPadding: 0
+                            },
+                            scatter: {
+                                animation: false
+                            }
+                        },
+                        legend: {
+                            enabled: false
+                        },
+                        title: {
+                            text: ''
+                        },
+                        tooltip: {
+                            headerFormat: '',
+                            shadow: false,
+                            style: {
+                                fontFamily: 'Monda, sans-serif',
+                                fontSize: '15px'
+                            }
+                        }
+                    });
+                } else {
+                    $('#highs-chart').highcharts().get(2).setData(current);
                 }
             });
-        });
-});
+    };
 
-wardApp.controller("wardCtrl", function ($scope, Data, $http, $location, $routeParams, $timeout) {
-    Data.setDate(parseDate($routeParams.date, window.yesterday, $location));
-
-    var serviceObj = {};
-    if ($routeParams.serviceSlug) {
-        serviceObj = window.lookupSlug($routeParams.serviceSlug);
-    }
-    Data.serviceObj = serviceObj;
-
-    $scope.data = Data;
-
-    var DAY_COUNT = 6;
-    var highsURL = window.apiDomain + 'wards/' + window.wardNum + '/historic_highs.json?service_code=' + serviceObj.code + '&include_date=' + Data.date + '&count=' + DAY_COUNT + '&callback=JSON_CALLBACK';
-    var ttcURL = window.apiDomain + 'requests/time_to_close.json?count=7&service_code=' + serviceObj.code + '&end_date=' + Data.date + '&callback=JSON_CALLBACK';
-
-    // CHARTS
-
-    Highcharts.setOptions({
-        chart: {
-            marginBottom: 30
-        },
-        title: {
-            text: ''
-        },
-        xAxis: {
-            minPadding: 0.05,
-            maxPadding: 0.05,
-            tickmarkPlacement: 'between',
-            labels: {
-                style: {
-                    fontFamily: 'Monda, sans-serif',
-                    fontSize: '13px'
-                },
-                useHTML: true,
-                y: 22
-            }
-        },
-        yAxis: {
+    var renderDetail = function (render) {
+        var DAY_COUNT = 6;
+        var highsURL = window.apiDomain + 'wards/' + window.wardNum + '/historic_highs.json?service_code=' + Data.serviceObj.code + '&include_date=' + Data.date + '&count=' + DAY_COUNT + '&callback=JSON_CALLBACK';
+        var ttcURL = window.apiDomain + 'requests/time_to_close.json?count=7&service_code=' + Data.serviceObj.code + '&end_date=' + Data.date + '&callback=JSON_CALLBACK';
+        var highchartsDefaults = {
+            chart: {
+                marginBottom: 30
+            },
             title: {
                 text: ''
             },
-            minPadding: 0.1,
-            labels: {
+            xAxis: {
+                minPadding: 0.05,
+                maxPadding: 0.05,
+                tickmarkPlacement: 'between',
+                labels: {
+                    style: {
+                        fontFamily: 'Monda, sans-serif',
+                        fontSize: '13px'
+                    },
+                    useHTML: true,
+                    y: 22
+                }
+            },
+            yAxis: {
+                title: {
+                    text: ''
+                },
+                minPadding: 0.1,
+                labels: {
+                    style: {
+                        fontFamily: 'Monda, sans-serif',
+                        fontWeight: 'bold'
+                    },
+                    align: 'left',
+                    x: 0,
+                    y: 3
+                },
+                offset: 30
+            },
+            tooltip: {
+                headerFormat: '',
+                shadow: false,
                 style: {
                     fontFamily: 'Monda, sans-serif',
-                    fontWeight: 'bold'
-                },
-                align: 'left',
-                x: 0,
-                y: 3
+                    fontSize: '15px'
+                }
             },
-            offset: 30
-        },
-        tooltip: {
-            headerFormat: '',
-            shadow: false,
-            style: {
-                fontFamily: 'Monda, sans-serif',
-                fontSize: '15px'
+            legend: {
+                enabled: false,
+                borderWidth: 0,
+                backgroundColor: "#f7f7f7",
+                padding: 10
             }
-        },
-        legend: {
-            enabled: false,
-            borderWidth: 0,
-            backgroundColor: "#f7f7f7",
-            padding: 10
-        }
-    });
+        };
 
+        $http.jsonp(highsURL).
+            success(function(response, status, headers, config) {
+                var todaysCount = _.last(response).Count;
+                var highs = _.initial(response);
+                var highCounts = _.pluck(highs, "Count");
+                var categories = _.map(highs, function(d) {
+                    var m = moment(d.Date);
+                    return "<a href='/#/" + m.format(dateFormat) + "/" + Data.serviceObj.slug + "'>" + m.format("MMM D<br>YYYY") + "</a>";
+                });
 
-    $http.jsonp(highsURL).
-        success(function(response, status, headers, config) {
-
-            var todaysCount = _.last(response).Count;
-            var highs = _.initial(response);
-            var highCounts = _.pluck(highs, "Count");
-            var categories = _.map(highs, function(d) {
-                var m = moment(d.Date);
-                return "<a href='/#/" + m.format(dateFormat) + "/" + serviceObj.slug + "'>" + m.format("MMM D<br>YYYY") + "</a>";
-            });
-
-            var countsChart = new Highcharts.Chart({
-                chart: {
-                    type: 'column',
-                    renderTo: 'counts-chart',
-                    marginBottom: 70
-                },
-                plotOptions: {
-                    column: {
-                        animation: false,
-                        groupPadding: 0.05,
-                        pointPadding: 0,
-                        color: "#4897F1"
-                    }
-                },
-                series: [{
-                    name: "All-time highs for Ward " + wardNum,
-                    data: highCounts
-                }],
-                tooltip: {
-                    formatter: function() {
-                        return '<b>' + this.y + '</b> ' + ' request' + (this.y > 1 ? 's' : '');
-                    }
-                },
-                xAxis: {
-                    categories: categories
-                },
-                yAxis: {
-                    plotLines: [{
-                        id: 'avg',
-                        value: todaysCount,
-                        color: 'black',
-                        width: 2,
-                        zIndex: 5,
-                        label: {
-                            align: 'right',
-                            color: 'black',
-                            text: Data.dateObj.format("MMM D: ") + todaysCount + " request" + (todaysCount == 1 ? "" : "s"),
-                            y: -8,
-                            x: 0,
-                            style: {
-
-                                fontWeight: 'bold',
-                                fontFamily: 'Monda, Helvetica, sans-serif',
-                                fontSize: '14px'
+                if (render) {
+                    Highcharts.setOptions(highchartsDefaults);
+                    var countsChart = new Highcharts.Chart({
+                        chart: {
+                            type: 'column',
+                            renderTo: 'counts-chart',
+                            marginBottom: 70
+                        },
+                        plotOptions: {
+                            column: {
+                                animation: false,
+                                groupPadding: 0.05,
+                                pointPadding: 0,
+                                color: "#4897F1"
                             }
+                        },
+                        series: [{
+                            name: "All-time highs for Ward " + wardNum,
+                            data: highCounts
+                        }],
+                        tooltip: {
+                            formatter: function() {
+                                return '<b>' + this.y + '</b> ' + ' request' + (this.y > 1 ? 's' : '');
+                            }
+                        },
+                        xAxis: {
+                            categories: categories
+                        },
+                        yAxis: {
+                            plotLines: [{
+                                id: 'avg',
+                                value: todaysCount,
+                                color: 'black',
+                                width: 2,
+                                zIndex: 5,
+                                label: {
+                                    align: 'right',
+                                    color: 'black',
+                                    text: Data.dateObj.format("MMM D: ") + todaysCount + " request" + (todaysCount == 1 ? "" : "s"),
+                                    y: -8,
+                                    x: 0,
+                                    style: {
+                                        fontWeight: 'bold',
+                                        fontFamily: 'Monda, Helvetica, sans-serif',
+                                        fontSize: '14px'
+                                    }
+                                }
+                            }]
                         }
-                    }]
+                    });
+                } else {
+                    var chart = $('#counts-chart').highcharts();
+                    var pbOptions = chart.yAxis[0].plotLinesAndBands[0].options;
+                    pbOptions.value = todaysCount;
+                    pbOptions.label.text = Data.dateObj.format("MMM D: ") + todaysCount + " request" + (todaysCount == 1 ? "" : "s");
+                    chart.yAxis[0].update({plotLines: [pbOptions]});
                 }
             });
-        });
 
-    $http.jsonp(ttcURL).
-        success(function(response, status, headers, config) {
-            var threshold = Math.round(Math.max(response.Threshold,1));
-            var extended = _.map(response.WardData, function(val, key) { return _.extend(val,{'Ward':parseInt(key,10)}); });
-            var filtered = _.filter(extended, function(ward) { return ward.Count >= threshold && ward.Ward > 0; });
-            var sorted = _.sortBy(filtered, 'Time');
-            var wards = _.pluck(sorted, 'Ward');
-            var times = _.pluck(sorted, 'Time');
-            var position = _.indexOf(wards, Data.wardNum);
-            var colors = _.map(wards, function(ward) { return ward == Data.wardNum ? 'black' : '#BED0DE'; });
+        $http.jsonp(ttcURL).
+            success(function(response, status, headers, config) {
+                var threshold = Math.round(Math.max(response.Threshold,1));
+                var extended = _.map(response.WardData, function(val, key) { return _.extend(val,{'Ward':parseInt(key,10)}); });
+                var filtered = _.filter(extended, function(ward) { return ward.Count >= threshold && ward.Ward > 0; });
+                var sorted = _.sortBy(filtered, 'Time');
+                var wards = _.pluck(sorted, 'Ward');
+                var times = _.pluck(sorted, 'Time');
+                var position = _.indexOf(wards, Data.wardNum);
+                var colors = _.map(wards, function(ward) { return ward == Data.wardNum ? 'black' : '#BED0DE'; });
 
-            Data.inTTCchart = position >= 0;
-            Data.totalTTCWards = wards.length;
-            Data.minTTCcount = threshold;
+                Data.inTTCchart = position >= 0;
+                Data.totalTTCWards = wards.length;
+                Data.minTTCcount = threshold;
 
-            if (Data.inTTCchart) {
-                Data.wardRank = window.getOrdinal(position + 1);
-                Data.wardTime = Math.round(sorted[position].Time * 100) / 100;
-            }
+                if (Data.inTTCchart) {
+                    Data.wardRank = window.getOrdinal(position + 1);
+                    Data.wardTime = Math.round(sorted[position].Time * 100) / 100;
+                }
 
-
-
-            var ttcChart = new Highcharts.Chart({
-                chart: {
-                    type: 'column',
-                    renderTo: 'ttc-chart'
-                },
-                xAxis: {
-                    labels: {
-                        enabled: false
+                Highcharts.setOptions(highchartsDefaults);
+                var ttcChart = new Highcharts.Chart({
+                    chart: {
+                        type: 'column',
+                        renderTo: 'ttc-chart'
                     },
-                    minPadding: 0.03,
-                    maxPadding: 0
-                },
-                plotOptions: {
-                    column: {
-                        animation: false,
-                        groupPadding: 0,
-                        pointPadding: 0,
-                        borderWidth: 0,
-                        colorByPoint: true,
-                        colors: colors
+                    xAxis: {
+                        labels: {
+                            enabled: false
+                        },
+                        minPadding: 0.03,
+                        maxPadding: 0
+                    },
+                    plotOptions: {
+                        column: {
+                            animation: false,
+                            groupPadding: 0,
+                            pointPadding: 0,
+                            borderWidth: 0,
+                            colorByPoint: true,
+                            colors: colors
+                        }
+                    },
+                    series: [{
+                        name: "Time-to-close for " + Data.thisWeek,
+                        data: times
+                    }],
+                    tooltip: {
+                        formatter: function() {
+                            return '<b>' + Math.round(this.y * 10) / 10 + ' day' + (this.y == 1 ? '' : 's') + ' </b><br>Ward ' + wards[this.x];
+                        }
                     }
-                },
-                series: [{
-                    name: "Time-to-close for " + Data.thisWeek,
-                    data: times
-                }],
-                tooltip: {
-                    formatter: function() {
-                        return '<b>' + Math.round(this.y * 10) / 10 + ' day' + (this.y == 1 ? '' : 's') + ' </b><br>Ward ' + wards[this.x];
-                    }
+                });
+            }
+        );
+    };
+
+    var changeService = function() {
+        if (Data.action == "overview") {
+            renderOverview(true);
+        } else if (Data.action == "detail") {
+            renderDetail(true);
+        }
+    };
+
+    var changeDate = function() {
+        if (Data.action == "overview") {
+            renderOverview(false);
+        } else if (Data.action == "detail") {
+            renderDetail(false);
+        }
+    };
+
+    $scope.data = Data;
+
+    $scope.$on(
+        "$routeChangeSuccess",
+        function ($e, $currentRoute, $previousRoute) {
+            Data.setDate(parseDate($routeParams.date, window.yesterday, $location));
+            if (!$previousRoute || $currentRoute.pathParams.serviceSlug != $previousRoute.pathParams.serviceSlug) {
+                Data.action = $route.current.action;
+                Data.serviceObj = {};
+                if ($currentRoute.pathParams.serviceSlug) {
+                    Data.serviceObj = window.lookupSlug($currentRoute.pathParams.serviceSlug);
                 }
-            });
-        });
+                changeService();
+            } else {
+                changeDate();
+            }
+        }
+    );
 });
