@@ -327,6 +327,10 @@ ul.nav .alderman a {
   .wardApp .explanation b {
     font-weight: bold; }
 
+.mediaApp .nav-pills .count {
+  font-size: 11px;
+  color: #888;
+  padding-left: 3px; }
 .mediaApp .content {
   padding-top: 20px; }
 .mediaApp .images .image {

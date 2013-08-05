@@ -517,6 +517,14 @@ ul.nav .alderman {
 // MEDIA
 
 .mediaApp {
+    .nav-pills {
+        .count {
+            font-size: 11px;
+            color: #888;
+            padding-left: 3px;
+        }
+    }
+
     .content {
         padding-top: 20px;
     }

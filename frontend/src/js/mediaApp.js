@@ -30,6 +30,12 @@ mediaApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
         $location.path(service.slug);
         Data.setService(service.slug, service.name);
     };
+
+    $scope.serviceCount = function(name) {
+        if (Data.mediaGroupped) {
+            return Data.mediaGroupped[name];
+        }
+    };
 });
 
 mediaApp.controller("mediaCtrl", function ($scope, $http, Data, $location) {
@@ -45,7 +51,8 @@ mediaApp.controller("mediaCtrl", function ($scope, $http, Data, $location) {
 
     $http.jsonp(url).
         success(function(response, status, headers, config) {
-            $scope.media = response;
+            Data.media = response;
+            Data.mediaGroupped = _.countBy(response,'Service_name');
         }
     );
 });
