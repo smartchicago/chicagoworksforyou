@@ -135,6 +135,24 @@ h1 {
   .dateMapApp .pagination li:last-child a {
     padding-right: 20px;
     text-align: right; }
+.dateMapApp .legend {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 4px;
+  padding: 8px 10px;
+  font-family: 'Monda', Helvetica, sans-serif;
+  font-size: 13px;
+  line-height: 18px;
+  right: 20px;
+  margin: 67px 0 0;
+  -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); }
+  .dateMapApp .legend i {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    vertical-align: bottom;
+    margin-right: 4px; }
 
 .leaflet-popup-content-wrapper {
   border-radius: 8px; }
