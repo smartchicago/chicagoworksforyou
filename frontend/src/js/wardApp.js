@@ -368,7 +368,7 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
                 });
             }
         );
-    }
+    };
 
     var changeService = function() {
         if (Data.action == "overview") {
