@@ -331,6 +331,8 @@ ul.nav .alderman a {
   font-size: 11px;
   color: #888;
   padding-left: 3px; }
+.mediaApp .nav-pills .active .count {
+  color: rgba(255, 255, 255, 0.7); }
 .mediaApp .content {
   padding-top: 20px; }
 .mediaApp .images .image {

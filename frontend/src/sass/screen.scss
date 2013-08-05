@@ -523,6 +523,12 @@ ul.nav .alderman {
             color: #888;
             padding-left: 3px;
         }
+
+        .active {
+            .count {
+                color: fade-out(white,.3);
+            }
+        }
     }
 
     .content {
