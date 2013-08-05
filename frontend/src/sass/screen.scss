@@ -501,10 +501,16 @@ ul.nav .alderman {
     .counts {
         h3 {
             margin: 0 0 1em;
+            line-height: 1.3;
         }
     }
 
-    .chart {
+    .overview-chart {
+         width:100%;
+         height:600px;
+    }
+
+    .service-chart {
          width:100%;
          height:350px;
     }
