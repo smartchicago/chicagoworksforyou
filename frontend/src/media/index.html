@@ -13,8 +13,8 @@ has_js: true
                 <h1>Recent photos</h1>
                 {% raw %}
                 <ul class="st-list nav nav-pills nav-stacked">
-                    <li ng-class="{active: !data.currServiceSlug}"><a href="" ng-click="filterByService()">All service types</a></li>
-                    <li ng-class="{active: service.slug == data.currServiceSlug}" ng-repeat="service in data.services | orderBy:'name'"><a href="" ng-click="filterByService(service)" ng-bind="service.name"></a></li>
+                    <li ng-class="{active: !data.currServiceSlug}"><a href="" ng-click="filterByService()">All service types <span class="count" ng-bind="data.media.length"></span></a></li>
+                    <li ng-class="{active: service.slug == data.currServiceSlug}" ng-repeat="service in data.services | orderBy:'name'"><a href="" ng-click="filterByService(service)"><span ng-bind="service.name"></span> <span class="count" ng-bind="serviceCount(service.name)"></span></a></li>
                 </ul>
                 {% endraw %}
             </div>
@@ -23,7 +23,7 @@ has_js: true
             <p>Chicago's Open311 system allows users to attach photos to their service requests. The photos below are real-time submissions of 311 requests with pictures attached. Clicking on a picture will take you to the <a href="http://servicetracker.cityofchicago.org/">Service Tracker page</a> for that request. </p>
             <div ng-controller="mediaCtrl">
                 {% raw %}
-                <a class="image" ng-href="http://servicetracker.cityofchicago.org/requests/{{ img.Service_request_id }}" ng-repeat="img in media | filter:data.search">
+                <a class="image" ng-href="http://servicetracker.cityofchicago.org/requests/{{ img.Service_request_id }}" ng-repeat="img in data.media | filter:data.search">
                     <img ng-src="{{ img.Media_url }}" alt="{{ img.Address }}">
                     <span ng-bind="img.Service_name"></span>
                 </a>

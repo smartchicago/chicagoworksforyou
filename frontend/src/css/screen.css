@@ -16,6 +16,9 @@ html, body {
   right: 0;
   z-index: 2000; }
 
+.nav-pills > li > a {
+  padding: 7px 9px; }
+
 .topnav {
   background: black;
   z-index: 5000; }
@@ -331,6 +334,12 @@ ul.nav .alderman a {
   .wardApp .explanation b {
     font-weight: bold; }
 
+.mediaApp .nav-pills .count {
+  font-size: 11px;
+  color: #888;
+  padding-left: 3px; }
+.mediaApp .nav-pills .active .count {
+  color: rgba(255, 255, 255, 0.7); }
 .mediaApp .content {
   padding-top: 20px; }
 .mediaApp .images .image {
