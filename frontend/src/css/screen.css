@@ -217,13 +217,20 @@ h1 {
       color: #222;
       font-size: 16px; }
     .service-list li.active .metadata {
-      display: block; }
+      padding-top: 4px;
+      opacity: 1;
+      height: auto; }
     .service-list li.active:before {
       opacity: 1; }
   .service-list .metadata {
-    display: none;
+    display: block;
     font-size: 13px;
-    padding-top: 4px; }
+    height: 0;
+    opacity: 0;
+    -webkit-transition: all 200ms ease;
+    -moz-transition: all 200ms ease;
+    -o-transition: all 200ms ease;
+    transition: all 200ms ease; }
   .service-list .bar {
     position: absolute;
     left: 0;
