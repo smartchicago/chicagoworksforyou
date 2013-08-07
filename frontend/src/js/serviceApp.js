@@ -32,13 +32,20 @@ serviceApp.config(function($routeProvider) {
 serviceApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
     $scope.data = Data;
 
-    $scope.prevDate = function () {
-        $location.path(Data.prevWeek);
+    $scope.goToPrevDate = function() {
+        if (Data.prevWeek.day(0).isBefore(window.earliestDate)) {
+            return false;
+        }
+        $location.path(Data.prevWeek.format(dateFormat));
     };
 
-    $scope.nextDate = function () {
-        $location.path(Data.nextWeek);
+    $scope.goToNextDate = function() {
+        if (Data.nextWeek.day(0).isAfter(window.yesterday)) {
+            return false;
+        }
+        $location.path(Data.nextWeek.format(dateFormat));
     };
+
 });
 
 serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $routeParams) {
@@ -47,8 +54,8 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
     var endDate = moment(date).day(6).max(window.yesterday);
     var duration = endDate.diff(startDate, 'days');
 
-    Data.prevWeek = moment(startDate).subtract('day',1).format(dateFormat);
-    Data.nextWeek = moment(endDate).add('day',7).format(dateFormat);
+    Data.prevWeek = moment(startDate).subtract('day',1);
+    Data.nextWeek = moment(endDate).add('day',7);
     Data.thisDate = moment.duration(duration,"days").beforeMoment(endDate,true).format({implicitYear: false});
 
     $scope.data = Data;
