@@ -22,6 +22,10 @@ html, body {
     z-index: 2000;
 }
 
+.nav-pills > li > a {
+    padding: 7px 9px;
+}
+
 .topnav {
     background:black;
     z-index: 5000;
@@ -527,6 +531,20 @@ ul.nav .alderman {
 // MEDIA
 
 .mediaApp {
+    .nav-pills {
+        .count {
+            font-size: 11px;
+            color: #888;
+            padding-left: 3px;
+        }
+
+        .active {
+            .count {
+                color: fade-out(white,.3);
+            }
+        }
+    }
+
     .content {
         padding-top: 20px;
     }

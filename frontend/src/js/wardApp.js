@@ -62,8 +62,9 @@ wardApp.factory('Data', function ($location, $route, $routeParams) {
         data.date = date.format(dateFormat);
         data.dateObj = date;
         data.dateFormatted = date.format('MMM D, YYYY');
-        data.prevDay = moment(date).subtract('day',1).format(dateFormat);
-        data.nextDay = moment(date).add('day',1).format(dateFormat);
+        data.prevDay = moment(date).subtract('day',1);
+        data.nextDay = moment(date).add('day',1);
+        data.isLatest = data.nextDay.isAfter(window.yesterday);
     };
 
     return data;
@@ -76,18 +77,26 @@ wardApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
 
     $scope.data = Data;
 
-    $scope.prevDay = function () {
-        var urlSuffix = Data.serviceObj.slug ? Data.serviceObj.slug + '/' : '';
-        $location.path(Data.prevDay + "/" + urlSuffix);
+    var urlSuffix = function() {
+        return Data.serviceObj.slug ? Data.serviceObj.slug + '/' : '';
+    };
+
+    $scope.goToPrevDay = function() {
+        if (Data.prevDay.isBefore(window.earliestDate)) {
+            return false;
+        }
+        $location.path(Data.prevDay.format(dateFormat) + '/' + urlSuffix());
+    };
+
+    $scope.goToNextDay = function() {
+        if (Data.isLatest) {
+            return false;
+        }
+        $location.path(Data.nextDay.format(dateFormat) + '/' + urlSuffix());
     };
 
     $scope.currPage = function () {
         return false;
-    };
-
-    $scope.nextDay = function () {
-        var urlSuffix = Data.serviceObj.slug ? Data.serviceObj.slug + '/' : '';
-        $location.path(Data.nextDay + "/" + urlSuffix);
     };
 });
 
@@ -308,7 +317,7 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
                     var chart = $('#counts-chart').highcharts();
                     var pbOptions = chart.yAxis[0].plotLinesAndBands[0].options;
                     pbOptions.value = todaysCount;
-                    pbOptions.label.text = pbOptions.label.text.split(': ')[0] + ': ' + todaysCount + " request" + (todaysCount == 1 ? "" : "s");
+                    pbOptions.label.text = Data.dateObj.format("MMM D: ") + todaysCount + " request" + (todaysCount == 1 ? "" : "s");
                     chart.yAxis[0].update({plotLines: [pbOptions]});
                 }
             });
