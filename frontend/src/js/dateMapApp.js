@@ -38,8 +38,8 @@ dateMapApp.factory('Data', function () {
         data.date = date.format(dateFormat);
         data.dateFormatted = date.format('MMM D, YYYY');
         data.prevDay = moment(date).subtract('day',1);
-        data.prevDayFormatted = data.prevDay.format('MMM D');
         data.nextDay = moment(date).add('day',1);
+        data.prevDayFormatted = data.prevDay.format('MMM D');
         data.nextDayFormatted = data.nextDay.format('MMM D');
     };
 
