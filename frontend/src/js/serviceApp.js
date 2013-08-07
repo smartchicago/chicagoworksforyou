@@ -40,7 +40,7 @@ serviceApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
     };
 
     $scope.goToNextDate = function() {
-        if (Data.nextWeek.day(0).isAfter(window.yesterday)) {
+        if (data.isLatest) {
             return false;
         }
         $location.path(Data.nextWeek.format(dateFormat));
@@ -57,6 +57,7 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
     Data.prevWeek = moment(startDate).subtract('day',1);
     Data.nextWeek = moment(endDate).add('day',7);
     Data.thisDate = moment.duration(duration,"days").beforeMoment(endDate,true).format({implicitYear: false});
+    Data.isLatest = Data.nextWeek.day(0).isAfter(window.yesterday);
 
     $scope.data = Data;
 

@@ -64,6 +64,7 @@ wardApp.factory('Data', function ($location, $route, $routeParams) {
         data.dateFormatted = date.format('MMM D, YYYY');
         data.prevDay = moment(date).subtract('day',1);
         data.nextDay = moment(date).add('day',1);
+        data.isLatest = data.nextDay.isAfter(window.yesterday);
     };
 
     return data;
@@ -88,7 +89,7 @@ wardApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
     };
 
     $scope.goToNextDay = function() {
-        if (Data.nextDay.isAfter(window.yesterday)) {
+        if (Data.isLatest) {
             return false;
         }
         $location.path(Data.nextDay.format(dateFormat) + '/' + urlSuffix());

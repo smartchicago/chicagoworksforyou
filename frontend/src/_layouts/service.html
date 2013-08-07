@@ -21,7 +21,7 @@ window.currServiceType = '{{ page.service_code }}';
                     <ul>
                         <li class="prev-date"><a ng-click="goToPrevDate()">&larr;</a></li>
                         <li class="this-date"><a href="#" ng-bind="data.thisDate"></a></li>
-                        <li class="next-date"><a ng-click="goToNextDate()">&rarr;</a></li>
+                        <li class="next-date" ng-class="{disabled: data.isLatest}"><a ng-click="goToNextDate()">&rarr;</a></li>
                     </ul>
                 </div>
             </div>

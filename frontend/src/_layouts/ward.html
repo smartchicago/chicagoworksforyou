@@ -26,7 +26,7 @@ window.wardNum = {{ page.ward }};
                     <ul>
                         <li class="prev-date"><a href="" ng-click="goToPrevDay()">&larr;</a></li>
                         <li class="this-date"><a href="" ng-click="currPage()" ng-bind="data.dateFormatted"></a></li>
-                        <li class="next-date"><a href="" ng-click="goToNextDay()">&rarr;</a></li>
+                        <li class="next-date" ng-class="{disabled: data.isLatest}"><a href="" ng-click="goToNextDay()">&rarr;</a></li>
                     </ul>
                 </div>
                 {% raw %}
