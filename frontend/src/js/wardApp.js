@@ -32,7 +32,7 @@ wardApp.config(function($routeProvider) {
         });
 });
 
-wardApp.factory('Data', function ($location, $route, $routeParams) {
+wardApp.factory('Data', function () {
     var data = {
         wardNum: window.wardNum
     };
