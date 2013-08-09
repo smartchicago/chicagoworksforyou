@@ -17,13 +17,15 @@ window.currServiceType = '{{ page.service_code }}';
             <p>And XXX were closed. Here's how they break down.</p>
             {% endcomment %}
             <div class="pagination-wrap">
+                {% raw %}
                 <div class="pagination">
                     <ul>
                         <li class="prev-date"><a href="" ng-click="goToPrevDate()">&larr;</a></li>
-                        <li class="this-date"><a href="#" ng-bind="data.thisDate"></a></li>
+                        <li class="this-date"><a ng-href="#/{{data.date}}" ng-bind="data.thisDate"></a></li>
                         <li class="next-date" ng-class="{disabled: data.isLatest}"><a href="" ng-click="goToNextDate()">&rarr;</a></li>
                     </ul>
                 </div>
+                {% endraw %}
             </div>
             <div class="description">
                 {{ content }}
@@ -32,7 +34,8 @@ window.currServiceType = '{{ page.service_code }}';
                 Average number of requests opened in a ward this week: <span ng-bind="data.cityAverage"></span>
             </p>
         </div>
-        <div class="span8" ng-view>
+        <div class="span8" ng-controller="serviceCtrl">
+            <div id="chart" class="chart"></div>
         </div>
     </div>
 </div>
