@@ -41,6 +41,7 @@ dateMapApp.factory('Data', function () {
         data.nextDay = moment(date).add('day',1);
         data.prevDayFormatted = data.prevDay.format('MMM D');
         data.nextDayFormatted = data.nextDay.format('MMM D');
+        data.isLatest = data.nextDay.isAfter(window.yesterday);
     };
 
     return data;
@@ -68,7 +69,7 @@ dateMapApp.controller("dateCtrl", function ($scope, Data, $http, $location, $rou
     };
 
     $scope.goToNextDay = function() {
-        if (Data.nextDay.isAfter(window.yesterday)) {
+        if (Data.isLatest) {
             return false;
         }
         $location.path(Data.nextDay.format(dateFormat) + '/' + urlSuffix());
