@@ -26,12 +26,12 @@ window.wardNum = {{ page.ward }};
                 <div class="pagination">
                     <ul>
                         <li class="prev-date"><a href="" ng-click="goToPrevDay()">&larr;</a></li>
-                        <li class="this-date"><a ng-href="#/{{data.date}}" ng-bind="data.dateFormatted"></a></li>
+                        <li class="this-date"><a ng-href="#/{{ data.date }}/" ng-bind="data.dateFormatted"></a></li>
                         <li class="next-date" ng-class="{disabled: data.isLatest}"><a href="" ng-click="goToNextDay()">&rarr;</a></li>
                     </ul>
                 </div>
                 <ul class="st-list nav nav-pills nav-stacked">
-                    <li ng-class="{active: !data.serviceObj.slug}"><a href="#">All service types</a></li>
+                    <li ng-class="{active: !data.serviceObj.slug}"><a ng-href="#/{{ data.date }}/">All service types</a></li>
                     <li ng-class="{active: service.slug == data.serviceObj.slug}" ng-repeat="service in data.services | orderBy:'name'"><a ng-href="#/{{ data.date }}/{{ service.slug }}/" ng-bind="service.name"></a></li>
                 </ul>
                 {% endraw %}
