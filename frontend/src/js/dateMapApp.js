@@ -210,8 +210,8 @@ dateMapApp.controller("dateCtrl", function ($scope, Data, $http, $location, $rou
         function ($e, $currentRoute, $previousRoute) {
             Data.setDate(parseDate($routeParams.date, window.yesterday, $location));
             Data.serviceObj = {};
+            Data.action = $route.current.action;
             if ($currentRoute.pathParams.serviceSlug) {
-                Data.action = $route.current.action;
                 if (Data.action == 'date.service') {
                     Data.serviceObj = window.lookupSlug($currentRoute.pathParams.serviceSlug);
                 }
