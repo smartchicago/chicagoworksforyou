@@ -379,6 +379,14 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
         );
     };
 
+    var render = function (render) {
+        if (Data.action == "overview") {
+            renderOverview(render);
+        } else if (Data.action == "detail") {
+            renderDetail(render);
+        }
+    };
+
     $scope.data = Data;
 
     $scope.$on(
@@ -391,17 +399,9 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
                 if ($currentRoute.pathParams.serviceSlug) {
                     Data.serviceObj = window.lookupSlug($currentRoute.pathParams.serviceSlug);
                 }
-                if (Data.action == "overview") {
-                    renderOverview(true);
-                } else if (Data.action == "detail") {
-                    renderDetail(true);
-                }
+                render(true);
             } else {
-                if (Data.action == "overview") {
-                    renderOverview(false);
-                } else if (Data.action == "detail") {
-                    renderDetail(false);
-                }
+                render(false);
             }
         }
     );
