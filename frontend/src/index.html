@@ -8,8 +8,37 @@ has_js: true
 
 <div class="home-wrap">
     <div class="container">
-        <div class="map-overlay span3">
-            <div ng-view></div>
+        <div class="map-overlay span3" ng-controller="dateCtrl">
+            {% raw %}
+            <div class="pagination">
+                <ul>
+                    <li class="prevDay"><a href="" ng-click="goToPrevDay()">&larr; <span ng-bind="data.prevDayFormatted"></span></a></li>
+                    <li class="nextDay"><a href="" ng-click="goToNextDay()"><span ng-bind="data.nextDayFormatted"></span> &rarr;</a></li>
+                </ul>
+            </div>
+
+            <h1>Here’s what happened in Chicago on <a ng-href="#/{{ data.date }}/" ng-bind="data.dateFormatted"></a></h1>
+            <p>
+                Choose a service type to see which wards saw the most requests.
+            </p>
+
+            <ul class="service-list">
+                <li ng-repeat="service in data.serviceList" ng-class="serviceClass(service)">
+                    <a ng-href="#/{{ data.date }}/{{ service.Slug }}/">
+                        <span class="service-name" ng-bind="service.Name"></span>
+                        <span class="metadata">
+                            <b ng-bind="service.Count"></b> requests
+                            vs <b ng-bind="service.AvgRounded"></b> average
+                        </span>
+                        <span class="bar" style="width:{{ service.Percent }}%;"></span>
+                    </a>
+                </li>
+            </ul>
+
+            <p class="share-this">
+                <a ng-href="data.currURL">Share this map</a>
+            </p>
+            {% endraw %}
         </div>
     </div>
 

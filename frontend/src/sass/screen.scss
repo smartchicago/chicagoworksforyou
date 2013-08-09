@@ -318,7 +318,9 @@ h1 {
             }
 
             .metadata {
-                display: block;
+                padding-top: 4px;
+                opacity: 1;
+                height: auto;
             }
 
             &:before {
@@ -334,9 +336,11 @@ h1 {
     }
 
     .metadata {
-        display: none;
+        display: block;
         font-size: 13px;
-        padding-top: 4px;
+        height: 0;
+        opacity: 0;
+        @include transition(all 200ms ease);
     }
 
     .bar {
