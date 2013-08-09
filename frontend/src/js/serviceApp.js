@@ -40,7 +40,7 @@ serviceApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
     };
 
     $scope.goToNextDate = function() {
-        if (data.isLatest) {
+        if (Data.isLatest) {
             return false;
         }
         $location.path(Data.nextWeek.format(dateFormat));
