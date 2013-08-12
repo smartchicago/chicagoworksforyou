@@ -67,21 +67,32 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
     var chart = $('#chart').highcharts();
 
     var renderChart = function() {
-        var url = window.apiDomain + 'requests/' + stCode + '/counts.json?end_date=' + Data.endDate.format(dateFormat) + '&count=' + (Data.duration + 1) + '&callback=JSON_CALLBACK';
+        var endDate = Data.endDate.format(dateFormat);
+        var count = Data.duration + 1;
 
-        $http.jsonp(url).
+        var requestsURL = window.apiDomain + 'requests/' + stCode + '/counts.json?end_date=' + endDate + '&count=' + count + '&callback=JSON_CALLBACK';
+
+        $http.jsonp(requestsURL).
             success(function(response, status, headers, config) {
                 Data.cityCount = response.CityData.Count;
                 Data.cityAverage = response.CityData.Count / 50;
-                var wardData = response.WardData;
-                var categories = _.map(_.keys(wardData), function (wardNum) { return '<a href="/ward/' + wardNum + '/#/' + Data.endDate.format(dateFormat) + '/' + stSlug + '">Ward ' + wardNum + '</a>'; });
+
+                var wardData = _.sortBy(response.WardData, function(ward, wardNum) {
+                    ward.Ward = wardNum;
+                    return parseInt(wardNum, 10);
+                });
+
+                var categories = _.map(wardData, function (ward) {
+                    return '<a href="/ward/' + ward.Ward + '/#/' + Data.endDate.format(dateFormat) + '/' + stSlug + '">Ward ' + ward.Ward + '</a>';
+                });
+
                 var days = [[],[],[],[],[],[],[]];
-                for (var ward in wardData) {
+                _.each(wardData, function(ward) {
                     var i = 0;
-                    for (var count in wardData[ward].Counts) {
-                        days[i++].push(wardData[ward].Counts[count]);
+                    for (var count in ward.Counts) {
+                        days[i++].push(ward.Counts[count]);
                     }
-                }
+                });
 
                 var weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
                 var series = [];
