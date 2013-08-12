@@ -108,7 +108,7 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
                     }
                 }
 
-                new Highcharts.Chart({
+                var chart = new Highcharts.Chart({
                     chart: {
                         renderTo: 'chart'
                     },
@@ -139,7 +139,11 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
 
                 $http.jsonp(closesURL).
                     success(function(response, status, headers, config) {
-                        var wardData = response.WardData;
+                        var wardCloseData = _.sortBy(response.WardData, function(ward, wardNum) {
+                            ward.Ward = wardNum;
+                            return parseInt(wardNum, 10);
+                        });
+                        var closeCounts = _.pluck(wardCloseData, 'Count');
                     }
                 );
 
@@ -207,6 +211,9 @@ Highcharts.setOptions({
             },
             pointPadding: 0,
             stacking: 'normal'
+        },
+        scatter: {
+            animation: false
         }
     },
     tooltip: {
