@@ -35,6 +35,7 @@ var worker Worker
 
 //  command line flags
 var (
+	version       string // set at compile time, will be the current git hash
 	environment   = flag.String("environment", "", "Environment to run in, e.g. staging, production")
 	config        = flag.String("config", "./config/database.yml", "database configuration file")
 	sr_number     = flag.String("sr-number", "", "SR number to fetch")
@@ -45,7 +46,7 @@ var (
 func init() {
 	flag.Parse()
 
-	log.Printf("running in %s environment, configuration file %s", *environment, *config)
+	log.Printf("CWFY Fetch worker version %s running in %s environment, configuration file %s", version, *environment, *config)
 	settings := yaml.ConfigFile(*config)
 
 	// setup database connection

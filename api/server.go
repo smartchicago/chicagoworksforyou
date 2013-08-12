@@ -20,12 +20,12 @@ import (
 )
 
 type Api struct {
-	Db      *sql.DB
-	Version string
+	Db *sql.DB
 }
 
 var (
 	api          Api
+	version      string // set at compile time, will be the current git hash
 	environment  = flag.String("environment", "", "Environment to run in, e.g. staging, production")
 	config       = flag.String("config", "./config/database.yml", "database configuration file")
 	port         = flag.Int("port", 5000, "port that server will listen to (default: 5000)")
@@ -33,10 +33,7 @@ var (
 )
 
 func init() {
-	log.Print("starting ChicagoWorksforYou.com API server")
-
-	// version
-	api.Version = "0.9.0"
+	log.Printf("starting ChicagoWorksforYou.com API server version %s", version)
 
 	// load db config
 	flag.Parse()
@@ -106,7 +103,7 @@ func endpoint(f ApiEndpoint) http.HandlerFunc {
 		w = setHeaders(w)
 		params := req.URL.Query()
 
-		log.Printf("[cwfy %s] %s %s%s %+v", api.Version, req.RemoteAddr, req.Host, req.RequestURI, params)
+		log.Printf("[cwfy %s] %s %s%s %+v", version, req.RemoteAddr, req.Host, req.RequestURI, params)
 
 		t := time.Now()
 		response, err := f(params, req)
@@ -118,7 +115,7 @@ func endpoint(f ApiEndpoint) http.HandlerFunc {
 
 		w.Write(WrapJson(response, params["callback"]))
 		diff := time.Now()
-		log.Printf("[cwfy %s] %s %s%s completed in %v", api.Version, req.RemoteAddr, req.Host, req.RequestURI, diff.Sub(t))
+		log.Printf("[cwfy %s] %s %s%s completed in %v", version, req.RemoteAddr, req.Host, req.RequestURI, diff.Sub(t))
 	}
 }
 
@@ -127,7 +124,7 @@ func setHeaders(w http.ResponseWriter) http.ResponseWriter {
 	// TODO: add cache control headers
 
 	w.Header().Set("Content-type", "application/json; charset=utf-8")
-	w.Header().Set("Server", fmt.Sprintf("ChicagoWorksForYou.com/%s", api.Version))
+	w.Header().Set("Server", fmt.Sprintf("ChicagoWorksForYou.com/%s", version))
 	return w
 }
 
@@ -157,7 +154,7 @@ func HealthCheckHandler(params url.Values, request *http.Request) ([]byte, *ApiE
 		Version           string
 	}
 
-	health_check := HealthCheck{Version: api.Version}
+	health_check := HealthCheck{Version: version}
 	health_check.Database = api.Db.Ping() == nil
 
 	rows, _ := api.Db.Query("SELECT COUNT(*) FROM service_requests;")
