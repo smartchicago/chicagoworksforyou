@@ -71,6 +71,7 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
         var count = Data.duration + 1;
 
         var requestsURL = window.apiDomain + 'requests/' + stCode + '/counts.json?end_date=' + endDate + '&count=' + count + '&callback=JSON_CALLBACK';
+        var closesURL = window.apiDomain + 'requests/time_to_close.json?service_code=' + stCode + '&end_date=' + endDate + '&count=' + count + '&callback=JSON_CALLBACK';
 
         $http.jsonp(requestsURL).
             success(function(response, status, headers, config) {
@@ -135,6 +136,13 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
                         }]
                     }
                 });
+
+                $http.jsonp(closesURL).
+                    success(function(response, status, headers, config) {
+                        var wardData = response.WardData;
+                    }
+                );
+
             }
         );
     };
