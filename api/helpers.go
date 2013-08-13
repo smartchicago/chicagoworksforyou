@@ -1,12 +1,12 @@
 package main
 
 import (
-	"strings"
-	"net/http"
 	"encoding/json"
-	"log"
-	"time"
 	"fmt"
+	"log"
+	"net/http"
+	"strings"
+	"time"
 )
 
 func WrapJson(unwrapped []byte, callback []string) (jsn []byte) {
@@ -21,7 +21,7 @@ func WrapJson(unwrapped []byte, callback []string) (jsn []byte) {
 
 func endpoint(f ApiEndpoint) http.HandlerFunc {
 	// define an endpoint and setup consistent logging
-	
+
 	return func(w http.ResponseWriter, req *http.Request) {
 		w = setHeaders(w)
 		params := req.URL.Query()
