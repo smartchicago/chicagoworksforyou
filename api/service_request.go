@@ -31,6 +31,13 @@ func (srdb *ServiceRequestDB) Init(db *sql.DB) error {
 	return nil
 }
 
+func (srdb *ServiceRequestDB) Close() error {
+	log.Printf("Closing ServiceRequestDB database connection.")
+	srdb.db.Close()
+	
+	return nil
+}
+
 func (srdb *ServiceRequestDB) SetupStmts() {
 	insert, err := srdb.db.Prepare(`INSERT INTO service_requests(service_request_id,
 		status, service_name, service_code, agency_responsible,

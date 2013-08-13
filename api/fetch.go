@@ -65,7 +65,7 @@ func init() {
 }
 
 func main() {
-	// defer worker.Db.Close()
+	defer srdb.Close()
 
 	// if *sr_number != "" {
 	// 	sr := fetchSingleRequest(*sr_number)
@@ -175,10 +175,6 @@ func backFillRequests(start_from string) (requests []ServiceRequest) {
 	var fetch_from time.Time
 
 	if start_from == "" {
-		// err := worker.Db.QueryRow("SELECT updated_datetime FROM service_requests ORDER BY updated_datetime ASC LIMIT 1").Scan(&fetch_from)
-		// if err != nil {
-		// 	log.Println("error fetching oldest SR:", err)
-		// }
 		oldest, _ := srdb.Oldest() // FIXME: error handling
 		fetch_from = oldest.Updated_datetime
 		log.Printf("no start_from value provided, so falling back to oldest (by last update) SR in the database: %s", fetch_from)
