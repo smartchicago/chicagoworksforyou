@@ -23,9 +23,9 @@ var env Environment
 
 //  command line flags
 var (
-	version     string // set at compile time, will be the current git hash
-	environment = flag.String("environment", "", "Environment to run in, e.g. staging, production")
-	config      = flag.String("config", "./config/database.yml", "database configuration file")
+	version       string // set at compile time, will be the current git hash
+	environment   = flag.String("environment", "", "Environment to run in, e.g. staging, production")
+	config        = flag.String("config", "./config/database.yml", "database configuration file")
 	backfill      = flag.Bool("backfill", false, "run in reverse and backfill data")
 	backfill_date = flag.String("backfill-from", time.Now().Format(time.RFC3339), "date to start backfilling data from. Use RFC3339 format. Default will be the current time.")
 )
