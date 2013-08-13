@@ -24,7 +24,7 @@ type Api struct {
 
 var (
 	api          Api
-	env	Environment
+	env          Environment
 	version      string // set at compile time, will be the current git hash
 	environment  = flag.String("environment", "", "Environment to run in, e.g. staging, production")
 	config       = flag.String("config", "./config/database.yml", "database configuration file")

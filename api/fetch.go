@@ -3,11 +3,10 @@ package main
 import (
 	"encoding/json"
 	"flag"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"time"
-	"io/ioutil"
-
 )
 
 const OPEN311_API_URI = "http://311api.cityofchicago.org/open311/v2/requests.json?extensions=true&page_size=500"
@@ -23,9 +22,9 @@ var env Environment
 
 //  command line flags
 var (
-	version       string // set at compile time, will be the current git hash
-	environment   = flag.String("environment", "", "Environment to run in, e.g. staging, production")
-	config        = flag.String("config", "./config/database.yml", "database configuration file")
+	version     string // set at compile time, will be the current git hash
+	environment = flag.String("environment", "", "Environment to run in, e.g. staging, production")
+	config      = flag.String("config", "./config/database.yml", "database configuration file")
 	// sr_number     = flag.String("sr-number", "", "SR number to fetch")
 	backfill      = flag.Bool("backfill", false, "run in reverse and backfill data")
 	backfill_date = flag.String("backfill-from", time.Now().Format(time.RFC3339), "date to start backfilling data from. Use RFC3339 format. Default will be the current time.")
@@ -77,37 +76,37 @@ func main() {
 // 	// given an SR, fetch the record
 // 	log.Printf("fetching single SR %s", sr_number)
 // 	open311_api_endpoint := fmt.Sprintf("http://311api.cityofchicago.org/open311/v2/requests/%s.json?extensions=true", sr_number)
-// 
+//
 // 	log.Printf("fetching from %s", open311_api_endpoint)
 // 	resp, err := http.Get(open311_api_endpoint)
 // 	if err != nil {
 // 		log.Fatal("error fetching from Open311 endpoint", err)
 // 	}
 // 	defer resp.Body.Close()
-// 
+//
 // 	// load response body
 // 	body, err := ioutil.ReadAll(resp.Body)
 // 	if err != nil {
 // 		log.Fatal("error loading response body", err)
 // 	}
-// 
+//
 // 	// parse JSON and load into an array of ServiceRequest objects
 // 	var requests []ServiceRequest
-// 
+//
 // 	err = json.Unmarshal(body, &requests)
 // 	if err != nil {
 // 		log.Fatal("error parsing JSON:", err)
 // 	}
-// 
+//
 // 	log.Printf("received %d requests from Open311", len(requests))
-// 
+//
 // 	return requests[0]
 // }
 
 func fetchRequests() (requests []ServiceRequest) {
 	last_updated_at := time.Now()
 
-	newest, _ := srdb.Newest()	// FIXME: error handling
+	newest, _ := srdb.Newest() // FIXME: error handling
 	if newest != nil {
 		// override with the most recent SR available
 		last_updated_at = newest.Updated_datetime

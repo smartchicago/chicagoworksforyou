@@ -34,7 +34,7 @@ func (srdb *ServiceRequestDB) Init(db *sql.DB) error {
 func (srdb *ServiceRequestDB) Close() error {
 	log.Printf("Closing ServiceRequestDB database connection.")
 	srdb.db.Close()
-	
+
 	return nil
 }
 
@@ -67,15 +67,15 @@ func (req ServiceRequest) String() string {
 	return fmt.Sprintf("%s: %s at %s %f,%f, last update %s", req.Service_request_id, req.Service_name, req.Address, req.Lat, req.Long, req.Updated_datetime)
 }
 
-func (srdb *ServiceRequestDB) Newest() (*ServiceRequest, error) { 
-	var newest ServiceRequest	
+func (srdb *ServiceRequestDB) Newest() (*ServiceRequest, error) {
+	var newest ServiceRequest
 	if err := srdb.db.QueryRow("SELECT MAX(updated_datetime) FROM service_requests;").Scan(&newest.Updated_datetime); err != nil {
 		log.Print("error loading most recent SR", err)
 	}
 	return &newest, nil
 }
 
-func (srdb *ServiceRequestDB) Oldest() (*ServiceRequest, error) { 
+func (srdb *ServiceRequestDB) Oldest() (*ServiceRequest, error) {
 	var oldest ServiceRequest
 	if err := srdb.db.QueryRow("SELECT MIN(updated_datetime) FROM service_requests;").Scan(&oldest.Updated_datetime); err != nil {
 		log.Print("error loading oldest SR", err)

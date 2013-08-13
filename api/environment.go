@@ -1,10 +1,10 @@
 package main
 
 import (
-"github.com/kylelemons/go-gypsy/yaml"
-"database/sql"
-"fmt"
-"log"
+	"database/sql"
+	"fmt"
+	"github.com/kylelemons/go-gypsy/yaml"
+	"log"
 )
 
 type Environment struct {
@@ -15,12 +15,12 @@ func (env *Environment) Load(config, name *string) *sql.DB {
 	settings := yaml.ConfigFile(*config)
 
 	// setup database connection
-	driver, err := settings.Get(fmt.Sprintf("%s.driver", *name))	
+	driver, err := settings.Get(fmt.Sprintf("%s.driver", *name))
 	if err != nil {
 		log.Fatal("error loading db driver", err)
 	}
 	env.Driver = driver
-		
+
 	connstr, err := settings.Get(fmt.Sprintf("%s.connstr", *name))
 	if err != nil {
 		log.Fatal("error loading db connstr", err)
@@ -33,8 +33,6 @@ func (env *Environment) Load(config, name *string) *sql.DB {
 	}
 
 	log.Printf("database connstr: %s", env.Connstr)
-	
+
 	return db
 }
-
-
