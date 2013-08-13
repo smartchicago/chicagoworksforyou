@@ -46,7 +46,7 @@ wardApp.factory('Data', function () {
             styleId: 82946
         }).addTo(window.chicagoMap);
         window.chicagoMap.zoomControl.setPosition('bottomleft');
-        var polygon = L.polygon(wardPaths[wardNum - 1],
+        var polygon = L.polygon(window.wardPath,
             {
                 opacity: 1,
                 weight: 2,
