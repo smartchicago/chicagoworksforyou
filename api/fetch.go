@@ -1,13 +1,13 @@
 package main
 
 import (
-	"os"
-	"os/signal"
 	"encoding/json"
 	"flag"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
 	"time"
 )
 
@@ -60,7 +60,6 @@ func main() {
 			os.Exit(1)
 		}
 	}()
-	
 
 	start_backfill_from := *backfill_date
 	for {
