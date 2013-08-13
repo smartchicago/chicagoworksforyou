@@ -66,7 +66,41 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
     var stSlug = window.lookupCode(stCode).slug;
     var chart = $('#chart').highcharts();
 
-    var renderChart = function() {
+    var renderChart = function (categories, requests, closes) {
+        if (closes) {
+            requests.push(closes);
+        }
+        var chart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'chart'
+            },
+            colors: [
+                '#37c0b9',
+                '#37acc3',
+                '#3790c7',
+                '#3973c9',
+                '#3a56ca',
+                '#403ccc',
+                '#603fce'
+            ].reverse(),
+            series: requests.reverse(),
+            xAxis: {
+                categories: categories
+            },
+            yAxis: {
+                opposite: true,
+                plotLines: [{
+                    id: 'avg',
+                    value: Data.cityAverage,
+                    color: 'black',
+                    width: 3,
+                    zIndex: 5
+                }]
+            }
+        });
+    };
+
+    var buildChart = function() {
         var endDate = Data.endDate.format(dateFormat);
         var count = Data.duration + 1;
 
@@ -95,11 +129,11 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
                     }
                 });
 
-                var weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-                var series = [];
+                var weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+                var requestSeries = [];
                 for (var day in days) {
                     if (days[day].length > 0) {
-                        series.push({
+                        requestSeries.push({
                             name: weekdays[day],
                             data: days[day],
                             stack: 0,
@@ -108,35 +142,6 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
                     }
                 }
 
-                var chart = new Highcharts.Chart({
-                    chart: {
-                        renderTo: 'chart'
-                    },
-                    colors: [
-                        '#37c0b9',
-                        '#37acc3',
-                        '#3790c7',
-                        '#3973c9',
-                        '#3a56ca',
-                        '#403ccc',
-                        '#603fce'
-                    ].reverse(),
-                    series: series.reverse(),
-                    xAxis: {
-                        categories: categories
-                    },
-                    yAxis: {
-                        opposite: true,
-                        plotLines: [{
-                            id: 'avg',
-                            value: Data.cityAverage,
-                            color: 'black',
-                            width: 3,
-                            zIndex: 5
-                        }]
-                    }
-                });
-
                 $http.jsonp(closesURL).
                     success(function(response, status, headers, config) {
                         var wardCloseData = _.sortBy(response.WardData, function(ward, wardNum) {
@@ -144,8 +149,20 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
                             return parseInt(wardNum, 10);
                         });
                         var closeCounts = _.pluck(wardCloseData, 'Count');
-                    }
-                );
+                        var closeSeries = {
+                            data: closeCounts,
+                            type: 'scatter',
+                            name: 'Requests closed',
+                            color: 'black',
+                            stack: 0,
+                            index: 10,
+                            legendIndex: 100
+                        };
+                        renderChart(categories, requestSeries, closeSeries);
+                    }).
+                    error(function(data, status, headers, config) {
+                        renderChart(categories, requestSeries);
+                    });
 
             }
         );
@@ -158,7 +175,7 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
         function ($e, $currentRoute, $previousRoute) {
             Data.setDate(parseDate($routeParams.date, window.yesterday, $location));
             Data.currURL = "#/" + Data.date + "/";
-            renderChart();
+            buildChart();
         }
     );
 });
