@@ -9,34 +9,85 @@ import (
 	"time"
 )
 
-type Open311Request struct {
+type ServiceRequest struct {
 	Lat, Long                                                                                               float64
 	Ward, Police_district                                                                                   int
 	Service_request_id, Status, Service_name, Service_code, Agency_responsible, Address, Channel, Media_url string
-	Requested_datetime, Updated_datetime                                                                    string // FIXME: should these be proper time objects?
+	Requested_datetime, Updated_datetime                                                                    time.Time // FIXME: should these be proper time objects?
 	Extended_attributes                                                                                     map[string]interface{}
 	Notes                                                                                                   []map[string]interface{}
 }
 
-func (req Open311Request) String() string {
+type ServiceRequestDB struct {
+	InsertStmt *sql.Stmt
+	UpdateStmt *sql.Stmt
+	db         *sql.DB
+}
+
+func (srdb *ServiceRequestDB) Init(db *sql.DB) error {
+	srdb.db = db
+	srdb.SetupStmts()
+
+	return nil
+}
+
+func (srdb *ServiceRequestDB) SetupStmts() {
+	insert, err := srdb.db.Prepare(`INSERT INTO service_requests(service_request_id,
+		status, service_name, service_code, agency_responsible,
+		address, requested_datetime, updated_datetime, lat, long,
+		ward, police_district, media_url, channel, duplicate, parent_service_request_id, closed_datetime, notes)
+		VALUES ($1::varchar, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18);`)
+
+	if err != nil {
+		log.Fatal("error preparing insert statement ", err)
+	}
+	srdb.InsertStmt = insert
+
+	update, err := srdb.db.Prepare(`UPDATE service_requests SET
+		status = $2, service_name = $3, service_code = $4, agency_responsible = $5, 
+		address = $6, requested_datetime = $7, updated_datetime = $8, lat = $9, long = $10,
+		ward = $11, police_district = $12, media_url = $13, channel = $14, duplicate = $15,
+		parent_service_request_id = $16, updated_at = NOW(), closed_datetime = $17, notes = $18 WHERE service_request_id = $1;`)
+
+	if err != nil {
+		log.Fatal("error preparing update statement ", err)
+	}
+	srdb.UpdateStmt = update
+}
+
+func (req ServiceRequest) String() string {
 	// pretty print SR information
 	return fmt.Sprintf("%s: %s at %s %f,%f, last update %s", req.Service_request_id, req.Service_name, req.Address, req.Lat, req.Long, req.Updated_datetime)
 }
 
-func (req Open311Request) Save() (persisted bool) {
-	// create or update a SR
+func (srdb *ServiceRequestDB) Newest() (*ServiceRequest, error) { 
+	var newest ServiceRequest	
+	if err := srdb.db.QueryRow("SELECT MAX(updated_datetime) FROM service_requests;").Scan(&newest.Updated_datetime); err != nil {
+		log.Print("error loading most recent SR", err)
+	}
+	return &newest, nil
+}
+
+func (srdb *ServiceRequestDB) Oldest() (*ServiceRequest, error) { 
+	var oldest ServiceRequest
+	if err := srdb.db.QueryRow("SELECT MIN(updated_datetime) FROM service_requests;").Scan(&oldest.Updated_datetime); err != nil {
+		log.Print("error loading oldest SR", err)
+	}
+	return &oldest, nil
+}
+
+func (srdb *ServiceRequestDB) Save(req *ServiceRequest) (persisted bool) { // FIXME: should return error, too
+	persisted = false
 
 	// open311 says we should always ignore a SR that does not have a SR# assigned
 	if req.Service_request_id == "" {
 		log.Printf("cowardly refusing to create a new SR record because of empty SR#. Request type is %s", req.Service_name)
-		return false
+		return persisted
 	}
-
-	persisted = false
 
 	// find existing record if exists
 	var existing_id int
-	err := worker.Db.QueryRow("SELECT id FROM service_requests WHERE service_request_id = $1", req.Service_request_id).Scan(&existing_id)
+	err := srdb.db.QueryRow("SELECT id FROM service_requests WHERE service_request_id = $1", req.Service_request_id).Scan(&existing_id)
 	switch {
 	case err == sql.ErrNoRows:
 		// log.Printf("did not find existing record %s", req.Service_request_id)
@@ -50,9 +101,9 @@ func (req Open311Request) Save() (persisted bool) {
 	var stmt *sql.Stmt
 
 	if !persisted {
-		stmt = worker.InsertStmt
+		stmt = srdb.InsertStmt
 	} else {
-		stmt = worker.UpdateStmt
+		stmt = srdb.UpdateStmt
 	}
 
 	t := req.ExtractClosedDatetime()
@@ -104,7 +155,7 @@ func (req Open311Request) Save() (persisted bool) {
 	return persisted
 }
 
-func (req Open311Request) ExtractClosedDatetime() time.Time {
+func (req ServiceRequest) ExtractClosedDatetime() time.Time {
 	// given an extended_attributes JSON blob, pluck out the closed time, if present
 	// req.PrintNotes()
 
@@ -123,7 +174,7 @@ func (req Open311Request) ExtractClosedDatetime() time.Time {
 	return closed_at
 }
 
-func (req Open311Request) PrintNotes() {
+func (req ServiceRequest) PrintNotes() {
 	fmt.Printf("Notes for SR %s:\n", req.Service_request_id)
 
 	for _, note := range req.Notes {
