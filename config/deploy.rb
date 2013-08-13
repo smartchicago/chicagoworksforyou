@@ -38,14 +38,14 @@ namespace :deploy do
   namespace :compile do
     task :api do
       out = "server"
-      run_locally "export GOOS=linux && export GOARCH=amd64 && /usr/local/bin/go build -o /tmp/#{out} -ldflags '-X main.version `git rev-parse --short HEAD`' api/server.go"
+      run_locally %Q(export GOOS=linux && export GOARCH=amd64 && /usr/local/bin/go build -o /tmp/#{out} -ldflags "-X main.version `git rev-parse --short HEAD`" api/server.go api/helpers.go api/environment.go api/*_handler.go)
       top.upload "/tmp/#{out}", "#{release_path}/bin/#{out}", mode: "0755", via: :scp
       run_locally "rm -f /tmp/#{out}"
     end
 
     task :worker do
       out = "fetch"
-      run_locally "export GOOS=linux && export GOARCH=amd64 && /usr/local/bin/go build -o /tmp/#{out} -ldflags '-X main.version `git rev-parse --short HEAD`' api/fetch.go"
+      run_locally %Q(export GOOS=linux && export GOARCH=amd64 && /usr/local/bin/go build -o /tmp/#{out} -ldflags "-X main.version `git rev-parse --short HEAD`" api/fetch.go api/environment.go api/service_request.go)
       top.upload "/tmp/#{out}", "#{release_path}/bin/#{out}", mode: "0755", via: :scp
       run_locally "rm -f /tmp/#{out}"
     end
