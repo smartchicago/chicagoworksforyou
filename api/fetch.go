@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+	"os/signal"
 	"encoding/json"
 	"flag"
 	"io/ioutil"
@@ -47,6 +49,18 @@ func main() {
 	// 	srdb.Save(sr)
 	// 	return
 	// }
+
+	// listen for SIGINT (h/t http://stackoverflow.com/a/12571099/1247272)
+	notify_channel := make(chan os.Signal, 1)
+	signal.Notify(notify_channel, os.Interrupt, os.Kill)
+	go func() {
+		for _ = range notify_channel {
+			log.Printf("stopping ChicagoWorksForYou.com worker")
+			srdb.Close()
+			os.Exit(1)
+		}
+	}()
+	
 
 	start_backfill_from := *backfill_date
 	for {
