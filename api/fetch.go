@@ -1,15 +1,13 @@
 package main
 
 import (
-	"database/sql"
 	"encoding/json"
 	"flag"
-	"fmt"
-	"github.com/kylelemons/go-gypsy/yaml"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"time"
+	"io/ioutil"
+
 )
 
 const OPEN311_API_URI = "http://311api.cityofchicago.org/open311/v2/requests.json?extensions=true&page_size=500"
@@ -21,6 +19,7 @@ type Worker struct {
 
 var worker Worker
 var srdb ServiceRequestDB
+var env Environment
 
 //  command line flags
 var (
@@ -36,32 +35,9 @@ func init() {
 	flag.Parse()
 
 	log.Printf("CWFY Fetch worker version %s running in %s environment, configuration file %s", version, *environment, *config)
-	settings := yaml.ConfigFile(*config)
 
-	// setup database connection
-	driver, err := settings.Get(fmt.Sprintf("%s.driver", *environment))
-	if err != nil {
-		log.Fatal("error loading db driver", err)
-	}
-
-	connstr, err := settings.Get(fmt.Sprintf("%s.connstr", *environment))
-	if err != nil {
-		log.Fatal("error loading db connstr", err)
-	}
-
-	db, err := sql.Open(driver, connstr)
-	if err != nil {
-		log.Fatal("Cannot open database connection", err)
-	}
-
-	log.Printf("database connstr: %s", connstr)
-
-	srdb.Init(db)
+	srdb.Init(env.Load(config, environment))
 	// todo: error handling
-	// todo: defer srdb.Close()
-
-	// worker.Db = db
-	// worker.SetupStmts()
 }
 
 func main() {

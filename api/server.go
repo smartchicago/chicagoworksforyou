@@ -6,7 +6,6 @@ import (
 	"flag"
 	"fmt"
 	"github.com/gorilla/mux"
-	"github.com/kylelemons/go-gypsy/yaml"
 	"github.com/lib/pq"
 	"log"
 	"math"
@@ -25,6 +24,7 @@ type Api struct {
 
 var (
 	api          Api
+	env	Environment
 	version      string // set at compile time, will be the current git hash
 	environment  = flag.String("environment", "", "Environment to run in, e.g. staging, production")
 	config       = flag.String("config", "./config/database.yml", "database configuration file")
@@ -38,27 +38,8 @@ func init() {
 	// load db config
 	flag.Parse()
 	log.Printf("running in %s environment, configuration file %s", *environment, *config)
-	settings := yaml.ConfigFile(*config)
 
-	// setup database connection
-	driver, err := settings.Get(fmt.Sprintf("%s.driver", *environment))
-	if err != nil {
-		log.Fatal("error loading db driver", err)
-	}
-
-	connstr, err := settings.Get(fmt.Sprintf("%s.connstr", *environment))
-	if err != nil {
-		log.Fatal("error loading db connstr", err)
-	}
-
-	db, err := sql.Open(driver, connstr)
-	if err != nil {
-		log.Fatal("Cannot open database connection", err)
-	}
-
-	log.Printf("database connstr: %s", connstr)
-
-	api.Db = db
+	api.Db = env.Load(config, environment)
 }
 
 func main() {
