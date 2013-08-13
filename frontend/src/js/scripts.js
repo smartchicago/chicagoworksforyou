@@ -3,9 +3,7 @@ window.wardPaths = [[[41.939485,-87.685623],[41.937666,-87.685579],[41.935872,-8
 window.yesterday = moment().subtract('days', 1);
 window.prevSaturday = moment().day(-1).startOf('day');
 window.earliestDate = moment('2008-01-01');
-
 window.dateFormat = 'YYYY-MM-DD';
-window.weekDuration = moment.duration(6,"days");
 
 window.serviceTypesJSON = [
     {
@@ -87,11 +85,11 @@ window.parseDate = function(passedDate, defaultDate, locationModule) {
     if (passedDate) {
         date = moment(passedDate);
         if (!date.isValid()) {
-            locationModule.path('/');
+            document.location = "./#/";
         } else if (date.isBefore(window.earliestDate)) {
             locationModule.path(window.earliestDate.format(dateFormat));
-        } else if (date.isAfter(defaultDate)) {
-            locationModule.path(defaultDate.format(dateFormat));
+        } else if (date.isAfter(window.yesterday)) {
+            locationModule.path(window.yesterday.format(dateFormat));
         }
     }
     return date;
@@ -103,16 +101,6 @@ window.lookupSlug = function(slug) {
 
 window.lookupCode = function(code) {
     return _.find(serviceTypesJSON, function(obj) {return obj.code == code;});
-};
-
-window.drawChicagoMap = function() {
-    window.map = L.map('map',{scrollWheelZoom: false}).setView([41.83, -87.81], 11);
-    L.tileLayer('http://{s}.tile.cloudmade.com/{key}/997/256/{z}/{x}/{y}.png', {
-        attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
-        key: '302C8A713FF3456987B21FAAE639A13B',
-        maxZoom: 18
-    }).addTo(map);
-    map.zoomControl.setPosition('bottomright');
 };
 
 window.getOrdinal = function(n) {

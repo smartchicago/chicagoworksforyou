@@ -3,7 +3,7 @@ layout: service
 service_code: 4fd3b167e750846744000005
 title: Graffiti Removal
 ---
-![Graffiti Blasters](http://farm4.staticflickr.com/3464/3307057000_2b423a5c45_m.jpg "Graffiti Blasters, Photo by Andrew Neher")
+![Graffiti Blasters](http://farm4.staticflickr.com/3464/3307057000_2b423a5c45.jpg "Graffiti Blasters, Photo by Andrew Neher")
 
 <figcaption>
     A Graffiti Blaster truck, photo by <a href="http://www.flickr.com/photos/14464703@N00/3307057000/">Andrew Neher</a>

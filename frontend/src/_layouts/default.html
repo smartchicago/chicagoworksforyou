@@ -9,10 +9,10 @@
 
 <link href="/css/bootstrap/bootstrap.css" rel="stylesheet">
 {% if site.debug %}
-<link rel="stylesheet" href="/lib/roboto.css" />
+<link rel="stylesheet" href="/lib/monda.css" />
 <link rel="stylesheet" href="/lib/leaflet.css" />
 {% else %}
-<link href='http://fonts.googleapis.com/css?family=Roboto:300,700' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Monda:400,700' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
 {% endif %}
 <link href="/css/screen.css" rel="stylesheet">
@@ -115,12 +115,14 @@
             </div>
         </li>
         <li class="{% if page.section == 'media' %}active{% endif %}"><a href="/media/">Media</a></li>
-        <li class="{% if page.section == 'annotations' %}active{% endif %}"><a href="/annotations/">Annotations</a></li>
+        <li class="{% if page.section == 'annotations' %}active{% endif %}"><a href="http://annotations.chicagoworksforyou.com ">Annotations</a></li>
         <li class="{% if page.section == 'about' %}active{% endif %}"><a href="/about/">About</a></li>
       </ul>
+      {% comment %}
       <form class="navbar-search pull-right ng-pristine ng-valid" method="GET" action="/search">
             <input type="text" name="as_q" class="search-query" placeholder="Enter your Chicago address">
       </form>
+      {% endcomment %}
     </div>
 </div>
 
@@ -130,18 +132,15 @@
     © 2013 Smart Chicago Collaborative
 </footer>
 
-{% if site.debug %}
 <script>
-window.apiDomain = "http://localhost:5000/";
+window.apiDomain = "{{ site.api_domain }}";
 </script>
+{% if site.debug %}
 <script src="/lib/jquery.1.9.1.js"></script>
 <script src="/lib/angular.min.js"></script>
 <script src="/lib/highcharts.js"></script>
 <script src="/lib/leaflet.js"></script>
 {% else %}
-<script>
-window.apiDomain = "http://cwfy-api-staging.smartchicagoapps.org/";
-</script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
 <script src="http://code.highcharts.com/highcharts.js"></script>
@@ -151,6 +150,7 @@ window.apiDomain = "http://cwfy-api-staging.smartchicagoapps.org/";
 <script src="/lib/moment.min.js"></script>
 <script src="/lib/twix.min.js"></script>
 <script src="/lib/underscore-min.js"></script>
+<script src="/lib/leaflet.label.js"></script>
 <script src="/js/scripts.js"></script>
 {% if page.has_js %}
 <script src="/js/{{ page.app }}.js"></script>

@@ -9,6 +9,7 @@ import (
 	"github.com/kylelemons/go-gypsy/yaml"
 	"github.com/lib/pq"
 	"log"
+	"math"
 	"net/http"
 	"net/url"
 	"os"
@@ -24,10 +25,11 @@ type Api struct {
 }
 
 var (
-	api         Api
-	environment = flag.String("environment", "", "Environment to run in, e.g. staging, production")
-	config      = flag.String("config", "./config/database.yml", "database configuration file")
-	port        = flag.Int("port", 5000, "port that server will listen to (default: 5000)")
+	api          Api
+	environment  = flag.String("environment", "", "Environment to run in, e.g. staging, production")
+	config       = flag.String("config", "./config/database.yml", "database configuration file")
+	port         = flag.Int("port", 5000, "port that server will listen to (default: 5000)")
+	ServiceCodes = []string{"4fd3bd72e750846c530000cd", "4ffa9cad6018277d4000007b", "4ffa4c69601827691b000018", "4fd3b167e750846744000005", "4fd3b656e750846c53000004", "4ffa971e6018277d4000000b", "4fd3bd3de750846c530000b9", "4fd6e4ece750840569000019", "4fd3b9bce750846c5300004a", "4ffa9db16018277d400000a2", "4ffa995a6018277d4000003c", "4fd3bbf8e750846c53000069", "4fd3b750e750846c5300001d", "4ffa9f2d6018277d400000c8"}
 )
 
 func init() {
@@ -80,6 +82,7 @@ func main() {
 	router.HandleFunc("/requests/time_to_close.json", endpoint(TimeToCloseHandler))
 	router.HandleFunc("/wards/{id}/requests.json", endpoint(WardRequestsHandler))
 	router.HandleFunc("/wards/{id}/counts.json", endpoint(WardCountsHandler))
+	router.HandleFunc("/wards/{id}/historic_highs.json", endpoint(WardHistoricHighsHandler))
 	router.HandleFunc("/requests/{service_code}/counts.json", endpoint(RequestCountsHandler))
 	router.HandleFunc("/requests/counts_by_day.json", endpoint(DayCountsHandler))
 	router.HandleFunc("/requests/media.json", endpoint(RequestsMediaHandler))
@@ -296,9 +299,7 @@ func DayCountsHandler(params url.Values, request *http.Request) ([]byte, *ApiErr
 
 	// for each service code, fetch wards for day sorted by # SR opened
 
-	service_codes := []string{"4fd3bd72e750846c530000cd", "4ffa9cad6018277d4000007b", "4ffa4c69601827691b000018", "4fd3b167e750846744000005", "4fd3b656e750846c53000004", "4ffa971e6018277d4000000b", "4fd3bd3de750846c530000b9", "4fd6e4ece750840569000019", "4fd3b9bce750846c5300004a", "4ffa9db16018277d400000a2", "4ffa995a6018277d4000003c", "4fd3bbf8e750846c53000069", "4fd3b750e750846c5300001d", "4ffa9f2d6018277d400000c8"} //FIXME: don't hard code this
-
-	for _, sc := range service_codes {
+	for _, sc := range ServiceCodes {
 		wards := make(map[int]int) // map the ward to its total number of reqs for the service code for the day
 
 		rows, err := api.Db.Query(`SELECT total, ward 
@@ -364,23 +365,49 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 	// for a given request service type and date, return the count
 	// of requests for that date, grouped by ward, and the city total
 	// The output is a map where keys are ward identifiers, and the value is the count.
-	// The city total for the time interval is assigned to ward #0
 	//
 	// Sample request and output:
 	// $ curl "http://localhost:5000/requests/4fd3b167e750846744000005/counts.json?end_date=2013-06-10&count=1"
 	// {
-	// 	  "0": {
-	// 	    "Count": 1107,
-	// 	    "Average": 3.0328767
-	// 	  },
-	// 	  "1": {
-	// 	    "Count": 63,
-	// 	    "Average": 17.495846
-	// 	  },
-	// 	  "10": {
-	// 	    "Count": 21,
-	// 	    "Average": 7.6055045
-	// 	  },
+	//   "DayData": [
+	//     "2013-06-04",
+	//     "2013-06-05",
+	//     "2013-06-06",
+	//     "2013-06-07",
+	//     "2013-06-08",
+	//     "2013-06-09",
+	//     "2013-06-10"
+	//   ],
+	//   "CityData": {
+	//     "Average": 8.084931,
+	//     "Count": 2951,
+	//     "DailyMax": 1234
+	//   },
+	//   "WardData": {
+	//     "1": {
+	//       "Counts": [
+	//         29,
+	//         19,
+	//         40,
+	//         60,
+	//         16,
+	//         2,
+	//         35
+	//       ],
+	//       "Average": 16.671232
+	//     },
+	//     "10": {
+	//       "Counts": [
+	//         22,
+	//         2,
+	//         28,
+	//         6,
+	//         2,
+	//         5,
+	//         6
+	//       ],
+	//       "Average": 6.60274
+	//     },
 
 	vars := mux.Vars(request)
 	service_code := vars["service_code"]
@@ -393,44 +420,77 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 	end = end.AddDate(0, 0, 1) // inc to the following day
 	start := end.AddDate(0, 0, -days)
 
-	rows, err := api.Db.Query(`SELECT SUM(total), ward 
+	rows, err := api.Db.Query(`SELECT total,ward,requested_date 
 		FROM daily_counts
 		WHERE service_code = $1 
 			AND requested_date >= $2 
 			AND requested_date < $3
-		GROUP BY ward 
-		ORDER BY ward`,
+		ORDER BY ward DESC, requested_date DESC`,
 		string(service_code), start, end)
 
 	if err != nil {
 		log.Fatal("error fetching data for RequestCountsHandler", err)
 	}
 
+	data := make(map[int]map[string]int)
+	// { 32: { '2013-07-23': 42, '2013-07-24': 41 }, 3: { '2013-07-23': 42, '2013-07-24': 41 } }
+
+	for rows.Next() {
+		var ward, count int
+		var date time.Time
+
+		if err := rows.Scan(&count, &ward, &date); err != nil {
+			// FIXME: handle
+		}
+
+		if _, present := data[ward]; !present {
+			data[ward] = make(map[string]int)
+		}
+
+		data[ward][date.Format("2006-01-02")] = count
+	}
+
+	// log.Printf("data\n\n%+v", data)
+
 	type WardCount struct {
 		Ward    int
-		Count   int
+		Counts  []int
 		Average float32
 	}
 
 	counts := make(map[int]WardCount)
-	for rows.Next() {
-		wc := WardCount{}
-		if err := rows.Scan(&wc.Count, &wc.Ward); err != nil {
-			log.Print("error reading row of ward count", err)
-		}
+	var day_data []string
 
-		// trunc the requested time to just date
-		counts[wc.Ward] = wc
+	// generate a list of days returned in the results
+	for day := 0; day < days; day++ {
+		day_data = append(day_data, start.AddDate(0, 0, day).Format("2006-01-02"))
 	}
 
-	rows, err = api.Db.Query(`SELECT SUM(total)/365.0, ward 
-		FROM daily_counts 
-		WHERE requested_date >= DATE(NOW() - INTERVAL '1 year') 
-			AND service_code = $1 
-		GROUP BY ward;`, service_code)
+	// for each ward, and each day, find the count and populate result
+	for i := 1; i < 51; i++ {
+		for day := 0; day < days; day++ {
+			d := start.AddDate(0, 0, day)
+			c := 0
+			if total_for_day, present := data[i][d.Format("2006-01-02")]; present {
+				c = total_for_day
+			}
+
+			tmp := counts[i]
+			tmp.Counts = append(counts[i].Counts, c)
+			counts[i] = tmp
+		}
+	}
+
+	// log.Printf("counts\n\n%+v", counts)
+
+	rows, err = api.Db.Query(`SELECT SUM(total)/365.0, ward
+             FROM daily_counts
+             WHERE requested_date >= DATE(NOW() - INTERVAL '1 year')
+                     AND service_code = $1
+             GROUP BY ward;`, service_code)
 
 	if err != nil {
-		log.Print("error querying for year counts", err)
+		log.Print("error querying for year average", err)
 	}
 
 	for rows.Next() {
@@ -445,13 +505,19 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 		counts[ward] = tmp
 	}
 
+	type CityCount struct {
+		Average  float32
+		DailyMax []int
+		Count    int
+	}
+
 	// find total opened for the entire city for date range
-	city_total := WardCount{Ward: 0, Count: 0, Average: 0.0}
-	err = api.Db.QueryRow(`SELECT SUM(total) 
-		FROM daily_counts 
-		WHERE service_code = $1 
-			AND requested_date >= $2 
-			AND requested_date < $3;`,
+	var city_total CityCount
+	err = api.Db.QueryRow(`SELECT SUM(total)
+                     FROM daily_counts
+                     WHERE service_code = $1
+                             AND requested_date >= $2
+                             AND requested_date < $3;`,
 		string(service_code), start, end).Scan(&city_total.Count)
 
 	if err != nil {
@@ -459,26 +525,46 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 	}
 
 	city_total.Average = float32(city_total.Count) / 365.0
-	counts[0] = city_total
 
-	log.Printf("city total: %+v", city_total)
+	// find the seven largest days of all time
+	rows, err = api.Db.Query(`SELECT total
+                     FROM daily_counts
+                     WHERE service_code = $1
+                     ORDER BY total DESC
+                     LIMIT 7;`,
+		string(service_code))
+
+	for rows.Next() {
+		var daily_max int
+		if err := rows.Scan(&daily_max); err != nil {
+			log.Print("error loading city-wide daily max for %s. err: %s", service_code, err)
+		}
+
+		city_total.DailyMax = append(city_total.DailyMax, daily_max)
+	}
 
 	// pluck data to return, ensure we return a number, even zero, for each ward
 	type WC struct {
-		Count   int
+		Counts  []int
 		Average float32
 	}
 
-	data := make(map[string]WC)
-	for i := 0; i < 51; i++ {
+	complete_wards := make(map[string]WC)
+	for i := 1; i < 51; i++ {
 		k := strconv.Itoa(i)
-		tmp := data[k]
-		tmp.Count = counts[i].Count
+		tmp := complete_wards[k]
+		tmp.Counts = counts[i].Counts
 		tmp.Average = counts[i].Average
-		data[k] = tmp
+		complete_wards[k] = tmp
 	}
 
-	return dumpJson(data), nil
+	type RespData struct {
+		DayData  []string
+		CityData CityCount
+		WardData map[string]WC
+	}
+
+	return dumpJson(RespData{CityData: city_total, WardData: complete_wards, DayData: day_data}), nil
 }
 
 func TimeToCloseHandler(params url.Values, request *http.Request) ([]byte, *ApiError) {
@@ -487,35 +573,30 @@ func TimeToCloseHandler(params url.Values, request *http.Request) ([]byte, *ApiE
 	// increment over that length of time, going backwards from that date.
 	//
 	// Response data:
-	//      The city-wide average will be returned as ward "0".
-	//      "Total" is the number of service requests closed in the given time period.
+	//      The city-wide average will be returned in the CityData map.
+	//      "Count" is the number of service requests closed in the given time period.
 	//      "Time" is the average difference, in days, between closed and requested datetimes.
-	//      NOTE: This value may be negative, due to wonky data from the City. Go figure.
 	//
 	// Sample request and output:
 	// $ curl "http://localhost:5000/requests/time_to_close.json?end_date=2013-06-19&count=7&service_code=4fd3b167e750846744000005"
-	//        {
-	//          "0": {
-	//            "Time": 0.8193135,
-	//            "Total": 275,
-	//            "Ward": 0
-	//          },
-	//          "1": {
-	//            "Time": 1.0570672,
-	//            "Total": 5,
-	//            "Ward": 1
-	//          },
-	//          "11": {
-	//            "Time": -0.015823688,
-	//            "Total": 12,
-	//            "Ward": 11
-	//          },
-	//          "12": {
-	//            "Time": -0.0120927375,
-	//            "Total": 16,
-	//            "Ward": 12
-	//          },
-	//      ... snipped ...
+	// {
+	//   "WardData": {
+	//     "1": {
+	//       "Time": 6.586492353553241,
+	//       "Count": 643
+	//     },
+	// 	( .. truncated ...)
+	//     "9": {
+	//       "Time": 2.469373385011574,
+	//       "Count": 43
+	//     }
+	//   },
+	//   "CityData": {
+	//     "Time": 3.8197868124884256,
+	//     "Count": 11123
+	//   },
+	//   "Threshold": 27.537741650677532
+	// }
 
 	// required
 	service_code := params["service_code"][0]
@@ -526,31 +607,37 @@ func TimeToCloseHandler(params url.Values, request *http.Request) ([]byte, *ApiE
 	end = end.AddDate(0, 0, 1) // inc to the following day
 	start := end.AddDate(0, 0, -days)
 
-	rows, err := api.Db.Query("SELECT EXTRACT('EPOCH' FROM AVG(closed_datetime - requested_datetime)) AS avg_ttc, COUNT(service_request_id), ward "+
-		"FROM service_requests WHERE closed_datetime IS NOT NULL AND duplicate IS NULL "+
-		"AND service_code = $1 AND closed_datetime >= $2 AND closed_datetime <= $3"+
-		"GROUP BY ward ORDER BY avg_ttc DESC;", service_code, start, end)
+	rows, err := api.Db.Query(`SELECT EXTRACT('EPOCH' FROM AVG(closed_datetime - requested_datetime)) AS avg_ttc, COUNT(service_request_id), ward
+		FROM service_requests 
+		WHERE closed_datetime IS NOT NULL 
+			AND duplicate IS NULL
+			AND service_code = $1 
+			AND closed_datetime >= $2 
+			AND closed_datetime <= $3
+			AND ward IS NOT NULL
+		GROUP BY ward 
+		ORDER BY avg_ttc DESC;`, service_code, start, end)
 
 	if err != nil {
 		log.Print("error fetching time to close", err)
 	}
 
 	type TimeToClose struct {
-		Time  float32
-		Total int
-		Ward  int
+		Time  float64
+		Count int
+		Ward  int `json:"-"`
 	}
 
 	times := make(map[string]TimeToClose)
 
 	// zero init the times map
 	for i := 1; i < 51; i++ {
-		times[strconv.Itoa(i)] = TimeToClose{Time: 0.0, Total: 0, Ward: i}
+		times[strconv.Itoa(i)] = TimeToClose{Time: 0.0, Count: 0, Ward: i}
 	}
 
 	for rows.Next() {
 		var ttc TimeToClose
-		if err := rows.Scan(&ttc.Time, &ttc.Total, &ttc.Ward); err != nil {
+		if err := rows.Scan(&ttc.Time, &ttc.Count, &ttc.Ward); err != nil {
 			log.Print("error loading time to close counts", err)
 		}
 		ttc.Time = ttc.Time / 86400.0 // convert from seconds to days
@@ -559,19 +646,150 @@ func TimeToCloseHandler(params url.Values, request *http.Request) ([]byte, *ApiE
 
 	// find the city-wide average for the interval/service code
 	city_average := TimeToClose{Ward: 0}
-	err = api.Db.QueryRow("SELECT EXTRACT('EPOCH' FROM AVG(closed_datetime - requested_datetime)) AS avg_ttc, COUNT(service_request_id)"+
-		"FROM service_requests WHERE closed_datetime IS NOT NULL AND duplicate IS NULL "+
-		"AND service_code = $1 AND closed_datetime >= $2 AND closed_datetime <= $3",
-		service_code, start, end).Scan(&city_average.Time, &city_average.Total)
+	err = api.Db.QueryRow(`SELECT EXTRACT('EPOCH' FROM AVG(closed_datetime - requested_datetime)) AS avg_ttc, COUNT(service_request_id)
+		FROM service_requests 
+		WHERE closed_datetime IS NOT NULL 
+			AND duplicate IS NULL
+			AND service_code = $1 
+			AND closed_datetime >= $2
+			AND closed_datetime <= $3
+			AND ward IS NOT NULL`, service_code, start, end).Scan(&city_average.Time, &city_average.Count)
 
 	if err != nil {
 		log.Print("error fetching city average time to close", err)
 	}
 
 	city_average.Time = city_average.Time / 86400.0 // convert to days
-	times["0"] = city_average
 
-	return dumpJson(times), nil
+	// calculate bottom threshold of values to display
+	var std_dev, sum float64
+	for i := 1; i < 51; i++ {
+		sum += math.Pow((float64(times[strconv.Itoa(i)].Count) - (float64(city_average.Count) / 50.0)), 2)
+	}
+
+	std_dev = math.Sqrt(sum / 50.0)
+	threshold := (float64(city_average.Count) / 50.0) - std_dev
+
+	type resp_data struct {
+		WardData  map[string]TimeToClose
+		CityData  TimeToClose
+		Threshold float64
+	}
+
+	return dumpJson(resp_data{WardData: times, CityData: city_average, Threshold: threshold}), nil
+}
+
+type HighDay struct {
+	Date  string
+	Count int
+}
+
+func WardHistoricHighsHandler(params url.Values, request *http.Request) ([]byte, *ApiError) {
+	// given a ward and service type, return the set of days with the most SR opened
+	//
+	// Parameters:
+	// 	count: 		number of historicl high days to return.
+	//	service_code:   (optional) the code used by the City of Chicago to categorize service requests. If omitted, all services codes will be returned
+	//	callback:       function to wrap response in (for JSONP functionality)
+	// 	include_date:  	pass a YYYY-MM-DD string and the count for that day will be included
+	//
+
+	vars := mux.Vars(request)
+	ward_id := vars["id"]
+
+	days, _ := strconv.Atoi(params["count"][0])
+
+	var service_code string
+	if _, present := params["service_code"]; present {
+		service_code = params["service_code"][0]
+	}
+
+	var day time.Time
+	if _, present := params["include_date"]; present {
+		chi, _ := time.LoadLocation("America/Chicago")
+		d, err := time.ParseInLocation("2006-01-02", params["include_date"][0], chi)
+
+		if err != nil {
+			// FIXME: handle bad dates
+		}
+		day = d
+	}
+
+	// if service_code provided, find highs for that code
+	// otherwise, find highs for each service code
+
+	if service_code != "" {
+		counts := findAllTimeHighs(service_code, ward_id, days)
+
+		if !day.IsZero() {
+			counts = append(counts, HighDay{Date: day.Format("2006-01-02"), Count: findDayTotal(service_code, ward_id, day)})
+		}
+
+		return dumpJson(counts), nil
+
+	} else {
+		type ResponseData struct {
+			Highs   map[string][]HighDay
+			Current map[string]HighDay
+		}
+
+		var resp ResponseData
+		resp.Highs = make(map[string][]HighDay)
+		resp.Current = make(map[string]HighDay)
+
+		for _, code := range ServiceCodes {
+			// find highs
+			resp.Highs[code] = findAllTimeHighs(code, ward_id, days)
+
+			// find date, if spec'd
+			if !day.IsZero() {
+				resp.Current[code] = HighDay{Date: day.Format("2006-01-02"), Count: findDayTotal(code, ward_id, day)}
+			}
+		}
+
+		return dumpJson(resp), nil
+	}
+
+}
+func findAllTimeHighs(service_code string, ward_id string, days int) (counts []HighDay) {
+	rows, err := api.Db.Query(`SELECT total,requested_date
+		FROM daily_counts
+		WHERE service_code = $1
+			AND ward = $2
+		ORDER BY total DESC, requested_date DESC
+		LIMIT $3;`, service_code, ward_id, days)
+
+	if err != nil {
+		log.Print("error fetching historic highs ", err)
+	}
+
+	for rows.Next() {
+		var d time.Time
+		var dc HighDay
+
+		if err := rows.Scan(&dc.Count, &d); err != nil {
+			log.Print("error loading high value ", err)
+		}
+		counts = append(counts, HighDay{Date: d.Format("2006-01-02"), Count: dc.Count})
+	}
+
+	return
+}
+
+func findDayTotal(service_code string, ward_id string, day time.Time) (count int) {
+	err := api.Db.QueryRow(`SELECT total
+		FROM daily_counts
+		WHERE service_code = $1
+			AND ward = $2
+			AND requested_date = $3;
+		`, service_code, ward_id, day).Scan(&count)
+
+	if err != nil {
+		// no rows
+		count = 0
+	}
+
+	return
 }
 
 func WardCountsHandler(params url.Values, request *http.Request) ([]byte, *ApiError) {

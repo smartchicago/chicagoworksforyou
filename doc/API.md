@@ -130,32 +130,28 @@ Input:
 
 Output:
 
-The city-wide average time to close and count of requests opened is grouped under ward #0. Time to close is measured in days.
+The city-wide average time to close and count of requests opened is in the `CityData` object. Time to close is measured in days. The `Threshold` value is one standard deviation below the average number of service requests opened in a ward for the given time period. This value is useful for filtering low-volume wards from the result set.
 
     $ curl "http://localhost:5000/requests/time_to_close.json?end_date=2013-06-19&count=7&service_code=4fd3b167e750846744000005"
     {
-      "0": {
-        "Time": 2.8068197,
-        "Total": 2590,
-        "Ward": 0
+      "WardData": {
+         "1": {
+             "Time": 6.586492353553241,
+              "Count": 643
+            },
+         ( .. truncated ...)
+            "9": {
+              "Time": 2.469373385011574,
+              "Count": 43
+            }
+          },
+      "CityData": {
+        "Time": 3.8197868124884256,
+        "Count": 11123
       },
-      "1": {
-        "Time": 2.332114,
-        "Total": 102,
-        "Ward": 1
-      },
-      "10": {
-        "Time": 4.0669537,
-        "Total": 50,
-        "Ward": 10
-      },
-      "11": {
-        "Time": 0.5686893,
-        "Total": 151,
-        "Ward": 11
-      },
-
-      (result truncated)
+      "Threshold": 27.537741650677532
+    }
+	
 
 Ward Requests
 -------------
@@ -282,30 +278,48 @@ Input:
 
 Output:
 
-The output is a map where keys are ward identifiers, and the value is the count. The city total for the time interval is assigned to ward #0
+The output is a three element map, with keys `DayData`, `CityData`, `WardData`. `DayData` is an array of dates contained in the results. The last element of the array will equal the end_date URL parameter. `CityData` contains the total number of SR opened in the City for the date range (`Count`), and the average number opened per day, for the entire city, over the past 365 days (`Average`). `WardData` contains an array of number of SR opened per day (`Counts`) and average (`Average`) number opened per day over the past 365 days for each of the 50 wards.
 
     $ curl "http://localhost:5000/requests/4fd3b167e750846744000005/counts.json?end_date=2013-06-19&count=1"
     {
-      "0": {
-        "Ward": 0,
-        "Count": 488,
-        "Average": 1.3369863
+      "DayData": [
+        "2013-06-04",
+        "2013-06-05",
+        "2013-06-06",
+        "2013-06-07",
+        "2013-06-08",
+        "2013-06-09",
+        "2013-06-10"
+      ],
+      "CityData": {
+        "Average": 8.084931,
+        "Count": 2951
       },
-      "1": {
-        "Ward": 1,
-        "Count": 14,
-        "Average": 16.90959
-      },
-      "10": {
-        "Ward": 10,
-        "Count": 2,
-        "Average": 6.758904
-      },
-      "11": {
-        "Ward": 11,
-        "Count": 26,
-        "Average": 17.638355
-      },
+      "WardData": {
+        "1": {
+          "Counts": [
+            29,
+            19,
+            40,
+            60,
+            16,
+            2,
+            35
+          ],
+          "Average": 16.671232
+        },
+        "10": {
+          "Counts": [
+            22,
+            2,
+            28,
+            6,
+            2,
+            5,
+            6
+          ],
+          "Average": 6.60274
+        },
       (response truncated)
 
 Request Counts by Day
@@ -396,3 +410,90 @@ Output:
         "Service_request_id": "13-00920440",
         "Ward": 45
       },
+      
+Historic Highs
+--------------
+
+Path: `/wards/32/historic_highs.json`
+
+Description: For a given ward and service code, return the n-many days with the most service requests opened.
+
+Input:
+
+   	count: 		        number of historical high days to return.
+  	service_code:       (optional) the code used by the City of Chicago to categorize service requests. If omitted, all service types will be returned
+   	include_date:       (optional) a YYYY-MM-DD formatted string. If present, the results will include the counts for that day, too. 
+
+Output: 
+
+    $ curl "http://localhost:5000/wards/32/historic_highs.json?service_code=4fd3b167e750846744000005&count=10&include_date=2013-07-25"
+    [
+      {
+        "2013-07-25": 0
+      },
+      {
+        "2010-10-27": 94
+      },
+      {
+        "2008-07-01": 75
+      },
+      {
+        "2010-10-25": 70
+      },
+      {
+        "2008-05-16": 68
+      },
+      {
+        "2010-10-14": 65
+      },
+      {
+        "2008-03-20": 64
+      },
+      {
+        "2009-01-16": 60
+      },
+      {
+        "2008-07-30": 60
+      },
+      {
+        "2008-05-27": 60
+      },
+      {
+        "2008-02-18": 60
+      }
+    ]
+    
+    # If service_code is omitted, all service_codes are returned:
+    
+    $ curl "http://localhost:5000/wards/2/historic_highs.json?&count=3&include_date=2013-05-23"
+    {
+      "Highs": {
+        "4fd3b167e750846744000005": [
+          {
+            "Date": "2008-10-14",
+            "Count": 55
+          },
+
+        ],
+        "4fd3b656e750846c53000004": [
+          {
+            "Date": "2008-01-07",
+            "Count": 79
+          },
+        ],
+        ( ... truncated ... )
+        ]
+      },
+      "Current": {
+        "4fd3b167e750846744000005": {
+          "Date": "2013-05-23",
+          "Count": 7
+        },
+        "4fd3b656e750846c53000004": {
+          "Date": "2013-05-23",
+          "Count": 2
+        },
+        ( ... truncated ... )
+
+      }
+    }

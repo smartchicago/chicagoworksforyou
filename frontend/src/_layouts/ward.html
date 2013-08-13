@@ -23,21 +23,44 @@ window.wardPath = {{ page.points }};
                 <div class="alderman"><a href="{{ page.website }}">{{ page.alderman }}</a></div>
             </div>
             <div class="filter">
+                {% raw %}
                 <div class="pagination">
                     <ul>
-                        <li class="prev-week"><a ng-click="prevWeek()">&larr;</a></li>
-                        <li class="this-week"><a href="#" ng-bind="data.thisWeek"></a></li>
-                        <li class="next-week"><a ng-click="nextWeek()">&rarr;</a></li>
+                        <li class="prev-date"><a href="" ng-click="goToPrevDay()">&larr;</a></li>
+                        <li class="this-date"><a ng-href="#/{{ data.date }}/" ng-bind="data.dateFormatted"></a></li>
+                        <li class="next-date" ng-class="{disabled: data.isLatest}"><a href="" ng-click="goToNextDay()">&rarr;</a></li>
                     </ul>
                 </div>
-                {% raw %}
                 <ul class="st-list nav nav-pills nav-stacked">
-                    <li ng-class="{active: service.slug == data.currServiceSlug}" ng-repeat="service in data.services | orderBy:'name'"><a ng-href="#/{{ service.slug }}/{{ data.dateFormatted }}" ng-bind="service.name"></a></li>
+                    <li ng-class="{active: !data.serviceObj.slug}"><a ng-href="#/{{ data.date }}/">All service types</a></li>
+                    <li ng-class="{active: service.slug == data.serviceObj.slug}" ng-repeat="service in data.services | orderBy:'name'"><a ng-href="#/{{ data.date }}/{{ service.slug }}/" ng-bind="service.name"></a></li>
                 </ul>
                 {% endraw %}
             </div>
         </div>
-        <div class="span9" ng-view>
+        <div class="span9" ng-controller="wardChartCtrl" ng-switch on="data.action">
+            <div ng-switch-when="overview">
+                <section id="counts" class="counts">
+                    <h3>Days with the most requests <small>vs. <span ng-bind="data.dateFormatted"></span></small></h3>
+                    <div id="highs-chart" class="overview-chart"></div>
+                </section>
+            </div>
+            <div ng-switch-when="detail">
+                <section id="counts" class="counts">
+                    <h3>Days with the most <span ng-bind="data.serviceObj.name"></span> requests <small>vs. <span ng-bind="data.dateFormatted"></span></small></h3>
+                    <div id="counts-chart" class="service-chart"></div>
+                </section>
+                <section id="ttc" class="ttc">
+                    <h3>Time-to-close ranking <small>(in days)</small></h3>
+                    <p class="explanation" ng-show="data.inTTCchart">
+                        Among the <span ng-bind="data.totalTTCWards"></span> wards that closed <span ng-bind="data.minTTCcount"></span> or more <b ng-bind="data.serviceObj.name"></b> requests in the week ending <b ng-bind="data.dateFormatted"></b>, Ward <span ng-bind="data.wardNum"></span> ranked <b ng-bind="data.wardRank"></b>, with an average time-to-close of <b ng-bind="data.wardTime"></b> <b>days</b>.
+                    </p>
+                    <p class="explanation" ng-show="!data.inTTCchart">
+                        Ward <span ng-bind="data.wardNum"></span> didn't close <span ng-bind="data.minTTCcount"></span> or more <span ng-bind="data.serviceObj.name"></span> requests in the week ending <span ng-bind="data.dateFormatted"></span>, so it's not shown on this chart.
+                    </p>
+                    <div id="ttc-chart" class="service-chart"></div>
+                </section>
+                </div>
         </div>
     </div>
 </div>
