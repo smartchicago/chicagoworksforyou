@@ -16,8 +16,6 @@ window.wardPaths = _.map(simpleWardPaths,function(ward){
     });
 });
 
-console.log(wardPaths);
-
 window.yesterday = moment().subtract('days', 1);
 window.prevSaturday = moment().day(-1).startOf('day');
 window.earliestDate = moment('2008-01-01');
