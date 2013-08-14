@@ -1,0 +1,42 @@
+---
+layout: default
+section: sandbox
+app: sandboxApp
+has_js: true
+---
+
+<style type="text/css">
+code {
+    width:940px;
+    display: block;
+    overflow: scroll;
+}
+</style>
+
+<div class="container content" ng-controller="sandboxCtrl">
+    <br><br>
+
+    {% raw %}
+    <h4>Original paths:</h4>
+    <code>
+    {{ wardPaths }}
+    </code>
+
+    <h4>Simplified by cgansen:</h4>
+    <code>
+    {{ simplifiedWardPaths }}
+    </code>
+
+    <h4>Normalized:</h4>
+    <code>
+    {{ normalizedWardPaths }}
+    </code>
+
+    <h4>Encoded:</h4>
+    <code>
+    {{ encodedWardPaths }}
+    </code>
+    {% endraw %}
+
+    <br><br>
+</div>
