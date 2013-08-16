@@ -394,7 +394,7 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
         function ($e, $currentRoute, $previousRoute) {
             Data.setDate(parseDate($routeParams.date, window.yesterday, $location));
             Data.action = $route.current.action;
-            if (!$previousRoute || $currentRoute.pathParams.serviceSlug != $previousRoute.pathParams.serviceSlug) {
+            if (!$previousRoute || $previousRoute.redirectTo || $currentRoute.pathParams.serviceSlug != $previousRoute.pathParams.serviceSlug) {
                 Data.serviceObj = {};
                 if ($currentRoute.pathParams.serviceSlug) {
                     Data.serviceObj = window.lookupSlug($currentRoute.pathParams.serviceSlug);
