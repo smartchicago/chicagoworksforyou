@@ -32,8 +32,10 @@ sandboxApp.controller("sandboxCtrl", function ($scope, $http, $location) {
 
     var encodedPoint = function (point) {
         var codes = _.map(point, function(n) {
-            var twoDigits = n.toString().match(/.{1,2}/g);
-            return _.map(twoDigits, function(n) {
+            var str = "000000" + n;
+            var digitPairs = str.substr(-6).match(/.{1,2}/g);
+            return _.map(digitPairs, function(n) {
+                // Add 200 to get a series of 100 chars that aren't empty.
                 return String.fromCharCode(200 + parseInt(n, 10));
             });
         });
