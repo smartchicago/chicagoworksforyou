@@ -249,6 +249,24 @@ h1 {
   padding-top: 15px; }
 .serviceApp h1 {
   letter-spacing: -1px; }
+.serviceApp .day {
+  float: left;
+  text-align: center; }
+  .serviceApp .day a {
+    width: 66px;
+    padding: 4px 5px;
+    font-size: 10px;
+    line-height: 20px;
+    text-transform: uppercase; }
+    .serviceApp .day a:hover {
+      background: inherit; }
+    .serviceApp .day a em {
+      font-size: 26px;
+      font-weight: bold;
+      display: block;
+      font-style: normal; }
+.serviceApp .pagination {
+  margin: 0 0 1em 0; }
 .serviceApp .pagination-wrap.affix {
   top: 0;
   padding-top: 20px;
@@ -256,12 +274,6 @@ h1 {
   -webkit-box-shadow: 0 4px 30px white;
   -moz-box-shadow: 0 4px 30px white;
   box-shadow: 0 4px 30px white; }
-.serviceApp .pagination {
-  margin: 0 0 1em; }
-  .serviceApp .pagination li a {
-    width: 20px; }
-  .serviceApp .pagination .this-date a {
-    width: 200px; }
 .serviceApp figcaption {
   font-size: 12px;
   line-height: 1.4;

@@ -12,21 +12,14 @@ window.currServiceType = '{{ page.service_code }}';
 <div class="container content">
     <div class="row">
         <div class="span4" ng-controller="sidebarCtrl">
-            <h1><span ng-bind="data.cityCount"></span> <a href="#">{{ page.title }}</a> requests were opened this week</h1>
+            <h1>
+                <a href="#">{{ page.title }}</a><br>
+            </h1>
+            <span ng-bind="data.cityCount"></span> requests opened<br>
+            <span ng-bind="data.cityCloseCount"></span> requests closed
             {% comment %}
             <p>And XXX were closed. Here's how they break down.</p>
             {% endcomment %}
-            <div class="pagination-wrap">
-                {% raw %}
-                <div class="pagination">
-                    <ul>
-                        <li class="prev-date"><a href="" ng-click="goToPrevDate()">&larr;</a></li>
-                        <li class="this-date"><a ng-href="#/{{data.date}}" ng-bind="data.thisDate"></a></li>
-                        <li class="next-date" ng-class="{disabled: data.isLatest}"><a href="" ng-click="goToNextDate()">&rarr;</a></li>
-                    </ul>
-                </div>
-                {% endraw %}
-            </div>
             <div class="description">
                 {{ content }}
             </div>
@@ -35,6 +28,21 @@ window.currServiceType = '{{ page.service_code }}';
             </p>
         </div>
         <div class="span8" ng-controller="serviceCtrl">
+            {% raw %}
+            <div class="pagination">
+                <ul>
+                    <li><a href="" ng-click="goToPrevDate()">&larr;</a></li>
+                    <li class="day" ng-repeat="day in data.days" ng-class="day.dowAbbr" style="border-bottom:10px solid {{ day.color }};">
+                        <a ng-href="/#/{{ day.date|date:'yyyy-MM-dd' }}/">
+                            {{ day.date|date:'MMM' }}
+                            <em>{{ day.date|date:'d' }}</em>
+                            {{ day.date|date:'EEE' }}
+                        </a>
+                    </li>
+                    <li><a href="" ng-click="goToNextDate()">&rarr;</a></li>
+                </ul>
+            </div>
+            {% endraw %}
             <div id="chart" class="chart"></div>
         </div>
     </div>

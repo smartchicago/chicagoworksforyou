@@ -368,27 +368,42 @@ h1 {
         letter-spacing: -1px;
     }
 
+    .day {
+        float: left;
+        text-align: center;
+
+        a {
+            width: 66px;
+            // color: white;
+            padding: 4px 5px;
+            // background: none;
+            // border: none;
+            font-size: 10px;
+            line-height: 20px;
+            text-transform: uppercase;
+
+            &:hover {
+                background: inherit;
+            }
+
+            em {
+                font-size: 26px;
+                font-weight: bold;
+                display: block;
+                font-style: normal;
+            }
+        }
+    }
+
+    .pagination {
+        margin: 0 0 1em 0;
+    }
+
     .pagination-wrap.affix {
         top: 0;
         padding-top: 20px;
         background:fade-out(white,0.1);
         @include box-shadow(0 4px 30px white);
-    }
-
-    .pagination {
-        margin: 0 0 1em;
-
-        li {
-            a {
-                width: 20px;
-            }
-        }
-
-        .this-date {
-            a {
-                width: 200px;
-            }
-        }
     }
 
     figcaption {
