@@ -121,4 +121,6 @@ Database restore: download a copy of a database snapshot and replace a local dat
 
         (PostgreSQL and curl warnings are omitted)
         
-        
+## Server configuration
+
+CWFY runs on a Amazon Web Services m1.medium instance. The instance contains a PostgreSQL 9.2.4 database server with PostGIS 2.0.3 extensions. The CWFY API and fetch worker are managed by [supervisord](http://supervisord.org/). The there is a cron job (file: `/etc/cron.daily/ebs-snapshot`) scheduled to run nightly to create backup snapshots of the instance's EBS volume. This script is configured to maintain 14 days of snapshot history.
