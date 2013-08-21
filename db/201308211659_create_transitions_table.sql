@@ -5,3 +5,6 @@ CREATE TABLE transition_areas (
 	ward_2013 integer, 
 	ward_2015 integer
 );
+
+-- add column for fkey point to transition area
+ALTER TABLE service_requests ADD COLUMN transition_area_id integer;

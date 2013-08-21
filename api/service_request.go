@@ -11,7 +11,7 @@ import (
 
 type ServiceRequest struct {
 	Lat, Long                                                                                               float64
-	Ward, Ward2015, Police_district                                                                         int
+	Ward, Ward2015, Police_district, Transition_area_id                                                                         int
 	Service_request_id, Status, Service_name, Service_code, Agency_responsible, Address, Channel, Media_url string
 	Requested_datetime, Updated_datetime                                                                    time.Time // FIXME: should these be proper time objects?
 	Extended_attributes                                                                                     map[string]interface{}
@@ -42,8 +42,8 @@ func (srdb *ServiceRequestDB) SetupStmts() {
 	insert, err := srdb.db.Prepare(`INSERT INTO service_requests(service_request_id,
 		status, service_name, service_code, agency_responsible,
 		address, requested_datetime, updated_datetime, lat, long,
-		ward, police_district, media_url, channel, duplicate, parent_service_request_id, closed_datetime, notes, ward_2015)
-		VALUES ($1::varchar, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19);`)
+		ward, police_district, media_url, channel, duplicate, parent_service_request_id, closed_datetime, notes, ward_2015, transition_area_id)
+		VALUES ($1::varchar, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20);`)
 
 	if err != nil {
 		log.Fatal("error preparing insert statement ", err)
@@ -54,7 +54,7 @@ func (srdb *ServiceRequestDB) SetupStmts() {
 		status = $2, service_name = $3, service_code = $4, agency_responsible = $5, 
 		address = $6, requested_datetime = $7, updated_datetime = $8, lat = $9, long = $10,
 		ward = $11, police_district = $12, media_url = $13, channel = $14, duplicate = $15,
-		parent_service_request_id = $16, updated_at = NOW(), closed_datetime = $17, notes = $18, ward_2015 = $19 
+		parent_service_request_id = $16, updated_at = NOW(), closed_datetime = $17, notes = $18, ward_2015 = $19, transition_area_id = $20
 		WHERE service_request_id = $1;`)
 
 	if err != nil {
@@ -121,7 +121,8 @@ func (srdb *ServiceRequestDB) Save(req *ServiceRequest) (persisted bool) { // FI
 		log.Print("error marshaling notes to JSON: ", err)
 	}
 	new_ward := srdb.Ward(req, 2015)
-
+	transition_area_id := srdb.TransitionArea(req)
+	
 	_, err = stmt.Exec(req.Service_request_id,
 		req.Status,
 		req.Service_name,
@@ -140,7 +141,8 @@ func (srdb *ServiceRequestDB) Save(req *ServiceRequest) (persisted bool) { // FI
 		req.Extended_attributes["parent_service_request_id"],
 		closed_time,
 		notes_as_json,
-		new_ward)
+		new_ward,
+		transition_area_id)
 
 	if err != nil {
 		log.Printf("[error] could not update %s because %s", req.Service_request_id, err)
@@ -206,6 +208,19 @@ func (srdb *ServiceRequestDB) Ward(sr *ServiceRequest, year int) (ward int) {
 	query := fmt.Sprintf("SELECT ward FROM %s WHERE ST_Contains(boundary, ST_PointFromText('POINT(%f %f)', 4326))", boundaries_table, sr.Long, sr.Lat)
 
 	err := srdb.db.QueryRow(query).Scan(&ward)
+	if err != nil {
+		log.Print(err)
+	}
+
+	return
+}
+
+func (srdb *ServiceRequestDB) TransitionArea(sr *ServiceRequest) (transition_area int) {
+	// given an SR, return the transition area it exists in, if any
+
+	query := fmt.Sprintf("SELECT id FROM transition_areas WHERE ST_Contains(boundary, ST_PointFromText('POINT(%f %f)', 4326))", sr.Long, sr.Lat)
+
+	err := srdb.db.QueryRow(query).Scan(&transition_area)
 	if err != nil {
 		log.Print(err)
 	}
