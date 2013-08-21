@@ -11,7 +11,7 @@ import (
 
 type ServiceRequest struct {
 	Lat, Long                                                                                               float64
-	Ward, Ward2015, Police_district, Transition_area_id                                                                         int
+	Ward, Ward2015, Police_district, Transition_area_id                                                     int
 	Service_request_id, Status, Service_name, Service_code, Agency_responsible, Address, Channel, Media_url string
 	Requested_datetime, Updated_datetime                                                                    time.Time // FIXME: should these be proper time objects?
 	Extended_attributes                                                                                     map[string]interface{}
@@ -122,7 +122,7 @@ func (srdb *ServiceRequestDB) Save(req *ServiceRequest) (persisted bool) { // FI
 	}
 	new_ward := srdb.Ward(req, 2015)
 	transition_area_id := srdb.TransitionArea(req)
-	
+
 	_, err = stmt.Exec(req.Service_request_id,
 		req.Status,
 		req.Service_name,
