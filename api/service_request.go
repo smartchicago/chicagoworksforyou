@@ -11,7 +11,7 @@ import (
 
 type ServiceRequest struct {
 	Lat, Long                                                                                               float64
-	Ward, Ward2015, Police_district                                                                                   int
+	Ward, Ward2015, Police_district                                                                         int
 	Service_request_id, Status, Service_name, Service_code, Agency_responsible, Address, Channel, Media_url string
 	Requested_datetime, Updated_datetime                                                                    time.Time // FIXME: should these be proper time objects?
 	Extended_attributes                                                                                     map[string]interface{}
@@ -120,7 +120,7 @@ func (srdb *ServiceRequestDB) Save(req *ServiceRequest) (persisted bool) { // FI
 	if err != nil {
 		log.Print("error marshaling notes to JSON: ", err)
 	}
-	new_ward := srdb.Ward(req, 2015)	
+	new_ward := srdb.Ward(req, 2015)
 
 	_, err = stmt.Exec(req.Service_request_id,
 		req.Status,
@@ -193,7 +193,7 @@ func (req ServiceRequest) PrintNotes() {
 
 func (srdb *ServiceRequestDB) Ward(sr *ServiceRequest, year int) (ward int) {
 	// given a year, return the ward containing the SR
-	
+
 	var boundaries_table string
 
 	switch year {
