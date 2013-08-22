@@ -39,7 +39,7 @@ func RequestsMediaHandler(params url.Values, request *http.Request) ([]byte, *Ap
 
 	days, err := strconv.Atoi(params.Get("days"))
 	if err != nil {
-		return nil, &ApiError{Code: 400, Msg: "must specify number of days to return"}
+		days = 7
 	}
 
 	if days > 30 {
