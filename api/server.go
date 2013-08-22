@@ -58,6 +58,7 @@ func main() {
 	router.HandleFunc("/requests/{service_code}/counts.json", endpoint(RequestCountsHandler))
 	router.HandleFunc("/requests/counts_by_day.json", endpoint(DayCountsHandler))
 	router.HandleFunc("/requests/media.json", endpoint(RequestsMediaHandler))
+	router.HandleFunc("/wards/boundaries.json", endpoint(WardBoundariesHandler))
 
 	log.Printf("CWFY ready for battle on port %d", *port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), router))

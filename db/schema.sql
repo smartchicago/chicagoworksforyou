@@ -22,6 +22,20 @@ CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 
 
+--
+-- Name: postgis; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION postgis IS 'PostGIS geometry, geography, and raster spatial types and functions';
+
+
 SET search_path = public, pg_catalog;
 
 --
@@ -147,7 +161,9 @@ CREATE TABLE service_requests (
     notes text,
     duplicate character varying(40),
     parent_service_request_id character varying(40),
-    closed_datetime timestamp with time zone
+    closed_datetime timestamp with time zone,
+    ward_2015 integer,
+    transition_area_id integer
 );
 
 
@@ -171,10 +187,68 @@ ALTER SEQUENCE service_requests_id_seq OWNED BY service_requests.id;
 
 
 --
+-- Name: transition_areas; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE transition_areas (
+    id integer NOT NULL,
+    boundary geometry(MultiPolygon),
+    ward_2013 integer,
+    ward_2015 integer
+);
+
+
+--
+-- Name: transition_areas_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE transition_areas_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: transition_areas_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE transition_areas_id_seq OWNED BY transition_areas.id;
+
+
+--
+-- Name: ward_boundaries_2013; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE ward_boundaries_2013 (
+    ward integer,
+    boundary geometry(MultiPolygon)
+);
+
+
+--
+-- Name: ward_boundaries_2015; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE ward_boundaries_2015 (
+    ward integer,
+    boundary geometry(MultiPolygon)
+);
+
+
+--
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY service_requests ALTER COLUMN id SET DEFAULT nextval('service_requests_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY transition_areas ALTER COLUMN id SET DEFAULT nextval('transition_areas_id_seq'::regclass);
 
 
 --
@@ -222,13 +296,6 @@ CREATE INDEX sr_closed_code ON service_requests USING btree (closed_datetime, se
 
 
 --
--- Name: sr_media_url; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX sr_media_url ON service_requests USING btree (media_url);
-
-
---
 -- Name: sr_requested_code; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -243,10 +310,54 @@ CREATE INDEX sr_requested_datetime ON service_requests USING btree (requested_da
 
 
 --
+-- Name: transition_areas_boundary_gist; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX transition_areas_boundary_gist ON transition_areas USING gist (boundary);
+
+
+--
+-- Name: ward_boundaries_2013_boundary_gist; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX ward_boundaries_2013_boundary_gist ON ward_boundaries_2013 USING gist (boundary);
+
+
+--
+-- Name: ward_boundaries_2015_boundary_gist; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX ward_boundaries_2015_boundary_gist ON ward_boundaries_2015 USING gist (boundary);
+
+
+--
+-- Name: geometry_columns_delete; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE RULE geometry_columns_delete AS ON DELETE TO geometry_columns DO INSTEAD NOTHING;
+
+
+--
+-- Name: geometry_columns_insert; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE RULE geometry_columns_insert AS ON INSERT TO geometry_columns DO INSTEAD NOTHING;
+
+
+--
+-- Name: geometry_columns_update; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE RULE geometry_columns_update AS ON UPDATE TO geometry_columns DO INSTEAD NOTHING;
+
+
+--
 -- Name: update_daily_counts; Type: TRIGGER; Schema: public; Owner: -
 --
 
 CREATE TRIGGER update_daily_counts AFTER INSERT OR DELETE OR UPDATE ON service_requests FOR EACH ROW EXECUTE PROCEDURE update_daily_counts();
+
+ALTER TABLE service_requests DISABLE TRIGGER update_daily_counts;
 
 
 --
@@ -280,7 +391,10 @@ INSERT INTO schema_info VALUES ('201306271128');
 INSERT INTO schema_info VALUES ('201306271346');
 INSERT INTO schema_info VALUES ('201307081428');
 INSERT INTO schema_info VALUES ('201307091601');
-INSERT INTO schema_info VALUES ('201307161527');
+INSERT INTO schema_info VALUES ('201308201558');
+INSERT INTO schema_info VALUES ('201308211328');
+INSERT INTO schema_info VALUES ('201308211341');
+INSERT INTO schema_info VALUES ('201308211659');
 
 
 --
