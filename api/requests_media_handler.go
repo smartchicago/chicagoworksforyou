@@ -4,14 +4,16 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"strconv"
+	"time"
 )
 
 func RequestsMediaHandler(params url.Values, request *http.Request) ([]byte, *ApiError) {
-	// Return 500 most recent SR that have media "attached"
+	// Return N most recent days worth of SR that have non-empty media_url values
 	//
 	// Sample:
 	//
-	// $ curl "http://localhost:5000/requests/media.json"
+	// $ curl "http://localhost:5000/requests/media.json?days=10"
 	// [
 	//   {
 	//     "Service_name": "Graffiti Removal",
@@ -35,6 +37,17 @@ func RequestsMediaHandler(params url.Values, request *http.Request) ([]byte, *Ap
 	//     "Ward": 25
 	//   },
 
+	days, err := strconv.Atoi(params.Get("days"))
+	if err != nil {
+		return nil, &ApiError{Code: 400, Msg: "must specify number of days to return"}
+	}
+
+	if days > 30 {
+		return nil, &ApiError{Code: 400, Msg: "days must be <= 30"}
+	}
+
+	start := time.Now().AddDate(0, 0, -days)
+
 	type SR struct {
 		Service_name, Address, Media_url, Service_request_id string
 		Ward                                                 int
@@ -45,11 +58,12 @@ func RequestsMediaHandler(params url.Values, request *http.Request) ([]byte, *Ap
 	rows, err := api.Db.Query(`SELECT service_name,address,media_url,service_request_id,ward 
                 FROM service_requests
                 WHERE media_url != ''
-                ORDER BY requested_datetime DESC
-                LIMIT 500;`)
+			AND requested_datetime >= $1
+			AND ward IS NOT NULL
+                ORDER BY requested_datetime DESC;`, start)
 
 	if err != nil {
-		log.Print("error laoding media objects ", err)
+		log.Print("error loding media objects ", err)
 	}
 
 	for rows.Next() {
