@@ -114,14 +114,19 @@ func (srdb *ServiceRequestDB) Save(req *ServiceRequest) (persisted bool) { // FI
 		stmt = srdb.UpdateStmt
 	}
 
+	// preprocessing some attrs
+	// closed time
 	t := req.ExtractClosedDatetime()
 	closed_time := pq.NullTime{Time: t, Valid: !t.IsZero()}
+	// notes
 	notes_as_json, err := json.Marshal(req.Notes)
 	if err != nil {
 		log.Print("error marshaling notes to JSON: ", err)
 	}
+	// 2015 wards
 	new_ward := srdb.Ward(req, 2015)
-	transition_area_id := srdb.TransitionArea(req)
+	// transition areas
+	transition_area_id, err := srdb.TransitionArea(req)
 
 	_, err = stmt.Exec(req.Service_request_id,
 		req.Status,
@@ -215,15 +220,16 @@ func (srdb *ServiceRequestDB) Ward(sr *ServiceRequest, year int) (ward int) {
 	return
 }
 
-func (srdb *ServiceRequestDB) TransitionArea(sr *ServiceRequest) (transition_area int) {
+func (srdb *ServiceRequestDB) TransitionArea(sr *ServiceRequest) (sql.NullInt64, error) {
 	// given an SR, return the transition area it exists in, if any
+	var transition_area sql.NullInt64
 
 	query := fmt.Sprintf("SELECT id FROM transition_areas WHERE ST_Contains(boundary, ST_PointFromText('POINT(%f %f)', 4326))", sr.Long, sr.Lat)
 
 	err := srdb.db.QueryRow(query).Scan(&transition_area)
 	if err != nil {
-		log.Print(err)
+		return transition_area, err
 	}
 
-	return
+	return transition_area, nil
 }
