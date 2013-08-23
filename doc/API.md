@@ -126,11 +126,11 @@ Input:
 
     end_date: e.g. "2013-06-19"
     count: number of days to count back from end date
-    service_code: code of the service, e.g. "4fd3b167e750846744000005"
+    service_code: (optional) code of the service, e.g. "4fd3b167e750846744000005"
 
 Output:
 
-The city-wide average time to close and count of requests opened is in the `CityData` object. Time to close is measured in days. The `Threshold` value is one standard deviation below the average number of service requests opened in a ward for the given time period. This value is useful for filtering low-volume wards from the result set.
+The city-wide average time to close and count of requests opened is in the `CityData` object. Time to close is measured in days. The `Threshold` value is one standard deviation below the average number of service requests opened in a ward for the given time period. This value is useful for filtering low-volume wards from the result set. If `service_code` is omitted, the values will be for all service types.
 
     $ curl "http://localhost:5000/requests/time_to_close.json?end_date=2013-06-19&count=7&service_code=4fd3b167e750846744000005"
     {
