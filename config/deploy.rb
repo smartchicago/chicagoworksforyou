@@ -25,9 +25,9 @@ namespace :db do
   
   desc "download latest snapshot and load into local database"
   task :restore do
-    run_locally "dropdb #{database} && \
-      createdb #{database} && \
-      curl -o /tmp/cwfy-restore-#{stage}.dump http://cwfy-database-backups.s3.amazonaws.com/#{stage}.dump
+    run_locally "curl -o /tmp/cwfy-restore-#{stage}.dump http://cwfy-database-backups.s3.amazonaws.com/#{stage}.dump && \
+      dropdb #{database} && \
+      createdb #{database} && \      
       pg_restore -d #{database} -O -c /tmp/cwfy-restore-#{stage}.dump && \
       rm -f /tmp/cwfy-restore-#{stage}.dump"
   end
