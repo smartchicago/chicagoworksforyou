@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 	"net/url"
-	// "strconv"
-	// "time"
+	"strconv"
+	"fmt"
 )
 
 func TransitionsHandler(params url.Values, request *http.Request) ([]byte, *ApiError) {
@@ -21,7 +21,20 @@ func TransitionsHandler(params url.Values, request *http.Request) ([]byte, *ApiE
 	var transitions []Transition
 	// [ { 'id': 123, 'Ward2013': 42, 'Ward2015': 35, 'Boundary': <GeoJSON> },  ] }	
 	
-	rows, err := api.Db.Query(`SELECT ward_2013,ward_2015,id, ST_AsGeoJSON(boundary) FROM transition_areas ORDER BY ward_2013;`)
+	query := "SELECT ward_2013,ward_2015,id, ST_AsGeoJSON(boundary) FROM transition_areas %s ORDER BY ward_2013;"
+	if ward != "" {
+		w, err := strconv.Atoi(ward)
+		if err != nil || w < 1 || w > 50 {
+			return nil, &ApiError{Code: 400, Msg: "invalid ward"}
+		}
+		
+		query = fmt.Sprintf(query, fmt.Sprintf("WHERE ward_2013 = %d", w))
+	} else {
+		query = fmt.Sprintf(query, "")
+	}
+	
+	
+	rows, err := api.Db.Query(query)
 	if err != nil {
 		log.Printf("error fetching transition areas: %s", err)
 	}
