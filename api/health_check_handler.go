@@ -8,7 +8,7 @@ import (
 
 func HealthCheckHandler(params url.Values, request *http.Request) ([]byte, *ApiError) {
 	type HealthCheck struct {
-		Count             int
+		SR                string `json:"most_recent_sr_id"`
 		Database, Healthy bool
 		Version           string
 	}
@@ -16,15 +16,13 @@ func HealthCheckHandler(params url.Values, request *http.Request) ([]byte, *ApiE
 	health_check := HealthCheck{Version: version}
 	health_check.Database = api.Db.Ping() == nil
 
-	rows, _ := api.Db.Query("SELECT COUNT(*) FROM service_requests;")
-	for rows.Next() {
-		if err := rows.Scan(&health_check.Count); err != nil {
-			log.Fatal("error fetching count", err)
-		}
+	err := api.Db.QueryRow("SELECT service_request_id FROM service_requests ORDER BY requested_datetime DESC LIMIT 1").Scan(&health_check.SR)
+	if err != nil {
+		log.Printf("error fetching most recent SR: %s", err)
 	}
 
 	// calculate overall health
-	health_check.Healthy = health_check.Count > 0 && health_check.Database
+	health_check.Healthy = health_check.SR != "" && health_check.Database
 
 	log.Printf("health_check: %+v", health_check)
 	if !health_check.Healthy {
