@@ -21,7 +21,7 @@ func TransitionsHandler(params url.Values, request *http.Request) ([]byte, *ApiE
 	var transitions []Transition
 	// [ { 'id': 123, 'Ward2013': 42, 'Ward2015': 35, 'Boundary': <GeoJSON> },  ] }	
 	
-	query := "SELECT ward_2013,ward_2015,id, ST_AsGeoJSON(boundary) FROM transition_areas %s ORDER BY ward_2013;"
+	query := "SELECT ward_2013,ward_2015,id, ST_AsGeoJSON(boundary, 5, 2) FROM transition_areas %s ORDER BY ward_2013;"
 	if ward != "" {
 		w, err := strconv.Atoi(ward)
 		if err != nil || w < 1 || w > 50 {
