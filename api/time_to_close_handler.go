@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"log"
 	"math"
 	"net/http"
@@ -41,7 +42,7 @@ func TimeToCloseHandler(params url.Values, request *http.Request) ([]byte, *ApiE
 	// }
 
 	// required
-	service_code := params["service_code"][0]
+	service_code := params.Get("service_code")
 	days, _ := strconv.Atoi(params["count"][0])
 
 	chi, _ := time.LoadLocation("America/Chicago")
@@ -49,16 +50,33 @@ func TimeToCloseHandler(params url.Values, request *http.Request) ([]byte, *ApiE
 	end = end.AddDate(0, 0, 1) // inc to the following day
 	start := end.AddDate(0, 0, -days)
 
-	rows, err := api.Db.Query(`SELECT EXTRACT('EPOCH' FROM AVG(closed_datetime - requested_datetime)) AS avg_ttc, COUNT(service_request_id), ward
-		FROM service_requests 
-		WHERE closed_datetime IS NOT NULL 
-			AND duplicate IS NULL
-			AND service_code = $1 
-			AND closed_datetime >= $2 
-			AND closed_datetime <= $3
-			AND ward IS NOT NULL
-		GROUP BY ward 
-		ORDER BY avg_ttc DESC;`, service_code, start, end)
+	var rows *sql.Rows
+	var err error
+
+	if service_code != "" {
+		log.Printf("fetching a single service code %s", service_code)
+		rows, err = api.Db.Query(`SELECT EXTRACT('EPOCH' FROM AVG(closed_datetime - requested_datetime)) AS avg_ttc, COUNT(service_request_id), ward
+        		FROM service_requests 
+        		WHERE closed_datetime IS NOT NULL 
+        			AND duplicate IS NULL
+        			AND closed_datetime >= $1
+        			AND closed_datetime <= $2
+        			AND ward IS NOT NULL
+        			AND service_code = $3 
+        		GROUP BY ward 
+        		ORDER BY avg_ttc DESC;`, start, end, service_code)
+	} else {
+		log.Printf("fetching all service codes")
+		rows, err = api.Db.Query(`SELECT EXTRACT('EPOCH' FROM AVG(closed_datetime - requested_datetime)) AS avg_ttc, COUNT(service_request_id), ward
+        		FROM service_requests 
+        		WHERE closed_datetime IS NOT NULL 
+        			AND duplicate IS NULL
+        			AND closed_datetime >= $1
+        			AND closed_datetime <= $2
+        			AND ward IS NOT NULL
+        		GROUP BY ward 
+        		ORDER BY avg_ttc DESC;`, start, end)
+	}
 
 	if err != nil {
 		log.Print("error fetching time to close", err)
@@ -88,14 +106,26 @@ func TimeToCloseHandler(params url.Values, request *http.Request) ([]byte, *ApiE
 
 	// find the city-wide average for the interval/service code
 	city_average := TimeToClose{Ward: 0}
-	err = api.Db.QueryRow(`SELECT EXTRACT('EPOCH' FROM AVG(closed_datetime - requested_datetime)) AS avg_ttc, COUNT(service_request_id)
-		FROM service_requests 
-		WHERE closed_datetime IS NOT NULL 
-			AND duplicate IS NULL
-			AND service_code = $1 
-			AND closed_datetime >= $2
-			AND closed_datetime <= $3
-			AND ward IS NOT NULL`, service_code, start, end).Scan(&city_average.Time, &city_average.Count)
+
+	if service_code != "" {
+		err = api.Db.QueryRow(`SELECT EXTRACT('EPOCH' FROM AVG(closed_datetime - requested_datetime)) AS avg_ttc, COUNT(service_request_id)
+        		FROM service_requests 
+        		WHERE closed_datetime IS NOT NULL 
+        			AND duplicate IS NULL
+        			AND service_code = $1 
+        			AND closed_datetime >= $2
+        			AND closed_datetime <= $3
+        			AND ward IS NOT NULL`, service_code, start, end).Scan(&city_average.Time, &city_average.Count)
+
+	} else {
+		err = api.Db.QueryRow(`SELECT EXTRACT('EPOCH' FROM AVG(closed_datetime - requested_datetime)) AS avg_ttc, COUNT(service_request_id)
+        		FROM service_requests 
+        		WHERE closed_datetime IS NOT NULL 
+        			AND duplicate IS NULL
+        			AND closed_datetime >= $1
+        			AND closed_datetime <= $2
+        			AND ward IS NOT NULL`, start, end).Scan(&city_average.Time, &city_average.Count)
+	}
 
 	if err != nil {
 		log.Print("error fetching city average time to close", err)
