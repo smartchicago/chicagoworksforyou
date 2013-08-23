@@ -14,6 +14,7 @@ func TimeToCloseHandler(params url.Values, request *http.Request) ([]byte, *ApiE
 	// Given service type, date, length of time & increment,
 	// return time-to-close for that service type, for each
 	// increment over that length of time, going backwards from that date.
+        // If service_code is omitted, the average will be for all service types.
 	//
 	// Response data:
 	//      The city-wide average will be returned in the CityData map.
