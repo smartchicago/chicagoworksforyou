@@ -449,3 +449,25 @@ Output:
         "Boundary": (... omitted ...)
       }
     ]
+    
+Transition Time To Close
+------------------------
+
+Path:   `/transitions/time_to_close.json`
+
+Description: Calculate the average time to close for service requests in a given transition area.
+
+Input:
+
+    transition_area_id: integer ID of the transition area. Required.
+    service_code: (optional) limit the TTC average to a given service code. If omitted, all service types will be averaged.
+    count: number of days to go back in time
+    end_date: date (YYYY-MM-DD) to base calculations from
+    
+Output:
+
+    $ curl "http://localhost:5000/transitions/time_to_close.json?transition_area_id=1&count=7&end_date=2013-08-22"
+    {
+      "Time": 0.04724537037037037,
+      "Count": 1
+    }
