@@ -148,9 +148,14 @@ h1 {
   line-height: 18px;
   right: 20px;
   margin: 67px 0 0;
+  max-width: 125px;
   -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); }
+  .dateMapApp .legend h4 {
+    font-size: 15px;
+    line-height: 18px;
+    margin: 0 0 10px; }
   .dateMapApp .legend i {
     display: inline-block;
     width: 18px;

@@ -162,7 +162,9 @@ dateMapApp.controller("dateCtrl", function ($scope, Data, $http, $location, $rou
                     return '<i style="background:' + wardColors[i] + '"></i> <b>' + grade + (hasRanges && grade < _.last(grades) ? '+': '') + "</b> request" + (grade == 1 && !hasRanges ? '' : 's');
                 });
 
-                div.innerHTML = labels.join('<br>');
+                div.innerHTML =
+                    '<h4>' + Data.serviceObj.name + '</h4>' +
+                    labels.join('<br>');
                 return div;
             };
 
