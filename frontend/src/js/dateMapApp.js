@@ -58,7 +58,7 @@ dateMapApp.controller("dateCtrl", function ($scope, Data, $http, $location, $rou
     ].reverse();
 
     var urlSuffix = function() {
-        return Data.serviceObj.slug ? Data.serviceObj.slug + '/' : '';
+        return $routeParams && $routeParams.serviceSlug ? Data.serviceObj.slug + '/' : '';
     };
 
     $scope.goToPrevDay = function() {
