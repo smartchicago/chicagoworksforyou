@@ -1,3 +1,4 @@
+@charset "UTF-8";
 html, body {
   height: 100%;
   font-family: 'Monda', Helvetica, sans-serif; }
@@ -371,6 +372,8 @@ ul.nav .alderman a {
     transition: padding 400ms ease;
     font-weight: bold;
     font-size: 12px; }
+  .mediaApp .images .image em {
+    font-style: normal; }
   .mediaApp .images .image:hover span {
     padding-bottom: 10px; }
 

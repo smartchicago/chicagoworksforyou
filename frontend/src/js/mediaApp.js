@@ -39,7 +39,7 @@ mediaApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
 });
 
 mediaApp.controller("mediaCtrl", function ($scope, $http, Data, $location) {
-    var url = window.apiDomain + 'requests/media.json?callback=JSON_CALLBACK';
+    var url = window.apiDomain + 'requests/media.json?days=14&callback=JSON_CALLBACK';
     var slug = $location.path().split("/")[1];
     var serviceObj = window.lookupSlug(slug);
 
