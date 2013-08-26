@@ -126,11 +126,11 @@ Input:
 
     end_date: e.g. "2013-06-19"
     count: number of days to count back from end date
-    service_code: code of the service, e.g. "4fd3b167e750846744000005"
+    service_code: (optional) code of the service, e.g. "4fd3b167e750846744000005"
 
 Output:
 
-The city-wide average time to close and count of requests opened is in the `CityData` object. Time to close is measured in days. The `Threshold` value is one standard deviation below the average number of service requests opened in a ward for the given time period. This value is useful for filtering low-volume wards from the result set.
+The city-wide average time to close and count of requests opened is in the `CityData` object. Time to close is measured in days. The `Threshold` value is one standard deviation below the average number of service requests opened in a ward for the given time period. This value is useful for filtering low-volume wards from the result set. If `service_code` is omitted, the values will be for all service types.
 
     $ curl "http://localhost:5000/requests/time_to_close.json?end_date=2013-06-19&count=7&service_code=4fd3b167e750846744000005"
     {
@@ -152,90 +152,6 @@ The city-wide average time to close and count of requests opened is in the `City
       "Threshold": 27.537741650677532
     }
 	
-
-Ward Requests
--------------
-
-Path: `/wards/{id}/requests.json`
-
-Description: Return the 100 most recently updated (by CWFY) requests for a given ward.
-
-Input:
-
-    id: ward number, an integer between 1 - 50, inclusive.
-
-Output:
-
-    $ curl "http://localhost:5000/wards/1/requests.json"
-    [
-      {
-        "Lat": 41.913368,
-        "Long": -87.688519,
-        "Ward": 1,
-        "Police_district": 14,
-        "Id": 1378483,
-        "Service_request_id": {
-          "String": "10-01408091",
-          "Valid": true
-        },
-        "Status": {
-          "String": "closed",
-          "Valid": true
-        },
-        "Service_name": {
-          "String": "Graffiti Removal",
-          "Valid": true
-        },
-        "Service_code": {
-          "String": "4fd3b167e750846744000005",
-          "Valid": true
-        },
-        "Agency_responsible": {
-          "String": "Bureau of Street Operations - Graffiti",
-          "Valid": true
-        },
-        "Address": {
-          "String": "1743 N ARTESIAN AVE, CHICAGO, IL, 60647",
-          "Valid": true
-        },
-        "Channel": {
-          "String": "phone",
-          "Valid": true
-        },
-        "Media_url": {
-          "String": "",
-          "Valid": true
-        },
-        "Duplicate": {
-          "String": "",
-          "Valid": false
-        },
-        "Parent_service_request_id": {
-          "String": "",
-          "Valid": false
-        },
-        "Requested_datetime": {
-          "Time": "2010-09-01T13:14:06Z",
-          "Valid": true
-        },
-        "Updated_datetime": {
-          "Time": "2010-09-21T18:38:00Z",
-          "Valid": true
-        },
-        "Created_at": {
-          "Time": "2013-06-26T22:00:31.628959Z",
-          "Valid": true
-        },
-        "Updated_at": {
-          "Time": "2013-06-26T22:00:31.628959Z",
-          "Valid": true
-        },
-        "Extended_attributes": null
-      },
-
-      ( result truncated)
-    ]
-
 
 Ward Counts
 -----------
@@ -496,4 +412,62 @@ Output:
         ( ... truncated ... )
 
       }
+    }
+    
+Ward Transitions
+----------------
+
+Path:   `/wards/transitions.json`
+
+Description: Chicago ward boundaries are changing in 2015. This endpoint returns a list of all areas in the city that are changing from one ward to another. The response includes the current ward, 2015 ward, unique ID of the transition area, and a GeoJSON representation of the area.
+
+Input: 
+
+        ward: (optional) integer 1..50. If present, the response will be limited to that ward. If omitted, all wards will be present.    
+
+Output: 
+
+    $ curl "http://localhost:5000/wards/transitions.json?ward=50"
+    [
+      {
+        "Id": 189,
+        "Ward2013": 50,
+        "Ward2015": 39,
+        "Boundary": "{\"type\":\"MultiPolygon\",\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}},\"coordinates\":[[[[-87.70916,41.99038],
+        (... truncated ...)"
+      },
+      {
+        "Id": 187,
+        "Ward2013": 50,
+        "Ward2015": 40,
+        "Boundary": (... omitted ...)
+      },
+      {
+        "Id": 188,
+        "Ward2013": 50,
+        "Ward2015": 49,
+        "Boundary": (... omitted ...)
+      }
+    ]
+    
+Transition Time To Close
+------------------------
+
+Path:   `/transitions/time_to_close.json`
+
+Description: Calculate the average time to close for service requests in a given transition area.
+
+Input:
+
+    transition_area_id: integer ID of the transition area. Required.
+    service_code: (optional) limit the TTC average to a given service code. If omitted, all service types will be averaged.
+    count: number of days to go back in time
+    end_date: date (YYYY-MM-DD) to base calculations from
+    
+Output:
+
+    $ curl "http://localhost:5000/transitions/time_to_close.json?transition_area_id=1&count=7&end_date=2013-08-22"
+    {
+      "Time": 0.04724537037037037,
+      "Count": 1
     }

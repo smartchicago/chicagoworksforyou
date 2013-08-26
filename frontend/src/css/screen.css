@@ -1,3 +1,4 @@
+@charset "UTF-8";
 html, body {
   height: 100%;
   font-family: 'Monda', Helvetica, sans-serif; }
@@ -147,9 +148,14 @@ h1 {
   line-height: 18px;
   right: 20px;
   margin: 67px 0 0;
+  max-width: 125px;
   -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); }
+  .dateMapApp .legend h4 {
+    font-size: 15px;
+    line-height: 18px;
+    margin: 0 0 10px; }
   .dateMapApp .legend i {
     display: inline-block;
     width: 18px;
@@ -371,6 +377,8 @@ ul.nav .alderman a {
     transition: padding 400ms ease;
     font-weight: bold;
     font-size: 12px; }
+  .mediaApp .images .image em {
+    font-style: normal; }
   .mediaApp .images .image:hover span {
     padding-bottom: 10px; }
 
