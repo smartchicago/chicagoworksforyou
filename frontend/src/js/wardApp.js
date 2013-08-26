@@ -101,9 +101,127 @@ wardApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
 });
 
 wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $route, $routeParams) {
+    var highchartsDefaults = {
+        chart: {
+            marginBottom: 30
+        },
+        title: {
+            text: ''
+        },
+        xAxis: {
+            minPadding: 0.05,
+            maxPadding: 0.05,
+            tickmarkPlacement: 'between',
+            labels: {
+                style: {
+                    fontFamily: 'Monda, sans-serif',
+                    fontSize: '13px'
+                },
+                useHTML: true,
+                y: 22
+            }
+        },
+        yAxis: {
+            title: {
+                text: ''
+            },
+            minPadding: 0.1,
+            labels: {
+                style: {
+                    fontFamily: 'Monda, sans-serif',
+                    fontWeight: 'bold'
+                },
+                align: 'left',
+                x: 0,
+                y: 3
+            },
+            offset: 30
+        },
+        tooltip: {
+            headerFormat: '',
+            shadow: false,
+            style: {
+                fontFamily: 'Monda, sans-serif',
+                fontSize: '15px'
+            }
+        },
+        legend: {
+            enabled: false,
+            borderWidth: 0,
+            backgroundColor: "#f7f7f7",
+            padding: 10
+        }
+    };
+
+    var renderTTCchart = function(ttcURL) {
+        $http.jsonp(ttcURL).
+            success(function(response, status, headers, config) {
+                var threshold = Math.round(Math.max(response.Threshold,1));
+                var extended = _.map(response.WardData, function(val, key) { return _.extend(val,{'Ward':parseInt(key,10)}); });
+                var filtered = _.filter(extended, function(ward) { return ward.Count >= threshold && ward.Ward > 0; });
+                var sorted = _.sortBy(filtered, 'Time');
+                var wards = _.pluck(sorted, 'Ward');
+                var times = _.pluck(sorted, 'Time');
+                var position = _.indexOf(wards, Data.wardNum);
+                var colors = _.map(wards, function(ward) { return ward == Data.wardNum ? 'black' : '#BED0DE'; });
+
+                Data.inTTCchart = position >= 0;
+                Data.totalTTCWards = wards.length;
+                Data.minTTCcount = threshold;
+
+                if (Data.inTTCchart) {
+                    Data.wardRank = window.getOrdinal(position + 1);
+                    Data.wardTime = Math.round(sorted[position].Time * 100) / 100;
+                }
+
+                Highcharts.setOptions(highchartsDefaults);
+                var ttcChart = new Highcharts.Chart({
+                    chart: {
+                        type: 'column',
+                        renderTo: 'ttc-chart'
+                    },
+                    xAxis: {
+                        labels: {
+                            enabled: false
+                        },
+                        minPadding: 0.03,
+                        maxPadding: 0
+                    },
+                    plotOptions: {
+                        column: {
+                            animation: false,
+                            groupPadding: 0,
+                            pointPadding: 0,
+                            borderWidth: 0,
+                            colorByPoint: true,
+                            colors: colors
+                        }
+                    },
+                    series: [{
+                        name: "Time-to-close for " + Data.thisWeek,
+                        data: times
+                    }],
+                    tooltip: {
+                        formatter: function() {
+                            var text = [
+                                '<b>' + 'Ward ' + sorted[this.x].Ward + '<b>',
+                                Math.round(this.y * 10) / 10 + ' day' + (this.y == 1 ? '' : 's'),
+                                sorted[this.x].Count + ' request' + (sorted[this.x].Count == 1 ? '' : 's')
+                            ];
+                            return text.join('<br>');
+                        }
+                    }
+                });
+            }
+        );
+    };
+
     var renderOverview = function(render) {
         var DAY_COUNT = 1;
         var highsURL = window.apiDomain + 'wards/' + window.wardNum + '/historic_highs.json?include_date=' + Data.date + '&count=' + DAY_COUNT + '&callback=JSON_CALLBACK';
+        var ttcURL = window.apiDomain + 'requests/time_to_close.json?count=7&end_date=' + Data.date + '&callback=JSON_CALLBACK';
+
+        renderTTCchart(ttcURL);
 
         $http.jsonp(highsURL).
             success(function(response, status, headers, config) {
@@ -201,57 +319,8 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
         var DAY_COUNT = 6;
         var highsURL = window.apiDomain + 'wards/' + window.wardNum + '/historic_highs.json?service_code=' + Data.serviceObj.code + '&include_date=' + Data.date + '&count=' + DAY_COUNT + '&callback=JSON_CALLBACK';
         var ttcURL = window.apiDomain + 'requests/time_to_close.json?count=7&service_code=' + Data.serviceObj.code + '&end_date=' + Data.date + '&callback=JSON_CALLBACK';
-        var highchartsDefaults = {
-            chart: {
-                marginBottom: 30
-            },
-            title: {
-                text: ''
-            },
-            xAxis: {
-                minPadding: 0.05,
-                maxPadding: 0.05,
-                tickmarkPlacement: 'between',
-                labels: {
-                    style: {
-                        fontFamily: 'Monda, sans-serif',
-                        fontSize: '13px'
-                    },
-                    useHTML: true,
-                    y: 22
-                }
-            },
-            yAxis: {
-                title: {
-                    text: ''
-                },
-                minPadding: 0.1,
-                labels: {
-                    style: {
-                        fontFamily: 'Monda, sans-serif',
-                        fontWeight: 'bold'
-                    },
-                    align: 'left',
-                    x: 0,
-                    y: 3
-                },
-                offset: 30
-            },
-            tooltip: {
-                headerFormat: '',
-                shadow: false,
-                style: {
-                    fontFamily: 'Monda, sans-serif',
-                    fontSize: '15px'
-                }
-            },
-            legend: {
-                enabled: false,
-                borderWidth: 0,
-                backgroundColor: "#f7f7f7",
-                padding: 10
-            }
-        };
+
+        renderTTCchart(ttcURL);
 
         $http.jsonp(highsURL).
             success(function(response, status, headers, config) {
@@ -321,62 +390,6 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
                     chart.yAxis[0].update({plotLines: [pbOptions]});
                 }
             });
-
-        $http.jsonp(ttcURL).
-            success(function(response, status, headers, config) {
-                var threshold = Math.round(Math.max(response.Threshold,1));
-                var extended = _.map(response.WardData, function(val, key) { return _.extend(val,{'Ward':parseInt(key,10)}); });
-                var filtered = _.filter(extended, function(ward) { return ward.Count >= threshold && ward.Ward > 0; });
-                var sorted = _.sortBy(filtered, 'Time');
-                var wards = _.pluck(sorted, 'Ward');
-                var times = _.pluck(sorted, 'Time');
-                var position = _.indexOf(wards, Data.wardNum);
-                var colors = _.map(wards, function(ward) { return ward == Data.wardNum ? 'black' : '#BED0DE'; });
-
-                Data.inTTCchart = position >= 0;
-                Data.totalTTCWards = wards.length;
-                Data.minTTCcount = threshold;
-
-                if (Data.inTTCchart) {
-                    Data.wardRank = window.getOrdinal(position + 1);
-                    Data.wardTime = Math.round(sorted[position].Time * 100) / 100;
-                }
-
-                Highcharts.setOptions(highchartsDefaults);
-                var ttcChart = new Highcharts.Chart({
-                    chart: {
-                        type: 'column',
-                        renderTo: 'ttc-chart'
-                    },
-                    xAxis: {
-                        labels: {
-                            enabled: false
-                        },
-                        minPadding: 0.03,
-                        maxPadding: 0
-                    },
-                    plotOptions: {
-                        column: {
-                            animation: false,
-                            groupPadding: 0,
-                            pointPadding: 0,
-                            borderWidth: 0,
-                            colorByPoint: true,
-                            colors: colors
-                        }
-                    },
-                    series: [{
-                        name: "Time-to-close for " + Data.thisWeek,
-                        data: times
-                    }],
-                    tooltip: {
-                        formatter: function() {
-                            return '<b>' + Math.round(this.y * 10) / 10 + ' day' + (this.y == 1 ? '' : 's') + ' </b><br>Ward ' + wards[this.x];
-                        }
-                    }
-                });
-            }
-        );
     };
 
     var render = function (render) {
@@ -394,7 +407,7 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
         function ($e, $currentRoute, $previousRoute) {
             Data.setDate(parseDate($routeParams.date, window.yesterday, $location));
             Data.action = $route.current.action;
-            if (!$previousRoute || $currentRoute.pathParams.serviceSlug != $previousRoute.pathParams.serviceSlug) {
+            if (!$previousRoute || $previousRoute.redirectTo || $currentRoute.pathParams.serviceSlug != $previousRoute.pathParams.serviceSlug) {
                 Data.serviceObj = {};
                 if ($currentRoute.pathParams.serviceSlug) {
                     Data.serviceObj = window.lookupSlug($currentRoute.pathParams.serviceSlug);

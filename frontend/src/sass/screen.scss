@@ -208,7 +208,14 @@ h1 {
         line-height: 18px;
         right: 20px;
         margin: 67px 0 0;
+        max-width: 125px;
         @include box-shadow(0 0 10px fade-out(black,.7));
+
+        h4 {
+            font-size: 15px;
+            line-height: 18px;
+            margin: 0 0 10px;
+        }
 
         i {
             display: inline-block;
@@ -590,6 +597,10 @@ ul.nav .alderman {
                 transition: padding 400ms ease;
                 font-weight: bold;
                 font-size: 12px;
+            }
+
+            em {
+                font-style: normal;
             }
 
             &:hover {
