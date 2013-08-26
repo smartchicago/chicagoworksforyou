@@ -1,4 +1,3 @@
-@charset "UTF-8";
 html, body {
   height: 100%;
   font-family: 'Monda', Helvetica, sans-serif; }
@@ -80,6 +79,24 @@ html, body {
 
 h1 {
   margin: 0 0 14px 0; }
+
+.container.content {
+  padding-top: 25px; }
+
+.weeknav {
+  border-bottom: 1px solid #ddd; }
+  .weeknav .curr {
+    -webkit-box-shadow: inset -1px 0 0 #dddddd, inset 1px 0 0 #dddddd;
+    -moz-box-shadow: inset -1px 0 0 #dddddd, inset 1px 0 0 #dddddd;
+    box-shadow: inset -1px 0 0 #dddddd, inset 1px 0 0 #dddddd;
+    border-width: 0 1px;
+    text-align: center;
+    font-size: 16px;
+    line-height: 26px;
+    padding: 8px 0; }
+  .weeknav h1 {
+    font-size: 28px;
+    margin: 0; }
 
 .home-wrap {
   position: relative;
@@ -251,25 +268,21 @@ h1 {
   padding-top: 10px;
   margin: 0; }
 
-.serviceApp .content {
-  padding-top: 15px; }
 .serviceApp h1 {
   letter-spacing: -1px; }
 .serviceApp .day {
   float: left;
   text-align: center; }
   .serviceApp .day a {
-    width: 66px;
+    width: 120px;
     padding: 4px 5px;
-    font-size: 10px;
+    font-size: 11px;
     line-height: 20px;
     text-transform: uppercase; }
     .serviceApp .day a:hover {
       background: inherit; }
     .serviceApp .day a em {
-      font-size: 26px;
       font-weight: bold;
-      display: block;
       font-style: normal; }
 .serviceApp .pagination {
   margin: 0 0 1em 0; }
@@ -365,8 +378,6 @@ ul.nav .alderman a {
   padding-left: 3px; }
 .mediaApp .nav-pills .active .count {
   color: rgba(255, 255, 255, 0.7); }
-.mediaApp .content {
-  padding-top: 20px; }
 .mediaApp .images .image {
   display: inline-block;
   width: 138px;
@@ -406,8 +417,6 @@ ul.nav .alderman a {
 .about p {
   margin: 0 0 1.2em; }
 
-.annotations .content {
-  padding-top: 20px; }
 .annotations .article-body {
   padding-top: 10px; }
 

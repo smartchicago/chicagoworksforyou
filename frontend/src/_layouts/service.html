@@ -9,12 +9,42 @@ has_js: true
 window.currServiceType = '{{ page.service_code }}';
 </script>
 
-<div class="container content">
+<div class="weeknav">
+<div class="container" ng-controller="headerCtrl">
     <div class="row">
-        <div class="span4" ng-controller="sidebarCtrl">
+        <div class="prev span2">
+            <a href="" ng-click="goToPrevDate()">Go back a week</a>
+        </div>
+        <div class="curr span8">
             <h1>
                 <a href="#">{{ page.title }}</a><br>
             </h1>
+            <span ng-bind="data.thisDate"></span>
+        </div>
+        <div class="next span2">
+            <a href="" ng-click="goToNextDate()">Go forward a week</a>
+        </div>
+    </div>
+</div>
+</div>
+
+<div class="container content" ng-controller="sidebarCtrl">
+    {% raw %}
+    <div class="pagination">
+        <ul>
+            <li class="day" ng-repeat="day in data.days" ng-class="day.dowAbbr" style="border-bottom:5px solid {{ day.color }};">
+                <a ng-href="/#/{{ day.date|date:'yyyy-MM-dd' }}/">
+                    {{ day.date|date:'EEE' }}
+                    <em>{{ day.date|date:'d' }}</em>
+                    {{ day.date|date:'MMM' }}
+                </a>
+            </li>
+        </ul>
+    </div>
+    {% endraw %}
+
+    <div class="row">
+        <div class="span4">
             <span ng-bind="data.cityCount"></span> requests opened<br>
             <span ng-bind="data.cityCloseCount"></span> requests closed
             {% comment %}
@@ -28,21 +58,6 @@ window.currServiceType = '{{ page.service_code }}';
             </p>
         </div>
         <div class="span8" ng-controller="serviceCtrl">
-            {% raw %}
-            <div class="pagination">
-                <ul>
-                    <li><a href="" ng-click="goToPrevDate()">&larr;</a></li>
-                    <li class="day" ng-repeat="day in data.days" ng-class="day.dowAbbr" style="border-bottom:10px solid {{ day.color }};">
-                        <a ng-href="/#/{{ day.date|date:'yyyy-MM-dd' }}/">
-                            {{ day.date|date:'MMM' }}
-                            <em>{{ day.date|date:'d' }}</em>
-                            {{ day.date|date:'EEE' }}
-                        </a>
-                    </li>
-                    <li><a href="" ng-click="goToNextDate()">&rarr;</a></li>
-                </ul>
-            </div>
-            {% endraw %}
             <div id="chart" class="chart"></div>
         </div>
     </div>

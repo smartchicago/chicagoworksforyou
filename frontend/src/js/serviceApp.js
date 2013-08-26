@@ -63,14 +63,8 @@ serviceApp.factory('Data', function () {
     return data;
 });
 
-serviceApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
+serviceApp.controller("headerCtrl", function ($scope, Data, $location) {
     $scope.data = Data;
-});
-
-serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $route, $routeParams) {
-    var stCode = window.currServiceType;
-    var stSlug = window.lookupCode(stCode).slug;
-    var chart = $('#chart').highcharts();
 
     $scope.goToPrevDate = function() {
         if (Data.prevDate.clone().day(0).isBefore(window.earliestDate)) {
@@ -85,6 +79,17 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
         }
         $location.path(Data.nextDate.format(dateFormat) + "/");
     };
+
+});
+
+serviceApp.controller("sidebarCtrl", function ($scope, Data) {
+    $scope.data = Data;
+});
+
+serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $route, $routeParams) {
+    var stCode = window.currServiceType;
+    var stSlug = window.lookupCode(stCode).slug;
+    var chart = $('#chart').highcharts();
 
     var renderChart = function (categories, requests, closes) {
         if (closes) {

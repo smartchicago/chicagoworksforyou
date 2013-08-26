@@ -112,6 +112,30 @@ h1 {
     margin: 0 0 14px 0;
 }
 
+.container.content {
+    padding-top: 25px;
+}
+
+// WEEK NAV
+
+.weeknav {
+    border-bottom: 1px solid #ddd;
+
+    .curr {
+        @include box-shadow(inset -1px 0 0 #ddd, inset 1px 0 0 #ddd);
+        border-width: 0 1px;
+        text-align: center;
+        font-size: 16px;
+        line-height: 26px;
+        padding: 8px 0
+    }
+
+    h1 {
+        font-size: 28px;
+        margin: 0;
+    }
+}
+
 // MAP
 
 .home-wrap {
@@ -137,7 +161,6 @@ h1 {
     padding: 12px 20px;
     border-radius: 6px;
     @include box-shadow(0 0 10px fade-out(black,.7));
-
 
     h2 {
         margin: 0 0 10px;
@@ -367,10 +390,6 @@ h1 {
 // SERVICES
 
 .serviceApp {
-    .content {
-        padding-top: 15px;
-    }
-
     h1 {
         letter-spacing: -1px;
     }
@@ -380,12 +399,9 @@ h1 {
         text-align: center;
 
         a {
-            width: 66px;
-            // color: white;
+            width: 120px;
             padding: 4px 5px;
-            // background: none;
-            // border: none;
-            font-size: 10px;
+            font-size: 11px;
             line-height: 20px;
             text-transform: uppercase;
 
@@ -394,9 +410,9 @@ h1 {
             }
 
             em {
-                font-size: 26px;
+                // font-size: 26px;
                 font-weight: bold;
-                display: block;
+                // display: block;
                 font-style: normal;
             }
         }
@@ -567,10 +583,6 @@ ul.nav .alderman {
         }
     }
 
-    .content {
-        padding-top: 20px;
-    }
-
     .images {
         .image {
             display: inline-block;
@@ -638,10 +650,6 @@ ul.nav .alderman {
 // ANNOTATIONS
 
 .annotations {
-    .content {
-        padding-top: 20px;
-    }
-
     .article-body {
         padding-top: 10px;
     }
