@@ -2,16 +2,6 @@ var centroids = [null,[-87.683231,41.914304],[-87.648803,41.867456],[-87.62964,4
 var wardCentroid = centroids[wardNum];
 var wardCenter = [wardCentroid[1], wardCentroid[0]];
 
-// JQUERY
-
-$(function () {
-    // MAKE FILTER STICK
-
-    $(".filter").affix({
-        offset: { top: 530 }
-    });
-});
-
 // ANGULAR
 
 var wardApp = angular.module('wardApp', []).value('$anchorScroll', angular.noop);
