@@ -9,24 +9,48 @@ has_js: true
 window.currServiceType = '{{ page.service_code }}';
 </script>
 
-<div class="container content">
+<div class="weeknav">
+<div class="container" ng-controller="headerCtrl">
     <div class="row">
-        <div class="span4" ng-controller="sidebarCtrl">
-            <h1><span ng-bind="data.cityCount"></span> <a href="#">{{ page.title }}</a> requests were opened this week</h1>
+        <div class="move prev span2">
+            <a href="" ng-click="goToPrevDate()">« Prev week</a>
+        </div>
+        <div class="curr span8">
+            <h1>
+                <a href="#">{{ page.title }}</a><br>
+            </h1>
+            <span ng-bind="data.thisDate"></span>
+            &nbsp; •
+            <span class="open-count" ng-bind="data.cityCount"></span>
+            <span class="closed-count" ng-bind="data.cityCloseCount"></span>
+        </div>
+        <div class="move next span2">
+            <a href="" ng-click="goToNextDate()">Next week »</a>
+        </div>
+    </div>
+</div>
+</div>
+
+<div class="container" ng-controller="sidebarCtrl">
+    {% raw %}
+    <div class="pagination">
+        <ul>
+            <li class="day" ng-repeat="day in data.days" ng-class="day.dowAbbr" style="border-bottom:5px solid {{ day.color }};">
+                <a ng-href="/#/{{ day.date|date:'yyyy-MM-dd' }}/{{ data.stSlug }}/">
+                    {{ day.date|date:'EEE' }}
+                    <b>{{ day.date|date:'d' }}</b>
+                    {{ day.date|date:'MMM' }}
+                </a>
+            </li>
+        </ul>
+    </div>
+    {% endraw %}
+
+    <div class="row">
+        <div class="span4">
             {% comment %}
             <p>And XXX were closed. Here's how they break down.</p>
             {% endcomment %}
-            <div class="pagination-wrap">
-                {% raw %}
-                <div class="pagination">
-                    <ul>
-                        <li class="prev-date"><a href="" ng-click="goToPrevDate()">&larr;</a></li>
-                        <li class="this-date"><a ng-href="#/{{data.date}}" ng-bind="data.thisDate"></a></li>
-                        <li class="next-date" ng-class="{disabled: data.isLatest}"><a href="" ng-click="goToNextDate()">&rarr;</a></li>
-                    </ul>
-                </div>
-                {% endraw %}
-            </div>
             <div class="description">
                 {{ content }}
             </div>

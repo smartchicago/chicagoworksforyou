@@ -112,6 +112,61 @@ h1 {
     margin: 0 0 14px 0;
 }
 
+.container.content {
+    padding-top: 25px;
+}
+
+// WEEK NAV
+
+.weeknav {
+    border-bottom: 1px solid #ddd;
+
+    .curr {
+        @include box-shadow(inset -1px 0 0 #ddd, inset 1px 0 0 #ddd);
+        border-width: 0 1px;
+        text-align: center;
+        font-size: 16px;
+        line-height: 26px;
+        padding: 8px 0;
+        color: #777;
+    }
+
+    .open-count, .closed-count {
+        margin-left: 8px;
+
+        &:before {
+            content:"";
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background-color: #555;
+            border-radius: 12px;
+            margin-right: 4px;
+        }
+    }
+
+    h1 {
+        font-size: 28px;
+        margin: 0;
+
+        a {
+            color: #111;
+        }
+
+    }
+
+    .move a {
+        display: block;
+        padding: 30px 0;
+        font-size: 14px;
+        text-transform: uppercase;
+    }
+
+    .next {
+        text-align: right;
+    }
+}
+
 // MAP
 
 .home-wrap {
@@ -137,7 +192,6 @@ h1 {
     padding: 12px 20px;
     border-radius: 6px;
     @include box-shadow(0 0 10px fade-out(black,.7));
-
 
     h2 {
         margin: 0 0 10px;
@@ -367,12 +421,44 @@ h1 {
 // SERVICES
 
 .serviceApp {
-    .content {
-        padding-top: 15px;
-    }
-
     h1 {
         letter-spacing: -1px;
+    }
+
+    .day {
+        float: left;
+        text-align: center;
+
+        &:last-child {
+            a {
+                border-right: 1px solid #ddd;
+            }
+        }
+
+        a {
+            width: 133px;
+            padding: 4px 0;
+            font-size: 11px;
+            line-height: 20px;
+            text-transform: uppercase;
+            color: #888;
+            border: none;
+            border-left: 1px solid #ddd;
+            border-radius: 0 !important;
+
+            &:hover {
+                background: inherit;
+            }
+
+            b {
+                color: #222;
+                font-weight: bold;
+            }
+        }
+    }
+
+    .pagination {
+        margin: 0 0 1em 0;
     }
 
     .pagination-wrap.affix {
@@ -380,22 +466,6 @@ h1 {
         padding-top: 20px;
         background:fade-out(white,0.1);
         @include box-shadow(0 4px 30px white);
-    }
-
-    .pagination {
-        margin: 0 0 1em;
-
-        li {
-            a {
-                width: 20px;
-            }
-        }
-
-        .this-date {
-            a {
-                width: 200px;
-            }
-        }
     }
 
     figcaption {
@@ -552,10 +622,6 @@ ul.nav .alderman {
         }
     }
 
-    .content {
-        padding-top: 20px;
-    }
-
     .images {
         .image {
             display: inline-block;
@@ -623,10 +689,6 @@ ul.nav .alderman {
 // ANNOTATIONS
 
 .annotations {
-    .content {
-        padding-top: 20px;
-    }
-
     .article-body {
         padding-top: 10px;
     }

@@ -24,7 +24,17 @@ serviceApp.config(function($routeProvider) {
 });
 
 serviceApp.factory('Data', function () {
-    var data = {};
+    var data = {
+        dayColors: [
+            '#37c0b9',
+            '#37acc3',
+            '#3790c7',
+            '#3973c9',
+            '#3a56ca',
+            '#403ccc',
+            '#603fce'
+        ]
+    };
 
     data.setDate = function(date) {
         data.date = date.format(dateFormat);
@@ -35,6 +45,15 @@ serviceApp.factory('Data', function () {
         data.duration = data.endDate.diff(data.startDate, 'days');
         data.thisDate = moment.duration(data.duration,"days").beforeMoment(data.endDate,true).format({implicitYear: false});
 
+        data.days = _.map(data.dayColors, function(color, i) {
+            var day = data.startDate.clone().add('day',i);
+            return {
+                'i': i,
+                'color': color,
+                'date': day.format(),
+            };
+        });
+
         data.prevDate = data.startDate.clone().subtract('day',1);
         data.nextDate = data.endDate.clone().add('day',7);
         data.isLatest = data.nextDate.clone().day(0).isAfter(window.yesterday);
@@ -43,7 +62,7 @@ serviceApp.factory('Data', function () {
     return data;
 });
 
-serviceApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
+serviceApp.controller("headerCtrl", function ($scope, Data, $location) {
     $scope.data = Data;
 
     $scope.goToPrevDate = function() {
@@ -59,35 +78,78 @@ serviceApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
         }
         $location.path(Data.nextDate.format(dateFormat) + "/");
     };
+
+});
+
+serviceApp.controller("sidebarCtrl", function ($scope, Data) {
+    $scope.data = Data;
 });
 
 serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $route, $routeParams) {
     var stCode = window.currServiceType;
-    var stSlug = window.lookupCode(stCode).slug;
+    Data.stSlug = window.lookupCode(stCode).slug;
     var chart = $('#chart').highcharts();
 
-    var renderChart = function() {
-        var url = window.apiDomain + 'requests/' + stCode + '/counts.json?end_date=' + Data.endDate.format(dateFormat) + '&count=' + (Data.duration + 1) + '&callback=JSON_CALLBACK';
+    var renderChart = function (categories, requests, closes) {
+        if (closes) {
+            requests.push(closes);
+        }
+        var chart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'chart'
+            },
+            colors: _.clone(Data.dayColors).reverse(),
+            series: requests.reverse(),
+            xAxis: {
+                categories: categories
+            },
+            yAxis: {
+                opposite: true,
+                plotLines: [{
+                    id: 'avg',
+                    value: Data.cityAverage,
+                    color: 'black',
+                    width: 3,
+                    zIndex: 5
+                }]
+            }
+        });
+    };
 
-        $http.jsonp(url).
+    var buildChart = function() {
+        var endDate = Data.endDate.format(dateFormat);
+        var count = Data.duration + 1;
+
+        var requestsURL = window.apiDomain + 'requests/' + stCode + '/counts.json?end_date=' + endDate + '&count=' + count + '&callback=JSON_CALLBACK';
+        var closesURL = window.apiDomain + 'requests/time_to_close.json?service_code=' + stCode + '&end_date=' + endDate + '&count=' + count + '&callback=JSON_CALLBACK';
+
+        $http.jsonp(requestsURL).
             success(function(response, status, headers, config) {
                 Data.cityCount = response.CityData.Count;
                 Data.cityAverage = response.CityData.Count / 50;
-                var wardData = response.WardData;
-                var categories = _.map(_.keys(wardData), function (wardNum) { return '<a href="/ward/' + wardNum + '/#/' + Data.endDate.format(dateFormat) + '/' + stSlug + '">Ward ' + wardNum + '</a>'; });
-                var days = [[],[],[],[],[],[],[]];
-                for (var ward in wardData) {
-                    var i = 0;
-                    for (var count in wardData[ward].Counts) {
-                        days[i++].push(wardData[ward].Counts[count]);
-                    }
-                }
 
-                var weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-                var series = [];
+                var wardData = _.sortBy(response.WardData, function(ward, wardNum) {
+                    ward.Ward = wardNum;
+                    return parseInt(wardNum, 10);
+                });
+
+                var categories = _.map(wardData, function (ward) {
+                    return '<a href="/ward/' + ward.Ward + '/#/' + Data.endDate.format(dateFormat) + '/' + Data.stSlug + '">Ward ' + ward.Ward + '</a>';
+                });
+
+                var days = [[],[],[],[],[],[],[]];
+                _.each(wardData, function(ward) {
+                    var i = 0;
+                    for (var count in ward.Counts) {
+                        days[i++].push(ward.Counts[count]);
+                    }
+                });
+
+                var weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+                var requestSeries = [];
                 for (var day in days) {
                     if (days[day].length > 0) {
-                        series.push({
+                        requestSeries.push({
                             name: weekdays[day],
                             data: days[day],
                             stack: 0,
@@ -96,34 +158,29 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
                     }
                 }
 
-                new Highcharts.Chart({
-                    chart: {
-                        renderTo: 'chart'
-                    },
-                    colors: [
-                        '#37c0b9',
-                        '#37acc3',
-                        '#3790c7',
-                        '#3973c9',
-                        '#3a56ca',
-                        '#403ccc',
-                        '#603fce'
-                    ].reverse(),
-                    series: series.reverse(),
-                    xAxis: {
-                        categories: categories
-                    },
-                    yAxis: {
-                        opposite: true,
-                        plotLines: [{
-                            id: 'avg',
-                            value: Data.cityAverage,
+                $http.jsonp(closesURL).
+                    success(function(response, status, headers, config) {
+                        Data.cityCloseCount = response.CityData.Count;
+                        var wardCloseData = _.sortBy(response.WardData, function(ward, wardNum) {
+                            ward.Ward = wardNum;
+                            return parseInt(wardNum, 10);
+                        });
+                        var closeCounts = _.pluck(wardCloseData, 'Count');
+                        var closeSeries = {
+                            data: closeCounts,
+                            type: 'scatter',
+                            name: 'Requests closed',
                             color: 'black',
-                            width: 3,
-                            zIndex: 5
-                        }]
-                    }
-                });
+                            stack: 0,
+                            index: 10,
+                            legendIndex: 100
+                        };
+                        renderChart(categories, requestSeries, closeSeries);
+                    }).
+                    error(function(data, status, headers, config) {
+                        renderChart(categories, requestSeries);
+                    });
+
             }
         );
     };
@@ -135,7 +192,7 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
         function ($e, $currentRoute, $previousRoute) {
             Data.setDate(parseDate($routeParams.date, window.yesterday, $location));
             Data.currURL = "#/" + Data.date + "/";
-            renderChart();
+            buildChart();
         }
     );
 });
@@ -188,6 +245,9 @@ Highcharts.setOptions({
             },
             pointPadding: 0,
             stacking: 'normal'
+        },
+        scatter: {
+            animation: false
         }
     },
     tooltip: {
@@ -199,11 +259,11 @@ Highcharts.setOptions({
             fontSize: '15px'
         },
         formatter: function() {
-            return this.series.name + ': <b>' + this.y + '</b>';
+            return this.series.name + ': <b>' + this.y + ' opened</b>';
         }
     },
     legend: {
-        enabled: true,
+        enabled: false,
         borderWidth: 0,
         backgroundColor: "#f7f7f7",
         padding: 10,
