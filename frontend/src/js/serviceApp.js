@@ -37,12 +37,16 @@ serviceApp.factory('Data', function () {
         data.duration = data.endDate.diff(data.startDate, 'days');
         data.thisDate = moment.duration(data.duration,"days").beforeMoment(data.endDate,true).format({implicitYear: false});
 
+        var today = moment().startOf('day');
+
         data.days = _.map(data.dayColors, function(color, i) {
-            var day = data.startDate.clone().add('day',i);
+            var day = data.startDate.clone().startOf('day').add('day',i);
+            var inFuture = !day.isBefore(today);
             return {
                 'i': i,
-                'color': color,
                 'date': day.format(),
+                'inFuture': inFuture,
+                'color': inFuture ? "#dddddd" : color
             };
         });
 
@@ -83,15 +87,17 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
     var chart = $('#chart').highcharts();
 
     var renderChart = function (categories, requests, closes) {
+        var series = _.clone(requests);
         if (closes) {
-            requests.push(closes);
+            series.push(closes);
         }
+        // debugger
         var chart = new Highcharts.Chart({
             chart: {
                 renderTo: 'chart'
             },
-            colors: _.clone(Data.dayColors).reverse(),
-            series: requests.reverse(),
+            colors: _.clone(Data.dayColors).slice(0, requests.length).reverse(),
+            series: series.reverse(),
             xAxis: {
                 categories: categories
             },
