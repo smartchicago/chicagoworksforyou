@@ -20,12 +20,12 @@ has_js: true
             </div>
         </div>
         <div class="span9 images">
-            <p>
-                Chicago's Open311 system allows users to attach photos to their service requests.
-                This page shows the last 14 days' worth of photos attached to 311 requests.
-                Clicking on a picture will take you to the <a href="http://servicetracker.cityofchicago.org/">Service Tracker</a> page for that request.
-            </p>
             <div ng-controller="mediaCtrl">
+                <p>
+                    Chicago's Open311 system allows users to attach photos to their service requests.
+                    This page shows the last 14 days' worth of photos attached to 311 <span ng-bind="data.search.Service_name"></span> requests.
+                    Clicking on a picture will take you to the <a href="http://servicetracker.cityofchicago.org/">Service Tracker</a> page for that request.
+                </p>
                 {% raw %}
                 <a class="image" ng-href="http://servicetracker.cityofchicago.org/requests/{{ img.Service_request_id }}" ng-repeat="img in data.media | filter:data.search">
                     <img ng-src="{{ img.Media_url }}" alt="{{ img.Address }}">
