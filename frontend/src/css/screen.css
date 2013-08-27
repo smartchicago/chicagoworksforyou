@@ -1,4 +1,3 @@
-@charset "UTF-8";
 html, body {
   height: 100%;
   font-family: 'Monda', Helvetica, sans-serif; }
@@ -80,6 +79,44 @@ html, body {
 
 h1 {
   margin: 0 0 14px 0; }
+
+.container.content {
+  padding-top: 25px; }
+
+.weeknav {
+  border-bottom: 1px solid #ddd; }
+  .weeknav .curr {
+    -webkit-box-shadow: inset -1px 0 0 #dddddd, inset 1px 0 0 #dddddd;
+    -moz-box-shadow: inset -1px 0 0 #dddddd, inset 1px 0 0 #dddddd;
+    box-shadow: inset -1px 0 0 #dddddd, inset 1px 0 0 #dddddd;
+    border-width: 0 1px;
+    text-align: center;
+    font-size: 16px;
+    line-height: 26px;
+    padding: 8px 0;
+    color: #777; }
+  .weeknav .open-count, .weeknav .closed-count {
+    margin-left: 8px; }
+    .weeknav .open-count:before, .weeknav .closed-count:before {
+      content: "";
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      background-color: #555;
+      border-radius: 12px;
+      margin-right: 4px; }
+  .weeknav h1 {
+    font-size: 28px;
+    margin: 0; }
+    .weeknav h1 a {
+      color: #111; }
+  .weeknav .move a {
+    display: block;
+    padding: 30px 0;
+    font-size: 14px;
+    text-transform: uppercase; }
+  .weeknav .next {
+    text-align: right; }
 
 .home-wrap {
   position: relative;
@@ -251,10 +288,30 @@ h1 {
   padding-top: 10px;
   margin: 0; }
 
-.serviceApp .content {
-  padding-top: 15px; }
 .serviceApp h1 {
   letter-spacing: -1px; }
+.serviceApp .day {
+  float: left;
+  text-align: center; }
+  .serviceApp .day:last-child a {
+    border-right: 1px solid #ddd; }
+  .serviceApp .day a {
+    width: 133px;
+    padding: 4px 0;
+    font-size: 11px;
+    line-height: 20px;
+    text-transform: uppercase;
+    color: #888;
+    border: none;
+    border-left: 1px solid #ddd;
+    border-radius: 0 !important; }
+    .serviceApp .day a:hover {
+      background: inherit; }
+    .serviceApp .day a b {
+      color: #222;
+      font-weight: bold; }
+.serviceApp .pagination {
+  margin: 0 0 1em 0; }
 .serviceApp .pagination-wrap.affix {
   top: 0;
   padding-top: 20px;
@@ -262,12 +319,6 @@ h1 {
   -webkit-box-shadow: 0 4px 30px white;
   -moz-box-shadow: 0 4px 30px white;
   box-shadow: 0 4px 30px white; }
-.serviceApp .pagination {
-  margin: 0 0 1em; }
-  .serviceApp .pagination li a {
-    width: 20px; }
-  .serviceApp .pagination .this-date a {
-    width: 200px; }
 .serviceApp figcaption {
   font-size: 12px;
   line-height: 1.4;
@@ -353,8 +404,6 @@ ul.nav .alderman a {
   padding-left: 3px; }
 .mediaApp .nav-pills .active .count {
   color: rgba(255, 255, 255, 0.7); }
-.mediaApp .content {
-  padding-top: 20px; }
 .mediaApp .images .image {
   display: inline-block;
   width: 138px;
@@ -394,8 +443,6 @@ ul.nav .alderman a {
 .about p {
   margin: 0 0 1.2em; }
 
-.annotations .content {
-  padding-top: 20px; }
 .annotations .article-body {
   padding-top: 10px; }
 
