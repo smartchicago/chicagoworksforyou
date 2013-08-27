@@ -225,7 +225,7 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
     var renderOverview = function(render) {
         var DAY_COUNT = 1;
         var highsURL = window.apiDomain + 'wards/' + window.wardNum + '/historic_highs.json?include_date=' + Data.date + '&count=' + DAY_COUNT + '&callback=JSON_CALLBACK';
-        var ttcURL = window.apiDomain + 'requests/time_to_close.json?count=7&end_date=' + Data.date + '&callback=JSON_CALLBACK';
+        var ttcURL = window.apiDomain + 'requests/time_to_close.json?count=' + (Data.duration + 1) + '&end_date=' + Data.date + '&callback=JSON_CALLBACK';
 
         renderTTCchart(ttcURL);
 
