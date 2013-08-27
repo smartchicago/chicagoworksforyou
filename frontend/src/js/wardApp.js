@@ -62,12 +62,40 @@ wardApp.factory('Data', function () {
         data.date = date.format(dateFormat);
         data.dateObj = date;
         data.dateFormatted = date.format('MMM D, YYYY');
-        data.prevDay = moment(date).subtract('day',1);
-        data.nextDay = moment(date).add('day',1);
-        data.isLatest = data.nextDay.isAfter(window.yesterday);
+
+        data.startDate = date.clone().day(0);
+        data.endDate = date.clone().day(6).max(window.yesterday);
+        data.duration = data.endDate.diff(data.startDate, 'days');
+        data.thisDate = moment.duration(data.duration,"days").beforeMoment(data.endDate,true).format({implicitYear: false});
+
+        data.prevDate = data.startDate.clone().subtract('day',1);
+        data.nextDate = data.endDate.clone().add('day',7);
+        data.isLatest = data.nextDate.clone().day(0).isAfter(window.yesterday);
     };
 
     return data;
+});
+
+wardApp.controller("headerCtrl", function ($scope, Data, $location) {
+    $scope.data = Data;
+
+    var urlSuffix = function() {
+        return Data.serviceObj.slug ? Data.serviceObj.slug + '/' : '';
+    };
+
+    $scope.goToPrevDate = function() {
+        if (Data.prevDate.clone().day(0).isBefore(window.earliestDate)) {
+            return false;
+        }
+        $location.path(Data.prevDate.format(dateFormat) + "/" + urlSuffix());
+    };
+
+    $scope.goToNextDate = function() {
+        if (Data.isLatest) {
+            return false;
+        }
+        $location.path(Data.nextDate.format(dateFormat) + "/" + urlSuffix());
+    };
 });
 
 wardApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
@@ -76,28 +104,6 @@ wardApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
     });
 
     $scope.data = Data;
-
-    var urlSuffix = function() {
-        return Data.serviceObj.slug ? Data.serviceObj.slug + '/' : '';
-    };
-
-    $scope.goToPrevDay = function() {
-        if (Data.prevDay.isBefore(window.earliestDate)) {
-            return false;
-        }
-        $location.path(Data.prevDay.format(dateFormat) + '/' + urlSuffix());
-    };
-
-    $scope.goToNextDay = function() {
-        if (Data.isLatest) {
-            return false;
-        }
-        $location.path(Data.nextDay.format(dateFormat) + '/' + urlSuffix());
-    };
-
-    $scope.currPage = function () {
-        return false;
-    };
 });
 
 wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $route, $routeParams) {
