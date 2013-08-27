@@ -256,11 +256,6 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
                             data: historicHighs,
                             name: "Historic high",
                             id: 1
-                        },{
-                            data: current,
-                            type: 'scatter',
-                            name: Data.dateFormatted,
-                            id: 2
                         }],
                         xAxis: {
                             categories: categories,
@@ -295,9 +290,6 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
                                     }
                                 },
                                 pointPadding: 0
-                            },
-                            scatter: {
-                                animation: false
                             }
                         },
                         legend: {
