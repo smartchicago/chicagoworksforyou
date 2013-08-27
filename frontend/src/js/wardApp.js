@@ -357,35 +357,8 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
                         },
                         xAxis: {
                             categories: categories
-                        },
-                        yAxis: {
-                            plotLines: [{
-                                id: 'avg',
-                                value: todaysCount,
-                                color: 'black',
-                                width: 2,
-                                zIndex: 5,
-                                label: {
-                                    align: 'right',
-                                    color: 'black',
-                                    text: Data.dateObj.format("MMM D: ") + todaysCount + " request" + (todaysCount == 1 ? "" : "s"),
-                                    y: -8,
-                                    x: 0,
-                                    style: {
-                                        fontWeight: 'bold',
-                                        fontFamily: 'Monda, Helvetica, sans-serif',
-                                        fontSize: '14px'
-                                    }
-                                }
-                            }]
                         }
                     });
-                } else {
-                    var chart = $('#counts-chart').highcharts();
-                    var pbOptions = chart.yAxis[0].plotLinesAndBands[0].options;
-                    pbOptions.value = todaysCount;
-                    pbOptions.label.text = Data.dateObj.format("MMM D: ") + todaysCount + " request" + (todaysCount == 1 ? "" : "s");
-                    chart.yAxis[0].update({plotLines: [pbOptions]});
                 }
             });
     };
