@@ -93,10 +93,30 @@ h1 {
     text-align: center;
     font-size: 16px;
     line-height: 26px;
-    padding: 8px 0; }
+    padding: 8px 0;
+    color: #777; }
+  .weeknav .open-count, .weeknav .closed-count {
+    margin-left: 8px; }
+    .weeknav .open-count:before, .weeknav .closed-count:before {
+      content: "";
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      background-color: #555;
+      border-radius: 12px;
+      margin-right: 4px; }
   .weeknav h1 {
     font-size: 28px;
     margin: 0; }
+    .weeknav h1 a {
+      color: #111; }
+  .weeknav .move a {
+    display: block;
+    padding: 30px 0;
+    font-size: 14px;
+    text-transform: uppercase; }
+  .weeknav .next {
+    text-align: right; }
 
 .home-wrap {
   position: relative;
@@ -273,17 +293,23 @@ h1 {
 .serviceApp .day {
   float: left;
   text-align: center; }
+  .serviceApp .day:last-child a {
+    border-right: 1px solid #ddd; }
   .serviceApp .day a {
-    width: 120px;
-    padding: 4px 5px;
+    width: 133px;
+    padding: 4px 0;
     font-size: 11px;
     line-height: 20px;
-    text-transform: uppercase; }
+    text-transform: uppercase;
+    color: #888;
+    border: none;
+    border-left: 1px solid #ddd;
+    border-radius: 0 !important; }
     .serviceApp .day a:hover {
       background: inherit; }
-    .serviceApp .day a em {
-      font-weight: bold;
-      font-style: normal; }
+    .serviceApp .day a b {
+      color: #222;
+      font-weight: bold; }
 .serviceApp .pagination {
   margin: 0 0 1em 0; }
 .serviceApp .pagination-wrap.affix {

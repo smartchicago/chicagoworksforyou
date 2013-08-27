@@ -12,30 +12,33 @@ window.currServiceType = '{{ page.service_code }}';
 <div class="weeknav">
 <div class="container" ng-controller="headerCtrl">
     <div class="row">
-        <div class="prev span2">
-            <a href="" ng-click="goToPrevDate()">Go back a week</a>
+        <div class="move prev span2">
+            <a href="" ng-click="goToPrevDate()">« Prev week</a>
         </div>
         <div class="curr span8">
             <h1>
                 <a href="#">{{ page.title }}</a><br>
             </h1>
             <span ng-bind="data.thisDate"></span>
+            •
+            <span class="open-count" ng-bind="data.cityCount"></span>
+            <span class="closed-count" ng-bind="data.cityCloseCount"></span>
         </div>
-        <div class="next span2">
-            <a href="" ng-click="goToNextDate()">Go forward a week</a>
+        <div class="move next span2">
+            <a href="" ng-click="goToNextDate()">Next week »</a>
         </div>
     </div>
 </div>
 </div>
 
-<div class="container content" ng-controller="sidebarCtrl">
+<div class="container" ng-controller="sidebarCtrl">
     {% raw %}
     <div class="pagination">
         <ul>
             <li class="day" ng-repeat="day in data.days" ng-class="day.dowAbbr" style="border-bottom:5px solid {{ day.color }};">
                 <a ng-href="/#/{{ day.date|date:'yyyy-MM-dd' }}/">
                     {{ day.date|date:'EEE' }}
-                    <em>{{ day.date|date:'d' }}</em>
+                    <b>{{ day.date|date:'d' }}</b>
                     {{ day.date|date:'MMM' }}
                 </a>
             </li>
@@ -45,8 +48,6 @@ window.currServiceType = '{{ page.service_code }}';
 
     <div class="row">
         <div class="span4">
-            <span ng-bind="data.cityCount"></span> requests opened<br>
-            <span ng-bind="data.cityCloseCount"></span> requests closed
             {% comment %}
             <p>And XXX were closed. Here's how they break down.</p>
             {% endcomment %}

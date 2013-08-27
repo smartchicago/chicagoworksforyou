@@ -127,12 +127,43 @@ h1 {
         text-align: center;
         font-size: 16px;
         line-height: 26px;
-        padding: 8px 0
+        padding: 8px 0;
+        color: #777;
+    }
+
+    .open-count, .closed-count {
+        margin-left: 8px;
+
+        &:before {
+            content:"";
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background-color: #555;
+            border-radius: 12px;
+            margin-right: 4px;
+        }
     }
 
     h1 {
         font-size: 28px;
         margin: 0;
+
+        a {
+            color: #111;
+        }
+
+    }
+
+    .move a {
+        display: block;
+        padding: 30px 0;
+        font-size: 14px;
+        text-transform: uppercase;
+    }
+
+    .next {
+        text-align: right;
     }
 }
 
@@ -398,22 +429,30 @@ h1 {
         float: left;
         text-align: center;
 
+        &:last-child {
+            a {
+                border-right: 1px solid #ddd;
+            }
+        }
+
         a {
-            width: 120px;
-            padding: 4px 5px;
+            width: 133px;
+            padding: 4px 0;
             font-size: 11px;
             line-height: 20px;
             text-transform: uppercase;
+            color: #888;
+            border: none;
+            border-left: 1px solid #ddd;
+            border-radius: 0 !important;
 
             &:hover {
                 background: inherit;
             }
 
-            em {
-                // font-size: 26px;
+            b {
+                color: #222;
                 font-weight: bold;
-                // display: block;
-                font-style: normal;
             }
         }
     }
