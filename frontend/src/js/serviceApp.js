@@ -1,11 +1,3 @@
-// JQUERY
-
-$(function () {
-    $('.pagination-wrap').affix({
-        offset: {top: $('.pagination').position().top}
-    });
-});
-
 // ANGULAR
 
 var serviceApp = angular.module('serviceApp', []).value('$anchorScroll', angular.noop);
