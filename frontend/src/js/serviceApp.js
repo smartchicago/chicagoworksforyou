@@ -24,7 +24,6 @@ serviceApp.config(function($routeProvider) {
 });
 
 serviceApp.factory('Data', function () {
-
     var data = {
         dayColors: [
             '#37c0b9',
@@ -88,7 +87,7 @@ serviceApp.controller("sidebarCtrl", function ($scope, Data) {
 
 serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $route, $routeParams) {
     var stCode = window.currServiceType;
-    var stSlug = window.lookupCode(stCode).slug;
+    Data.stSlug = window.lookupCode(stCode).slug;
     var chart = $('#chart').highcharts();
 
     var renderChart = function (categories, requests, closes) {
@@ -135,7 +134,7 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
                 });
 
                 var categories = _.map(wardData, function (ward) {
-                    return '<a href="/ward/' + ward.Ward + '/#/' + Data.endDate.format(dateFormat) + '/' + stSlug + '">Ward ' + ward.Ward + '</a>';
+                    return '<a href="/ward/' + ward.Ward + '/#/' + Data.endDate.format(dateFormat) + '/' + Data.stSlug + '">Ward ' + ward.Ward + '</a>';
                 });
 
                 var days = [[],[],[],[],[],[],[]];

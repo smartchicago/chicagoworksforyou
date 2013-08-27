@@ -20,7 +20,7 @@ window.currServiceType = '{{ page.service_code }}';
                 <a href="#">{{ page.title }}</a><br>
             </h1>
             <span ng-bind="data.thisDate"></span>
-            •
+            &nbsp; •
             <span class="open-count" ng-bind="data.cityCount"></span>
             <span class="closed-count" ng-bind="data.cityCloseCount"></span>
         </div>
@@ -36,7 +36,7 @@ window.currServiceType = '{{ page.service_code }}';
     <div class="pagination">
         <ul>
             <li class="day" ng-repeat="day in data.days" ng-class="day.dowAbbr" style="border-bottom:5px solid {{ day.color }};">
-                <a ng-href="/#/{{ day.date|date:'yyyy-MM-dd' }}/">
+                <a ng-href="/#/{{ day.date|date:'yyyy-MM-dd' }}/{{ data.stSlug }}/">
                     {{ day.date|date:'EEE' }}
                     <b>{{ day.date|date:'d' }}</b>
                     {{ day.date|date:'MMM' }}
