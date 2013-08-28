@@ -230,7 +230,9 @@ Highcharts.setOptions({
         labels: {
             style: {
                 fontFamily: 'Monda, Helvetica, sans-serif',
-                fontWeight: 'bold'
+                fontWeight: 'bold',
+                color: '#222',
+                fontSize: '12px'
             }
         }
     },
