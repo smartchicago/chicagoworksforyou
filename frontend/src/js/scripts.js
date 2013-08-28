@@ -78,6 +78,13 @@ window.serviceTypesJSON = [
     }
 ];
 
+window.mapOptions = {
+    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
+    key: '302C8A713FF3456987B21FAAE639A13B',
+    maxZoom: 18,
+    styleId: 82946
+};
+
 window.stSlugs = _.pluck(serviceTypesJSON, 'slug');
 
 window.parseDate = function(passedDate, defaultDate, locationModule) {
