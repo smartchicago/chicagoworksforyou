@@ -16,7 +16,10 @@ serviceApp.config(function($routeProvider) {
 });
 
 serviceApp.factory('Data', function () {
+    var serviceObj = window.lookupCode(window.currServiceType);
     var data = {
+        stSlug: serviceObj.slug,
+        stName: serviceObj.name,
         dayColors: [
             '#37c0b9',
             '#37acc3',
@@ -36,6 +39,7 @@ serviceApp.factory('Data', function () {
         data.endDate = date.clone().day(6).max(window.yesterday);
         data.duration = data.endDate.diff(data.startDate, 'days');
         data.thisDate = moment.duration(data.duration,"days").beforeMoment(data.endDate,true).format({implicitYear: false});
+        data.pageTitle = data.thisDate + ' | ' + data.stName + ' | Chicago Works For You';
 
         var today = moment().startOf('day');
 
@@ -56,6 +60,10 @@ serviceApp.factory('Data', function () {
     };
 
     return data;
+});
+
+serviceApp.controller("headCtrl", function ($scope, Data) {
+    $scope.data = Data;
 });
 
 serviceApp.controller("headerCtrl", function ($scope, Data, $location) {
@@ -83,7 +91,6 @@ serviceApp.controller("sidebarCtrl", function ($scope, Data) {
 
 serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $route, $routeParams) {
     var stCode = window.currServiceType;
-    Data.stSlug = window.lookupCode(stCode).slug;
     var chart = $('#chart').highcharts();
 
     var renderChart = function (categories, requests, closes) {
