@@ -78,7 +78,12 @@ html, body {
   padding-top: 35px; }
 
 h1 {
-  margin: 0 0 14px 0; }
+  margin: 0 0 14px; }
+
+h3 {
+  font-size: 24px;
+  line-height: 28px;
+  margin: 0 0 12px; }
 
 .container.content {
   padding-top: 25px; }
