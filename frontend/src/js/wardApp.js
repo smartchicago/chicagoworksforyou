@@ -52,12 +52,40 @@ wardApp.factory('Data', function () {
         data.date = date.format(dateFormat);
         data.dateObj = date;
         data.dateFormatted = date.format('MMM D, YYYY');
-        data.prevDay = moment(date).subtract('day',1);
-        data.nextDay = moment(date).add('day',1);
-        data.isLatest = data.nextDay.isAfter(window.yesterday);
+
+        data.startDate = date.clone().day(0);
+        data.endDate = date.clone().day(6).max(window.yesterday);
+        data.duration = data.endDate.diff(data.startDate, 'days');
+        data.thisDate = moment.duration(data.duration,"days").beforeMoment(data.endDate,true).format({implicitYear: false});
+
+        data.prevDate = data.startDate.clone().subtract('day',1);
+        data.nextDate = data.endDate.clone().add('day',7);
+        data.isLatest = data.nextDate.clone().day(0).isAfter(window.yesterday);
     };
 
     return data;
+});
+
+wardApp.controller("headerCtrl", function ($scope, Data, $location) {
+    $scope.data = Data;
+
+    var urlSuffix = function() {
+        return Data.serviceObj.slug ? Data.serviceObj.slug + '/' : '';
+    };
+
+    $scope.goToPrevDate = function() {
+        if (Data.prevDate.clone().day(0).isBefore(window.earliestDate)) {
+            return false;
+        }
+        $location.path(Data.prevDate.format(dateFormat) + "/" + urlSuffix());
+    };
+
+    $scope.goToNextDate = function() {
+        if (Data.isLatest) {
+            return false;
+        }
+        $location.path(Data.nextDate.format(dateFormat) + "/" + urlSuffix());
+    };
 });
 
 wardApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
@@ -66,28 +94,6 @@ wardApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
     });
 
     $scope.data = Data;
-
-    var urlSuffix = function() {
-        return Data.serviceObj.slug ? Data.serviceObj.slug + '/' : '';
-    };
-
-    $scope.goToPrevDay = function() {
-        if (Data.prevDay.isBefore(window.earliestDate)) {
-            return false;
-        }
-        $location.path(Data.prevDay.format(dateFormat) + '/' + urlSuffix());
-    };
-
-    $scope.goToNextDay = function() {
-        if (Data.isLatest) {
-            return false;
-        }
-        $location.path(Data.nextDay.format(dateFormat) + '/' + urlSuffix());
-    };
-
-    $scope.currPage = function () {
-        return false;
-    };
 });
 
 wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $route, $routeParams) {
@@ -209,7 +215,7 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
     var renderOverview = function(render) {
         var DAY_COUNT = 1;
         var highsURL = window.apiDomain + 'wards/' + window.wardNum + '/historic_highs.json?include_date=' + Data.date + '&count=' + DAY_COUNT + '&callback=JSON_CALLBACK';
-        var ttcURL = window.apiDomain + 'requests/time_to_close.json?count=7&end_date=' + Data.date + '&callback=JSON_CALLBACK';
+        var ttcURL = window.apiDomain + 'requests/time_to_close.json?count=' + (Data.duration + 1) + '&end_date=' + Data.date + '&callback=JSON_CALLBACK';
 
         renderTTCchart(ttcURL);
 
@@ -240,11 +246,6 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
                             data: historicHighs,
                             name: "Historic high",
                             id: 1
-                        },{
-                            data: current,
-                            type: 'scatter',
-                            name: Data.dateFormatted,
-                            id: 2
                         }],
                         xAxis: {
                             categories: categories,
@@ -279,9 +280,6 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
                                     }
                                 },
                                 pointPadding: 0
-                            },
-                            scatter: {
-                                animation: false
                             }
                         },
                         legend: {
@@ -349,35 +347,8 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
                         },
                         xAxis: {
                             categories: categories
-                        },
-                        yAxis: {
-                            plotLines: [{
-                                id: 'avg',
-                                value: todaysCount,
-                                color: 'black',
-                                width: 2,
-                                zIndex: 5,
-                                label: {
-                                    align: 'right',
-                                    color: 'black',
-                                    text: Data.dateObj.format("MMM D: ") + todaysCount + " request" + (todaysCount == 1 ? "" : "s"),
-                                    y: -8,
-                                    x: 0,
-                                    style: {
-                                        fontWeight: 'bold',
-                                        fontFamily: 'Monda, Helvetica, sans-serif',
-                                        fontSize: '14px'
-                                    }
-                                }
-                            }]
                         }
                     });
-                } else {
-                    var chart = $('#counts-chart').highcharts();
-                    var pbOptions = chart.yAxis[0].plotLinesAndBands[0].options;
-                    pbOptions.value = todaysCount;
-                    pbOptions.label.text = Data.dateObj.format("MMM D: ") + todaysCount + " request" + (todaysCount == 1 ? "" : "s");
-                    chart.yAxis[0].update({plotLines: [pbOptions]});
                 }
             });
     };

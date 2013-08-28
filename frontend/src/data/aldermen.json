@@ -1,7 +1,7 @@
 // Pulled from data.cityofchicago.org on July 7, 2013
 
 { "1" : { "address" : "2058 N WESTERN AVE",
-      "alderman" : "JOE MORENO",
+      "alderman" : "Joe Moreno",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 300, Office 5",
       "city_hall_city" : "CHICAGO",
@@ -21,7 +21,7 @@
       "zipcode" : "60647"
     },
   "10" : { "address" : "3522 E 106TH ST",
-      "alderman" : "JOHN POPE",
+      "alderman" : "John Pope",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 300, Office 19",
       "city_hall_city" : "CHICAGO",
@@ -41,7 +41,7 @@
       "zipcode" : "60617"
     },
   "11" : { "address" : "3659 S HALSTED ST",
-      "alderman" : "JAMES A. BALCER",
+      "alderman" : "James A. Balcer",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 203, Office 9",
       "city_hall_city" : "CHICAGO",
@@ -61,7 +61,7 @@
       "zipcode" : "60609"
     },
   "12" : { "address" : "2458 W 38TH ST",
-      "alderman" : "GEORGE A. CARDENAS",
+      "alderman" : "George A. Cardenas",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 203",
       "city_hall_city" : "CHICAGO",
@@ -81,7 +81,7 @@
       "zipcode" : "60632"
     },
   "13" : { "address" : "6500 S PULASKI",
-      "alderman" : "MARTY QUINN",
+      "alderman" : "Marty Quinn",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. LaSalle, Room 300",
       "city_hall_city" : "CHICAGO",
@@ -100,7 +100,7 @@
       "zipcode" : "60629"
     },
   "14" : { "address" : "2650 W 51ST ST",
-      "alderman" : "EDWARD M. BURKE",
+      "alderman" : "Edward M. Burke",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 302",
       "city_hall_city" : "CHICAGO",
@@ -120,7 +120,7 @@
       "zipcode" : "60632"
     },
   "15" : { "address" : "3045 W 63RD ST",
-      "alderman" : "TONI FOULKES",
+      "alderman" : "Toni Foulkes",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 300, Office 26",
       "city_hall_city" : "CHICAGO",
@@ -140,7 +140,7 @@
       "zipcode" : "60629"
     },
   "16" : { "address" : "5335 S WESTERN BLVD",
-      "alderman" : "JOANN THOMPSON",
+      "alderman" : "Joann Thompson",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 300, Office 20",
       "city_hall_city" : "CHICAGO",
@@ -160,7 +160,7 @@
       "zipcode" : "60609"
     },
   "17" : { "address" : "7811 S RACINE AVE",
-      "alderman" : "LATASHA R. THOMAS",
+      "alderman" : "Latasha R. Thomas",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 305",
       "city_hall_city" : "CHICAGO",
@@ -180,7 +180,7 @@
       "zipcode" : "60620"
     },
   "18" : { "address" : "8108 S WESTERN AVE",
-      "alderman" : "LONA LANE",
+      "alderman" : "Lona Lane",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 300",
       "city_hall_city" : "CHICAGO",
@@ -200,7 +200,7 @@
       "zipcode" : "60652"
     },
   "19" : { "address" : "10400 S WESTERN AVE ",
-      "alderman" : "MATTHEW O'SHEA",
+      "alderman" : "Matthew O'Shea",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 200",
       "city_hall_city" : "CHICAGO",
@@ -220,7 +220,7 @@
       "zipcode" : "60643"
     },
   "2" : { "address" : "1319 S STATE ST",
-      "alderman" : "ROBERT FIORETTI",
+      "alderman" : "Robert Fioretti",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 300, Office 2",
       "city_hall_city" : "CHICAGO",
@@ -240,7 +240,7 @@
       "zipcode" : "60605"
     },
   "20" : { "address" : "6357 S COTTAGE GROVE",
-      "alderman" : "WILLIE COCHRAN",
+      "alderman" : "Willie Cochran",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 300, Office 2",
       "city_hall_city" : "CHICAGO",
@@ -260,7 +260,7 @@
       "zipcode" : "60637"
     },
   "21" : { "address" : "9011 S ASHLAND AVE",
-      "alderman" : "HOWARD BROOKINS, JR.",
+      "alderman" : "Howard Brookins, Jr.",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 300, Office 19",
       "city_hall_city" : "CHICAGO",
@@ -280,7 +280,7 @@
       "zipcode" : "60620"
     },
   "22" : { "address" : "2500 S ST LOUIS AVE",
-      "alderman" : "RICARDO MUNOZ",
+      "alderman" : "Ricardo Munoz",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 300, Office 22",
       "city_hall_city" : "CHICAGO",
@@ -300,7 +300,7 @@
       "zipcode" : "60623"
     },
   "23" : { "address" : "6247 S ARCHER AVE",
-      "alderman" : "MICHAEL R. ZALEWSKI",
+      "alderman" : "Michael R. Zalewski",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 203, Office 6",
       "city_hall_city" : "CHICAGO",
@@ -320,7 +320,7 @@
       "zipcode" : "60638"
     },
   "24" : { "address" : "1158 S KEELER  AVE",
-      "alderman" : "MICHAEL CHANDLER",
+      "alderman" : "Michael Chandler",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 200",
       "city_hall_city" : "CHICAGO",
@@ -340,7 +340,7 @@
       "zipcode" : "60624"
     },
   "25" : { "address" : "2439 S OAKLEY BLVD",
-      "alderman" : "DANIEL S. SOLIS",
+      "alderman" : "Daniel S. Solis",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 203, Office 14",
       "city_hall_city" : "CHICAGO",
@@ -360,7 +360,7 @@
       "zipcode" : "60608"
     },
   "26" : { "address" : "2434 W DIVISION ST",
-      "alderman" : "ROBERTO MOLDONADO",
+      "alderman" : "Roberto Moldonado",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 300, Office 13",
       "city_hall_city" : "CHICAGO",
@@ -379,7 +379,7 @@
       "zipcode" : "60622"
     },
   "27" : { "address" : "1463 W CHICAGO AVE",
-      "alderman" : "WALTER BURNETT, JR.",
+      "alderman" : "Walter Burnett, Jr.",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 300",
       "city_hall_city" : "CHICAGO",
@@ -399,7 +399,7 @@
       "zipcode" : "60622"
     },
   "28" : { "address" : "259 N PULASKI RD ",
-      "alderman" : "JASON ERVIN",
+      "alderman" : "Jason Ervin",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 200",
       "city_hall_city" : "CHICAGO",
@@ -419,7 +419,7 @@
       "zipcode" : "60624"
     },
   "29" : { "address" : "5755 W DIVISION ST",
-      "alderman" : "DEBORAH GRAHAM",
+      "alderman" : "Deborah Graham",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 300",
       "city_hall_city" : "CHICAGO",
@@ -439,7 +439,7 @@
       "zipcode" : "60651"
     },
   "3" : { "address" : "5046 S STATE ST",
-      "alderman" : "PAT DOWELL",
+      "alderman" : "Pat Dowell",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 300, Office 3",
       "city_hall_city" : "CHICAGO",
@@ -459,7 +459,7 @@
       "zipcode" : "60609"
     },
   "30" : { "address" : "3559 N MILWAUKEE AVE",
-      "alderman" : "ARIEL E. REBOYRAS",
+      "alderman" : "Ariel E. Reboyras",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 203",
       "city_hall_city" : "CHICAGO",
@@ -479,7 +479,7 @@
       "zipcode" : "60641"
     },
   "31" : { "address" : "4502 W FULLERTON AVE",
-      "alderman" : "RAY SUAREZ",
+      "alderman" : "Ray Suarez",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 203, Office 19",
       "city_hall_city" : "CHICAGO",
@@ -499,7 +499,7 @@
       "zipcode" : "60639"
     },
   "32" : { "address" : "2657 N CLYBOURN",
-      "alderman" : "SCOTT WAGUESPACK",
+      "alderman" : "Scott Waguespack",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 300",
       "city_hall_city" : "CHICAGO",
@@ -519,7 +519,7 @@
       "zipcode" : "60614"
     },
   "33" : { "address" : "3649 N KEDZIE AVE",
-      "alderman" : "RICHARD F. MELL",
+      "alderman" : "Richard F. Mell",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 208",
       "city_hall_city" : "CHICAGO",
@@ -539,7 +539,7 @@
       "zipcode" : "60618"
     },
   "34" : { "address" : "507 W 111TH ST",
-      "alderman" : "CARRIE M. AUSTIN",
+      "alderman" : "Carrie M. Austin",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 200",
       "city_hall_city" : "CHICAGO",
@@ -559,7 +559,7 @@
       "zipcode" : "60628"
     },
   "35" : { "address" : "2710 N SAWYER AVE",
-      "alderman" : "REY COLON",
+      "alderman" : "Rey Colon",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 203, Office 18",
       "city_hall_city" : "CHICAGO",
@@ -579,7 +579,7 @@
       "zipcode" : "60647"
     },
   "36" : { "address" : "6934 W DIVERSEY AVE",
-      "alderman" : "NICHOLAS SPOSATO",
+      "alderman" : "Nicholas Sposato",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 300",
       "city_hall_city" : "CHICAGO",
@@ -599,7 +599,7 @@
       "zipcode" : "60707"
     },
   "37" : { "address" : "5344 W NORTH AVE",
-      "alderman" : "EMMA MITTS",
+      "alderman" : "Emma Mitts",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 300",
       "city_hall_city" : "CHICAGO",
@@ -619,7 +619,7 @@
       "zipcode" : "60639"
     },
   "38" : { "address" : "5817 W IRVING PARK RD",
-      "alderman" : "TIMOTHY M. CULLERTON",
+      "alderman" : "Timothy M. Cullerton",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 203, Office 12",
       "city_hall_city" : "CHICAGO",
@@ -639,7 +639,7 @@
       "zipcode" : "60634"
     },
   "39" : { "address" : "4404 W LAWRENCE AVE",
-      "alderman" : "MARGARET LAURINO",
+      "alderman" : "Margaret Laurino",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 300",
       "city_hall_city" : "CHICAGO",
@@ -659,7 +659,7 @@
       "zipcode" : "60630"
     },
   "4" : { "address" : "435 E 35TH ST ",
-      "alderman" : "WILLIAM BURNS",
+      "alderman" : "William Burns",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 200",
       "city_hall_city" : "CHICAGO",
@@ -679,7 +679,7 @@
       "zipcode" : "60616"
     },
   "40" : { "address" : "5850 N LINCOLN AVE",
-      "alderman" : "PATRICK J. O'CONNOR",
+      "alderman" : "Patrick J. O'Connor",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 305",
       "city_hall_city" : "CHICAGO",
@@ -699,7 +699,7 @@
       "zipcode" : "60659"
     },
   "41" : { "address" : "6107 N NORTHWEST HWY ",
-      "alderman" : "MARY O'CONNOR",
+      "alderman" : "Mary O'Connor",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 200",
       "city_hall_city" : "CHICAGO",
@@ -719,7 +719,7 @@
       "zipcode" : "60631"
     },
   "42" : { "address" : "325 W HURON ST #510",
-      "alderman" : "BRENDAN REILLY",
+      "alderman" : "Brendan Reilly",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 200",
       "city_hall_city" : "CHICAGO",
@@ -739,7 +739,7 @@
       "zipcode" : "60654"
     },
   "43" : { "address" : "2523 N HALSTED ST",
-      "alderman" : "MICHELE SMITH",
+      "alderman" : "Michele Smith",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 200",
       "city_hall_city" : "CHICAGO",
@@ -759,7 +759,7 @@
       "zipcode" : "60614"
     },
   "44" : { "address" : "3223 NORTH SHEFFIELD AVE",
-      "alderman" : "THOMAS M. TUNNEY",
+      "alderman" : "Thomas M. Tunney",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 300, Office 46",
       "city_hall_city" : "CHICAGO",
@@ -779,7 +779,7 @@
       "zipcode" : "60657"
     },
   "45" : { "address" : "4754 N MILWAUKEE AVE",
-      "alderman" : "JOHN ARENA",
+      "alderman" : "John Arena",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 300",
       "city_hall_city" : "CHICAGO",
@@ -799,7 +799,7 @@
       "zipcode" : "60630"
     },
   "46" : { "address" : "4544 N BROADWAY AVE",
-      "alderman" : "JAMES CAPPLEMAN",
+      "alderman" : "James Cappleman",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 200",
       "city_hall_city" : "CHICAGO",
@@ -819,7 +819,7 @@
       "zipcode" : "60640"
     },
   "47" : { "address" : "4243 N LINCOLN AVE ",
-      "alderman" : "AMEYA PAWAR",
+      "alderman" : "Ameya Pawar",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 200",
       "city_hall_city" : "CHICAGO",
@@ -839,7 +839,7 @@
       "zipcode" : "60618"
     },
   "48" : { "address" : "5533 N BROADWAY ST",
-      "alderman" : "HARRY OSTERMAN",
+      "alderman" : "Harry Osterman",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 300",
       "city_hall_city" : "CHICAGO",
@@ -859,7 +859,7 @@
       "zipcode" : "60640"
     },
   "49" : { "address" : "7356 N GREENVIEW AVE",
-      "alderman" : "JOE MOORE",
+      "alderman" : "Joe Moore",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 300, Office 24",
       "city_hall_city" : "CHICAGO",
@@ -879,7 +879,7 @@
       "zipcode" : "60626"
     },
   "5" : { "address" : "2325 E 71ST ST",
-      "alderman" : "LESLIE HAIRSTON",
+      "alderman" : "Leslie Hairston",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 300",
       "city_hall_city" : "CHICAGO",
@@ -899,7 +899,7 @@
       "zipcode" : "60649"
     },
   "50" : { "address" : "2949 W DEVON AVE",
-      "alderman" : "DEBRA SILVERSTEIN",
+      "alderman" : "Debra Silverstein",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 300",
       "city_hall_city" : "CHICAGO",
@@ -919,7 +919,7 @@
       "zipcode" : "60659"
     },
   "6" : { "address" : "463 1/2 E 83RD ST ",
-      "alderman" : "RODERICK SAWYER",
+      "alderman" : "Roderick Sawyer",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 200",
       "city_hall_city" : "CHICAGO",
@@ -939,7 +939,7 @@
       "zipcode" : "60619"
     },
   "7" : { "address" : "7123 S EXCHANGE",
-      "alderman" : "SANDI JACKSON",
+      "alderman" : "Sandi Jackson",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 207, Office 13",
       "city_hall_city" : "CHICAGO",
@@ -959,7 +959,7 @@
       "zipcode" : "60649"
     },
   "8" : { "address" : "8539 S COTTAGE GROVE AVE",
-      "alderman" : "MICHELLE HARRIS",
+      "alderman" : "Michelle Harris",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 203",
       "city_hall_city" : "CHICAGO",
@@ -979,7 +979,7 @@
       "zipcode" : "60619"
     },
   "9" : { "address" : "34 E 112TH PL",
-      "alderman" : "ANTHONY BEALE",
+      "alderman" : "Anthony Beale",
       "city" : "CHICAGO",
       "city_hall_address" : "121 N. La Salle Room 209, Office 13",
       "city_hall_city" : "CHICAGO",
