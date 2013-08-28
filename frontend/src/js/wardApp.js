@@ -246,6 +246,45 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
                 var categories = _.pluck(historicHighs, 'service');
                 var current = _.pluck(historicHighs, 'current');
 
+                var weekReviewChart = new Highcharts.Chart({
+                    chart: {
+                        type: 'line',
+                        renderTo: 'weekReview-chart',
+                        marginBottom: 50
+                    },
+                    series: [{
+                        data: [4,6,8,5,3,5,2],
+                        name: "Requests opened",
+                        id: 1
+                    },{
+                        data: [14,8,1,3,9,2,7],
+                        name: "Requests closed",
+                        id: 1
+                    }],
+                    xAxis: {
+                        categories: ['sun','sun','sun','sun','sun','sun','sun']
+                    },
+                    plotOptions: {
+                        line: {
+                            animation: false
+                        }
+                    },
+                    legend: {
+                        enabled: false
+                    },
+                    title: {
+                        text: ''
+                    },
+                    tooltip: {
+                        headerFormat: '',
+                        shadow: false,
+                        style: {
+                            fontFamily: 'Monda, sans-serif',
+                            fontSize: '15px'
+                        }
+                    }
+                });
+
                 if (render) {
                     var countsChart = new Highcharts.Chart({
                         chart: {
