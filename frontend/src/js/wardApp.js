@@ -67,6 +67,7 @@ wardApp.factory('Data', function () {
         data.endDate = date.clone().day(6).max(window.yesterday);
         data.duration = data.endDate.diff(data.startDate, 'days');
         data.thisDate = moment.duration(data.duration,"days").beforeMoment(data.endDate,true).format({implicitYear: false});
+        data.pageTitle = data.thisDate + ' | Ward ' + window.wardNum + ' | Chicago Works For You';
 
         data.prevDate = data.startDate.clone().subtract('day',1);
         data.nextDate = data.endDate.clone().add('day',7);
@@ -74,6 +75,10 @@ wardApp.factory('Data', function () {
     };
 
     return data;
+});
+
+wardApp.controller("headCtrl", function ($scope, Data) {
+    $scope.data = Data;
 });
 
 wardApp.controller("headerCtrl", function ($scope, Data, $location) {
