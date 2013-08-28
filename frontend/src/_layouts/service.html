@@ -57,12 +57,17 @@ window.currServiceType = '{{ page.service_code }}';
             <p class="city-average">
                 Average number of requests opened in a ward this week: <span ng-bind="data.cityAverage"></span>
             </p>
-            {% if page.data_portal %}
             <br>
-            <p>
-                <a class="data-portal-link" href="{{ page.data_portal }}">View the original source for this data &rarr; <span>on the City of Chicago data portal</span></a>
-            </p>
-            {% endif %}
+            <ul class="nav nav-stacked nav-tabs">
+                {% if page.data_portal %}
+                <li>
+                    <a class="data-portal-link" href="{{ page.data_portal }}">View the original source for this data &rarr; <span>on the City of Chicago data portal</span></a>
+                </li>
+                {% endif %}
+                <li>
+                    <a href="#">Submit a {{ page.title }} 311 report &rarr;</a>
+                </li>
+            </ul>
         </div>
         <div class="span8" ng-controller="serviceCtrl">
             <div id="chart" class="chart"></div>
