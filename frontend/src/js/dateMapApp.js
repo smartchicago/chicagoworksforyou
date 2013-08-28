@@ -25,12 +25,8 @@ dateMapApp.factory('Data', function () {
     if (!window.chicagoMap) {
         window.chicagoMap = L.map('map',{scrollWheelZoom: false}).setView([41.83, -87.81], 11);
 
-        L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png', {
-            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
-            key: '302C8A713FF3456987B21FAAE639A13B',
-            maxZoom: 18,
-            styleId: 82946
-        }).addTo(window.chicagoMap);
+        L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png', window.mapOptions)
+            .addTo(window.chicagoMap);
         window.chicagoMap.zoomControl.setPosition('bottomright');
     }
 
