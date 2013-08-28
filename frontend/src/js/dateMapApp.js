@@ -37,6 +37,7 @@ dateMapApp.factory('Data', function () {
     data.setDate = function(date) {
         data.date = date.format(dateFormat);
         data.dateFormatted = date.format('MMM D, YYYY');
+        data.pageTitle = data.dateFormatted + ' | Chicago Works For You';
         data.prevDay = moment(date).subtract('day',1);
         data.nextDay = moment(date).add('day',1);
         data.prevDayFormatted = data.prevDay.format('MMM D');
@@ -45,6 +46,10 @@ dateMapApp.factory('Data', function () {
     };
 
     return data;
+});
+
+dateMapApp.controller("headCtrl", function ($scope, Data) {
+    $scope.data = Data;
 });
 
 dateMapApp.controller("dateCtrl", function ($scope, Data, $http, $location, $route, $routeParams, $timeout) {
