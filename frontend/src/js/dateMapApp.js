@@ -127,10 +127,6 @@ dateMapApp.controller("dateCtrl", function ($scope, Data, $http, $location, $rou
             document.location = 'ward/' + e.target.options.id + '/#' + $location.path();
         };
 
-        var pluralize = function(n) {
-            return n == 1 ? '' : 's';
-        };
-
         $timeout(function() {
             for (var path in wardPaths) {
                 var wardNum = parseInt(path,10) + 1;
@@ -147,7 +143,7 @@ dateMapApp.controller("dateCtrl", function ($scope, Data, $http, $location, $rou
                         fillColor: allColors[wardNum-1]
                     }
                 )
-                .bindLabel('<h4>Ward ' + wardNum + '</h4>' + wardCount + ' request' + pluralize(wardCount))
+                .bindLabel('<h4>Ward ' + wardNum + '</h4>' + wardCount + ' request' + window.pluralize(wardCount))
                 .on('click', wardClick);
                 window.allWards.addLayer(poly);
             }

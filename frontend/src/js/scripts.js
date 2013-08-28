@@ -115,3 +115,7 @@ window.getOrdinal = function(n) {
     var v = n % 100;
     return n + (s[(v - 20) % 10] || s[v] || s[0]);
 };
+
+window.pluralize = function(n) {
+    return n == 1 ? '' : 's';
+};

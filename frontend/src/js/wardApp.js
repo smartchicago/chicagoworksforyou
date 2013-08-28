@@ -212,8 +212,8 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
                         formatter: function() {
                             var text = [
                                 '<b>' + 'Ward ' + sorted[this.x].Ward + '<b>',
-                                Math.round(this.y * 10) / 10 + ' day' + (this.y == 1 ? '' : 's'),
-                                sorted[this.x].Count + ' request' + (sorted[this.x].Count == 1 ? '' : 's')
+                                Math.round(this.y * 10) / 10 + ' day' + window.pluralize(this.y),
+                                sorted[this.x].Count + ' request' + window.pluralize(sorted[this.x].Count)
                             ];
                             return text.join('<br>');
                         }
@@ -351,7 +351,7 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
                         }],
                         tooltip: {
                             formatter: function() {
-                                return '<b>' + this.y + '</b> ' + ' request' + (this.y > 1 ? 's' : '');
+                                return '<b>' + this.y + '</b> ' + ' request' + window.pluralize(this.y);
                             }
                         },
                         xAxis: {
