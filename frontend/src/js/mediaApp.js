@@ -3,17 +3,25 @@
 var mediaApp = angular.module('mediaApp', []);
 
 mediaApp.factory('Data', function () {
+    var defaultTitle = "Media | Chicago Works For You";
+
     var data = {
         currServiceSlug: "",
-        search: {}
+        search: {},
+        pageTitle: defaultTitle
     };
 
     data.setService = function(slug, name) {
         data.currServiceSlug = slug;
         data.search.Service_name = name;
+        data.pageTitle = (data.search.Service_name ? data.search.Service_name + " | " : '') + defaultTitle;
     };
 
     return data;
+});
+
+mediaApp.controller("headCtrl", function ($scope, Data) {
+    $scope.data = Data;
 });
 
 mediaApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
