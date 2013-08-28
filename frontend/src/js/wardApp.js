@@ -246,6 +246,8 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
                 var categories = _.pluck(historicHighs, 'service');
                 var current = _.pluck(historicHighs, 'current');
 
+                var weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
                 var weekReviewChart = new Highcharts.Chart({
                     chart: {
                         type: 'line',
@@ -262,7 +264,7 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
                         id: 1
                     }],
                     xAxis: {
-                        categories: ['sun','sun','sun','sun','sun','sun','sun']
+                        categories: weekdays
                     },
                     plotOptions: {
                         line: {
