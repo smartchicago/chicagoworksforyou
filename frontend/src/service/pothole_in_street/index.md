@@ -2,7 +2,9 @@
 layout: service
 service_code: 4fd3b656e750846c53000004
 title: Pothole in Street
+data_portal: https://data.cityofchicago.org/Service-Requests/311-Service-Requests-Pot-Holes-Reported/7as2-ds3y
 ---
+
 ![Pothole repair](http://farm8.staticflickr.com/7005/6484097529_e76e822357_n.jpg "Pothole being repaired. Photo by Steve Vance")
 
 <figcaption>
@@ -16,5 +18,3 @@ CDOT receives reports of potholes through the 311 call center and uses a compute
 If a previous request is already open for a buffer of 4 addresses the request is given the status of "Duplicate (Open)". For example, if there is an existing CSR for 6535 N Western and a new request is received for 6531 N Western (which is within four addresses of the original CSR) then the new request is given a status of "Duplicate (Open)". Duplicates are not displayed on the Chicago Works for You Site.
 
 Once the street is repaired, the status in CSR will read “Completed” for the original request and "Duplicate (Closed)" for any duplicate requests. A service request also receives the status of “Completed” when the reported address is inspected but no potholes are found or have already been filled. If another issue is found with the street, such as a “cave-in” or “failed utility cut”, then it is directed to the appropriate department or contractor.
-
-_You can view the raw data on the City of Chicago [data portal](https://data.cityofchicago.org/Service-Requests/311-Service-Requests-Pot-Holes-Reported/7as2-ds3y)_.
