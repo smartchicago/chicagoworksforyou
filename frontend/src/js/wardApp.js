@@ -312,8 +312,6 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
                             }
                         }
                     });
-                } else {
-                    $('#highs-chart').highcharts().get(2).setData(current);
                 }
             });
     };
