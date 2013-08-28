@@ -136,10 +136,12 @@
 window.apiDomain = "{{ site.api_domain }}";
 </script>
 {% if site.debug %}
+<script src="/lib/jquery.1.9.1.js"></script>
 <script src="/lib/angular.min.js"></script>
 <script src="/lib/highcharts.js"></script>
 <script src="/lib/leaflet.js"></script>
 {% else %}
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
 <script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
