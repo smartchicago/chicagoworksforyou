@@ -179,7 +179,7 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
                             index: 10,
                             legendIndex: 100,
                             marker: {
-                                symbol: 'url(/img/check.png)'
+                                symbol: 'url(/img/check-rotated.png)'
                             }
                         };
                         renderChart(categories, requestSeries, closeSeries);

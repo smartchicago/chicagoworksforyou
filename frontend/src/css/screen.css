@@ -110,11 +110,12 @@ h3 {
     .weeknav .open-count:before, .weeknav .closed-count:before {
       content: "";
       display: inline-block;
-      width: 12px;
-      height: 12px;
+      width: 16px;
+      height: 16px;
       background-color: #555;
-      border-radius: 12px;
       margin-right: 4px; }
+  .weeknav .closed-count:before {
+    background: url(/img/check.png) no-repeat 50% 4px; }
   .weeknav h1 {
     font-size: 28px;
     margin: 0; }
