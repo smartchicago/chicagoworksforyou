@@ -16,11 +16,17 @@ In 2012, the City of Chicago became a [Code for America](http://codeforamerica.o
 
 ### Chicago
 
-### About 311
+### Open311
 
-311 is a national standard for requesting city services. While, 911 is for emergencies, 311 system is designed to handle all other calls. 311 is the systems that manages all city services. When a resident makes a request for a city service, this request is entered into the system and given a tracking number. Requests can be made by phone, the city's [website](http://www.cityofchicago.org/city/en/depts/311/supp_info/request_service.html) or through any app that utilizes the city's [Open311 API](http://dev.cityofchicago.org/docs/api).
+#### About 311
 
-### Smart Chicago Collaborative
+311 is a national standard for requesting city services. While, 911 is for emergencies, 311 system is designed to handle all other calls. 311 is the systems that manages all city services. When a resident makes a request for a city service, this request is entered into the system and given a tracking number.
+
+#### Submit a request to the city
+
+Requests can be made by phone, the city's [website](http://www.cityofchicago.org/city/en/depts/311/supp_info/request_service.html) or through any app that utilizes the city's [Open311 API](http://dev.cityofchicago.org/docs/api).
+
+## Smart Chicago Collaborative
 
 The [Smart Chicago Collaborative](http://smartchicagocollaborative.org) is a civic organization devoted to using technology to make lives better in Chicago. We were formed to address the challenge of the lack of broadband Internet access for all Chicagoans. More broadly, we work to apply the transformative power of technology to solve problems for the people of Chicago.
 
