@@ -58,14 +58,14 @@ window.currServiceType = '{{ page.service_code }}';
                 Average number of requests opened in a ward this week: <span ng-bind="data.cityAverage"></span>
             </p>
             <br>
-            <ul class="nav nav-stacked nav-tabs">
+            <ul class="external-links nav nav-stacked nav-tabs">
                 {% if page.data_portal %}
                 <li>
                     <a class="data-portal-link" href="{{ page.data_portal }}">View the original source for this data &rarr; <span>on the City of Chicago data portal</span></a>
                 </li>
                 {% endif %}
                 <li>
-                    <a href="#">Submit a {{ page.title }} 311 report &rarr;</a>
+                    <a ng-href="http://311request.cityofchicago.org/reports/new?service_id={{ page.service_code }}">Submit {{ page.title }} 311 report &rarr;</a>
                 </li>
             </ul>
         </div>
