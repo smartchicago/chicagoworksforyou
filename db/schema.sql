@@ -310,6 +310,13 @@ CREATE INDEX sr_requested_datetime ON service_requests USING btree (requested_da
 
 
 --
+-- Name: sr_updated_datetime; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX sr_updated_datetime ON service_requests USING btree (updated_datetime);
+
+
+--
 -- Name: transition_areas_boundary_gist; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -357,8 +364,6 @@ CREATE RULE geometry_columns_update AS ON UPDATE TO geometry_columns DO INSTEAD 
 
 CREATE TRIGGER update_daily_counts AFTER INSERT OR DELETE OR UPDATE ON service_requests FOR EACH ROW EXECUTE PROCEDURE update_daily_counts();
 
-ALTER TABLE service_requests DISABLE TRIGGER update_daily_counts;
-
 
 --
 -- PostgreSQL database dump complete
@@ -390,11 +395,8 @@ INSERT INTO schema_info VALUES ('201306251155');
 INSERT INTO schema_info VALUES ('201306271128');
 INSERT INTO schema_info VALUES ('201306271346');
 INSERT INTO schema_info VALUES ('201307081428');
-INSERT INTO schema_info VALUES ('201307091601');
-INSERT INTO schema_info VALUES ('201308201558');
-INSERT INTO schema_info VALUES ('201308211328');
 INSERT INTO schema_info VALUES ('201308211341');
-INSERT INTO schema_info VALUES ('201308211659');
+INSERT INTO schema_info VALUES ('201307091601');
 
 
 --
