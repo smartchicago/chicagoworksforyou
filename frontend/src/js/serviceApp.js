@@ -98,7 +98,6 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
         if (closes) {
             series.push(closes);
         }
-        // debugger
         var chart = new Highcharts.Chart({
             chart: {
                 renderTo: 'chart'
@@ -178,7 +177,10 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
                             color: 'black',
                             stack: 0,
                             index: 10,
-                            legendIndex: 100
+                            legendIndex: 100,
+                            marker: {
+                                symbol: 'url(/img/check.png)'
+                            }
                         };
                         renderChart(categories, requestSeries, closeSeries);
                     }).
@@ -251,22 +253,26 @@ Highcharts.setOptions({
                 }
             },
             pointPadding: 0,
-            stacking: 'normal'
+            stacking: 'normal',
+            tooltip: {
+                headerFormat: '',
+                pointFormat: '{series.name}: <b>{point.y} opened</b>'
+            }
         },
         scatter: {
-            animation: false
+            animation: false,
+            tooltip: {
+                headerFormat: '',
+                pointFormat: '<b>{point.y} closed</b> this week'
+            }
         }
     },
     tooltip: {
         headerFormat: '',
-        // pointFormat: '<b>{point.y:,.0f}</b> requests',
         shadow: false,
         style: {
             fontFamily: 'Monda, Helvetica, sans-serif',
             fontSize: '15px'
-        },
-        formatter: function() {
-            return this.series.name + ': <b>' + this.y + ' opened</b>';
         }
     },
     legend: {
