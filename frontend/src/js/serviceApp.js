@@ -170,7 +170,7 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
                             ward.Ward = wardNum;
                             return parseInt(wardNum, 10);
                         });
-                        var closeCounts = _.pluck(wardCloseData, 'Count');
+                        var closeCounts = _.map(_.pluck(wardCloseData, 'Count'), function(val) { return val || null; });
                         var closeSeries = {
                             data: closeCounts,
                             type: 'scatter',
