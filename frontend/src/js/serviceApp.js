@@ -236,6 +236,16 @@ Highcharts.setOptions({
                 color: '#222',
                 fontSize: '12px'
             }
+        },
+        stackLabels: {
+            enabled: true,
+            color: "#000000",
+            // format: '◯ {total}',
+            format: '{total}',
+            style: {
+                fontFamily: "Monda, Helvetica, sans-serif",
+                fontSize: '13px'
+            }
         }
     },
     plotOptions: {
@@ -244,13 +254,7 @@ Highcharts.setOptions({
             borderWidth: 0,
             groupPadding: 0.08,
             dataLabels: {
-                enabled: false,
-                color: "#000000",
-                style: {
-                    fontFamily: "Monda, Helvetica, sans-serif",
-                    fontSize: '13px',
-                    fontWeight: 'bold'
-                }
+                enabled: false
             },
             pointPadding: 0,
             stacking: 'normal',
