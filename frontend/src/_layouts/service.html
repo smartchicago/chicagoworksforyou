@@ -65,7 +65,7 @@ window.currServiceType = '{{ page.service_code }}';
                 </li>
                 {% endif %}
                 <li>
-                    <a href="#">Submit a {{ page.title }} 311 report &rarr;</a>
+                    <a ng-href="http://311request.cityofchicago.org/reports/new?service_id={{ page.service_code }}">Submit a {{ page.title }} 311 report &rarr;</a>
                 </li>
             </ul>
         </div>
