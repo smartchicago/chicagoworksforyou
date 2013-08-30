@@ -57,7 +57,7 @@ wardApp.factory('Data', function ($http) {
         $http.jsonp(blobsURL).
             success(function(response, status, headers, config) {
                 _.each(response, function(blob) {
-                    var coords = blob.Boundary.coordinates;
+                    var coords = jQuery.parseJSON(blob.Boundary).coordinates[0];
                     L.polygon(coords,
                         {
                             opacity: 1,
