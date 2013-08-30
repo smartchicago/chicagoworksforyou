@@ -55,23 +55,24 @@ func WardCountsHandler(params url.Values, request *http.Request) ([]byte, *ApiEr
 
 	service_code := params["service_code"][0]
 
-	rows, err := api.Db.Query(`SELECT COUNT(*), DATE(requested_datetime) AS requested_date 
-		FROM service_requests 
+	rows, err := api.Db.Query(`SELECT requested_date, SUM(dc.total) AS opened, SUM(dcc.total) AS closed
+		FROM daily_counts dc
+		INNER JOIN daily_closed_counts dcc
+		USING(requested_date, ward, service_code)
 		WHERE ward = $1
-			AND duplicate IS NULL 
-			AND service_code = $2 
-			AND requested_datetime >= $3::date 
-			AND requested_datetime <= $4::date
-		GROUP BY DATE(requested_datetime) 
-		ORDER BY requested_date;`,
-		string(ward_id), service_code, start, end)
+			AND service_code = $2
+			AND requested_date >= $3
+			AND requested_date <= $4
+		GROUP BY requested_date
+		ORDER BY requested_date DESC;`, ward_id, service_code, start, end)
 
 	if err != nil {
 		log.Fatal("error fetching data for WardCountsHandler", err)
 	}
 
 	type WardCount struct {
-		Count       int
+		Opened      int
+		Closed      int
 		CityTotal   int
 		CityAverage float32
 	}
@@ -81,7 +82,7 @@ func WardCountsHandler(params url.Values, request *http.Request) ([]byte, *ApiEr
 		var wc WardCount
 		var rd time.Time
 
-		if err := rows.Scan(&wc.Count, &rd); err != nil {
+		if err := rows.Scan(&rd, &wc.Opened, &wc.Closed); err != nil {
 			log.Print("error reading row of ward count", err)
 		}
 
