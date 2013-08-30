@@ -21,12 +21,12 @@ Input: none
 
 Output:
 
-    $ curl "http://localhost:5000/health_check"
+    $ curl http://localhost:5000/health_check
     {
-      "Count": 1377257,
+      "most_recent_sr_id": "13-01255471",
       "Database": true,
       "Healthy": true,
-      "Version": "0.0.2"
+      "Version": ""
     }
 
 Services
