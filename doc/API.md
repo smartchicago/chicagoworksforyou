@@ -12,12 +12,10 @@ The CWFY API serves JSON(P) responses to HTTP requests.
 
 Any request may include a `callback` URL parameter, e.g. `callback=foo`; the response will use the callback parameter as a function name and wrap the response in a Javascript function call.
 
-
 Access/Registration
 -------------------
 
 There are no access restrictions to the API at the moment. You do not need to register for access or use a special token to access the API. Smart Chicago appreciates knowing about interesting uses of the API. Developers are encouraged to email info@smartchicagocollaborative.org and share how they're using the API. Smart Chicago reserves the right to block access from applications or users that negatively impact the availability and functionality of the API.
-
 
 Health Check
 ------------
