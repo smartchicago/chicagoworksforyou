@@ -112,6 +112,12 @@ h1 {
     margin: 0 0 14px;
 }
 
+h2 {
+    font-size: 30px;
+    line-height: 36px;
+    margin: 0 0 12px;
+}
+
 h3 {
     font-size: 24px;
     line-height: 28px;
@@ -143,11 +149,25 @@ h3 {
         &:before {
             content:"";
             display: inline-block;
-            width: 12px;
-            height: 12px;
+            width: 16px;
+            height: 16px;
             background-color: #555;
-            border-radius: 12px;
+            // border-radius: 12px;
             margin-right: 4px;
+            position: relative;
+            top: 1px;
+        }
+    }
+
+    .open-count {
+        &:before {
+            background: url(/img/circle.png) no-repeat 50% 2px;
+        }
+    }
+
+    .closed-count {
+        &:before {
+            background: url(/img/check.png) no-repeat 50% 3px;
         }
     }
 
@@ -493,14 +513,18 @@ h3 {
         margin-bottom: 1em;
     }
 
+    .external-links {
+        a {
+            line-height: 18px;
+        }
+    }
+
     .data-portal-link {
         padding: .5em .8em;
         border-radius: 6px;
         display: block;
         border: 1px solid #ddd;
         font-size: 14px;
-        line-height: 19px;
-        // color: #555;
 
         span {
             color: #888;
@@ -526,6 +550,7 @@ h3 {
 
     .chart {
          width:100%;
+         text-align: center;
          height:1300px;
     }
 }

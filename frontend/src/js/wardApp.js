@@ -160,10 +160,10 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
         }
     };
 
-    var renderTTCchart = function(ttcURL, maxThreshold) {
+    var renderTTCchart = function(ttcURL) {
         $http.jsonp(ttcURL).
             success(function(response, status, headers, config) {
-                var threshold = Math.min(Math.round(Math.max(response.Threshold, 1)), maxThreshold);
+                var threshold = Math.min(Math.round(Math.max(response.Threshold, 1)), 10);
                 var extended = _.map(response.WardData, function(val, key) { return _.extend(val,{'Ward':parseInt(key,10)}); });
                 var filtered = _.filter(extended, function(ward) { return ward.Count >= threshold && ward.Ward > 0; });
                 var sorted = _.sortBy(filtered, 'Time');
@@ -191,7 +191,7 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
                         labels: {
                             enabled: false
                         },
-                        minPadding: 0.03,
+                        minPadding: 0,
                         maxPadding: 0
                     },
                     plotOptions: {
@@ -228,7 +228,7 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
         var highsURL = window.apiDomain + 'wards/' + window.wardNum + '/historic_highs.json?include_date=' + Data.date + '&count=' + DAY_COUNT + '&callback=JSON_CALLBACK';
         var ttcURL = window.apiDomain + 'requests/time_to_close.json?count=' + (Data.duration + 1) + '&end_date=' + Data.date + '&callback=JSON_CALLBACK';
 
-        renderTTCchart(ttcURL, 10);
+        renderTTCchart(ttcURL);
 
         if (isFirstRender) {
             $http.jsonp(highsURL).
