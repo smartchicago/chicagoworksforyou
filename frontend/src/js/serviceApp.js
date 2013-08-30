@@ -221,6 +221,7 @@ Highcharts.setOptions({
                 fontFamily: 'Monda, Helvetica, sans-serif',
                 fontSize: '13px'
             },
+            useHTML: true,
             y: 5
         }
     },
