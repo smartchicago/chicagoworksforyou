@@ -32,7 +32,7 @@ wardApp.config(function($routeProvider) {
         });
 });
 
-wardApp.factory('Data', function () {
+wardApp.factory('Data', function ($http) {
     var data = {
         wardNum: window.wardNum
     };
@@ -42,7 +42,7 @@ wardApp.factory('Data', function () {
         L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png', window.mapOptions)
             .addTo(window.chicagoMap);
         window.chicagoMap.zoomControl.setPosition('bottomleft');
-        var polygon = L.polygon(wardPaths[wardNum - 1],
+        L.polygon(wardPaths[wardNum - 1],
             {
                 opacity: 1,
                 weight: 2,
@@ -52,6 +52,21 @@ wardApp.factory('Data', function () {
                 fillColor: '#4888AF'
             }
         ).addTo(window.chicagoMap);
+
+        var blobsURL = window.apiDomain + 'wards/transitions.json?ward=' + window.wardNum + '&callback=JSON_CALLBACK';
+        $http.jsonp(blobsURL).
+            success(function(response, status, headers, config) {
+                _.each(response, function(blob) {
+                    var coords = blob.Boundary.coordinates;
+                    L.polygon(coords,
+                        {
+                            opacity: 1,
+                            fillOpacity: 0.5,
+                            fillColor: 'white'
+                        }
+                    ).addTo(window.chicagoMap);
+                });
+            });
     }
 
     data.setDate = function(date) {
