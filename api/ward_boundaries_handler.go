@@ -23,10 +23,10 @@ func WardBoundariesHandler(params url.Values, request *http.Request) ([]byte, *A
 	if err != nil {
 		return nil, &ApiError{Code: 400, Msg: "bad latitude value"}
 	}
-	
+
 	long, err := strconv.ParseFloat(params["long"][0], 32)
 	if err != nil {
-		return nil, &ApiError{Code: 400, Msg: "bad longitude value"}		
+		return nil, &ApiError{Code: 400, Msg: "bad longitude value"}
 	}
 
 	type WardLocation struct {
