@@ -26,37 +26,37 @@ func WardCountsHandler(params url.Values, request *http.Request) ([]byte, *ApiEr
 	//
 	// Note that the end date is August 30, and the results include the end_date. Days with no service requests will report "0"
 	//
-        // $ curl "http://localhost:5000/wards/10/counts.json?count=7&end_date=2013-08-30"
-        // {
-        //   "2013-08-24": {
-        //     "Opened": 0,
-        //     "Closed": 0
-        //   },
-        //   "2013-08-25": {
-        //     "Opened": 0,
-        //     "Closed": 0
-        //   },
-        //   "2013-08-26": {
-        //     "Opened": 7,
-        //     "Closed": 4
-        //   },
-        //   "2013-08-27": {
-        //     "Opened": 20,
-        //     "Closed": 37
-        //   },
-        //   "2013-08-28": {
-        //     "Opened": 18,
-        //     "Closed": 34
-        //   },
-        //   "2013-08-29": {
-        //     "Opened": 7,
-        //     "Closed": 6
-        //   },
-        //   "2013-08-30": {
-        //     "Opened": 0,
-        //     "Closed": 0
-        //   }
-        // }
+	// $ curl "http://localhost:5000/wards/10/counts.json?count=7&end_date=2013-08-30"
+	// {
+	//   "2013-08-24": {
+	//     "Opened": 0,
+	//     "Closed": 0
+	//   },
+	//   "2013-08-25": {
+	//     "Opened": 0,
+	//     "Closed": 0
+	//   },
+	//   "2013-08-26": {
+	//     "Opened": 7,
+	//     "Closed": 4
+	//   },
+	//   "2013-08-27": {
+	//     "Opened": 20,
+	//     "Closed": 37
+	//   },
+	//   "2013-08-28": {
+	//     "Opened": 18,
+	//     "Closed": 34
+	//   },
+	//   "2013-08-29": {
+	//     "Opened": 7,
+	//     "Closed": 6
+	//   },
+	//   "2013-08-30": {
+	//     "Opened": 0,
+	//     "Closed": 0
+	//   }
+	// }
 
 	vars := mux.Vars(request)
 	ward_id := vars["id"]
@@ -99,8 +99,8 @@ func WardCountsHandler(params url.Values, request *http.Request) ([]byte, *ApiEr
 	}
 
 	type WardCount struct {
-		Opened      int
-		Closed      int
+		Opened int
+		Closed int
 	}
 
 	counts := make(map[string]WardCount)
