@@ -482,6 +482,17 @@ h3 {
                 font-weight: bold;
             }
         }
+
+        &.future {
+            a {
+                color: #555;
+                text-shadow: none;
+
+                b {
+                    color: #333;
+                }
+            }
+        }
     }
 
     .pagination {
