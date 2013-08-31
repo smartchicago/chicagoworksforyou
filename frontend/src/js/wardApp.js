@@ -160,6 +160,60 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
         }
     };
 
+    var renderWeekReviewChart = function(weekReviewURL) {
+        $http.jsonp(weekReviewURL).
+            success(function(response, status, headers, config) {
+                var weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+                var days = _.sortBy(response, function (day, key) {
+                    _.extend(day,{'Day':key});
+                    return key;
+                });
+
+                var opened = _.pluck(days, 'Opened');
+                var closed = _.pluck(days, 'Closed');
+
+                var weekReviewChart = new Highcharts.Chart({
+                    chart: {
+                        type: 'line',
+                        renderTo: 'weekReview-chart',
+                        marginBottom: 50
+                    },
+                    series: [{
+                        data: opened,
+                        name: "Requests opened",
+                        id: 1
+                    },{
+                        data: closed,
+                        name: "Requests closed",
+                        id: 1
+                    }],
+                    xAxis: {
+                        categories: weekdays
+                    },
+                    plotOptions: {
+                        line: {
+                            animation: false
+                        }
+                    },
+                    legend: {
+                        enabled: false
+                    },
+                    title: {
+                        text: ''
+                    },
+                    tooltip: {
+                        headerFormat: '',
+                        shadow: false,
+                        style: {
+                            fontFamily: 'Monda, sans-serif',
+                            fontSize: '15px'
+                        }
+                    }
+                });
+            });
+    };
+
     var renderTTCchart = function(ttcURL) {
         $http.jsonp(ttcURL).
             success(function(response, status, headers, config) {
@@ -225,10 +279,12 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
 
     var renderOverview = function(isFirstRender) {
         var DAY_COUNT = 1;
-        var highsURL = window.apiDomain + 'wards/' + window.wardNum + '/historic_highs.json?include_date=' + Data.date + '&count=' + DAY_COUNT + '&callback=JSON_CALLBACK';
+        var weekReviewURL = window.apiDomain + 'wards/' + window.wardNum + '/counts.json?count=' + (Data.duration + 1) + '&end_date=' + Data.date + '&callback=JSON_CALLBACK';
         var ttcURL = window.apiDomain + 'requests/time_to_close.json?count=' + (Data.duration + 1) + '&end_date=' + Data.date + '&callback=JSON_CALLBACK';
+        var highsURL = window.apiDomain + 'wards/' + window.wardNum + '/historic_highs.json?include_date=' + Data.date + '&count=' + DAY_COUNT + '&callback=JSON_CALLBACK';
 
         renderTTCchart(ttcURL);
+        renderWeekReviewChart(weekReviewURL);
 
         if (isFirstRender) {
             $http.jsonp(highsURL).
@@ -246,47 +302,6 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
 
                     var categories = _.pluck(historicHighs, 'service');
                     var current = _.pluck(historicHighs, 'current');
-
-                    var weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
-                    var weekReviewChart = new Highcharts.Chart({
-                        chart: {
-                            type: 'line',
-                            renderTo: 'weekReview-chart',
-                            marginBottom: 50
-                        },
-                        series: [{
-                            data: [4,6,8,5,3,5,2],
-                            name: "Requests opened",
-                            id: 1
-                        },{
-                            data: [14,8,1,3,9,2,7],
-                            name: "Requests closed",
-                            id: 1
-                        }],
-                        xAxis: {
-                            categories: weekdays
-                        },
-                        plotOptions: {
-                            line: {
-                                animation: false
-                            }
-                        },
-                        legend: {
-                            enabled: false
-                        },
-                        title: {
-                            text: ''
-                        },
-                        tooltip: {
-                            headerFormat: '',
-                            shadow: false,
-                            style: {
-                                fontFamily: 'Monda, sans-serif',
-                                fontSize: '15px'
-                            }
-                        }
-                    });
 
                     var countsChart = new Highcharts.Chart({
                         chart: {
@@ -355,9 +370,12 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
 
     var renderDetail = function (isFirstRender) {
         var DAY_COUNT = 6;
-        var highsURL = window.apiDomain + 'wards/' + window.wardNum + '/historic_highs.json?service_code=' + Data.serviceObj.code + '&include_date=' + Data.date + '&count=' + DAY_COUNT + '&callback=JSON_CALLBACK';
-        var ttcURL = window.apiDomain + 'requests/time_to_close.json?count=7&service_code=' + Data.serviceObj.code + '&end_date=' + Data.date + '&callback=JSON_CALLBACK';
 
+        var weekReviewURL = window.apiDomain + 'wards/' + window.wardNum + '/counts.json?count=' + (Data.duration + 1) + '&service_code=' + Data.serviceObj.code + '&end_date=' + Data.date + '&callback=JSON_CALLBACK';
+        var ttcURL = window.apiDomain + 'requests/time_to_close.json?count=' + (Data.duration + 1) + '&service_code=' + Data.serviceObj.code + '&end_date=' + Data.date + '&callback=JSON_CALLBACK';
+        var highsURL = window.apiDomain + 'wards/' + window.wardNum + '/historic_highs.json?service_code=' + Data.serviceObj.code + '&include_date=' + Data.date + '&count=' + DAY_COUNT + '&callback=JSON_CALLBACK';
+
+        renderWeekReviewChart(weekReviewURL);
         renderTTCchart(ttcURL);
 
         if (isFirstRender) {
