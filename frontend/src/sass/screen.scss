@@ -467,17 +467,18 @@ h3 {
             font-size: 11px;
             line-height: 20px;
             text-transform: uppercase;
-            color: #888;
+            color: fade-out(white,.25);
             border: none;
             border-left: 1px solid #ddd;
             border-radius: 0 !important;
+            text-shadow: 0 -1px 0 fade-out(black,.7);
 
             &:hover {
                 background: inherit;
             }
 
             b {
-                color: #222;
+                color: #fff;
                 font-weight: bold;
             }
         }
