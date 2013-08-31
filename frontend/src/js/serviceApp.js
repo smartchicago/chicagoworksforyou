@@ -108,14 +108,7 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
                 categories: categories
             },
             yAxis: {
-                opposite: true,
-                plotLines: [{
-                    id: 'avg',
-                    value: Data.cityAverage,
-                    color: 'black',
-                    width: 3,
-                    zIndex: 5
-                }]
+                opposite: true
             }
         });
     };
@@ -130,7 +123,6 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
         $http.jsonp(requestsURL).
             success(function(response, status, headers, config) {
                 Data.cityCount = response.CityData.Count;
-                Data.cityAverage = response.CityData.Count / 50;
 
                 var wardData = _.sortBy(response.WardData, function(ward, wardNum) {
                     ward.Ward = wardNum;
