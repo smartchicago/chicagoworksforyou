@@ -173,6 +173,9 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
                 var opened = _.pluck(days, 'Opened');
                 var closed = _.pluck(days, 'Closed');
 
+                Data.openCount = _.reduce(opened , function(total, val) { return total + val; }, 0);
+                Data.closedCount = _.reduce(closed , function(total, val) { return total + val; }, 0);
+
                 var weekReviewChart = new Highcharts.Chart({
                     chart: {
                         type: 'line',
