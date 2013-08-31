@@ -57,11 +57,13 @@ wardApp.factory('Data', function ($http) {
         $http.jsonp(blobsURL).
             success(function(response, status, headers, config) {
                 _.each(response, function(blob) {
-                    var coords = jQuery.parseJSON(blob.Boundary).coordinates[0];
-                    L.polygon(coords,
+                    var coords = jQuery.parseJSON(blob.Boundary).coordinates[0][0];
+                    _.map(coords, function (pair) { return pair.reverse(); });
+                    var poly = L.polygon(coords,
                         {
                             opacity: 1,
-                            fillOpacity: 0.5,
+                            weight: 0,
+                            fillOpacity: .7,
                             fillColor: 'white'
                         }
                     ).addTo(window.chicagoMap);
