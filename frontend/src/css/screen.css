@@ -365,15 +365,12 @@ h3 {
     text-decoration: none;
     border-color: #ccc;
     background: #f7f7f7; }
-.serviceApp .city-average {
-  border-top: 3px solid black;
-  padding-top: 6px;
-  font-size: 13px;
-  line-height: 16px; }
 .serviceApp .chart {
   width: 100%;
   text-align: center;
   height: 1300px; }
+.serviceApp .highcharts-axis-labels a {
+  color: #555; }
 
 .search-form {
   margin: 0; }
