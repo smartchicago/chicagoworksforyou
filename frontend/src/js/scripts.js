@@ -117,3 +117,27 @@ window.getOrdinal = function(n) {
 window.pluralize = function(n) {
     return n == 1 ? '' : 's';
 };
+
+// MAPS
+
+window.minLat = 41.644553;
+window.minLng = -87.524133;
+
+window.decodePoint = function (str) {
+    var pair = str.match(/.{1,3}/g);
+    var result = _.map(pair, function(code) {
+        var codes = code.split('');
+        var nums = _.map(codes, function(c) {
+            return c.charCodeAt() - 200;
+        });
+        return nums[0] * 10000 + nums[1] * 100 + nums[2];
+    });
+    return result;
+};
+
+window.convertPoint = function (pt) {
+    return [
+        (pt[0] / 1000000) + window.minLat,
+        (pt[1] / -1000000) + window.minLng
+    ];
+};
