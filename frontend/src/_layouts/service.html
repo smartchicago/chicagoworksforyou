@@ -35,8 +35,8 @@ window.currServiceType = '{{ page.service_code }}';
     {% raw %}
     <div class="pagination">
         <ul>
-            <li class="day" ng-repeat="day in data.days" ng-class="{future: day.inFuture}" style="border-bottom:5px solid {{ day.color }};">
-                <a ng-href="/#/{{ day.date|date:'yyyy-MM-dd' }}/{{ data.stSlug }}/" ng-disabled="day.inFuture">
+            <li class="day" ng-repeat="day in data.days" ng-class="{future: day.inFuture}">
+                <a style="background: {{ day.color }};" ng-href="/#/{{ day.date|date:'yyyy-MM-dd' }}/{{ data.stSlug }}/" ng-disabled="day.inFuture">
                     {{ day.date|date:'EEE' }}
                     <b>{{ day.date|date:'d' }}</b>
                     {{ day.date|date:'MMM' }}
@@ -55,9 +55,6 @@ window.currServiceType = '{{ page.service_code }}';
                 <br>
                 {{ content }}
             </div>
-            <p class="city-average">
-                Average number of requests opened in a ward this week: <span ng-bind="data.cityAverage"></span>
-            </p>
             <br>
             <ul class="external-links nav nav-stacked nav-tabs">
                 {% if page.data_portal %}

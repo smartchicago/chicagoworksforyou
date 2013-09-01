@@ -308,23 +308,27 @@ h3 {
 .serviceApp .day {
   float: left;
   text-align: center; }
-  .serviceApp .day:last-child a {
-    border-right: 1px solid #ddd; }
   .serviceApp .day a {
     width: 133px;
     padding: 4px 0;
     font-size: 11px;
     line-height: 20px;
     text-transform: uppercase;
-    color: #888;
+    color: rgba(255, 255, 255, 0.75);
     border: none;
-    border-left: 1px solid #ddd;
-    border-radius: 0 !important; }
+    border-left: 1px solid #fff;
+    border-radius: 0 !important;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.3); }
     .serviceApp .day a:hover {
       background: inherit; }
     .serviceApp .day a b {
-      color: #222;
+      color: #fff;
       font-weight: bold; }
+  .serviceApp .day.future a {
+    color: #555;
+    text-shadow: none; }
+    .serviceApp .day.future a b {
+      color: #333; }
 .serviceApp .pagination {
   margin: 0 0 1em 0; }
 .serviceApp .pagination-wrap.affix {
