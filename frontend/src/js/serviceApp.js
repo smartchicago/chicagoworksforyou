@@ -165,7 +165,8 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
                 $http.jsonp(closesURL).
                     success(function(response, status, headers, config) {
                         Data.cityCloseCount = response.CityData.Count;
-                        var wardCloseData = _.sortBy(response.WardData, function(ward, wardNum) {
+                        var nonZeroWards = _.reject(response.WardData, function(ward, key) { return key === '0'; });
+                        var wardCloseData = _.sortBy(nonZeroWards, function(ward, wardNum) {
                             ward.Ward = wardNum;
                             return parseInt(wardNum, 10);
                         });
@@ -219,8 +220,9 @@ Highcharts.setOptions({
         labels: {
             style: {
                 fontFamily: 'Monda, Helvetica, sans-serif',
-                fontSize: '13px'
+                fontSize: '13px',
             },
+            useHTML: true,
             y: 5
         }
     },

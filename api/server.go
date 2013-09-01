@@ -61,7 +61,7 @@ func main() {
 	router.HandleFunc("/wards/boundaries.json", endpoint(WardBoundariesHandler))
 	router.HandleFunc("/wards/transitions.json", endpoint(TransitionsHandler))
 	router.HandleFunc("/transitions/time_to_close.json", endpoint(TransitionTimeToCloseHandler))
-	
+
 	log.Printf("CWFY ready for battle on port %d", *port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), router))
 }

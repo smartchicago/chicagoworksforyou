@@ -6,9 +6,16 @@ Overview
 
 The Chicago Works For You (CWFY) API lives at http://cwfy-api.smartchicagoapps.org/.
 
+There is a test/staging API running at http://cwfy-api-staging.smartchicagoapps.org/.
+
 The CWFY API serves JSON(P) responses to HTTP requests.
 
 Any request may include a `callback` URL parameter, e.g. `callback=foo`; the response will use the callback parameter as a function name and wrap the response in a Javascript function call.
+
+Access/Registration
+-------------------
+
+There are no access restrictions to the API at the moment. You do not need to register for access or use a special token to access the API. Smart Chicago appreciates knowing about interesting uses of the API. Developers are encouraged to email info@smartchicagocollaborative.org and share how they're using the API. Smart Chicago reserves the right to block access from applications or users that negatively impact the availability and functionality of the API.
 
 Health Check
 ------------
@@ -21,12 +28,12 @@ Input: none
 
 Output:
 
-    $ curl "http://localhost:5000/health_check"
+    $ curl http://localhost:5000/health_check
     {
-      "Count": 1377257,
+      "most_recent_sr_id": "13-01255471",
       "Database": true,
       "Healthy": true,
-      "Version": "0.0.2"
+      "Version": ""
     }
 
 Services
@@ -158,27 +165,48 @@ Ward Counts
 
 Path: `/wards/{id}/counts.json`
 
-Description: Return the number of service requests opened grouped by day, then by service request type, for a given ward.
+Description: Return the number of service requests opened and closed grouped by day, then by service request type, for a given ward. If `service_code` is omitted, return a count of all SR opened and closed each day.
 
 Input:
 
     end_date: e.g. "2013-06-19"
     count: number of days to count back from end date
-    service_code: code of the service, e.g. "4fd3b167e750846744000005"
+    service_code: (optional) code of the service, e.g. "4fd3b167e750846744000005"
 
 Output:
 
-    $ curl "http://localhost:5000/wards/10/counts.json?service_code=4fd3b167e750846744000005&count=7&end_date=2013-06-03"
+    $ curl "http://localhost:5000/wards/10/counts.json?count=7&end_date=2013-08-30"
     {
-      "2013-05-28": 10,
-      "2013-05-29": 6,
-      "2013-05-30": 9,
-      "2013-05-31": 3,
-      "2013-06-01": 2,
-      "2013-06-02": 6,
-      "2013-06-03": 7
+      "2013-08-24": {
+        "Opened": 0,
+        "Closed": 0
+      },
+      "2013-08-25": {
+        "Opened": 0,
+        "Closed": 0
+      },
+      "2013-08-26": {
+        "Opened": 7,
+        "Closed": 4
+      },
+      "2013-08-27": {
+        "Opened": 20,
+        "Closed": 37
+      },
+      "2013-08-28": {
+        "Opened": 18,
+        "Closed": 34
+      },
+      "2013-08-29": {
+        "Opened": 7,
+        "Closed": 6
+      },
+      "2013-08-30": {
+        "Opened": 0,
+        "Closed": 0
+      }
     }
-
+    
 Request Counts
 --------------
 
