@@ -46,7 +46,6 @@ wardApp.factory('Data', function ($http) {
             {
                 opacity: 1,
                 weight: 2,
-                dashArray: '3',
                 color: '#182A35',
                 fillOpacity: 0.7,
                 fillColor: '#4888AF'
@@ -62,13 +61,29 @@ wardApp.factory('Data', function ($http) {
                     var poly = L.polygon(coords,
                         {
                             opacity: 1,
-                            weight: 0,
-                            fillOpacity: .7,
+                            dashArray: '3',
+                            weight: 0.5,
+                            color: '#182a35',
+                            fillOpacity: 0.7,
                             fillColor: 'white'
                         }
                     ).addTo(window.chicagoMap);
                 });
             });
+
+        var legend = L.control({position: 'topright'});
+
+        legend.onAdd = function(map) {
+            var div = L.DomUtil.create('div', 'legend');
+            div.innerHTML =
+                '<div class="area2013">Current Ward ' + window.wardNum + ' boundary</div>' +
+                '<div class="area2015">Areas moving to a new ward in 2015</div>' +
+                '<div class="areaBoth">Areas remaining post-2015</div>' +
+                '';
+            return div;
+        };
+
+        legend.addTo(window.chicagoMap);
     }
 
     data.setDate = function(date) {
