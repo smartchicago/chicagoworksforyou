@@ -84,7 +84,7 @@ wardApp.factory('Data', function ($http) {
             div.innerHTML =
                 '<div class="area2013">Current Ward ' + window.wardNum + ' boundary</div>' +
                 '<div class="area2015">Areas moving to a new ward in 2015</div>' +
-                '<div class="areaBoth">Areas remaining post-2015</div>' +
+                '<div class="areaBoth">Areas remaining in Ward ' + window.wardNum + '</div>' +
                 '';
             return div;
         };
