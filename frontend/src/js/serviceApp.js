@@ -16,15 +16,18 @@ serviceApp.config(function($routeProvider) {
 });
 
 serviceApp.factory('Data', function () {
+    var serviceObj = window.lookupCode(window.currServiceType);
     var data = {
+        stSlug: serviceObj.slug,
+        stName: serviceObj.name,
         dayColors: [
-            '#37c0b9',
-            '#37acc3',
-            '#3790c7',
-            '#3973c9',
-            '#3a56ca',
-            '#403ccc',
-            '#603fce'
+            '#1A3E50',
+            '#22546C',
+            '#2B6A88',
+            '#3380A4',
+            '#3A95C1',
+            '#54A5CC',
+            '#6FB4D5'
         ]
     };
 
@@ -36,13 +39,18 @@ serviceApp.factory('Data', function () {
         data.endDate = date.clone().day(6).max(window.yesterday);
         data.duration = data.endDate.diff(data.startDate, 'days');
         data.thisDate = moment.duration(data.duration,"days").beforeMoment(data.endDate,true).format({implicitYear: false});
+        data.pageTitle = data.thisDate + ' | ' + data.stName + ' | Chicago Works For You';
+
+        var today = moment().startOf('day');
 
         data.days = _.map(data.dayColors, function(color, i) {
-            var day = data.startDate.clone().add('day',i);
+            var day = data.startDate.clone().startOf('day').add('day',i);
+            var inFuture = !day.isBefore(today);
             return {
                 'i': i,
-                'color': color,
                 'date': day.format(),
+                'inFuture': inFuture,
+                'color': inFuture ? "#dddddd" : color
             };
         });
 
@@ -52,6 +60,10 @@ serviceApp.factory('Data', function () {
     };
 
     return data;
+});
+
+serviceApp.controller("headCtrl", function ($scope, Data) {
+    $scope.data = Data;
 });
 
 serviceApp.controller("headerCtrl", function ($scope, Data, $location) {
@@ -79,31 +91,24 @@ serviceApp.controller("sidebarCtrl", function ($scope, Data) {
 
 serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $route, $routeParams) {
     var stCode = window.currServiceType;
-    Data.stSlug = window.lookupCode(stCode).slug;
     var chart = $('#chart').highcharts();
 
     var renderChart = function (categories, requests, closes) {
+        var series = _.clone(requests);
         if (closes) {
-            requests.push(closes);
+            series.push(closes);
         }
         var chart = new Highcharts.Chart({
             chart: {
                 renderTo: 'chart'
             },
-            colors: _.clone(Data.dayColors).reverse(),
-            series: requests.reverse(),
+            colors: _.clone(Data.dayColors).slice(0, requests.length).reverse(),
+            series: series.reverse(),
             xAxis: {
                 categories: categories
             },
             yAxis: {
-                opposite: true,
-                plotLines: [{
-                    id: 'avg',
-                    value: Data.cityAverage,
-                    color: 'black',
-                    width: 3,
-                    zIndex: 5
-                }]
+                opposite: true
             }
         });
     };
@@ -118,7 +123,6 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
         $http.jsonp(requestsURL).
             success(function(response, status, headers, config) {
                 Data.cityCount = response.CityData.Count;
-                Data.cityAverage = response.CityData.Count / 50;
 
                 var wardData = _.sortBy(response.WardData, function(ward, wardNum) {
                     ward.Ward = wardNum;
@@ -153,11 +157,12 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
                 $http.jsonp(closesURL).
                     success(function(response, status, headers, config) {
                         Data.cityCloseCount = response.CityData.Count;
-                        var wardCloseData = _.sortBy(response.WardData, function(ward, wardNum) {
+                        var nonZeroWards = _.reject(response.WardData, function(ward, key) { return key === '0'; });
+                        var wardCloseData = _.sortBy(nonZeroWards, function(ward, wardNum) {
                             ward.Ward = wardNum;
                             return parseInt(wardNum, 10);
                         });
-                        var closeCounts = _.pluck(wardCloseData, 'Count');
+                        var closeCounts = _.map(_.pluck(wardCloseData, 'Count'), function(val) { return val || null; });
                         var closeSeries = {
                             data: closeCounts,
                             type: 'scatter',
@@ -165,7 +170,10 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
                             color: 'black',
                             stack: 0,
                             index: 10,
-                            legendIndex: 100
+                            legendIndex: 100,
+                            marker: {
+                                symbol: 'url(/img/check-rotated.png)'
+                            }
                         };
                         renderChart(categories, requestSeries, closeSeries);
                     }).
@@ -204,8 +212,9 @@ Highcharts.setOptions({
         labels: {
             style: {
                 fontFamily: 'Monda, Helvetica, sans-serif',
-                fontSize: '13px'
+                fontSize: '13px',
             },
+            useHTML: true,
             y: 5
         }
     },
@@ -217,7 +226,19 @@ Highcharts.setOptions({
         labels: {
             style: {
                 fontFamily: 'Monda, Helvetica, sans-serif',
-                fontWeight: 'bold'
+                fontWeight: 'bold',
+                color: '#222',
+                fontSize: '12px'
+            }
+        },
+        stackLabels: {
+            enabled: true,
+            color: "#000000",
+            // format: '◯ {total}',
+            format: '{total}',
+            style: {
+                fontFamily: "Monda, Helvetica, sans-serif",
+                fontSize: '13px'
             }
         }
     },
@@ -227,31 +248,29 @@ Highcharts.setOptions({
             borderWidth: 0,
             groupPadding: 0.08,
             dataLabels: {
-                enabled: false,
-                color: "#000000",
-                style: {
-                    fontFamily: "Monda, Helvetica, sans-serif",
-                    fontSize: '13px',
-                    fontWeight: 'bold'
-                }
+                enabled: false
             },
             pointPadding: 0,
-            stacking: 'normal'
+            stacking: 'normal',
+            tooltip: {
+                headerFormat: '',
+                pointFormat: '{series.name}: <b>{point.y} opened</b>'
+            }
         },
         scatter: {
-            animation: false
+            animation: false,
+            tooltip: {
+                headerFormat: '',
+                pointFormat: '<b>{point.y} closed</b> this week'
+            }
         }
     },
     tooltip: {
         headerFormat: '',
-        // pointFormat: '<b>{point.y:,.0f}</b> requests',
         shadow: false,
         style: {
             fontFamily: 'Monda, Helvetica, sans-serif',
             fontSize: '15px'
-        },
-        formatter: function() {
-            return this.series.name + ': <b>' + this.y + ' opened</b>';
         }
     },
     legend: {

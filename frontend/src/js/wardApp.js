@@ -32,42 +32,112 @@ wardApp.config(function($routeProvider) {
         });
 });
 
-wardApp.factory('Data', function () {
+wardApp.factory('Data', function ($http) {
     var data = {
         wardNum: window.wardNum
     };
 
     if (!window.chicagoMap) {
         window.chicagoMap = L.map('map', {scrollWheelZoom: false}).setView(wardCenter, 13);
-        L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png', {
-            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
-            key: '302C8A713FF3456987B21FAAE639A13B',
-            maxZoom: 18,
-            styleId: 82946
-        }).addTo(window.chicagoMap);
+        L.tileLayer(
+                'http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png',
+                window.mapOptions
+            )
+            .addTo(window.chicagoMap);
         window.chicagoMap.zoomControl.setPosition('bottomleft');
-        var polygon = L.polygon(window.wardPath,
+        L.polygon(window.wardPath,
             {
                 opacity: 1,
                 weight: 2,
-                dashArray: '3',
                 color: '#182A35',
                 fillOpacity: 0.7,
                 fillColor: '#4888AF'
             }
         ).addTo(window.chicagoMap);
+
+        var blobsURL = window.apiDomain + 'wards/transitions.json?ward=' + window.wardNum + '&callback=JSON_CALLBACK';
+        $http.jsonp(blobsURL).
+            success(function(response, status, headers, config) {
+                _.each(response, function(blob) {
+                    var coords = jQuery.parseJSON(blob.Boundary).coordinates[0][0];
+                    _.map(coords, function (pair) { return pair.reverse(); });
+                    var poly = L.polygon(coords,
+                        {
+                            id: blob.Ward2015,
+                            opacity: 1,
+                            dashArray: '3',
+                            weight: 0.5,
+                            color: '#182a35',
+                            fillOpacity: 0.7,
+                            fillColor: 'white'
+                        }
+                    )
+                    .bindLabel("<b>Ward " + blob.Ward2015 + "</b> in 2015")
+                    .on('click', function(e) {
+                            document.location = '/ward/' + blob.Ward2015 + '/';
+                        })
+                    .addTo(window.chicagoMap);
+                });
+            });
+
+        var legend = L.control({position: 'topright'});
+
+        legend.onAdd = function(map) {
+            var div = L.DomUtil.create('div', 'legend');
+            div.innerHTML =
+                '<div class="area2013">Current Ward ' + window.wardNum + ' boundary</div>' +
+                '<div class="area2015">Areas moving to a new ward in 2015</div>' +
+                '<div class="areaBoth">Areas remaining in Ward ' + window.wardNum + '</div>' +
+                '';
+            return div;
+        };
+
+        legend.addTo(window.chicagoMap);
     }
 
     data.setDate = function(date) {
         data.date = date.format(dateFormat);
         data.dateObj = date;
         data.dateFormatted = date.format('MMM D, YYYY');
-        data.prevDay = moment(date).subtract('day',1);
-        data.nextDay = moment(date).add('day',1);
-        data.isLatest = data.nextDay.isAfter(window.yesterday);
+
+        data.startDate = date.clone().day(0);
+        data.endDate = date.clone().day(6).max(window.yesterday);
+        data.duration = data.endDate.diff(data.startDate, 'days');
+        data.thisDate = moment.duration(data.duration,"days").beforeMoment(data.endDate,true).format({implicitYear: false});
+        data.pageTitle = data.thisDate + ' | Ward ' + window.wardNum + ' | Chicago Works For You';
+
+        data.prevDate = data.startDate.clone().subtract('day',1);
+        data.nextDate = data.endDate.clone().add('day',7);
+        data.isLatest = data.nextDate.clone().day(0).isAfter(window.yesterday);
     };
 
     return data;
+});
+
+wardApp.controller("headCtrl", function ($scope, Data) {
+    $scope.data = Data;
+});
+
+wardApp.controller("headerCtrl", function ($scope, Data, $location) {
+    $scope.data = Data;
+
+    var urlSuffix = function() {
+        return Data.serviceObj.slug ? Data.serviceObj.slug + '/' : '';
+    };
+
+    $scope.goToPrevDate = function() {
+        if (Data.prevDate.clone().day(0).isBefore(window.earliestDate)) {
+            return false;
+        }
+        $location.path(Data.prevDate.format(dateFormat) + "/" + urlSuffix());
+    };
+
+    $scope.goToNextDate = function() {
+        if (Data.isLatest) {
+            return false;
+        }
+        $location.path(Data.nextDate.format(dateFormat) + "/" + urlSuffix());
+    };
 });
 
 wardApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
@@ -76,28 +146,6 @@ wardApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
     });
 
     $scope.data = Data;
-
-    var urlSuffix = function() {
-        return Data.serviceObj.slug ? Data.serviceObj.slug + '/' : '';
-    };
-
-    $scope.goToPrevDay = function() {
-        if (Data.prevDay.isBefore(window.earliestDate)) {
-            return false;
-        }
-        $location.path(Data.prevDay.format(dateFormat) + '/' + urlSuffix());
-    };
-
-    $scope.goToNextDay = function() {
-        if (Data.isLatest) {
-            return false;
-        }
-        $location.path(Data.nextDay.format(dateFormat) + '/' + urlSuffix());
-    };
-
-    $scope.currPage = function () {
-        return false;
-    };
 });
 
 wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $route, $routeParams) {
@@ -153,10 +201,67 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
         }
     };
 
+    var renderWeekReviewChart = function(weekReviewURL) {
+        $http.jsonp(weekReviewURL).
+            success(function(response, status, headers, config) {
+                var weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+                var days = _.sortBy(response, function (day, key) {
+                    _.extend(day,{'Day':key});
+                    return key;
+                });
+
+                var opened = _.pluck(days, 'Opened');
+                var closed = _.pluck(days, 'Closed');
+
+                Data.openCount = _.reduce(opened , function(total, val) { return total + val; }, 0);
+                Data.closedCount = _.reduce(closed , function(total, val) { return total + val; }, 0);
+
+                var weekReviewChart = new Highcharts.Chart({
+                    chart: {
+                        type: 'line',
+                        renderTo: 'weekReview-chart',
+                        marginBottom: 50
+                    },
+                    series: [{
+                        data: opened,
+                        name: "Requests opened",
+                        id: 1
+                    },{
+                        data: closed,
+                        name: "Requests closed",
+                        id: 1
+                    }],
+                    xAxis: {
+                        categories: weekdays
+                    },
+                    plotOptions: {
+                        line: {
+                            animation: false
+                        }
+                    },
+                    legend: {
+                        enabled: false
+                    },
+                    title: {
+                        text: ''
+                    },
+                    tooltip: {
+                        headerFormat: '',
+                        shadow: false,
+                        style: {
+                            fontFamily: 'Monda, sans-serif',
+                            fontSize: '15px'
+                        }
+                    }
+                });
+            });
+    };
+
     var renderTTCchart = function(ttcURL) {
         $http.jsonp(ttcURL).
             success(function(response, status, headers, config) {
-                var threshold = Math.round(Math.max(response.Threshold,1));
+                var threshold = Math.min(Math.round(Math.max(response.Threshold, 1)), 10);
                 var extended = _.map(response.WardData, function(val, key) { return _.extend(val,{'Ward':parseInt(key,10)}); });
                 var filtered = _.filter(extended, function(ward) { return ward.Count >= threshold && ward.Ward > 0; });
                 var sorted = _.sortBy(filtered, 'Time');
@@ -184,7 +289,7 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
                         labels: {
                             enabled: false
                         },
-                        minPadding: 0.03,
+                        minPadding: 0,
                         maxPadding: 0
                     },
                     plotOptions: {
@@ -205,8 +310,8 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
                         formatter: function() {
                             var text = [
                                 '<b>' + 'Ward ' + sorted[this.x].Ward + '<b>',
-                                Math.round(this.y * 10) / 10 + ' day' + (this.y == 1 ? '' : 's'),
-                                sorted[this.x].Count + ' request' + (sorted[this.x].Count == 1 ? '' : 's')
+                                Math.round(this.y * 10) / 10 + ' day' + window.pluralize(this.y),
+                                sorted[this.x].Count + ' request' + window.pluralize(sorted[this.x].Count)
                             ];
                             return text.join('<br>');
                         }
@@ -216,30 +321,32 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
         );
     };
 
-    var renderOverview = function(render) {
+    var renderOverview = function(isFirstRender) {
         var DAY_COUNT = 1;
+        var weekReviewURL = window.apiDomain + 'wards/' + window.wardNum + '/counts.json?count=' + (Data.duration + 1) + '&end_date=' + Data.date + '&callback=JSON_CALLBACK';
+        var ttcURL = window.apiDomain + 'requests/time_to_close.json?count=' + (Data.duration + 1) + '&end_date=' + Data.date + '&callback=JSON_CALLBACK';
         var highsURL = window.apiDomain + 'wards/' + window.wardNum + '/historic_highs.json?include_date=' + Data.date + '&count=' + DAY_COUNT + '&callback=JSON_CALLBACK';
-        var ttcURL = window.apiDomain + 'requests/time_to_close.json?count=7&end_date=' + Data.date + '&callback=JSON_CALLBACK';
 
         renderTTCchart(ttcURL);
+        renderWeekReviewChart(weekReviewURL);
 
-        $http.jsonp(highsURL).
-            success(function(response, status, headers, config) {
-                var historicHighs = [];
-                _.each(response.Highs, function(val, key) {
-                    historicHighs.push({
-                        'service': lookupCode(key).name,
-                        'y': val ? val[0].Count: 0,
-                        'name': val ? moment(val[0].Date).format("MMM D, 'YY") : '',
-                        'current': response.Current[key].Count
+        if (isFirstRender) {
+            $http.jsonp(highsURL).
+                success(function(response, status, headers, config) {
+                    var historicHighs = [];
+                    _.each(response.Highs, function(val, key) {
+                        historicHighs.push({
+                            'service': lookupCode(key).name,
+                            'y': val ? val[0].Count: 0,
+                            'name': val ? moment(val[0].Date).format("MMM D, 'YY") : '',
+                            'current': response.Current[key].Count
+                        });
                     });
-                });
-                historicHighs = _.sortBy(historicHighs, 'service');
+                    historicHighs = _.sortBy(historicHighs, 'service');
 
-                var categories = _.pluck(historicHighs, 'service');
-                var current = _.pluck(historicHighs, 'current');
+                    var categories = _.pluck(historicHighs, 'service');
+                    var current = _.pluck(historicHighs, 'current');
 
-                if (render) {
                     var countsChart = new Highcharts.Chart({
                         chart: {
                             type: 'bar',
@@ -250,11 +357,6 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
                             data: historicHighs,
                             name: "Historic high",
                             id: 1
-                        },{
-                            data: current,
-                            type: 'scatter',
-                            name: Data.dateFormatted,
-                            id: 2
                         }],
                         xAxis: {
                             categories: categories,
@@ -289,9 +391,6 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
                                     }
                                 },
                                 pointPadding: 0
-                            },
-                            scatter: {
-                                animation: false
                             }
                         },
                         legend: {
@@ -309,30 +408,31 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
                             }
                         }
                     });
-                } else {
-                    $('#highs-chart').highcharts().get(2).setData(current);
-                }
-            });
+                });
+        }
     };
 
-    var renderDetail = function (render) {
+    var renderDetail = function (isFirstRender) {
         var DAY_COUNT = 6;
-        var highsURL = window.apiDomain + 'wards/' + window.wardNum + '/historic_highs.json?service_code=' + Data.serviceObj.code + '&include_date=' + Data.date + '&count=' + DAY_COUNT + '&callback=JSON_CALLBACK';
-        var ttcURL = window.apiDomain + 'requests/time_to_close.json?count=7&service_code=' + Data.serviceObj.code + '&end_date=' + Data.date + '&callback=JSON_CALLBACK';
 
+        var weekReviewURL = window.apiDomain + 'wards/' + window.wardNum + '/counts.json?count=' + (Data.duration + 1) + '&service_code=' + Data.serviceObj.code + '&end_date=' + Data.date + '&callback=JSON_CALLBACK';
+        var ttcURL = window.apiDomain + 'requests/time_to_close.json?count=' + (Data.duration + 1) + '&service_code=' + Data.serviceObj.code + '&end_date=' + Data.date + '&callback=JSON_CALLBACK';
+        var highsURL = window.apiDomain + 'wards/' + window.wardNum + '/historic_highs.json?service_code=' + Data.serviceObj.code + '&include_date=' + Data.date + '&count=' + DAY_COUNT + '&callback=JSON_CALLBACK';
+
+        renderWeekReviewChart(weekReviewURL);
         renderTTCchart(ttcURL);
 
-        $http.jsonp(highsURL).
-            success(function(response, status, headers, config) {
-                var todaysCount = _.last(response).Count;
-                var highs = _.initial(response);
-                var highCounts = _.pluck(highs, "Count");
-                var categories = _.map(highs, function(d) {
-                    var m = moment(d.Date);
-                    return "<a href='/#/" + m.format(dateFormat) + "/" + Data.serviceObj.slug + "'>" + m.format("MMM D<br>YYYY") + "</a>";
-                });
+        if (isFirstRender) {
+            $http.jsonp(highsURL).
+                success(function(response, status, headers, config) {
+                    var todaysCount = _.last(response).Count;
+                    var highs = _.initial(response);
+                    var highCounts = _.pluck(highs, "Count");
+                    var categories = _.map(highs, function(d) {
+                        var m = moment(d.Date);
+                        return "<a href='/#/" + m.format(dateFormat) + "/" + Data.serviceObj.slug + "'>" + m.format("MMM D<br>YYYY") + "</a>";
+                    });
 
-                if (render) {
                     Highcharts.setOptions(highchartsDefaults);
                     var countsChart = new Highcharts.Chart({
                         chart: {
@@ -354,49 +454,22 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
                         }],
                         tooltip: {
                             formatter: function() {
-                                return '<b>' + this.y + '</b> ' + ' request' + (this.y > 1 ? 's' : '');
+                                return '<b>' + this.y + '</b> ' + ' request' + window.pluralize(this.y);
                             }
                         },
                         xAxis: {
                             categories: categories
-                        },
-                        yAxis: {
-                            plotLines: [{
-                                id: 'avg',
-                                value: todaysCount,
-                                color: 'black',
-                                width: 2,
-                                zIndex: 5,
-                                label: {
-                                    align: 'right',
-                                    color: 'black',
-                                    text: Data.dateObj.format("MMM D: ") + todaysCount + " request" + (todaysCount == 1 ? "" : "s"),
-                                    y: -8,
-                                    x: 0,
-                                    style: {
-                                        fontWeight: 'bold',
-                                        fontFamily: 'Monda, Helvetica, sans-serif',
-                                        fontSize: '14px'
-                                    }
-                                }
-                            }]
                         }
                     });
-                } else {
-                    var chart = $('#counts-chart').highcharts();
-                    var pbOptions = chart.yAxis[0].plotLinesAndBands[0].options;
-                    pbOptions.value = todaysCount;
-                    pbOptions.label.text = Data.dateObj.format("MMM D: ") + todaysCount + " request" + (todaysCount == 1 ? "" : "s");
-                    chart.yAxis[0].update({plotLines: [pbOptions]});
-                }
-            });
+                });
+        }
     };
 
-    var render = function (render) {
+    var render = function (isFirstRender) {
         if (Data.action == "overview") {
-            renderOverview(render);
+            renderOverview(isFirstRender);
         } else if (Data.action == "detail") {
-            renderDetail(render);
+            renderDetail(isFirstRender);
         }
     };
 

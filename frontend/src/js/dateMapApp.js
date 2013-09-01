@@ -42,18 +42,18 @@ dateMapApp.factory('Data', function () {
     if (!window.chicagoMap) {
         window.chicagoMap = L.map('map',{scrollWheelZoom: false}).setView([41.83, -87.81], 11);
 
-        L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png', {
-            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
-            key: '302C8A713FF3456987B21FAAE639A13B',
-            maxZoom: 11,
-            styleId: 82946
-        }).addTo(window.chicagoMap);
+        L.tileLayer(
+                'http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png',
+                _.extend(window.mapOptions, {'maxZoom': 11})
+            )
+            .addTo(window.chicagoMap);
         window.chicagoMap.zoomControl.setPosition('bottomright');
     }
 
     data.setDate = function(date) {
         data.date = date.format(dateFormat);
         data.dateFormatted = date.format('MMM D, YYYY');
+        data.pageTitle = data.dateFormatted + ' | Chicago Works For You';
         data.prevDay = moment(date).subtract('day',1);
         data.nextDay = moment(date).add('day',1);
         data.prevDayFormatted = data.prevDay.format('MMM D');
@@ -62,6 +62,10 @@ dateMapApp.factory('Data', function () {
     };
 
     return data;
+});
+
+dateMapApp.controller("headCtrl", function ($scope, Data) {
+    $scope.data = Data;
 });
 
 dateMapApp.controller("dateCtrl", function ($scope, Data, $http, $location, $route, $routeParams, $timeout) {
@@ -143,10 +147,6 @@ dateMapApp.controller("dateCtrl", function ($scope, Data, $http, $location, $rou
             document.location = 'ward/' + e.target.options.id + '/#' + $location.path();
         };
 
-        var pluralize = function(n) {
-            return n == 1 ? '' : 's';
-        };
-
         $timeout(function() {
             for (var path in wardPaths) {
                 var wardNum = parseInt(path,10) + 1;
@@ -163,7 +163,7 @@ dateMapApp.controller("dateCtrl", function ($scope, Data, $http, $location, $rou
                         fillColor: allColors[wardNum-1]
                     }
                 )
-                .bindLabel('<h4>Ward ' + wardNum + '</h4>' + wardCount + ' request' + pluralize(wardCount))
+                .bindLabel('<h4>Ward ' + wardNum + '</h4>' + wardCount + ' request' + window.pluralize(wardCount))
                 .on('click', wardClick);
                 window.allWards.addLayer(poly);
             }

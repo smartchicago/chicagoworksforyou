@@ -35,8 +35,8 @@ window.currServiceType = '{{ page.service_code }}';
     {% raw %}
     <div class="pagination">
         <ul>
-            <li class="day" ng-repeat="day in data.days" ng-class="day.dowAbbr" style="border-bottom:5px solid {{ day.color }};">
-                <a ng-href="/#/{{ day.date|date:'yyyy-MM-dd' }}/{{ data.stSlug }}/">
+            <li class="day" ng-repeat="day in data.days" ng-class="{future: day.inFuture}">
+                <a style="background: {{ day.color }};" ng-href="/#/{{ day.date|date:'yyyy-MM-dd' }}/{{ data.stSlug }}/" ng-disabled="day.inFuture">
                     {{ day.date|date:'EEE' }}
                     <b>{{ day.date|date:'d' }}</b>
                     {{ day.date|date:'MMM' }}
@@ -47,19 +47,25 @@ window.currServiceType = '{{ page.service_code }}';
     {% endraw %}
 
     <div class="row">
+        <div class="span8" ng-controller="serviceCtrl">
+            <div id="chart" class="chart"><br><br><br><br><img src="/img/loading.gif" width="100" height="100" alt=""></div>
+        </div>
         <div class="span4">
-            {% comment %}
-            <p>And XXX were closed. Here's how they break down.</p>
-            {% endcomment %}
             <div class="description">
+                <br>
                 {{ content }}
             </div>
-            <p class="city-average">
-                Average number of requests opened in a ward this week: <span ng-bind="data.cityAverage"></span>
-            </p>
-        </div>
-        <div class="span8" ng-controller="serviceCtrl">
-            <div id="chart" class="chart"></div>
+            <br>
+            <ul class="external-links nav nav-stacked nav-tabs">
+                {% if page.data_portal %}
+                <li>
+                    <a class="data-portal-link" href="{{ page.data_portal }}">View all {{ page.title }} data &rarr; <span>on the City of Chicago data portal</span></a>
+                </li>
+                {% endif %}
+                <li>
+                    <a ng-href="http://311request.cityofchicago.org/reports/new?service_id={{ page.service_code }}">Submit {{ page.title }} 311 report &rarr; <span>using the city's spot reporter tool</span></a>
+                </li>
+            </ul>
         </div>
     </div>
 </div>

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="{{ page.app }}">
-<head>
+<head ng-controller="headCtrl">
 <meta charset="utf-8">
-<title>{{ page.title }}</title>
+<title ng-bind="data.pageTitle">{{ page.title }} | Chicago Works For You</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="">
 <meta name="author" content="">
@@ -114,7 +114,7 @@
                 </ul>
             </div>
         </li>
-        <li class="{% if page.section == 'media' %}active{% endif %}"><a href="/media/">Media</a></li>
+        <li class="{% if page.section == 'media' %}active{% endif %}"><a href="/photos/">Photos</a></li>
         <li class="{% if page.section == 'annotations' %}active{% endif %}"><a href="http://annotations.chicagoworksforyou.com ">Annotations</a></li>
         <li class="{% if page.section == 'about' %}active{% endif %}"><a href="/about/">About</a></li>
       </ul>
@@ -143,7 +143,7 @@ window.apiDomain = "{{ site.api_domain }}";
 {% else %}
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
-<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/3.0.5/highcharts.js"></script>
 <script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
 {% endif %}
 <script src="/lib/bootstrap.custom.min.js"></script>
