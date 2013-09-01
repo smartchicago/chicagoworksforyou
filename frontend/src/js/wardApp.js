@@ -67,7 +67,9 @@ wardApp.factory('Data', function ($http) {
                             fillOpacity: 0.7,
                             fillColor: 'white'
                         }
-                    ).addTo(window.chicagoMap);
+                    )
+                    .bindLabel("<b>Ward " + blob.Ward2015 + "</b> in 2015")
+                    .addTo(window.chicagoMap);
                 });
             });
 
