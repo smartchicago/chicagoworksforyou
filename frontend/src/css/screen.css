@@ -161,6 +161,30 @@ h3 {
   .map-overlay .pagination {
     margin: 10px 0; }
 
+.legend {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 4px;
+  padding: 8px 10px;
+  font-family: 'Monda', Helvetica, sans-serif;
+  font-size: 13px;
+  line-height: 18px;
+  right: 20px;
+  margin: 67px 0 0;
+  max-width: 125px;
+  -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); }
+  .legend h4 {
+    font-size: 15px;
+    line-height: 18px;
+    margin: 0 0 10px; }
+  .legend i {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    vertical-align: bottom;
+    margin-right: 4px; }
+
 .dateMapApp h1 {
   font-size: 33px;
   line-height: 41px;
@@ -191,29 +215,6 @@ h3 {
   .dateMapApp .pagination li:last-child a {
     padding-right: 20px;
     text-align: right; }
-.dateMapApp .legend {
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: 4px;
-  padding: 8px 10px;
-  font-family: 'Monda', Helvetica, sans-serif;
-  font-size: 13px;
-  line-height: 18px;
-  right: 20px;
-  margin: 67px 0 0;
-  max-width: 125px;
-  -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); }
-  .dateMapApp .legend h4 {
-    font-size: 15px;
-    line-height: 18px;
-    margin: 0 0 10px; }
-  .dateMapApp .legend i {
-    display: inline-block;
-    width: 18px;
-    height: 18px;
-    vertical-align: bottom;
-    margin-right: 4px; }
 
 .leaflet-popup-content-wrapper {
   border-radius: 8px; }
@@ -412,6 +413,35 @@ ul.nav .alderman a {
 
 .wardApp #map {
   height: 400px; }
+.wardApp .legend {
+  background: rgba(255, 255, 255, 0.9);
+  top: 20px;
+  max-width: 150px;
+  line-height: 16px;
+  padding: 12px 10px 2px; }
+  .wardApp .legend div {
+    padding-left: 26px;
+    position: relative;
+    margin-bottom: 8px; }
+    .wardApp .legend div:before {
+      content: "";
+      position: absolute;
+      top: -1px;
+      left: 0;
+      display: block;
+      width: 18px;
+      height: 18px; }
+  .wardApp .legend .area2013:before {
+    border: 2px solid #182a35;
+    width: 14px;
+    height: 14px; }
+  .wardApp .legend .area2015:before {
+    background: #D6E3EB;
+    border: 1px dashed #182a35;
+    width: 16px;
+    height: 16px; }
+  .wardApp .legend .areaBoth:before {
+    background: #75A2BD; }
 .wardApp .filter.affix {
   top: 12px; }
 .wardApp .pagination {

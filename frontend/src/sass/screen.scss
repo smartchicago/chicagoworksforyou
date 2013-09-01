@@ -228,6 +228,34 @@ h3 {
     }
 }
 
+.legend {
+    background:fade-out(white,0.2);
+    border-radius: 4px;
+    padding: 8px 10px;
+    font-family: 'Monda', Helvetica, sans-serif;
+    font-size: 13px;
+    line-height: 18px;
+    right: 20px;
+    margin: 67px 0 0;
+    max-width: 125px;
+    @include box-shadow(0 0 10px fade-out(black,.7));
+
+    h4 {
+        font-size: 15px;
+        line-height: 18px;
+        margin: 0 0 10px;
+    }
+
+    i {
+        display: inline-block;
+        width: 18px;
+        height: 18px;
+        vertical-align: bottom;
+        margin-right: 4px;
+    }
+}
+
+
 // HOMEPAGE
 
 .dateMapApp {
@@ -276,33 +304,6 @@ h3 {
                     text-align: right;
                 }
             }
-        }
-    }
-
-    .legend {
-        background:fade-out(white,0.2);
-        border-radius: 4px;
-        padding: 8px 10px;
-        font-family: 'Monda', Helvetica, sans-serif;
-        font-size: 13px;
-        line-height: 18px;
-        right: 20px;
-        margin: 67px 0 0;
-        max-width: 125px;
-        @include box-shadow(0 0 10px fade-out(black,.7));
-
-        h4 {
-            font-size: 15px;
-            line-height: 18px;
-            margin: 0 0 10px;
-        }
-
-        i {
-            display: inline-block;
-            width: 18px;
-            height: 18px;
-            vertical-align: bottom;
-            margin-right: 4px;
         }
     }
 }
@@ -622,6 +623,55 @@ ul.nav .alderman {
 .wardApp {
     #map {
         height:400px;
+    }
+
+    .legend {
+        background: fade-out(white,.1);
+        top: 20px;
+        max-width: 150px;
+        line-height: 16px;
+        padding: 12px 10px 2px;
+
+        div {
+            padding-left: 26px;
+            position: relative;
+            margin-bottom: 8px;
+
+            &:before {
+                content: "";
+                position: absolute;
+                top: -1px;
+                left: 0;
+                display: block;
+                width: 18px;
+                height: 18px;
+            }
+        }
+
+        .area2013 {
+            &:before {
+                border: 2px solid #182a35;
+                // border-radius: 10px;
+                width: 14px;
+                height: 14px;
+            }
+        }
+
+        .area2015 {
+            &:before {
+                background: #D6E3EB;
+                border: 1px dashed #182a35;
+                width: 16px;
+                height: 16px;
+                // border-radius: 10px;
+            }
+        }
+
+        .areaBoth {
+            &:before {
+                background: #75A2BD;
+            }
+        }
     }
 
     .filter.affix {
