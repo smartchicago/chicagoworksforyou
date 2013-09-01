@@ -60,6 +60,7 @@ wardApp.factory('Data', function ($http) {
                     _.map(coords, function (pair) { return pair.reverse(); });
                     var poly = L.polygon(coords,
                         {
+                            id: blob.Ward2015,
                             opacity: 1,
                             dashArray: '3',
                             weight: 0.5,
@@ -69,6 +70,9 @@ wardApp.factory('Data', function ($http) {
                         }
                     )
                     .bindLabel("<b>Ward " + blob.Ward2015 + "</b> in 2015")
+                    .on('click', function(e) {
+                            document.location = '/ward/' + blob.Ward2015 + '/';
+                        })
                     .addTo(window.chicagoMap);
                 });
             });
