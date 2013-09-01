@@ -524,14 +524,6 @@ h3 {
         a {
             line-height: 18px;
         }
-    }
-
-    .data-portal-link {
-        padding: .5em .8em;
-        border-radius: 6px;
-        display: block;
-        border: 1px solid #ddd;
-        font-size: 14px;
 
         span {
             color: #888;
@@ -540,6 +532,14 @@ h3 {
             text-transform: uppercase;
             display: block;
         }
+    }
+
+    .data-portal-link {
+        padding: .5em .8em;
+        border-radius: 6px;
+        display: block;
+        border: 1px solid #ddd;
+        font-size: 14px;
 
         &:hover {
             text-decoration: none;
