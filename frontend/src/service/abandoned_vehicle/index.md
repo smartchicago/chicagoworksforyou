@@ -7,7 +7,7 @@ data_portal: https://data.cityofchicago.org/Service-Requests/311-Service-Request
 ![Target: Rats](http://farm6.staticflickr.com/5054/5411340738_8a8c00cbea_n.jpg "Photo by Paul Kehrer")
 
 <figcaption>
-    Tow Me, Photo by <a href="http://www.flickr.com/photos/paulkehrer/5411340738/">paulkehrer</a>
+    Hauling Cars Away, Photo by <a href="http://www.flickr.com/photos/paulkehrer/5411340738/">paulkehrer</a>
 </figcaption>
 Per the [City of Chicago](https://data.cityofchicago.org/Service-Requests/311-Service-Requests-Abandoned-Vehicles/3c9v-pnva), A vehicle can be classified as abandoned if it meets one or more of the following criteria:
 
