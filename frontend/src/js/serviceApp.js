@@ -21,13 +21,13 @@ serviceApp.factory('Data', function () {
         stSlug: serviceObj.slug,
         stName: serviceObj.name,
         dayColors: [
-            '#37c0b9',
-            '#37acc3',
-            '#3790c7',
-            '#3973c9',
-            '#3a56ca',
-            '#403ccc',
-            '#603fce'
+            '#1A3E50',
+            '#22546C',
+            '#2B6A88',
+            '#3380A4',
+            '#3A95C1',
+            '#54A5CC',
+            '#6FB4D5'
         ]
     };
 
@@ -108,14 +108,7 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
                 categories: categories
             },
             yAxis: {
-                opposite: true,
-                plotLines: [{
-                    id: 'avg',
-                    value: Data.cityAverage,
-                    color: 'black',
-                    width: 3,
-                    zIndex: 5
-                }]
+                opposite: true
             }
         });
     };
@@ -130,7 +123,6 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
         $http.jsonp(requestsURL).
             success(function(response, status, headers, config) {
                 Data.cityCount = response.CityData.Count;
-                Data.cityAverage = response.CityData.Count / 50;
 
                 var wardData = _.sortBy(response.WardData, function(ward, wardNum) {
                     ward.Ward = wardNum;
