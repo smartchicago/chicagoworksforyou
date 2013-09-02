@@ -21,8 +21,8 @@ window.currServiceType = '{{ page.service_code }}';
             </h1>
             <span ng-bind="data.thisDate"></span>
             &nbsp; •
-            <span class="open-count" ng-bind="data.cityCount"></span>
-            <span class="closed-count" ng-bind="data.cityCloseCount"></span>
+            <span class="open-count" ng-bind="data.cityCount"></span> opened
+            <span class="closed-count" ng-bind="data.cityCloseCount"></span> closed
         </div>
         <div class="move next span2">
             <a href="" ng-click="goToNextDate()">Next week »</a>
