@@ -23,11 +23,13 @@ dateMapApp.factory('Data', function () {
     };
 
     if (!window.chicagoMap) {
-        window.chicagoMap = L.map('map',{scrollWheelZoom: false}).setView([41.80, -87.815], 11);
+        window.chicagoMap = L.map('map',{
+            scrollWheelZoom: false,
+            zoomControl: false
+        }).setView([41.80, -87.815], 11);
 
         L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png', window.mapOptions)
             .addTo(window.chicagoMap);
-        window.chicagoMap.zoomControl.setPosition('bottomright');
     }
 
     data.setDate = function(date) {
