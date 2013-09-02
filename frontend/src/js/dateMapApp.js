@@ -218,10 +218,16 @@ dateMapApp.controller("dateCtrl", function ($scope, Data, $http, $location, $rou
             Data.currURL = "#/" + Data.date + "/" + urlSuffix();
 
             if (!$previousRoute) {
+                // First load
                 changeDate();
             } else if ($currentRoute.pathParams.date != $previousRoute.pathParams.date) {
+                // Going from one date to another
+                changeDate();
+            } else if (!$currentRoute.pathParams.serviceSlug) {
+                // Going from defined date and service to the same date, but no service
                 changeDate();
             } else if ($currentRoute.pathParams.serviceSlug != $previousRoute.pathParams.serviceSlug) {
+                // Going from one service to another, with the same date
                 renderMap();
             } else {
                 changeDate();
