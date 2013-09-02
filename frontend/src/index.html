@@ -17,9 +17,13 @@ has_js: true
                 </ul>
             </div>
 
-            <h1>Here’s what happened in Chicago on <a ng-href="#/{{ data.date }}/" ng-bind="data.dateFormatted"></a></h1>
-            <p>
-                Choose a service type to see which wards saw the most requests.
+            <h1>
+                <span class="dow" ng-bind="data.dateISO|date:'EEEE'"></span>
+                <a ng-href="#/{{ data.date }}/" ng-bind="data.dateISO|date:'MMM d, yyyy'"></a>
+                in Chicago
+            </h1>
+            <p class="intro">
+                Choose a service type to see which Chicago wards saw the most requests this day.
             </p>
 
             <ul class="service-list">

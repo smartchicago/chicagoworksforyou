@@ -188,12 +188,23 @@ h3 {
 
 .dateMapApp h1 {
   font-size: 33px;
-  line-height: 41px;
+  line-height: 38px;
   color: #333;
-  letter-spacing: -1px; }
+  letter-spacing: -1px;
+  margin-bottom: 12px; }
   .dateMapApp h1 a {
     color: #333;
     display: block; }
+  .dateMapApp h1 .dow {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #888;
+    display: block;
+    line-height: 16px;
+    font-weight: normal; }
+.dateMapApp .intro {
+  margin-bottom: 14px; }
 .dateMapApp .pagination {
   position: relative;
   left: -20px;

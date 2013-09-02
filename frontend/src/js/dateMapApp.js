@@ -23,7 +23,7 @@ dateMapApp.factory('Data', function () {
     };
 
     if (!window.chicagoMap) {
-        window.chicagoMap = L.map('map',{scrollWheelZoom: false}).setView([41.83, -87.81], 11);
+        window.chicagoMap = L.map('map',{scrollWheelZoom: false}).setView([41.80, -87.815], 11);
 
         L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png', window.mapOptions)
             .addTo(window.chicagoMap);
@@ -32,6 +32,7 @@ dateMapApp.factory('Data', function () {
 
     data.setDate = function(date) {
         data.date = date.format(dateFormat);
+        data.dateISO = date.format();
         data.dateFormatted = date.format('MMM D, YYYY');
 
         data.prevDay = moment(date).subtract('day',1);

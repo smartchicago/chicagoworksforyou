@@ -262,14 +262,29 @@ h3 {
 .dateMapApp {
     h1 {
         font-size: 33px;
-        line-height: 41px;
+        line-height: 38px;
         color: #333;
         letter-spacing: -1px;
+        margin-bottom: 12px;
 
         a {
             color: #333;
             display: block;
         }
+
+        .dow {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #888;
+            display: block;
+            line-height: 16px;
+            font-weight: normal;
+        }
+    }
+
+    .intro {
+        margin-bottom: 14px;
     }
 
     .pagination {
