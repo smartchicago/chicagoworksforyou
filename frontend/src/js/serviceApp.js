@@ -50,7 +50,7 @@ serviceApp.factory('Data', function () {
                 'i': i,
                 'date': day.format(),
                 'inFuture': inFuture,
-                'color': inFuture ? "#dddddd" : color
+                'color': inFuture ? "#e7e7e7" : color
             };
         });
 

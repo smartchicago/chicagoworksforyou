@@ -327,10 +327,10 @@ h3 {
       color: #fff;
       font-weight: bold; }
   .serviceApp .day.future a {
-    color: #555;
+    color: #888;
     text-shadow: none; }
     .serviceApp .day.future a b {
-      color: #333; }
+      color: #555; }
 .serviceApp .pagination {
   margin: 0 0 1em 0; }
 .serviceApp .pagination-wrap.affix {
