@@ -97,8 +97,8 @@ wardApp.factory('Data', function ($http) {
         data.dateObj = date;
         data.dateFormatted = date.format('MMM D, YYYY');
 
-        data.startDate = date.clone().day(0);
-        data.endDate = date.clone().day(6).max(window.yesterday);
+        data.startDate = date.clone().weekday(0);
+        data.endDate = date.clone().weekday(6).max(window.yesterday);
         data.duration = data.endDate.diff(data.startDate, 'days');
         data.thisDate = moment.duration(data.duration,"days").beforeMoment(data.endDate,true).format({implicitYear: false});
         data.pageTitle = data.thisDate + ' | Ward ' + window.wardNum + ' | Chicago Works For You';
@@ -201,8 +201,6 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
     var renderWeekReviewChart = function(weekReviewURL) {
         $http.jsonp(weekReviewURL).
             success(function(response, status, headers, config) {
-                var weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
                 var days = _.sortBy(response, function (day, key) {
                     _.extend(day,{'Day':key});
                     return key;
@@ -230,7 +228,7 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
                         id: 1
                     }],
                     xAxis: {
-                        categories: weekdays
+                        categories: window.weekdays
                     },
                     plotOptions: {
                         line: {
@@ -475,7 +473,7 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
     $scope.$on(
         "$routeChangeSuccess",
         function ($e, $currentRoute, $previousRoute) {
-            Data.setDate(parseDate($routeParams.date, window.yesterday, $location));
+            Data.setDate(parseDate($routeParams.date, window.lastWeekEnd, $location));
             Data.action = $route.current.action;
             if (!$previousRoute || $previousRoute.redirectTo || $currentRoute.pathParams.serviceSlug != $previousRoute.pathParams.serviceSlug) {
                 Data.serviceObj = {};
