@@ -230,6 +230,9 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
                     xAxis: {
                         categories: window.weekdays
                     },
+                    yAxis: {
+                        min: 0
+                    },
                     plotOptions: {
                         line: {
                             animation: false
