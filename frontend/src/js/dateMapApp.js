@@ -33,7 +33,7 @@ dateMapApp.factory('Data', function () {
     data.setDate = function(date) {
         data.date = date.format(dateFormat);
         data.dateFormatted = date.format('MMM D, YYYY');
-        data.pageTitle = data.dateFormatted + ' | Chicago Works For You';
+
         data.prevDay = moment(date).subtract('day',1);
         data.nextDay = moment(date).add('day',1);
         data.prevDayFormatted = data.prevDay.format('MMM D');
@@ -216,6 +216,19 @@ dateMapApp.controller("dateCtrl", function ($scope, Data, $http, $location, $rou
                 }
             }
             Data.currURL = "#/" + Data.date + "/" + urlSuffix();
+
+            var titleParts = [];
+            if (_.isEmpty($currentRoute.pathParams)) {
+                titleParts.push('Chicago Works For You');
+                titleParts.push('The citywide dashboard with ward-by-ward views of service delivery in Chicago');
+            } else {
+                titleParts.push(Data.dateFormatted);
+                if ($currentRoute.pathParams.serviceSlug) {
+                    titleParts.push(Data.serviceObj.name);
+                }
+                titleParts.push('Chicago Works For You');
+            }
+            Data.pageTitle = titleParts.join(' | ');
 
             if (!$previousRoute) {
                 // First load
