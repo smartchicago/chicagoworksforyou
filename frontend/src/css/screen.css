@@ -102,6 +102,39 @@ h3 {
   padding-top: 25px;
   padding-bottom: 25px; }
 
+.share-box {
+  line-height: 0;
+  font-size: 0;
+  background: #f7f7f7;
+  position: relative;
+  padding: 0 15px;
+  border-radius: 6px; }
+  .share-box b {
+    display: inline-block;
+    height: 34px;
+    font-weight: normal;
+    vertical-align: bottom;
+    line-height: 34px;
+    margin-right: 6px;
+    text-transform: uppercase;
+    font-size: 11px; }
+  .share-box a {
+    display: inline-block;
+    width: 30px;
+    height: 34px;
+    padding: 0;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    opacity: .6; }
+    .share-box a:hover {
+      opacity: .9; }
+  .share-box .twitter {
+    background-image: url(/img/twitter.png); }
+  .share-box .facebook {
+    background-image: url(/img/facebook.png); }
+  .share-box .email {
+    background-image: url(/img/email.png); }
+
 .weeknav {
   border-bottom: 1px solid #ddd; }
   .weeknav .curr {
@@ -195,6 +228,11 @@ h3 {
     vertical-align: bottom;
     margin-right: 4px; }
 
+.st-list {
+  margin-bottom: 10px; }
+  .st-list > li > a {
+    margin: 0 !important; }
+
 .dateMapApp h1 {
   font-size: 33px;
   line-height: 38px;
@@ -241,39 +279,10 @@ h3 {
     padding-right: 20px;
     text-align: right; }
 .dateMapApp .share-box {
-  line-height: 0;
-  font-size: 0;
-  background: #f7f7f7;
-  position: relative;
+  padding: 0 20px;
   left: -20px;
   width: 220px;
-  padding: 0 20px;
   border-radius: 0 0 6px 6px; }
-  .dateMapApp .share-box b {
-    display: inline-block;
-    height: 34px;
-    font-weight: normal;
-    vertical-align: bottom;
-    line-height: 34px;
-    margin-right: 6px;
-    text-transform: uppercase;
-    font-size: 11px; }
-  .dateMapApp .share-box a {
-    display: inline-block;
-    width: 30px;
-    height: 34px;
-    padding: 0;
-    background-position: 50% 50%;
-    background-repeat: no-repeat;
-    opacity: .6; }
-    .dateMapApp .share-box a:hover {
-      opacity: .9; }
-  .dateMapApp .share-box .twitter {
-    background-image: url(/img/twitter.png); }
-  .dateMapApp .share-box .facebook {
-    background-image: url(/img/facebook.png); }
-  .dateMapApp .share-box .email {
-    background-image: url(/img/email.png); }
 
 .leaflet-popup-content-wrapper {
   border-radius: 8px; }
@@ -499,8 +508,6 @@ ul.nav .alderman a {
     background: #75A2BD; }
 .wardApp .filter.affix {
   top: 12px; }
-.wardApp .pagination {
-  margin-bottom: 10px; }
 .wardApp section {
   margin-bottom: 30px;
   border-bottom: 1px solid #ddd; }

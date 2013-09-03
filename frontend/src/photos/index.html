@@ -16,6 +16,12 @@ has_js: true
                     <li ng-class="{active: !data.currServiceSlug}"><a href="" ng-click="filterByService()">All service types <span class="count" ng-bind="data.media.length"></span></a></li>
                     <li ng-class="{active: service.slug == data.currServiceSlug}" ng-repeat="service in data.services | orderBy:'name'"><a href="" ng-click="filterByService(service)"><span ng-bind="service.name"></span> <span class="count" ng-bind="serviceCount(service.name)"></span></a></li>
                 </ul>
+                <div class="share-box">
+                    <b>Share this:</b>
+                    <a class="twitter" href="#"></a>
+                    <a class="facebook" href="#"></a>
+                    <a class="email" href="#"></a>
+                </div>
                 {% endraw %}
             </div>
         </div>
