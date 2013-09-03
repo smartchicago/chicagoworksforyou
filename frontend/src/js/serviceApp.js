@@ -2,6 +2,10 @@
 
 var serviceApp = angular.module('serviceApp', []).value('$anchorScroll', angular.noop);
 
+serviceApp.filter('escape', function() {
+    return window.encodeURIComponent;
+});
+
 serviceApp.config(function($routeProvider) {
     $routeProvider.
         when('/', {

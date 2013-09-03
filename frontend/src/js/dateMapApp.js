@@ -2,6 +2,10 @@
 
 var dateMapApp = angular.module('dateMapApp', []).value('$anchorScroll', angular.noop);
 
+dateMapApp.filter('escape', function() {
+    return window.encodeURIComponent;
+});
+
 dateMapApp.config(function($routeProvider) {
     $routeProvider.
         when('/', {

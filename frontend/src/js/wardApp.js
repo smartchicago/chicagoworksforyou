@@ -16,6 +16,10 @@ $(function () {
 
 var wardApp = angular.module('wardApp', []).value('$anchorScroll', angular.noop);
 
+wardApp.filter('escape', function() {
+    return window.encodeURIComponent;
+});
+
 wardApp.config(function($routeProvider) {
     $routeProvider.
         when('/', {

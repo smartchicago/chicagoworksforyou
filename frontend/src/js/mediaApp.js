@@ -2,6 +2,10 @@
 
 var mediaApp = angular.module('mediaApp', []);
 
+mediaApp.filter('escape', function() {
+    return window.encodeURIComponent;
+});
+
 mediaApp.factory('Data', function () {
     var defaultTitle = "Media | Chicago Works For You";
 
