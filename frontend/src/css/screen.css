@@ -160,7 +160,7 @@ h3 {
   background: white;
   margin: 96px 0 100px 0;
   z-index: 3000;
-  padding: 12px 20px;
+  padding: 12px 20px 0;
   border-radius: 6px;
   -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
@@ -211,31 +211,69 @@ h3 {
     color: #888;
     display: block;
     line-height: 16px;
-    font-weight: normal; }
+    font-weight: normal;
+    margin-bottom: 1px; }
 .dateMapApp .intro {
   margin-bottom: 14px; }
 .dateMapApp .pagination {
   position: relative;
   left: -20px;
-  top: -12px;
   margin: 0;
   width: 260px; }
   .dateMapApp .pagination ul {
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
-    box-shadow: none;
-    border-bottom: 1px solid #eee; }
+    box-shadow: none; }
   .dateMapApp .pagination li a {
-    width: 110px;
     border: none;
     border-radius: 0;
-    padding: 6px 0;
     text-align: left; }
-  .dateMapApp .pagination li:first-child a {
+.dateMapApp .date-nav {
+  top: -12px; }
+  .dateMapApp .date-nav ul {
+    border-bottom: 1px solid #eee; }
+  .dateMapApp .date-nav li a {
+    width: 110px;
+    padding: 6px 0; }
+  .dateMapApp .date-nav li:first-child a {
     padding-left: 20px; }
-  .dateMapApp .pagination li:last-child a {
+  .dateMapApp .date-nav li:last-child a {
     padding-right: 20px;
     text-align: right; }
+.dateMapApp .share-box {
+  line-height: 0;
+  font-size: 0;
+  background: #f7f7f7;
+  position: relative;
+  left: -20px;
+  width: 220px;
+  padding: 0 20px;
+  border-radius: 0 0 6px 6px; }
+  .dateMapApp .share-box b {
+    display: inline-block;
+    height: 34px;
+    font-weight: normal;
+    vertical-align: bottom;
+    line-height: 34px;
+    margin-right: 6px;
+    text-transform: uppercase;
+    font-size: 11px; }
+  .dateMapApp .share-box a {
+    display: inline-block;
+    width: 30px;
+    height: 34px;
+    padding: 0;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    opacity: .6; }
+    .dateMapApp .share-box a:hover {
+      opacity: .9; }
+  .dateMapApp .share-box .twitter {
+    background-image: url(/img/twitter.png); }
+  .dateMapApp .share-box .facebook {
+    background-image: url(/img/facebook.png); }
+  .dateMapApp .share-box .email {
+    background-image: url(/img/email.png); }
 
 .leaflet-popup-content-wrapper {
   border-radius: 8px; }
@@ -320,10 +358,6 @@ h3 {
     bottom: -1px;
     height: 1px;
     background: black; }
-
-.share-this {
-  padding-top: 10px;
-  margin: 0; }
 
 .serviceApp h1 {
   letter-spacing: -1px; }
