@@ -843,9 +843,9 @@ ul.nav .alderman {
 footer {
     font-size: 12px;
     color: #888;
-    padding-top: 10px;
 
     .container {
+        margin-top: 10px;
         padding: 25px 0 30px 0;
         border-top: 1px solid #ddd;
     }
@@ -858,6 +858,17 @@ footer {
             font-size: 14px;
             margin-left: 14px;
             color: #666;
+        }
+    }
+}
+
+.dateMapApp {
+    footer {
+        border-top: 1px solid #ccc;
+
+        .container {
+            margin-top: 0;
+            border: none;
         }
     }
 }
