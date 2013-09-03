@@ -48,12 +48,8 @@ window.wardNum = {{ page.ward }};
                     <li ng-class="{active: service.slug == data.serviceObj.slug}" ng-repeat="service in data.services | orderBy:'name'"><a ng-href="#/{{ data.date }}/{{ service.slug }}/" ng-bind="service.name"></a></li>
                 </ul>
                 {% endraw %}
-                <div class="share-box">
-                    <b>Share this:</b>
-                    <a class="twitter" href="#"></a>
-                    <a class="facebook" href="#"></a>
-                    <a class="email" href="#"></a>
-                </div>
+
+                {% include share_box.html %}
             </div>
         </div>
         <div class="span9" ng-controller="wardChartCtrl" ng-switch on="data.action">

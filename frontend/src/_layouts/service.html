@@ -56,12 +56,7 @@ window.currServiceType = '{{ page.service_code }}';
                 {{ content }}
             </div>
 
-            <div class="share-box">
-                <b>Share this view:</b>
-                <a class="twitter" href="#"></a>
-                <a class="facebook" href="#"></a>
-                <a class="email" href="#"></a>
-            </div>
+            {% include share_box.html %}
 
             <br>
             <ul class="external-links nav nav-stacked nav-tabs">
