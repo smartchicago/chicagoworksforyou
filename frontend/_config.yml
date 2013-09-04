@@ -2,6 +2,5 @@ name: Chicago Works For You
 plugins: './_plugins'
 source: src
 destination: site
-permalink: /annotations/:year/:month/:day/
 debug: true
 api_domain: http://localhost:5000/
