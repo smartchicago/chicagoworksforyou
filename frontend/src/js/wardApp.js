@@ -55,7 +55,8 @@ wardApp.factory('Data', function ($http) {
         var blobsURL = window.apiDomain + 'wards/transitions.json?ward=' + window.wardNum + '&callback=JSON_CALLBACK';
         $http.jsonp(blobsURL).
             success(function(response, status, headers, config) {
-                _.each(response, function(blob) {
+                var outgoing = response.Outgoing;
+                _.each(outgoing, function(blob) {
                     var coords = jQuery.parseJSON(blob.Boundary).coordinates[0][0];
                     _.map(coords, function (pair) { return pair.reverse(); });
                     var poly = L.polygon(coords,
