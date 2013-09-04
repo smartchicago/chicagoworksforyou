@@ -55,26 +55,31 @@ wardApp.factory('Data', function ($http) {
         var blobsURL = window.apiDomain + 'wards/transitions.json?ward=' + window.wardNum + '&callback=JSON_CALLBACK';
         $http.jsonp(blobsURL).
             success(function(response, status, headers, config) {
-                var outgoing = response.Outgoing;
-                _.each(outgoing, function(blob) {
-                    var coords = jQuery.parseJSON(blob.Boundary).coordinates[0][0];
-                    _.map(coords, function (pair) { return pair.reverse(); });
-                    var poly = L.polygon(coords,
-                        {
-                            id: blob.Ward2015,
-                            opacity: 1,
-                            dashArray: '3',
-                            weight: 0.5,
-                            color: '#182a35',
-                            fillOpacity: 0.7,
-                            fillColor: 'white'
-                        }
-                    )
-                    .bindLabel("<b>Ward " + blob.Ward2015 + "</b> in 2015")
-                    .on('click', function(e) {
-                            document.location = '/ward/' + blob.Ward2015 + '/';
-                        })
-                    .addTo(window.chicagoMap);
+                var fillColors = {
+                    'Incoming': 'white',
+                    'Outgoing': 'white'
+                };
+                _.each(response, function(group, key) {
+                    _.each(group, function(blob) {
+                        var coords = jQuery.parseJSON(blob.Boundary).coordinates[0][0];
+                        _.map(coords, function (pair) { return pair.reverse(); });
+                        var poly = L.polygon(coords,
+                            {
+                                id: blob.Ward2015,
+                                opacity: 1,
+                                dashArray: '3',
+                                weight: 0.5,
+                                color: '#182a35',
+                                fillOpacity: 0.5,
+                                fillColor: fillColors[key]
+                            }
+                        )
+                        .bindLabel("<b>Ward " + blob.Ward2015 + "</b> in 2015")
+                        .on('click', function(e) {
+                                document.location = '/ward/' + blob.Ward2015 + '/';
+                            })
+                        .addTo(window.chicagoMap);
+                    });
                 });
             });
 
