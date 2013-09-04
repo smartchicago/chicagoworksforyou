@@ -164,7 +164,12 @@ dateMapApp.controller("dateCtrl", function ($scope, Data, $http, $location, $rou
 
                 div.innerHTML =
                     '<h4>' + Data.serviceObj.name + '</h4>' +
-                    labels.join('<br>');
+                    '<div class="colors">' +
+                    labels.join('<br>') +
+                    '</div>' +
+                    '<div class="item delta-up">Above-average</div>' +
+                    '<div class="item delta-up greatest">Greatest change</div>'
+                    ;
                 return div;
             };
 

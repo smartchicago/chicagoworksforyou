@@ -194,6 +194,33 @@ h3 {
     height: 18px;
     vertical-align: bottom;
     margin-right: 4px; }
+  .legend .colors {
+    margin-bottom: 12px; }
+  .legend .item {
+    padding-left: 26px;
+    position: relative; }
+    .legend .item:before {
+      content: "";
+      position: absolute;
+      top: -1px;
+      left: 0;
+      display: block;
+      width: 18px;
+      height: 18px; }
+  .legend .delta-up:before {
+    content: "▲";
+    opacity: .8;
+    width: 18px;
+    height: 18px;
+    display: block;
+    text-align: center;
+    line-height: 1.6;
+    font-size: 10px;
+    border-radius: 20px;
+    z-index: 100; }
+  .legend .greatest:before {
+    border: 1px dashed #777;
+    left: -1px; }
 
 .dateMapApp h1 {
   font-size: 33px;
@@ -441,17 +468,7 @@ ul.nav .alderman a {
   line-height: 16px;
   padding: 12px 10px 2px; }
   .wardApp .legend div {
-    padding-left: 26px;
-    position: relative;
     margin-bottom: 8px; }
-    .wardApp .legend div:before {
-      content: "";
-      position: absolute;
-      top: -1px;
-      left: 0;
-      display: block;
-      width: 18px;
-      height: 18px; }
   .wardApp .legend .area2013:before {
     border: 2px solid #182a35;
     width: 14px;
