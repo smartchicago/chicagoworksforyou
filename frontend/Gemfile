@@ -1,5 +1,5 @@
 source "http://rubygems.org"
 gem "compass"
-gem "jekyll"
+gem "jekyll", "~> 1.1.2"
 gem "json"
-gem "directory_watcher" #, "1.4.1"
+gem "directory_watcher" #, "1.5.1"
