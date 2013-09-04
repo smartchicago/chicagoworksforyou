@@ -355,7 +355,6 @@ CREATE SEQUENCE weather_storm_event_id_seq
     CACHE 1;
 
 
-
 --
 -- Name: weather_storm_event; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
@@ -366,7 +365,6 @@ CREATE TABLE weather_storm_event (
     event_id integer NOT NULL,
     event_type character varying(255) NOT NULL
 );
-
 
 
 --
@@ -402,6 +400,7 @@ COMMENT ON COLUMN weather_storm_event.event_id IS 'event ID; based on the source
 --
 
 COMMENT ON COLUMN weather_storm_event.event_type IS 'type of event; based on the source data''s "event_type" field';
+
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
@@ -529,45 +528,6 @@ CREATE RULE geometry_columns_update AS ON UPDATE TO geometry_columns DO INSTEAD 
 --
 
 CREATE TRIGGER update_daily_counts AFTER INSERT OR DELETE OR UPDATE ON service_requests FOR EACH ROW EXECUTE PROCEDURE update_daily_counts();
-
-
---
--- PostgreSQL database dump complete
---
-
---
--- PostgreSQL database dump
---
-
-SET statement_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
-SET check_function_bodies = false;
-SET client_min_messages = warning;
-
-SET search_path = public, pg_catalog;
-
---
--- Data for Name: schema_info; Type: TABLE DATA; Schema: public; Owner: cgansen
---
-
-INSERT INTO schema_info VALUES ('201306061151');
-INSERT INTO schema_info VALUES ('201306071651');
-INSERT INTO schema_info VALUES ('201306071725');
-INSERT INTO schema_info VALUES ('201306091221');
-INSERT INTO schema_info VALUES ('201306161511');
-INSERT INTO schema_info VALUES ('201306241712');
-INSERT INTO schema_info VALUES ('201306251155');
-INSERT INTO schema_info VALUES ('201306271128');
-INSERT INTO schema_info VALUES ('201306271346');
-INSERT INTO schema_info VALUES ('201307081428');
-INSERT INTO schema_info VALUES ('201308211341');
-INSERT INTO schema_info VALUES ('201307091601');
-INSERT INTO schema_info VALUES ('201308271926');
-INSERT INTO schema_info VALUES ('201308201558');
-INSERT INTO schema_info VALUES ('201308211328');
-INSERT INTO schema_info VALUES ('201308211659');
-INSERT INTO schema_info VALUES ('201308281656');
 
 
 --
