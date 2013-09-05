@@ -43,7 +43,7 @@ dateMapApp.factory('Data', function () {
         window.chicagoMap = L.map('map',{
             scrollWheelZoom: false,
             zoomControl: false
-        }).setView([41.80, -87.815], 11);
+        }).setView([41.838, -87.815], 11);
 
         L.tileLayer(
                 'http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png',
