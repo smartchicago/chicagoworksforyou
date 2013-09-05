@@ -77,7 +77,7 @@ wardApp.factory('Data', function ($http) {
                 _.each(response, function(group, key) {
                     _.each(group, function(blob) {
                         var tooltipText = {
-                            'Incoming': "<b>Ward " + blob.Ward2013 + "</b> now",
+                            'Incoming': "Currently <b>Ward " + blob.Ward2013 + "</b>",
                             'Outgoing': "<b>Ward " + blob.Ward2015 + "</b> in 2015"
                         };
                         var clickDestination = {
