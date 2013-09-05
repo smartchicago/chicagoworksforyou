@@ -39,10 +39,13 @@ wardApp.factory('Data', function ($http) {
 
     if (!window.chicagoMap) {
         window.chicagoMap = L.map('map', {scrollWheelZoom: false}).setView(wardCenter, 13);
-        L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png', window.mapOptions)
+        L.tileLayer(
+                'http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png',
+                window.mapOptions
+            )
             .addTo(window.chicagoMap);
         window.chicagoMap.zoomControl.setPosition('bottomleft');
-        L.polygon(wardPaths[wardNum - 1],
+        L.polygon(window.wardPath,
             {
                 opacity: 1,
                 weight: 2,
