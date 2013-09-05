@@ -80,18 +80,22 @@ wardApp.factory('Data', function ($http) {
                             'Incoming': "<b>Ward " + blob.Ward2013 + "</b> now",
                             'Outgoing': "<b>Ward " + blob.Ward2015 + "</b> in 2015"
                         };
-                        var coords = jQuery.parseJSON(blob.Boundary).coordinates[0][0];
-                        _.map(coords, function (pair) { return pair.reverse(); });
-                        var poly = L.polygon(coords, polygonOptions[key])
-                        .bindLabel(tooltipText[key])
-                        .on('click', function(e) {
-                                if (key == "Outgoing") {
-                                    document.location = '/ward/' + blob.Ward2015 + '/';
-                                } else if (key == "Incoming") {
-                                    document.location = '/ward/' + blob.Ward2013 + '/';
-                                }
-                            })
-                        .addTo(window.chicagoMap);
+                        var clickDestination = {
+                            'Incoming': '/ward/' + blob.Ward2013 + '/',
+                            'Outgoing': '/ward/' + blob.Ward2015 + '/'
+                        };
+                        L.geoJson(jQuery.parseJSON(blob.Boundary), {
+                            style: function (feature) {
+                                return polygonOptions[key];
+                            },
+                            onEachFeature: function (feature, layer) {
+                                layer
+                                    .bindLabel(tooltipText[key])
+                                    .on('click', function(e) {
+                                        document.location = clickDestination[key];
+                                    });
+                            }
+                        }).addTo(window.chicagoMap);
                     });
                 });
             });
