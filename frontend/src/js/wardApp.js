@@ -76,7 +76,9 @@ wardApp.factory('Data', function ($http) {
                         )
                         .bindLabel("<b>Ward " + blob.Ward2015 + "</b> in 2015")
                         .on('click', function(e) {
-                                document.location = '/ward/' + blob.Ward2015 + '/';
+                                if (key == "Outgoing") {
+                                    document.location = '/ward/' + blob.Ward2015 + '/';
+                                }
                             })
                         .addTo(window.chicagoMap);
                     });
