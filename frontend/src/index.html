@@ -28,11 +28,12 @@ has_js: true
 
             <ul class="service-list">
                 <li ng-repeat="service in data.serviceList" ng-class="serviceClass(service)">
-                    <a ng-href="#/{{ data.date }}/{{ service.Slug }}/">
+                    <a class="service" href="" ng-click="clickService(service)">
                         <span class="service-name" ng-bind="service.Name"></span>
                         <span class="metadata">
                             <b ng-bind="service.Count"></b> requests
-                            vs <b ng-bind="service.AvgRounded"></b> average
+                            vs <b ng-bind="service.AvgRounded"></b> average<br>
+                            <span class="more-about">More about this service &rarr;</span>
                         </span>
                         <span class="bar" style="width:{{ service.Percent }}%;"></span>
                     </a>

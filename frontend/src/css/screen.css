@@ -293,7 +293,7 @@ h3 {
     border-bottom: 1px dashed #d7d7d7;
     line-height: 1;
     position: relative; }
-    .service-list li a {
+    .service-list li .service {
       width: 224px;
       color: #555;
       display: block;
@@ -301,7 +301,7 @@ h3 {
       text-decoration: none;
       position: relative;
       line-height: 16px; }
-      .service-list li a:hover {
+      .service-list li .service:hover {
         background: #f7f7f7; }
     .service-list li:before {
       opacity: .3;
@@ -322,7 +322,7 @@ h3 {
       border: 1px dashed #777;
       right: 5px;
       top: 5px; }
-    .service-list li.active a {
+    .service-list li.active .service {
       background: #e5f6ff;
       color: #222;
       font-size: 16px; }
@@ -335,12 +335,17 @@ h3 {
   .service-list .metadata {
     display: block;
     font-size: 13px;
+    line-height: 17px;
     height: 0;
     opacity: 0;
     -webkit-transition: all 200ms ease;
     -moz-transition: all 200ms ease;
     -o-transition: all 200ms ease;
     transition: all 200ms ease; }
+  .service-list .more-about {
+    font-size: 9px;
+    text-transform: uppercase;
+    color: rgba(0, 0, 0, 0.4); }
   .service-list .bar {
     position: absolute;
     left: 0;

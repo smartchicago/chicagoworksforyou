@@ -423,7 +423,7 @@ h3 {
         line-height: 1;
         position: relative;
 
-        a {
+        .service {
             width: 224px;
             color: #555;
             display: block;
@@ -473,7 +473,7 @@ h3 {
         }
 
         &.active {
-            a {
+            .service {
                 background:lighten(#0088cc,55%);
                 color: #222;
                 font-size: 16px;
@@ -500,9 +500,16 @@ h3 {
     .metadata {
         display: block;
         font-size: 13px;
+        line-height: 17px;
         height: 0;
         opacity: 0;
         @include transition(all 200ms ease);
+    }
+
+    .more-about {
+        font-size: 9px;
+        text-transform: uppercase;
+        color: fade-out(black,.6);
     }
 
     .bar {

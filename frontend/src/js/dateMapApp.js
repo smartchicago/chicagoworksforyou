@@ -79,6 +79,14 @@ dateMapApp.controller("dateCtrl", function ($scope, Data, $http, $location, $rou
         $location.path(Data.nextDay.format(dateFormat) + '/' + urlSuffix());
     };
 
+    $scope.clickService = function(service) {
+        if (service.Slug == Data.serviceObj.slug) {
+            document.location = "/service/" + service.Slug + "/";
+        } else {
+            $location.path(Data.date + "/" + service.Slug + "/");
+        }
+    };
+
     $scope.serviceClass = function(service) {
         var classes = [];
         if (service.Slug == Data.serviceObj.slug) {
