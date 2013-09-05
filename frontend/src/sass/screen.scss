@@ -718,7 +718,7 @@ ul.nav .alderman {
             }
         }
 
-        .area2015 {
+        .outgoing {
             &:before {
                 background: #D6E3EB;
                 border: 1px dashed #182a35;
@@ -727,7 +727,16 @@ ul.nav .alderman {
             }
         }
 
-        .areaBoth {
+        .incoming {
+            &:before {
+                background: white;
+                border: 1px dashed #182a35;
+                width: 16px;
+                height: 16px;
+            }
+        }
+
+        .remaining {
             &:before {
                 background: #75A2BD;
             }

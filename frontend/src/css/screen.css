@@ -473,12 +473,17 @@ ul.nav .alderman a {
     border: 2px solid #182a35;
     width: 14px;
     height: 14px; }
-  .wardApp .legend .area2015:before {
+  .wardApp .legend .outgoing:before {
     background: #D6E3EB;
     border: 1px dashed #182a35;
     width: 16px;
     height: 16px; }
-  .wardApp .legend .areaBoth:before {
+  .wardApp .legend .incoming:before {
+    background: white;
+    border: 1px dashed #182a35;
+    width: 16px;
+    height: 16px; }
+  .wardApp .legend .remaining:before {
     background: #75A2BD; }
 .wardApp .filter.affix {
   top: 12px; }

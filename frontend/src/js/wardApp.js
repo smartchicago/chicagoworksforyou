@@ -91,8 +91,9 @@ wardApp.factory('Data', function ($http) {
             var div = L.DomUtil.create('div', 'legend');
             div.innerHTML =
                 '<div class="item area2013">Current Ward ' + window.wardNum + ' boundary</div>' +
-                '<div class="item area2015">Areas moving to a new ward in 2015</div>' +
-                '<div class="item areaBoth">Areas remaining in Ward ' + window.wardNum + '</div>' +
+                '<div class="item outgoing">Areas moving to a new ward in 2015</div>' +
+                '<div class="item incoming">Areas joining Ward ' + window.wardNum + ' in 2015</div>' +
+                '<div class="item remaining">Areas remaining in Ward ' + window.wardNum + '</div>' +
                 '';
             return div;
         };
