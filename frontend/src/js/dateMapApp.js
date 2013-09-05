@@ -35,20 +35,23 @@ dateMapApp.factory('Data', function () {
     };
 
     if (!window.chicagoMap) {
-        window.chicagoMap = L.map('map',{scrollWheelZoom: false}).setView([41.83, -87.81], 11);
+        window.chicagoMap = L.map('map',{
+            scrollWheelZoom: false,
+            zoomControl: false
+        }).setView([41.80, -87.815], 11);
 
         L.tileLayer(
                 'http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png',
                 _.extend(window.mapOptions, {'maxZoom': 11})
             )
             .addTo(window.chicagoMap);
-        window.chicagoMap.zoomControl.setPosition('bottomright');
     }
 
     data.setDate = function(date) {
         data.date = date.format(dateFormat);
+        data.dateISO = date.format();
         data.dateFormatted = date.format('MMM D, YYYY');
-        data.pageTitle = data.dateFormatted + ' | Chicago Works For You';
+
         data.prevDay = moment(date).subtract('day',1);
         data.nextDay = moment(date).add('day',1);
         data.prevDayFormatted = data.prevDay.format('MMM D');
@@ -89,6 +92,14 @@ dateMapApp.controller("dateCtrl", function ($scope, Data, $http, $location, $rou
             return false;
         }
         $location.path(Data.nextDay.format(dateFormat) + '/' + urlSuffix());
+    };
+
+    $scope.clickService = function(service) {
+        if (service.Slug == Data.serviceObj.slug) {
+            document.location = "/service/" + service.Slug + "/";
+        } else {
+            $location.path(Data.date + "/" + service.Slug + "/");
+        }
     };
 
     $scope.serviceClass = function(service) {
@@ -176,7 +187,12 @@ dateMapApp.controller("dateCtrl", function ($scope, Data, $http, $location, $rou
 
                 div.innerHTML =
                     '<h4>' + Data.serviceObj.name + '</h4>' +
-                    labels.join('<br>');
+                    '<div class="colors">' +
+                    labels.join('<br>') +
+                    '</div>' +
+                    '<div class="item delta-up">Above-average</div>' +
+                    '<div class="item delta-up greatest">Greatest change</div>'
+                    ;
                 return div;
             };
 
@@ -232,11 +248,30 @@ dateMapApp.controller("dateCtrl", function ($scope, Data, $http, $location, $rou
             }
             Data.currURL = "#/" + Data.date + "/" + urlSuffix();
 
+            var titleParts = [];
+            if (_.isEmpty($currentRoute.pathParams)) {
+                titleParts.push('Chicago Works For You');
+                titleParts.push('The citywide dashboard with ward-by-ward views of service delivery in Chicago');
+            } else {
+                titleParts.push(Data.dateFormatted);
+                if ($currentRoute.pathParams.serviceSlug) {
+                    titleParts.push(Data.serviceObj.name);
+                }
+                titleParts.push('Chicago Works For You');
+            }
+            Data.pageTitle = titleParts.join(' | ');
+
             if (!$previousRoute) {
+                // First load
                 changeDate();
             } else if ($currentRoute.pathParams.date != $previousRoute.pathParams.date) {
+                // Going from one date to another
+                changeDate();
+            } else if (!$currentRoute.pathParams.serviceSlug) {
+                // Going from defined date and service to the same date, but no service
                 changeDate();
             } else if ($currentRoute.pathParams.serviceSlug != $previousRoute.pathParams.serviceSlug) {
+                // Going from one service to another, with the same date
                 renderMap();
             } else {
                 changeDate();

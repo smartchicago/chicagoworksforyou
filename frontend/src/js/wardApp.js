@@ -58,25 +58,48 @@ wardApp.factory('Data', function ($http) {
         var blobsURL = window.apiDomain + 'wards/transitions.json?ward=' + window.wardNum + '&callback=JSON_CALLBACK';
         $http.jsonp(blobsURL).
             success(function(response, status, headers, config) {
-                _.each(response, function(blob) {
-                    var coords = jQuery.parseJSON(blob.Boundary).coordinates[0][0];
-                    _.map(coords, function (pair) { return pair.reverse(); });
-                    var poly = L.polygon(coords,
-                        {
-                            id: blob.Ward2015,
-                            opacity: 1,
-                            dashArray: '3',
-                            weight: 0.5,
-                            color: '#182a35',
-                            fillOpacity: 0.7,
-                            fillColor: 'white'
-                        }
-                    )
-                    .bindLabel("<b>Ward " + blob.Ward2015 + "</b> in 2015")
-                    .on('click', function(e) {
-                            document.location = '/ward/' + blob.Ward2015 + '/';
-                        })
-                    .addTo(window.chicagoMap);
+                var polygonOptions = {
+                    'Incoming': {
+                        opacity: 1,
+                        dashArray: '3',
+                        weight: 1,
+                        color: '#000',
+                        fillOpacity: 0.65,
+                        fillColor: 'white'
+                    },
+                    'Outgoing': {
+                        opacity: 1,
+                        dashArray: '3',
+                        weight: 0.5,
+                        color: '#182a35',
+                        fillOpacity: 0.4,
+                        fillColor: 'white'
+                    }
+                };
+
+                _.each(response, function(group, key) {
+                    _.each(group, function(blob) {
+                        var tooltipText = {
+                            'Incoming': "<b>Ward " + blob.Ward2013 + "</b> now",
+                            'Outgoing': "<b>Ward " + blob.Ward2015 + "</b> in 2015"
+                        };
+                        var clickDestination = {
+                            'Incoming': '/ward/' + blob.Ward2013 + '/',
+                            'Outgoing': '/ward/' + blob.Ward2015 + '/'
+                        };
+                        L.geoJson(jQuery.parseJSON(blob.Boundary), {
+                            style: function (feature) {
+                                return polygonOptions[key];
+                            },
+                            onEachFeature: function (feature, layer) {
+                                layer
+                                    .bindLabel(tooltipText[key])
+                                    .on('click', function(e) {
+                                        document.location = clickDestination[key];
+                                    });
+                            }
+                        }).addTo(window.chicagoMap);
+                    });
                 });
             });
 
@@ -85,9 +108,10 @@ wardApp.factory('Data', function ($http) {
         legend.onAdd = function(map) {
             var div = L.DomUtil.create('div', 'legend');
             div.innerHTML =
-                '<div class="area2013">Current Ward ' + window.wardNum + ' boundary</div>' +
-                '<div class="area2015">Areas moving to a new ward in 2015</div>' +
-                '<div class="areaBoth">Areas remaining in Ward ' + window.wardNum + '</div>' +
+                '<div class="item area2013">Current Ward ' + window.wardNum + ' boundary</div>' +
+                '<div class="item outgoing">Areas moving to a new ward in 2015</div>' +
+                '<div class="item incoming">Areas joining Ward ' + window.wardNum + ' in 2015</div>' +
+                '<div class="item remaining">Areas remaining in Ward ' + window.wardNum + '</div>' +
                 '';
             return div;
         };
@@ -100,8 +124,8 @@ wardApp.factory('Data', function ($http) {
         data.dateObj = date;
         data.dateFormatted = date.format('MMM D, YYYY');
 
-        data.startDate = date.clone().day(0);
-        data.endDate = date.clone().day(6).max(window.yesterday);
+        data.startDate = date.clone().weekday(0);
+        data.endDate = date.clone().weekday(6).max(window.yesterday);
         data.duration = data.endDate.diff(data.startDate, 'days');
         data.thisDate = moment.duration(data.duration,"days").beforeMoment(data.endDate,true).format({implicitYear: false});
         data.pageTitle = data.thisDate + ' | Ward ' + window.wardNum + ' | Chicago Works For You';
@@ -204,8 +228,6 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
     var renderWeekReviewChart = function(weekReviewURL) {
         $http.jsonp(weekReviewURL).
             success(function(response, status, headers, config) {
-                var weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
                 var days = _.sortBy(response, function (day, key) {
                     _.extend(day,{'Day':key});
                     return key;
@@ -233,7 +255,10 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
                         id: 1
                     }],
                     xAxis: {
-                        categories: weekdays
+                        categories: window.weekdays
+                    },
+                    yAxis: {
+                        min: 0
                     },
                     plotOptions: {
                         line: {
@@ -478,7 +503,7 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
     $scope.$on(
         "$routeChangeSuccess",
         function ($e, $currentRoute, $previousRoute) {
-            Data.setDate(parseDate($routeParams.date, window.yesterday, $location));
+            Data.setDate(parseDate($routeParams.date, window.lastWeekEnd, $location));
             Data.action = $route.current.action;
             if (!$previousRoute || $previousRoute.redirectTo || $currentRoute.pathParams.serviceSlug != $previousRoute.pathParams.serviceSlug) {
                 Data.serviceObj = {};

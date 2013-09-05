@@ -447,36 +447,65 @@ Ward Transitions
 
 Path:   `/wards/transitions.json`
 
-Description: Chicago ward boundaries are changing in 2015. This endpoint returns a list of all areas in the city that are changing from one ward to another. The response includes the current ward, 2015 ward, unique ID of the transition area, and a GeoJSON representation of the area.
+Description: Chicago ward boundaries are changing in 2015. This endpoint returns a list of all areas in the city that are changing from one ward to another. The response includes the current ward, 2015 ward, unique ID of the transition area, and a GeoJSON representation of the area. Transition areas are organized into "incoming" and "outgoing" groups.
 
 Input: 
 
-        ward: (optional) integer 1..50. If present, the response will be limited to that ward. If omitted, all wards will be present.    
+        ward: integer 1..50. If present, the response will be limited to that ward. If omitted, all wards will be present.    
 
 Output: 
 
     $ curl "http://localhost:5000/wards/transitions.json?ward=50"
-    [
-      {
-        "Id": 189,
-        "Ward2013": 50,
-        "Ward2015": 39,
-        "Boundary": "{\"type\":\"MultiPolygon\",\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}},\"coordinates\":[[[[-87.70916,41.99038],
-        (... truncated ...)"
-      },
-      {
-        "Id": 187,
-        "Ward2013": 50,
-        "Ward2015": 40,
-        "Boundary": (... omitted ...)
-      },
-      {
-        "Id": 188,
-        "Ward2013": 50,
-        "Ward2015": 49,
-        "Boundary": (... omitted ...)
-      }
-    ]
+
+    {
+      "Incoming": [
+        {
+          "Id": 37,
+          "Ward2013": 26,
+          "Ward2015": 1,
+          "Boundary": (... truncated geojson ...) 
+        },
+        {
+          "Id": 182,
+          "Ward2013": 27,
+          "Ward2015": 1,
+          "Boundary": (... truncated geojson ...) 
+        },
+        {
+          "Id": 69,
+          "Ward2013": 32,
+          "Ward2015": 1,
+          "Boundary": (... truncated geojson ...) 
+        },
+        {
+          "Id": 59,
+          "Ward2013": 35,
+          "Ward2015": 1,
+          "Boundary": (... truncated geojson ...) 
+        }
+      ],
+      "Outgoing": [
+        {
+          "Id": 103,
+          "Ward2013": 1,
+          "Ward2015": 26,
+          "Boundary": (... truncated geojson ...) 
+        },
+        {
+          "Id": 105,
+          "Ward2013": 1,
+          "Ward2015": 33,
+          "Boundary": (... truncated geojson ...) 
+        },
+        {
+          "Id": 104,
+          "Ward2013": 1,
+          "Ward2015": 32,
+          "Boundary": (... truncated geojson ...) 
+        },
+        (... truncated ...) 
+      ]
+    }
     
 Transition Time To Close
 ------------------------
