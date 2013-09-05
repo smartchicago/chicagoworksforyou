@@ -43,10 +43,13 @@ wardApp.factory('Data', function ($http) {
 
     if (!window.chicagoMap) {
         window.chicagoMap = L.map('map', {scrollWheelZoom: false}).setView(wardCenter, 13);
-        L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png', window.mapOptions)
+        L.tileLayer(
+                'http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png',
+                window.mapOptions
+            )
             .addTo(window.chicagoMap);
         window.chicagoMap.zoomControl.setPosition('bottomleft');
-        L.polygon(wardPaths[wardNum - 1],
+        L.polygon(window.wardPath,
             {
                 opacity: 1,
                 weight: 2,
@@ -59,25 +62,48 @@ wardApp.factory('Data', function ($http) {
         var blobsURL = window.apiDomain + 'wards/transitions.json?ward=' + window.wardNum + '&callback=JSON_CALLBACK';
         $http.jsonp(blobsURL).
             success(function(response, status, headers, config) {
-                _.each(response, function(blob) {
-                    var coords = jQuery.parseJSON(blob.Boundary).coordinates[0][0];
-                    _.map(coords, function (pair) { return pair.reverse(); });
-                    var poly = L.polygon(coords,
-                        {
-                            id: blob.Ward2015,
-                            opacity: 1,
-                            dashArray: '3',
-                            weight: 0.5,
-                            color: '#182a35',
-                            fillOpacity: 0.7,
-                            fillColor: 'white'
-                        }
-                    )
-                    .bindLabel("<b>Ward " + blob.Ward2015 + "</b> in 2015")
-                    .on('click', function(e) {
-                            document.location = '/ward/' + blob.Ward2015 + '/';
-                        })
-                    .addTo(window.chicagoMap);
+                var polygonOptions = {
+                    'Incoming': {
+                        opacity: 1,
+                        dashArray: '3',
+                        weight: 1,
+                        color: '#000',
+                        fillOpacity: 0.65,
+                        fillColor: 'white'
+                    },
+                    'Outgoing': {
+                        opacity: 1,
+                        dashArray: '3',
+                        weight: 0.5,
+                        color: '#182a35',
+                        fillOpacity: 0.4,
+                        fillColor: 'white'
+                    }
+                };
+
+                _.each(response, function(group, key) {
+                    _.each(group, function(blob) {
+                        var tooltipText = {
+                            'Incoming': "Currently <b>Ward " + blob.Ward2013 + "</b>",
+                            'Outgoing': "<b>Ward " + blob.Ward2015 + "</b> in 2015"
+                        };
+                        var clickDestination = {
+                            'Incoming': '/ward/' + blob.Ward2013 + '/',
+                            'Outgoing': '/ward/' + blob.Ward2015 + '/'
+                        };
+                        L.geoJson(jQuery.parseJSON(blob.Boundary), {
+                            style: function (feature) {
+                                return polygonOptions[key];
+                            },
+                            onEachFeature: function (feature, layer) {
+                                layer
+                                    .bindLabel(tooltipText[key])
+                                    .on('click', function(e) {
+                                        document.location = clickDestination[key];
+                                    });
+                            }
+                        }).addTo(window.chicagoMap);
+                    });
                 });
             });
 
@@ -86,9 +112,10 @@ wardApp.factory('Data', function ($http) {
         legend.onAdd = function(map) {
             var div = L.DomUtil.create('div', 'legend');
             div.innerHTML =
-                '<div class="area2013">Current Ward ' + window.wardNum + ' boundary</div>' +
-                '<div class="area2015">Areas moving to a new ward in 2015</div>' +
-                '<div class="areaBoth">Areas remaining in Ward ' + window.wardNum + '</div>' +
+                '<div class="item area2013">Current Ward ' + window.wardNum + ' boundary</div>' +
+                '<div class="item outgoing">Areas moving to a new ward in 2015</div>' +
+                '<div class="item incoming">Areas joining Ward ' + window.wardNum + ' in 2015</div>' +
+                '<div class="item remaining">Areas remaining in Ward ' + window.wardNum + '</div>' +
                 '';
             return div;
         };

@@ -1,3 +1,4 @@
+@charset "UTF-8";
 html, body {
   height: 100%;
   font-family: 'Monda', Helvetica, sans-serif; }
@@ -216,7 +217,7 @@ h3 {
   top: 64px;
   right: 20px;
   margin: 67px 0 0;
-  max-width: 125px;
+  max-width: 130px;
   -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); }
@@ -230,6 +231,34 @@ h3 {
     height: 18px;
     vertical-align: bottom;
     margin-right: 4px; }
+  .legend .colors {
+    margin-bottom: 12px; }
+  .legend .item {
+    padding-left: 26px;
+    position: relative; }
+    .legend .item:before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: block;
+      width: 18px;
+      height: 18px;
+      border-radius: 4px; }
+  .legend .delta-up:before {
+    content: "▲";
+    opacity: .8;
+    width: 18px;
+    height: 18px;
+    display: block;
+    text-align: center;
+    line-height: 1.6;
+    font-size: 10px;
+    border-radius: 20px;
+    z-index: 100; }
+  .legend .greatest:before {
+    border: 1px dashed #777;
+    left: -1px; }
 
 .st-list {
   margin-bottom: 10px; }
@@ -316,7 +345,7 @@ h3 {
     border-bottom: 1px dashed #d7d7d7;
     line-height: 1;
     position: relative; }
-    .service-list li a {
+    .service-list li .service {
       width: 224px;
       color: #555;
       display: block;
@@ -324,7 +353,7 @@ h3 {
       text-decoration: none;
       position: relative;
       line-height: 16px; }
-      .service-list li a:hover {
+      .service-list li .service:hover {
         background: #f7f7f7; }
     .service-list li:before {
       opacity: .3;
@@ -345,7 +374,7 @@ h3 {
       border: 1px dashed #777;
       right: 5px;
       top: 5px; }
-    .service-list li.active a {
+    .service-list li.active .service {
       background: #e5f6ff;
       color: #222;
       font-size: 16px; }
@@ -358,12 +387,17 @@ h3 {
   .service-list .metadata {
     display: block;
     font-size: 13px;
+    line-height: 17px;
     height: 0;
     opacity: 0;
     -webkit-transition: all 200ms ease;
     -moz-transition: all 200ms ease;
     -o-transition: all 200ms ease;
     transition: all 200ms ease; }
+  .service-list .more-about {
+    font-size: 9px;
+    text-transform: uppercase;
+    color: rgba(0, 0, 0, 0.4); }
   .service-list .bar {
     position: absolute;
     left: 0;
@@ -487,27 +521,22 @@ ul.nav .alderman a {
   line-height: 16px;
   padding: 12px 10px 2px; }
   .wardApp .legend div {
-    padding-left: 26px;
-    position: relative;
     margin-bottom: 8px; }
-    .wardApp .legend div:before {
-      content: "";
-      position: absolute;
-      top: -1px;
-      left: 0;
-      display: block;
-      width: 18px;
-      height: 18px; }
   .wardApp .legend .area2013:before {
     border: 2px solid #182a35;
     width: 14px;
     height: 14px; }
-  .wardApp .legend .area2015:before {
+  .wardApp .legend .outgoing:before {
     background: #D6E3EB;
     border: 1px dashed #182a35;
     width: 16px;
     height: 16px; }
-  .wardApp .legend .areaBoth:before {
+  .wardApp .legend .incoming:before {
+    background: white;
+    border: 1px dashed #182a35;
+    width: 16px;
+    height: 16px; }
+  .wardApp .legend .remaining:before {
     background: #75A2BD; }
 .wardApp .filter.affix {
   top: 12px; }
@@ -574,9 +603,6 @@ ul.nav .alderman a {
   margin: 0 0 1em; }
 .about p {
   margin: 0 0 1.2em; }
-
-.annotations .article-body {
-  padding-top: 10px; }
 
 footer {
   font-size: 12px;
