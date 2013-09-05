@@ -55,29 +55,40 @@ wardApp.factory('Data', function ($http) {
         var blobsURL = window.apiDomain + 'wards/transitions.json?ward=' + window.wardNum + '&callback=JSON_CALLBACK';
         $http.jsonp(blobsURL).
             success(function(response, status, headers, config) {
-                var fillColors = {
-                    'Incoming': 'white',
-                    'Outgoing': 'white'
+                var polygonOptions = {
+                    'Incoming': {
+                        opacity: 1,
+                        dashArray: '3',
+                        weight: 1,
+                        color: '#000',
+                        fillOpacity: 0.65,
+                        fillColor: 'white'
+                    },
+                    'Outgoing': {
+                        opacity: 1,
+                        dashArray: '3',
+                        weight: 0.5,
+                        color: '#182a35',
+                        fillOpacity: 0.4,
+                        fillColor: 'white'
+                    }
                 };
+
                 _.each(response, function(group, key) {
                     _.each(group, function(blob) {
+                        var tooltipText = {
+                            'Incoming': "<b>Ward " + blob.Ward2013 + "</b> now",
+                            'Outgoing': "<b>Ward " + blob.Ward2015 + "</b> in 2015"
+                        };
                         var coords = jQuery.parseJSON(blob.Boundary).coordinates[0][0];
                         _.map(coords, function (pair) { return pair.reverse(); });
-                        var poly = L.polygon(coords,
-                            {
-                                id: blob.Ward2015,
-                                opacity: 1,
-                                dashArray: '3',
-                                weight: 0.5,
-                                color: '#182a35',
-                                fillOpacity: 0.5,
-                                fillColor: fillColors[key]
-                            }
-                        )
-                        .bindLabel("<b>Ward " + blob.Ward2015 + "</b> in 2015")
+                        var poly = L.polygon(coords, polygonOptions[key])
+                        .bindLabel(tooltipText[key])
                         .on('click', function(e) {
                                 if (key == "Outgoing") {
                                     document.location = '/ward/' + blob.Ward2015 + '/';
+                                } else if (key == "Incoming") {
+                                    document.location = '/ward/' + blob.Ward2013 + '/';
                                 }
                             })
                         .addTo(window.chicagoMap);

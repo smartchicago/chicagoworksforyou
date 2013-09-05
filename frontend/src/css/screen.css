@@ -1,3 +1,4 @@
+@charset "UTF-8";
 html, body {
   height: 100%;
   font-family: 'Monda', Helvetica, sans-serif; }
@@ -202,11 +203,12 @@ h3 {
     .legend .item:before {
       content: "";
       position: absolute;
-      top: -1px;
+      top: 0;
       left: 0;
       display: block;
       width: 18px;
-      height: 18px; }
+      height: 18px;
+      border-radius: 4px; }
   .legend .delta-up:before {
     content: "▲";
     opacity: .8;

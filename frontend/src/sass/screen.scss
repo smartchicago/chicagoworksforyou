@@ -284,11 +284,12 @@ h3 {
         &:before {
             content: "";
             position: absolute;
-            top: -1px;
+            top: 0;
             left: 0;
             display: block;
             width: 18px;
             height: 18px;
+            border-radius: 4px;
         }
     }
 
