@@ -135,11 +135,10 @@ h3 {
   .share-box .email {
     background-image: url(/img/email.png); }
 
-.span3 .share-box b span {
-  display: none; }
-
 .weeknav {
   border-bottom: 1px solid #ddd; }
+  .weeknav .row {
+    position: relative; }
   .weeknav .curr {
     -webkit-box-shadow: inset -1px 0 0 #dddddd, inset 1px 0 0 #dddddd;
     -moz-box-shadow: inset -1px 0 0 #dddddd, inset 1px 0 0 #dddddd;
@@ -170,13 +169,17 @@ h3 {
     margin: 0; }
     .weeknav h1 a {
       color: #111; }
-  .weeknav .move a {
+  .weeknav .move {
+    position: absolute;
+    top: 50%;
+    margin-top: -10px;
     display: block;
-    padding: 30px 0;
     font-size: 14px;
     text-transform: uppercase; }
+  .weeknav .prev {
+    left: 20px; }
   .weeknav .next {
-    text-align: right; }
+    right: 0; }
 
 .home-wrap {
   position: relative;
@@ -477,40 +480,6 @@ h3 {
 .serviceApp .highcharts-axis-labels a {
   color: #555; }
 
-.search-form {
-  margin: 0; }
-  .search-form input {
-    margin: 0;
-    border: 0;
-    width: 100%;
-    padding: 14px 0;
-    line-height: 1;
-    text-indent: 40px;
-    border-radius: 6px 6px; }
-
-.pagination a {
-  text-align: center; }
-.pagination .this-date {
-  font-weight: bold; }
-  .pagination .this-date a {
-    color: #333;
-    width: 134px; }
-.pagination .prev-date a, .pagination .next-date a {
-  font-size: 13px;
-  color: #666;
-  padding: 4px 8px;
-  width: 13px; }
-
-ul.nav .alderman a {
-  font-weight: bold;
-  background: #e3e3e3;
-  color: #111;
-  border-radius: 0 4px 4px 0; }
-  ul.nav .alderman a i {
-    margin-right: 4px; }
-  ul.nav .alderman a:hover {
-    background: #d7d7d7; }
-
 .wardApp #map {
   height: 360px; }
 .wardApp .legend {
@@ -537,6 +506,30 @@ ul.nav .alderman a {
     height: 16px; }
   .wardApp .legend .remaining:before {
     background: #75A2BD; }
+.wardApp .ward-info {
+  display: inline-block;
+  position: relative;
+  top: 4px;
+  margin: 0 0 0 8px;
+  font-size: 16px;
+  line-height: 1; }
+  .wardApp .ward-info a {
+    opacity: .6; }
+    .wardApp .ward-info a:hover {
+      opacity: 1; }
+  .wardApp .ward-info .icon a {
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    background-position: 50% 50%;
+    background-repeat: no-repeat; }
+  .wardApp .ward-info .twitter a {
+    background-image: url(/img/twitter.png); }
+  .wardApp .ward-info .facebook a {
+    background-image: url(/img/facebook.png); }
+  .wardApp .ward-info .councilmatic a {
+    background-image: url(/img/gavel.png); }
 .wardApp .filter.affix {
   top: 12px; }
 .wardApp section {

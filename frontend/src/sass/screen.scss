@@ -192,17 +192,6 @@ h3 {
     }
 }
 
-.span3 {
-    .share-box {
-        b {
-            span {
-                display: none;
-            }
-        }
-    }
-}
-
-
 // WEEK NAV
 
 .weeknav {
@@ -732,65 +721,6 @@ h3 {
 
 // WARDS
 
-.search-form {
-    margin: 0;
-
-    input {
-        margin: 0;
-        border: 0;
-        width: 100%;
-        padding: 14px 0;
-        line-height: 1;
-        text-indent: 40px;
-        border-radius: 6px 6px;
-    }
-}
-
-// PAGINATION
-
-.pagination {
-    a {
-        text-align: center;
-    }
-
-    .this-date {
-        font-weight: bold;
-
-        a {
-            color: #333;
-            width: 134px;
-        }
-    }
-
-    .prev-date, .next-date {
-        a {
-            font-size: 13px;
-            color: #666;
-            padding: 4px 8px;
-            width: 13px;
-        }
-    }
-}
-
-// WARD DETAIL
-
-ul.nav .alderman {
-    a {
-        font-weight: bold;
-        background: #e3e3e3;
-        color: #111;
-        border-radius: 0 4px 4px 0;
-
-        i {
-            margin-right: 4px;
-        }
-
-        &:hover {
-            background:#d7d7d7;
-        }
-    }
-}
-
 .wardApp {
     #map {
         height:360px;
@@ -836,6 +766,52 @@ ul.nav .alderman {
         .remaining {
             &:before {
                 background: #75A2BD;
+            }
+        }
+    }
+
+    .ward-info {
+        display: inline-block;
+        position: relative;
+        top: 4px;
+        margin: 0 0 0 8px;
+        font-size: 16px;
+        line-height: 1;
+
+        a {
+            opacity: .6;
+
+            &:hover {
+                opacity: 1;
+            }
+        }
+
+        .icon {
+            a {
+                display: inline-block;
+                width: 28px;
+                height: 28px;
+                padding: 0;
+                background-position: 50% 50%;
+                background-repeat: no-repeat;
+            }
+        }
+
+        .twitter {
+            a {
+                background-image: url(/img/twitter.png);
+            }
+        }
+
+        .facebook {
+            a {
+                background-image: url(/img/facebook.png);
+            }
+        }
+
+        .councilmatic {
+            a {
+                background-image: url(/img/gavel.png);
             }
         }
     }

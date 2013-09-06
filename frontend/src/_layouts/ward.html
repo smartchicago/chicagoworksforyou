@@ -21,8 +21,21 @@ window.wardPath = {{ page.points }};
         <div class="curr span8 offset2">
             <h1>
                 <a href="#">{{ page.title }}</a>
-                •
-                <a href="{{ page.website }}">{{ page.alderman }}</a>
+                <div class="pagination ward-info">
+                    <ul>
+                        <li><a href="{{ page.website }}">{{ page.alderman }}</a></li>
+                        {% if page.twitter != '' %}
+                            <li class="icon twitter"><a href="{{ page.twitter }}"></a></li>
+                        {% endif %}
+                        {% if page.facebook != '' %}
+                            <li class="icon facebook"><a href="{{ page.facebook }}"></a></li>
+                        {% endif %}
+                        {% if page.councilmatic != '' %}
+                            <li class="icon councilmatic"><a href="{{ page.councilmatic }}"></a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+
             </h1>
             <span ng-bind="data.thisDate"></span>
             &nbsp; •
