@@ -1,4 +1,3 @@
-@charset "UTF-8";
 html, body {
   height: 100%;
   font-family: 'Monda', Helvetica, sans-serif; }
@@ -136,7 +135,7 @@ h3 {
   .share-box .email {
     background-image: url(/img/email.png); }
 
-.mediaApp .share-box b span, .wardApp .share-box b span {
+.span3 .share-box b span {
   display: none; }
 
 .weeknav {

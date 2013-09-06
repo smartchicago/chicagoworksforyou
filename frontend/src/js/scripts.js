@@ -1,3 +1,5 @@
+window.urlBase = "http://chicagoworksforyou.com" + document.location.pathname + "#/";
+
 moment.lang('en', {
     week: {
         dow: 1

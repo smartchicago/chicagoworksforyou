@@ -194,7 +194,7 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
         "$routeChangeSuccess",
         function ($e, $currentRoute, $previousRoute) {
             Data.setDate(parseDate($routeParams.date, window.lastWeekEnd, $location));
-            Data.currURL = "#/" + Data.date + "/";
+            Data.currURL = window.urlBase + Data.date + "/";
             buildChart();
         }
     );

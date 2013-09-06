@@ -39,7 +39,7 @@ dateMapApp.config(function($routeProvider) {
         });
 });
 
-dateMapApp.factory('Data', function () {
+dateMapApp.factory('Data', function ($route) {
     var data = {
     };
 
@@ -85,22 +85,18 @@ dateMapApp.controller("dateCtrl", function ($scope, Data, $http, $location, $rou
         '#629CBF'
     ].reverse();
 
-    var urlSuffix = function() {
-        return $routeParams && $routeParams.serviceSlug ? Data.serviceObj.slug + '/' : '';
-    };
-
     $scope.goToPrevDay = function() {
         if (Data.prevDay.isBefore(window.earliestDate)) {
             return false;
         }
-        $location.path(Data.prevDay.format(dateFormat) + '/' + urlSuffix());
+        $location.path(Data.prevDay.format(dateFormat) + '/' + Data.urlSuffix);
     };
 
     $scope.goToNextDay = function() {
         if (Data.isLatest) {
             return false;
         }
-        $location.path(Data.nextDay.format(dateFormat) + '/' + urlSuffix());
+        $location.path(Data.nextDay.format(dateFormat) + '/' + Data.urlSuffix);
     };
 
     $scope.clickService = function(service) {
@@ -255,7 +251,9 @@ dateMapApp.controller("dateCtrl", function ($scope, Data, $http, $location, $rou
                     Data.serviceObj = window.lookupSlug($currentRoute.pathParams.serviceSlug);
                 }
             }
-            Data.currURL = "#/" + Data.date + "/" + urlSuffix();
+
+            Data.urlSuffix = $currentRoute.pathParams.serviceSlug ? $currentRoute.pathParams.serviceSlug + '/' : '';
+            Data.currURL = window.urlBase + Data.date + "/" + Data.urlSuffix;
 
             var titleParts = [];
             if (_.isEmpty($currentRoute.pathParams)) {

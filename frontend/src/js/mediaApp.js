@@ -1,6 +1,6 @@
 // ANGULAR
 
-var mediaApp = angular.module('mediaApp', []);
+var mediaApp = angular.module('mediaApp', []).value('$anchorScroll', angular.noop);
 
 mediaApp.filter('escape', function() {
     return window.encodeURIComponent;
@@ -19,6 +19,7 @@ mediaApp.factory('Data', function () {
         data.currServiceSlug = slug;
         data.search.Service_name = name;
         data.pageTitle = (data.search.Service_name ? data.search.Service_name + " | " : '') + defaultTitle;
+        data.currURL = window.urlBase + (slug ? slug + '/' : '');
     };
 
     return data;
@@ -55,9 +56,7 @@ mediaApp.controller("mediaCtrl", function ($scope, $http, Data, $location) {
     var slug = $location.path().split("/")[1];
     var serviceObj = window.lookupSlug(slug);
 
-    if (serviceObj) {
-        Data.setService(slug, serviceObj.name);
-    }
+    Data.setService(slug, serviceObj ? serviceObj.name : '');
 
     $scope.data = Data;
 
