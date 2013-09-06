@@ -18,10 +18,7 @@ window.wardPath = {{ page.points }};
 <div class="weeknav">
 <div class="container" ng-controller="headerCtrl">
     <div class="row">
-        <div class="move prev span2">
-            <a href="" ng-click="goToPrevDate()">« Prev week</a>
-        </div>
-        <div class="curr span8">
+        <div class="curr span8 offset2">
             <h1>
                 <a href="#">{{ page.title }}</a>
                 •
@@ -32,9 +29,8 @@ window.wardPath = {{ page.points }};
             <span class="open-count" ng-bind="data.openCount"></span> opened
             <span class="closed-count" ng-bind="data.closedCount"></span> closed
         </div>
-        <div class="move next span2">
-            <a href="" ng-click="goToNextDate()">Next week »</a>
-        </div>
+        <a class="move prev" href="" ng-click="goToPrevDate()">« Prev week</a>
+        <a class="move next" href="" ng-click="goToNextDate()">Next week »</a>
     </div>
 </div>
 </div>
