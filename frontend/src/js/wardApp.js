@@ -16,6 +16,10 @@ $(function () {
 
 var wardApp = angular.module('wardApp', []).value('$anchorScroll', angular.noop);
 
+wardApp.filter('escape', function() {
+    return window.encodeURIComponent;
+});
+
 wardApp.config(function($routeProvider) {
     $routeProvider.
         when('/', {
@@ -505,6 +509,10 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
         function ($e, $currentRoute, $previousRoute) {
             Data.setDate(parseDate($routeParams.date, window.lastWeekEnd, $location));
             Data.action = $route.current.action;
+
+            Data.urlSuffix = $currentRoute.pathParams.serviceSlug ? $currentRoute.pathParams.serviceSlug + '/' : '';
+            Data.currURL = window.urlBase + Data.date + "/" + Data.urlSuffix;
+
             if (!$previousRoute || $previousRoute.redirectTo || $currentRoute.pathParams.serviceSlug != $previousRoute.pathParams.serviceSlug) {
                 Data.serviceObj = {};
                 if ($currentRoute.pathParams.serviceSlug) {

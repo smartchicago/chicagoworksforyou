@@ -2,6 +2,10 @@
 
 var serviceApp = angular.module('serviceApp', []).value('$anchorScroll', angular.noop);
 
+serviceApp.filter('escape', function() {
+    return window.encodeURIComponent;
+});
+
 serviceApp.config(function($routeProvider) {
     $routeProvider.
         when('/', {
@@ -190,7 +194,7 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
         "$routeChangeSuccess",
         function ($e, $currentRoute, $previousRoute) {
             Data.setDate(parseDate($routeParams.date, window.lastWeekEnd, $location));
-            Data.currURL = "#/" + Data.date + "/";
+            Data.currURL = window.urlBase + Data.date + "/";
             buildChart();
         }
     );
