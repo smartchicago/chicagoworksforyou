@@ -1,0 +1,105 @@
+#! /usr/bin/env python
+
+"""
+Bulk-load data from the NOAA/NCDC Storm Events database into
+our data store.
+
+This tool does little error-checking, as it is meant to perform
+an initial load into the database.  To that end, we load each
+file's data as a single transaction.  If there is a problem with
+a given file, none of its data gets loaded, which gives an
+operator the opportunity to review and reload the file without
+having to cleanup half-loaded data.
+
+"""
+
+## - - - - - - - - - - - - - - - - - - - -
+
+import argparse
+import json
+import pandas as pd
+import psycopg2
+import sys
+
+## - - - - - - - - - - - - - - - - - - - -
+
+def prepare_arg_parser():
+	result = argparse.ArgumentParser(
+		description='bulk-load storm event data'
+	)
+	
+	result.add_argument(
+		'--config' ,
+		action='store' ,
+		dest='config_file' ,
+		required=True ,
+		help='config file, which includes database connectivity details'
+	)
+
+	result.add_argument(
+		'data_files' ,
+		metavar='...' ,
+		nargs='*' ,
+		help='data file(s) to load' ,
+	)
+
+	return result
+
+
+def parse_and_load( data_file , db_cursor , table_name ) :
+
+	db_insert_statement = "INSERT INTO {0} ( event_date , event_id , event_type ) VALUES ( %s , %s , %s )".format( table_name )
+
+	data_raw = pd.read_csv( data_file )
+
+	for row_instead , row in data_raw.iterrows() :
+
+		db_cursor.execute(
+			db_insert_statement ,
+			( row[ "BEGIN_DATE" ] , row[ "EVENT_ID" ] , row[ "EVENT_TYPE" ] )
+		)
+
+	return
+
+
+def main():
+	parser = prepare_arg_parser()
+	parsed = parser.parse_args( sys.argv[1:] )
+
+	config_file = parsed.config_file
+	data_files = parsed.data_files
+
+	if 0 == len( data_files ):
+		print
+		print "Please specify data files to load."
+		print "(Run with '--help' for details.)"
+		print
+		sys.exit( 1 )
+
+	with open( config_file , "r" ) as config_file_handle:
+		config = json.load( config_file_handle )
+
+	table_name = config[ "db_table_weather_storm_event" ]
+	db_connect_string = config[ "db_connect_string" ]
+
+	print "connecting to database"
+	db_conn = psycopg2.connect( db_connect_string )
+	db_conn.set_session( autocommit=False )
+	db_cursor = db_conn.cursor()
+
+	for data_file in parsed.data_files:
+		print "___ loading {0} ___".format( data_file )
+		parse_and_load( data_file , db_cursor , table_name )
+		db_conn.commit()
+
+	print "disconnecting from database"
+
+	db_cursor.close()
+	db_conn.close()
+
+	print "done"
+
+## - - - - - - - - - - - - - - - - - - - -
+
+if '__main__' == __name__:
+	main()

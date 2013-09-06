@@ -1,0 +1,5 @@
+{
+	"db_connect_string" : "host=... dbname=... user=... password=..." ,
+	"db_table_weather_daily_stats" : "weather_daily_stats" ,
+	"db_table_weather_storm_event" : "weather_storm_event"
+}

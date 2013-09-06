@@ -1,6 +1,12 @@
 # Deployment
 
-The CWFY application consists of two components: the API backend, written in Go, and the AngularJS/Jekyll/HTML frontend. The two components are contained in this repository, but are deployed separately.
+The CWFY application consists of three components:
+
+1. the API backend, written in Go
+1. the AngularJS/Jekyll/HTML frontend
+1. a set of offline data tools, mostly for import/ETL, written in Python
+
+The three components are contained in this repository, but are deployed separately.
 
 ## Frontend Deployment
 
@@ -120,7 +126,9 @@ Database restore: download a copy of a database snapshot and replace a local dat
             executing locally: "dropdb cwfy &&       createdb cwfy &&       curl -o /tmp/cwfy-restore-staging.dump http://cwfy-database-backups.s3.amazonaws.com/staging.dump\n      pg_restore -d cwfy -O -c /tmp/cwfy-restore-staging.dump &&       rm -f /tmp/cwfy-restore-staging.dump"
 
         (PostgreSQL and curl warnings are omitted)
+
+data import/ETL tools: these are described in a separate document, _DATA\_ETL\_TOOLS.md
         
 ## Server configuration
 
-CWFY runs on a Amazon Web Services m1.medium instance. The instance contains a PostgreSQL 9.2.4 database server with PostGIS 2.0.3 extensions. The CWFY API and fetch worker are managed by [supervisord](http://supervisord.org/). The there is a cron job (file: `/etc/cron.daily/ebs-snapshot`) scheduled to run nightly to create backup snapshots of the instance's EBS volume. This script is configured to maintain 14 days of snapshot history.
+CWFY runs on a Amazon Web Services m1.medium instance. The instance contains a PostgreSQL 9.2.4 database server with PostGIS 2.0.3 extensions.  The offline tools are built on Python 2.7 and pandas.  The CWFY API and fetch worker are managed by [supervisord](http://supervisord.org/). The there is a cron job (file: `/etc/cron.daily/ebs-snapshot`) scheduled to run nightly to create backup snapshots of the instance's EBS volume. This script is configured to maintain 14 days of snapshot history.
