@@ -146,6 +146,63 @@ h3 {
     padding-bottom: 25px;
 }
 
+.share-box {
+    line-height: 0;
+    font-size: 0;
+    background:#f7f7f7;
+    position: relative;
+    padding: 0 15px;
+    border-radius: 6px;
+
+    b {
+        display: inline-block;
+        height: 34px;
+        font-weight: normal;
+        vertical-align: bottom;
+        line-height: 34px;
+        margin-right: 6px;
+        text-transform: uppercase;
+        font-size: 11px;
+    }
+
+    a {
+        display: inline-block;
+        width: 30px;
+        height: 34px;
+        padding: 0;
+        background-position: 50% 50%;
+        background-repeat: no-repeat;
+        opacity: .6;
+
+        &:hover {
+            opacity: .9;
+        }
+    }
+
+    .twitter {
+        background-image: url(/img/twitter.png);
+    }
+
+    .facebook {
+        background-image: url(/img/facebook.png);
+    }
+
+    .email {
+        background-image: url(/img/email.png);
+    }
+}
+
+.span3 {
+    .share-box {
+        b {
+            span {
+                display: none;
+            }
+        }
+    }
+}
+
+
 // WEEK NAV
 
 .weeknav {
@@ -233,7 +290,7 @@ h3 {
     background: white;
     margin: 96px 0 100px 0; //100px to cover height of navbar
     z-index: 3000;
-    padding: 12px 20px;
+    padding: 12px 20px 0;
     border-radius: 6px;
     @include box-shadow(0 0 10px fade-out(black,.7));
 
@@ -316,6 +373,14 @@ h3 {
     }
 }
 
+.st-list {
+    margin-bottom: 10px;
+
+    > li > a {
+        margin: 0 !important;
+    }
+}
+
 // HOMEPAGE
 
 .dateMapApp {
@@ -339,6 +404,7 @@ h3 {
             display: block;
             line-height: 16px;
             font-weight: normal;
+            margin-bottom: 1px;
         }
     }
 
@@ -349,22 +415,33 @@ h3 {
     .pagination {
         position: relative;
         left: -20px;
-        top: -12px;
         margin: 0;
         width: 260px;
 
         ul {
             @include box-shadow(none);
+        }
+
+        li {
+            a {
+                border: none;
+                border-radius: 0;
+                text-align: left;
+            }
+        }
+    }
+
+    .date-nav {
+        top: -12px;
+
+        ul {
             border-bottom: 1px solid #eee;
         }
 
         li {
             a {
                 width: 110px;
-                border: none;
-                border-radius: 0;
                 padding: 6px 0;
-                text-align: left;
             }
 
             &:first-child {
@@ -380,6 +457,13 @@ h3 {
                 }
             }
         }
+    }
+
+    .share-box {
+        padding: 0 20px;
+        left: -20px;
+        width: 220px;
+        border-radius: 0 0 6px 6px;
     }
 }
 
@@ -520,11 +604,6 @@ h3 {
         height: 1px;
         background: black;
     }
-}
-
-.share-this {
-    padding-top: 10px;
-    margin: 0;
 }
 
 // SERVICES
@@ -753,10 +832,6 @@ ul.nav .alderman {
 
     .filter.affix {
         top: 12px;
-    }
-
-    .pagination {
-        margin-bottom: 10px;
     }
 
     section {

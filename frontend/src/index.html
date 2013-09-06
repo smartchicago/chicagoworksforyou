@@ -10,7 +10,7 @@ has_js: true
     <div class="container">
         <div class="map-overlay span3" ng-controller="dateCtrl">
             {% raw %}
-            <div class="pagination">
+            <div class="pagination date-nav">
                 <ul>
                     <li class="prevDay"><a href="" ng-click="goToPrevDay()">&larr; <span ng-bind="data.prevDayFormatted"></span></a></li>
                     <li class="nextDay" ng-class="{disabled: data.isLatest}"><a href="" ng-click="goToNextDay()"><span ng-bind="data.nextDayFormatted"></span> &rarr;</a></li>
@@ -39,11 +39,9 @@ has_js: true
                     </a>
                 </li>
             </ul>
-
-            <p class="share-this">
-                <a ng-href="data.currURL">Share this map</a>
-            </p>
             {% endraw %}
+
+            {% include share_box.html %}
         </div>
     </div>
 
