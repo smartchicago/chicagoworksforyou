@@ -16,6 +16,10 @@ $(function () {
 
 var wardApp = angular.module('wardApp', []).value('$anchorScroll', angular.noop);
 
+wardApp.filter('escape', function() {
+    return window.encodeURIComponent;
+});
+
 wardApp.config(function($routeProvider) {
     $routeProvider.
         when('/', {
@@ -32,26 +36,91 @@ wardApp.config(function($routeProvider) {
         });
 });
 
-wardApp.factory('Data', function () {
+wardApp.factory('Data', function ($http) {
     var data = {
         wardNum: window.wardNum
     };
 
     if (!window.chicagoMap) {
         window.chicagoMap = L.map('map', {scrollWheelZoom: false}).setView(wardCenter, 13);
-        L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png', window.mapOptions)
+        L.tileLayer(
+                'http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png',
+                window.mapOptions
+            )
             .addTo(window.chicagoMap);
         window.chicagoMap.zoomControl.setPosition('bottomleft');
-        var polygon = L.polygon(wardPaths[wardNum - 1],
+        L.polygon(window.wardPath,
             {
                 opacity: 1,
                 weight: 2,
-                dashArray: '3',
                 color: '#182A35',
                 fillOpacity: 0.7,
                 fillColor: '#4888AF'
             }
         ).addTo(window.chicagoMap);
+
+        var blobsURL = window.apiDomain + 'wards/transitions.json?ward=' + window.wardNum + '&callback=JSON_CALLBACK';
+        $http.jsonp(blobsURL).
+            success(function(response, status, headers, config) {
+                var polygonOptions = {
+                    'Incoming': {
+                        opacity: 1,
+                        dashArray: '3',
+                        weight: 1,
+                        color: '#000',
+                        fillOpacity: 0.65,
+                        fillColor: 'white'
+                    },
+                    'Outgoing': {
+                        opacity: 1,
+                        dashArray: '3',
+                        weight: 0.5,
+                        color: '#182a35',
+                        fillOpacity: 0.4,
+                        fillColor: 'white'
+                    }
+                };
+
+                _.each(response, function(group, key) {
+                    _.each(group, function(blob) {
+                        var tooltipText = {
+                            'Incoming': "Currently <b>Ward " + blob.Ward2013 + "</b>",
+                            'Outgoing': "<b>Ward " + blob.Ward2015 + "</b> in 2015"
+                        };
+                        var clickDestination = {
+                            'Incoming': '/ward/' + blob.Ward2013 + '/',
+                            'Outgoing': '/ward/' + blob.Ward2015 + '/'
+                        };
+                        L.geoJson(jQuery.parseJSON(blob.Boundary), {
+                            style: function (feature) {
+                                return polygonOptions[key];
+                            },
+                            onEachFeature: function (feature, layer) {
+                                layer
+                                    .bindLabel(tooltipText[key])
+                                    .on('click', function(e) {
+                                        document.location = clickDestination[key];
+                                    });
+                            }
+                        }).addTo(window.chicagoMap);
+                    });
+                });
+            });
+
+        var legend = L.control({position: 'topright'});
+
+        legend.onAdd = function(map) {
+            var div = L.DomUtil.create('div', 'legend');
+            div.innerHTML =
+                '<div class="item area2013">Current Ward ' + window.wardNum + ' boundary</div>' +
+                '<div class="item outgoing">Areas moving to a new ward in 2015</div>' +
+                '<div class="item incoming">Areas joining Ward ' + window.wardNum + ' in 2015</div>' +
+                '<div class="item remaining">Areas remaining in Ward ' + window.wardNum + '</div>' +
+                '';
+            return div;
+        };
+
+        legend.addTo(window.chicagoMap);
     }
 
     data.setDate = function(date) {
@@ -59,8 +128,8 @@ wardApp.factory('Data', function () {
         data.dateObj = date;
         data.dateFormatted = date.format('MMM D, YYYY');
 
-        data.startDate = date.clone().day(0);
-        data.endDate = date.clone().day(6).max(window.yesterday);
+        data.startDate = date.clone().weekday(0);
+        data.endDate = date.clone().weekday(6).max(window.yesterday);
         data.duration = data.endDate.diff(data.startDate, 'days');
         data.thisDate = moment.duration(data.duration,"days").beforeMoment(data.endDate,true).format({implicitYear: false});
         data.pageTitle = data.thisDate + ' | Ward ' + window.wardNum + ' | Chicago Works For You';
@@ -160,6 +229,64 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
         }
     };
 
+    var renderWeekReviewChart = function(weekReviewURL) {
+        $http.jsonp(weekReviewURL).
+            success(function(response, status, headers, config) {
+                var days = _.sortBy(response, function (day, key) {
+                    _.extend(day,{'Day':key});
+                    return key;
+                });
+
+                var opened = _.pluck(days, 'Opened');
+                var closed = _.pluck(days, 'Closed');
+
+                Data.openCount = _.reduce(opened , function(total, val) { return total + val; }, 0);
+                Data.closedCount = _.reduce(closed , function(total, val) { return total + val; }, 0);
+
+                var weekReviewChart = new Highcharts.Chart({
+                    chart: {
+                        type: 'line',
+                        renderTo: 'weekReview-chart',
+                        marginBottom: 50
+                    },
+                    series: [{
+                        data: opened,
+                        name: "Requests opened",
+                        id: 1
+                    },{
+                        data: closed,
+                        name: "Requests closed",
+                        id: 1
+                    }],
+                    xAxis: {
+                        categories: window.weekdays
+                    },
+                    yAxis: {
+                        min: 0
+                    },
+                    plotOptions: {
+                        line: {
+                            animation: false
+                        }
+                    },
+                    legend: {
+                        enabled: false
+                    },
+                    title: {
+                        text: ''
+                    },
+                    tooltip: {
+                        headerFormat: '',
+                        shadow: false,
+                        style: {
+                            fontFamily: 'Monda, sans-serif',
+                            fontSize: '15px'
+                        }
+                    }
+                });
+            });
+    };
+
     var renderTTCchart = function(ttcURL) {
         $http.jsonp(ttcURL).
             success(function(response, status, headers, config) {
@@ -225,10 +352,12 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
 
     var renderOverview = function(isFirstRender) {
         var DAY_COUNT = 1;
-        var highsURL = window.apiDomain + 'wards/' + window.wardNum + '/historic_highs.json?include_date=' + Data.date + '&count=' + DAY_COUNT + '&callback=JSON_CALLBACK';
+        var weekReviewURL = window.apiDomain + 'wards/' + window.wardNum + '/counts.json?count=' + (Data.duration + 1) + '&end_date=' + Data.date + '&callback=JSON_CALLBACK';
         var ttcURL = window.apiDomain + 'requests/time_to_close.json?count=' + (Data.duration + 1) + '&end_date=' + Data.date + '&callback=JSON_CALLBACK';
+        var highsURL = window.apiDomain + 'wards/' + window.wardNum + '/historic_highs.json?include_date=' + Data.date + '&count=' + DAY_COUNT + '&callback=JSON_CALLBACK';
 
         renderTTCchart(ttcURL);
+        renderWeekReviewChart(weekReviewURL);
 
         if (isFirstRender) {
             $http.jsonp(highsURL).
@@ -314,9 +443,12 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
 
     var renderDetail = function (isFirstRender) {
         var DAY_COUNT = 6;
-        var highsURL = window.apiDomain + 'wards/' + window.wardNum + '/historic_highs.json?service_code=' + Data.serviceObj.code + '&include_date=' + Data.date + '&count=' + DAY_COUNT + '&callback=JSON_CALLBACK';
-        var ttcURL = window.apiDomain + 'requests/time_to_close.json?count=7&service_code=' + Data.serviceObj.code + '&end_date=' + Data.date + '&callback=JSON_CALLBACK';
 
+        var weekReviewURL = window.apiDomain + 'wards/' + window.wardNum + '/counts.json?count=' + (Data.duration + 1) + '&service_code=' + Data.serviceObj.code + '&end_date=' + Data.date + '&callback=JSON_CALLBACK';
+        var ttcURL = window.apiDomain + 'requests/time_to_close.json?count=' + (Data.duration + 1) + '&service_code=' + Data.serviceObj.code + '&end_date=' + Data.date + '&callback=JSON_CALLBACK';
+        var highsURL = window.apiDomain + 'wards/' + window.wardNum + '/historic_highs.json?service_code=' + Data.serviceObj.code + '&include_date=' + Data.date + '&count=' + DAY_COUNT + '&callback=JSON_CALLBACK';
+
+        renderWeekReviewChart(weekReviewURL);
         renderTTCchart(ttcURL);
 
         if (isFirstRender) {
@@ -375,8 +507,12 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
     $scope.$on(
         "$routeChangeSuccess",
         function ($e, $currentRoute, $previousRoute) {
-            Data.setDate(parseDate($routeParams.date, window.yesterday, $location));
+            Data.setDate(parseDate($routeParams.date, window.lastWeekEnd, $location));
             Data.action = $route.current.action;
+
+            Data.urlSuffix = $currentRoute.pathParams.serviceSlug ? $currentRoute.pathParams.serviceSlug + '/' : '';
+            Data.currURL = window.urlBase + Data.date + "/" + Data.urlSuffix;
+
             if (!$previousRoute || $previousRoute.redirectTo || $currentRoute.pathParams.serviceSlug != $previousRoute.pathParams.serviceSlug) {
                 Data.serviceObj = {};
                 if ($currentRoute.pathParams.serviceSlug) {

@@ -21,8 +21,8 @@ window.currServiceType = '{{ page.service_code }}';
             </h1>
             <span ng-bind="data.thisDate"></span>
             &nbsp; •
-            <span class="open-count" ng-bind="data.cityCount"></span>
-            <span class="closed-count" ng-bind="data.cityCloseCount"></span>
+            <span class="open-count" ng-bind="data.cityCount"></span> opened
+            <span class="closed-count" ng-bind="data.cityCloseCount"></span> closed
         </div>
         <div class="move next span2">
             <a href="" ng-click="goToNextDate()">Next week »</a>
@@ -35,8 +35,8 @@ window.currServiceType = '{{ page.service_code }}';
     {% raw %}
     <div class="pagination">
         <ul>
-            <li class="day" ng-repeat="day in data.days" ng-class="{future: day.inFuture}" style="border-bottom:5px solid {{ day.color }};">
-                <a ng-href="/#/{{ day.date|date:'yyyy-MM-dd' }}/{{ data.stSlug }}/" ng-disabled="day.inFuture">
+            <li class="day" ng-repeat="day in data.days" ng-class="{future: day.inFuture}">
+                <a style="background: {{ day.color }};" ng-href="/#/{{ day.date|date:'yyyy-MM-dd' }}/{{ data.stSlug }}/" ng-disabled="day.inFuture">
                     {{ day.date|date:'EEE' }}
                     <b>{{ day.date|date:'d' }}</b>
                     {{ day.date|date:'MMM' }}
@@ -47,28 +47,28 @@ window.currServiceType = '{{ page.service_code }}';
     {% endraw %}
 
     <div class="row">
+        <div class="span8" ng-controller="serviceCtrl">
+            <div id="chart" class="chart"><br><br><br><br><img src="/img/loading.gif" width="100" height="100" alt=""></div>
+        </div>
         <div class="span4">
             <div class="description">
                 <br>
                 {{ content }}
             </div>
-            <p class="city-average">
-                Average number of requests opened in a ward this week: <span ng-bind="data.cityAverage"></span>
-            </p>
+
+            {% include share_box.html %}
+
             <br>
             <ul class="external-links nav nav-stacked nav-tabs">
                 {% if page.data_portal %}
                 <li>
-                    <a class="data-portal-link" href="{{ page.data_portal }}">View the original source for this data &rarr; <span>on the City of Chicago data portal</span></a>
+                    <a class="data-portal-link" href="{{ page.data_portal }}">View all {{ page.title }} data &rarr; <span>on the City of Chicago data portal</span></a>
                 </li>
                 {% endif %}
                 <li>
-                    <a ng-href="http://311request.cityofchicago.org/reports/new?service_id={{ page.service_code }}">Submit {{ page.title }} 311 report &rarr;</a>
+                    <a ng-href="http://311request.cityofchicago.org/reports/new?service_id={{ page.service_code }}">Submit {{ page.title }} 311 report &rarr; <span>using the city's spot reporter tool</span></a>
                 </li>
             </ul>
-        </div>
-        <div class="span8" ng-controller="serviceCtrl">
-            <div id="chart" class="chart"><br><br><br><br><img src="/img/loading.gif" width="100" height="100" alt=""></div>
         </div>
     </div>
 </div>

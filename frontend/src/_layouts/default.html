@@ -114,7 +114,7 @@
                 </ul>
             </div>
         </li>
-        <li class="{% if page.section == 'media' %}active{% endif %}"><a href="/media/">Media</a></li>
+        <li class="{% if page.section == 'media' %}active{% endif %}"><a href="/photos/">Photos</a></li>
         <li class="{% if page.section == 'annotations' %}active{% endif %}"><a href="http://annotations.chicagoworksforyou.com ">Annotations</a></li>
         <li class="{% if page.section == 'about' %}active{% endif %}"><a href="/about/">About</a></li>
       </ul>
@@ -128,13 +128,23 @@
 
 {{ content }}
 
-<footer class="container">
-    © 2013 Smart Chicago Collaborative
+<footer>
+    <div class="container">
+        <a href="http://www.smartchicagocollaborative.org/"><img src="/img/scc.png" width="189" height="50" alt="Smart Chicago Collaborative"></a>
+
+        <ul class="nav nav-pills pull-right">
+            <li><a href="/">Home</a></li>
+            <li><a href="/photos/">Photos</a></li>
+            <li><a href="http://annotations.chicagoworksforyou.com/">Annotations</a></li>
+            <li><a href="/about/">About</a></li>
+        </ul>
+    </div>
 </footer>
 
 <script>
 window.apiDomain = "{{ site.api_domain }}";
 </script>
+
 {% if site.debug %}
 <script src="/lib/jquery.1.9.1.js"></script>
 <script src="/lib/angular.min.js"></script>
@@ -146,6 +156,7 @@ window.apiDomain = "{{ site.api_domain }}";
 <script src="http://code.highcharts.com/3.0.5/highcharts.js"></script>
 <script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
 {% endif %}
+
 <script src="/lib/bootstrap.custom.min.js"></script>
 <script src="/lib/moment.min.js"></script>
 <script src="/lib/twix.min.js"></script>
@@ -154,6 +165,19 @@ window.apiDomain = "{{ site.api_domain }}";
 <script src="/js/scripts.js"></script>
 {% if page.has_js %}
 <script src="/js/{{ page.app }}.js"></script>
+{% endif %}
+
+{% if site.debug %}
+{% else %}
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-37739534-16', 'chicagoworksforyou.com');
+  ga('send', 'pageview');
+</script>
 {% endif %}
 </body>
 </html>

@@ -4,10 +4,10 @@ service_code: 4ffa4c69601827691b000018
 title: Abandoned Vehicle
 data_portal: https://data.cityofchicago.org/Service-Requests/311-Service-Requests-Abandoned-Vehicles/3c9v-pnva
 ---
-![Target: Rats](http://farm3.staticflickr.com/2808/9631380633_92989f725f_n.jpg "Photo by Daniel X. O'Neil")
+![Target: Rats](http://farm6.staticflickr.com/5054/5411340738_8a8c00cbea_n.jpg "Photo by Paul Kehrer")
 
 <figcaption>
-    Tow Me, Photo by <a href="http://www.flickr.com/photos/juggernautco/9631380633/">DXO</a>
+    Hauling Cars Away, Photo by <a href="http://www.flickr.com/photos/paulkehrer/5411340738/">paulkehrer</a>
 </figcaption>
 Per the [City of Chicago](https://data.cityofchicago.org/Service-Requests/311-Service-Requests-Abandoned-Vehicles/3c9v-pnva), A vehicle can be classified as abandoned if it meets one or more of the following criteria:
 

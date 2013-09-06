@@ -8,6 +8,7 @@ has_js: true
 
 <script>
 window.wardNum = {{ page.ward }};
+window.wardPath = {{ page.points }};
 </script>
 
 <div class="map">
@@ -28,8 +29,8 @@ window.wardNum = {{ page.ward }};
             </h1>
             <span ng-bind="data.thisDate"></span>
             &nbsp; •
-            <span class="open-count" ng-bind="data.openCount"></span>
-            <span class="closed-count" ng-bind="data.closedCount"></span>
+            <span class="open-count" ng-bind="data.openCount"></span> opened
+            <span class="closed-count" ng-bind="data.closedCount"></span> closed
         </div>
         <div class="move next span2">
             <a href="" ng-click="goToNextDate()">Next week »</a>
@@ -48,9 +49,15 @@ window.wardNum = {{ page.ward }};
                     <li ng-class="{active: service.slug == data.serviceObj.slug}" ng-repeat="service in data.services | orderBy:'name'"><a ng-href="#/{{ data.date }}/{{ service.slug }}/" ng-bind="service.name"></a></li>
                 </ul>
                 {% endraw %}
+
+                {% include share_box.html %}
             </div>
         </div>
         <div class="span9" ng-controller="wardChartCtrl" ng-switch on="data.action">
+            <section id="weekReview" class="weekReview">
+                <h3>Week in review</h3>
+                <div id="weekReview-chart" class="service-chart"></div>
+            </section>
             <section id="ttc" class="ttc">
                 <h3>Time-to-close ranking <small>(in days)</small></h3>
                 <p class="explanation" ng-show="data.inTTCchart">

@@ -2,6 +2,10 @@
 
 var serviceApp = angular.module('serviceApp', []).value('$anchorScroll', angular.noop);
 
+serviceApp.filter('escape', function() {
+    return window.encodeURIComponent;
+});
+
 serviceApp.config(function($routeProvider) {
     $routeProvider.
         when('/', {
@@ -21,13 +25,13 @@ serviceApp.factory('Data', function () {
         stSlug: serviceObj.slug,
         stName: serviceObj.name,
         dayColors: [
-            '#37c0b9',
-            '#37acc3',
-            '#3790c7',
-            '#3973c9',
-            '#3a56ca',
-            '#403ccc',
-            '#603fce'
+            '#1A3E50',
+            '#22546C',
+            '#2B6A88',
+            '#3380A4',
+            '#3A95C1',
+            '#54A5CC',
+            '#6FB4D5'
         ]
     };
 
@@ -35,8 +39,8 @@ serviceApp.factory('Data', function () {
         data.date = date.format(dateFormat);
         data.dateFormatted = date.format('MMM D, YYYY');
 
-        data.startDate = date.clone().day(0);
-        data.endDate = date.clone().day(6).max(window.yesterday);
+        data.startDate = date.clone().weekday(0);
+        data.endDate = date.clone().weekday(6).max(window.yesterday);
         data.duration = data.endDate.diff(data.startDate, 'days');
         data.thisDate = moment.duration(data.duration,"days").beforeMoment(data.endDate,true).format({implicitYear: false});
         data.pageTitle = data.thisDate + ' | ' + data.stName + ' | Chicago Works For You';
@@ -50,7 +54,7 @@ serviceApp.factory('Data', function () {
                 'i': i,
                 'date': day.format(),
                 'inFuture': inFuture,
-                'color': inFuture ? "#dddddd" : color
+                'color': inFuture ? "#e7e7e7" : color
             };
         });
 
@@ -108,14 +112,7 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
                 categories: categories
             },
             yAxis: {
-                opposite: true,
-                plotLines: [{
-                    id: 'avg',
-                    value: Data.cityAverage,
-                    color: 'black',
-                    width: 3,
-                    zIndex: 5
-                }]
+                opposite: true
             }
         });
     };
@@ -130,7 +127,6 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
         $http.jsonp(requestsURL).
             success(function(response, status, headers, config) {
                 Data.cityCount = response.CityData.Count;
-                Data.cityAverage = response.CityData.Count / 50;
 
                 var wardData = _.sortBy(response.WardData, function(ward, wardNum) {
                     ward.Ward = wardNum;
@@ -149,12 +145,11 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
                     }
                 });
 
-                var weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
                 var requestSeries = [];
                 for (var day in days) {
                     if (days[day].length > 0) {
                         requestSeries.push({
-                            name: weekdays[day],
+                            name: window.weekdays[day],
                             data: days[day],
                             stack: 0,
                             legendIndex: day + 1
@@ -198,8 +193,8 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
     $scope.$on(
         "$routeChangeSuccess",
         function ($e, $currentRoute, $previousRoute) {
-            Data.setDate(parseDate($routeParams.date, window.yesterday, $location));
-            Data.currURL = "#/" + Data.date + "/";
+            Data.setDate(parseDate($routeParams.date, window.lastWeekEnd, $location));
+            Data.currURL = window.urlBase + Data.date + "/";
             buildChart();
         }
     );
