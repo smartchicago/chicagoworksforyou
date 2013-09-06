@@ -1,0 +1,470 @@
+#! /usr/bin/env python
+
+"""
+pull in recent data from the NOAA Global Summary of the Day (GSOD)
+dataset.
+"""
+
+## - - - - - - - - - - - - - - - - - - - -
+
+import argparse
+import datetime
+import gzip
+import json
+import logging
+import pandas as pd
+import psycopg2
+import StringIO
+import sys
+import urllib
+
+## - - - - - - - - - - - - - - - - - - - -
+
+field_names = [
+	"STN" ,
+	"WBAN" ,
+	"YEARMODA" ,
+	"TEMP" ,
+	"TEMP_COUNT" ,
+	"DEWP" ,
+	"DEWP_COUNT" ,
+	"SLP" ,
+	"SLP_COUNT" ,
+	"STP" ,
+	"STP_COUNT" ,
+	"VISIB" ,
+	"VISIB_COUNT" ,
+	"WDSP" ,
+	"WDSP_COUNT" ,
+	"MXSPD" ,
+	"GUST" ,
+	"MAX" ,
+	"MAX_FLAG" ,
+	"MIN" ,
+	"MIN_FLAG" ,
+	"PRCP" ,
+	"PRCP_FLAG" ,
+	"SNDP" ,
+	"FRSHTT"
+]
+
+
+## these field descriptions are pulled verbatim from the NOAA GSOD docs
+
+field_widths = [
+
+	## FIELD   POSITION  TYPE   DESCRIPTION
+	## 
+	## 1 STN---  1-6       Int.   Station number (WMO/DATSAV3 number)
+	##                          for the location.
+	(0,6) ,
+
+	## 2 WBAN    8-12      Int.   WBAN number where applicable--this is the
+	##                          historical "Weather Bureau Air Force Navy"
+	##                          number - with WBAN being the acronym.
+	(7,12) ,
+
+	## 3 YEAR    15-18     Int.   The year.
+	## 
+	## - MODA    19-22     Int.   The month and day.
+	(14,22) ,
+
+	## 4 TEMP    25-30     Real   Mean temperature for the day in degrees
+	##                          Fahrenheit to tenths.  Missing = 9999.9
+	##                          (Celsius to tenths for metric version.)
+	(24,30) ,
+
+	## 5 Count   32-33     Int.   Number of observations used in 
+	##                          calculating mean temperature.
+
+	(31,33) ,
+
+	## 6 DEWP    36-41     Real   Mean dew point for the day in degrees
+	##                          Fahrenheit to tenths.  Missing = 9999.9
+
+	(35,41) ,
+
+	## 7 Count   43-44     Int.   Number of observations used in 
+	##                          calculating mean dew point.  
+
+	(42,44) ,
+
+	## 8 SLP     47-52     Real   Mean sea level pressure for the day
+	##                          in millibars to tenths.  Missing =       
+	##                          9999.9
+
+	(46,52) ,
+
+	## 9 Count   54-55     Int.   Number of observations used in 
+	##                          calculating mean sea level pressure.
+
+	(53,55) ,
+
+	## 10 STP     58-63     Real   Mean station pressure for the day
+	##                          in millibars to tenths.  Missing =       
+	##                          9999.9
+
+	(57,63) ,
+
+	## 11 Count   65-66     Int.   Number of observations used in 
+	##                          calculating mean station pressure.  
+
+	(64,66) ,
+
+	## 12 VISIB   69-73     Real   Mean visibility for the day in miles
+	##                          to tenths.  Missing = 999.9
+	##                          (Kilometers to tenths for metric version.)
+
+	(68,73) ,
+
+	## 13 Count   75-76     Int.   Number of observations used in 
+	##                          calculating mean visibility.      
+
+	(74,76) ,
+
+	## 14 WDSP    79-83     Real   Mean wind speed for the day in knots
+	##                          to tenths.  Missing = 999.9 
+	##                          (Meters/second to tenths for metric version.)
+
+	(78,83) ,
+
+	## 15 Count   85-86     Int.   Number of observations used in 
+	##                          calculating mean wind speed.
+
+	(84,86) ,
+
+	## 16 MXSPD   89-93     Real   Maximum sustained wind speed reported 
+	##                          for the day in knots to tenths.
+	##                          Missing = 999.9
+	##                          (Meters/second to tenths for metric version.)
+
+	(88,93) ,
+
+	## 17 GUST    96-100    Real   Maximum wind gust reported for the day
+	##                          in knots to tenths.  Missing = 999.9
+	##                          (Meters/second to tenths for metric version.)
+
+	(95,100) ,
+
+	## 18 MAX     103-108   Real   Maximum temperature reported during the 
+	##                          day in Fahrenheit to tenths--time of max 
+	##                          temp report varies by country and        
+	##                          region, so this will sometimes not be    
+	##                          the max for the calendar day.  Missing = 
+	##                          9999.9     
+	##                          (Celsius to tenths for metric version.)
+
+	(102,108) ,
+
+	## -- Flag    109-109   Char   Blank indicates max temp was taken from the
+	##                          explicit max temp report and not from the              
+	##                          'hourly' data.  * indicates max temp was 
+	##                          derived from the hourly data (i.e., highest
+	##                          hourly or synoptic-reported temperature).
+	(108,109) ,
+
+	## 19 MIN     111-116   Real   Minimum temperature reported during the 
+	##                          day in Fahrenheit to tenths--time of min 
+	##                          temp report varies by country and        
+	##                          region, so this will sometimes not be  
+	##                          the min for the calendar day.  Missing = 
+	##                          9999.9
+	##                          (Celsius to tenths for metric version.)
+
+	(110,116) ,
+
+	## -- Flag    117-117   Char   Blank indicates min temp was taken from the
+	##                          explicit min temp report and not from the              
+	##                          'hourly' data.  * indicates min temp was 
+	##                          derived from the hourly data (i.e., lowest
+	##                          hourly or synoptic-reported temperature).
+
+	(116,117) ,
+
+	## 20 PRCP    119-123   Real   Total precipitation (rain and/or melted
+	##                          snow) reported during the day in inches
+	##                          and hundredths; will usually not end 
+	##                          with the midnight observation--i.e., 
+	##                          may include latter part of previous day.
+	##                          .00 indicates no measurable              
+	##                          precipitation (includes a trace).        
+	##                          Missing = 99.99
+	##                          (For metric version, units = millimeters
+	##                          to tenths & missing = 999.9.)
+	##                          Note:  Many stations do not report '0' on
+	##                          days with no precipitation--therefore,  
+	##                          '99.99' will often appear on these days.
+	##                          Also, for example, a station may only
+	##                          report a 6-hour amount for the period 
+	##                          during which rain fell.
+	##                          See Flag field for source of data.
+
+	(118,123) ,
+
+	## -- Flag    124-124   Char   A = 1 report of 6-hour precipitation 
+	##                              amount.
+	##                          B = Summation of 2 reports of 6-hour 
+	##                              precipitation amount.
+	##                          C = Summation of 3 reports of 6-hour 
+	##                              precipitation amount.
+	##                          D = Summation of 4 reports of 6-hour 
+	##                              precipitation amount.
+	##                          E = 1 report of 12-hour precipitation
+	##                              amount.
+	##                          F = Summation of 2 reports of 12-hour
+	##                              precipitation amount.
+	##                          G = 1 report of 24-hour precipitation
+	##                              amount.
+	##                          H = Station reported '0' as the amount
+	##                              for the day (eg, from 6-hour reports),
+	##                              but also reported at least one
+	##                              occurrence of precipitation in hourly
+	##                              observations--this could indicate a
+	##                              trace occurred, but should be considered
+	##                              as incomplete data for the day.
+	##                          I = Station did not report any precip data
+	##                              for the day and did not report any
+	##                              occurrences of precipitation in its hourly
+	##                              observations--it's still possible that
+	##                              precip occurred but was not reported.
+
+	(123,124) ,
+
+	## 21 SNDP    126-130   Real   Snow depth in inches to tenths--last     
+	##                          report for the day if reported more than
+	##                          once.  Missing = 999.9
+	##                          (Centimeters to tenths for metric version.)
+	##                          Note:  Most stations do not report '0' on
+	##                          days with no snow on the ground--therefore,
+	##                          '999.9' will often appear on these days.
+	(125,130) ,
+
+	## 22 FRSHTT  133-138   Int.   Indicators (1 = yes, 0 = no/not          
+	##                          reported) for the occurrence during the 
+	##                          day of:
+	##                          Fog ('F' - 1st digit).
+	##                          Rain or Drizzle ('R' - 2nd digit).
+	##                          Snow or Ice Pellets ('S' - 3rd digit).
+	##                          Hail ('H' - 4th digit).
+	##                          Thunder ('T' - 5th digit).
+	##                          Tornado or Funnel Cloud ('T' - 6th       
+	##                          digit).
+	(132,138)
+
+]
+
+
+## Per the GSOD docs, unknown precipitation counts will be reported as 99.99
+## and unknown temperatures as 9999.9.
+UNKNOWN_TEMPERATURE = 9999.9
+UNKNOWN_PRECIPITATION = 99.99
+
+## we use the weather station ID for O'Hare airport
+STATION_ID = "725300-94846"
+
+## - - - - - - - - - - - - - - - - - - - -
+
+def parse_yearmoda( to_parse ):
+	"""
+	By default, Pandas tries to parse the date into a full datetime.
+	Here, we parse it into just a date.
+	"""
+	result = datetime.datetime.strptime( to_parse , "%Y%m%d" ).date()
+
+	return result
+
+def prepare_arg_parser():
+	result = argparse.ArgumentParser(
+		description='nightly update of day-to-day weather stats'
+	)
+	
+	result.add_argument(
+		'--config' ,
+		action='store' ,
+		dest='config_file' ,
+		required=True ,
+		help='config file, which includes database connectivity details'
+	)
+
+	result.add_argument(
+		'--verbose' ,
+		action='store_true' ,
+		dest='is_verbose' ,
+		help='print informational messages (NOTE: not suitable for cron jobs)'
+	)
+
+	return result
+
+
+def catch_unkown_value( to_check , unknown_value ):
+	"""
+	catch "unknown" reported values, and return the more sensible 'None'
+	"""
+
+	if to_check == unknown_value:
+		return None
+	else:
+		return to_check
+
+
+
+def parse_and_load( data_file , db_cursor , table_name ):
+
+
+	data_raw = pd.read_fwf(
+		data_file ,
+		colspecs=field_widths ,
+		names=field_names ,
+		compression="gzip" ,
+		skiprows=1 ,
+		index_col=2 , ## index on the date column, as we'll be selecting based on that
+		parse_dates=2 ,
+		date_parser=parse_yearmoda ## parse the index into a date, not a datetime
+	)
+
+	for row_instead , row in data_raw.iterrows() :
+
+		weather_date = row.name
+		high_temp_f = catch_unkown_value( row[ "MAX" ] , UNKNOWN_TEMPERATURE )
+		low_temp_f = catch_unkown_value( row[ "MIN" ] , UNKNOWN_TEMPERATURE )
+		precip_in = catch_unkown_value( row[ "PRCP" ] , UNKNOWN_PRECIPITATION )
+
+		db_cursor.execute(
+			db_insert_statement ,
+			( weather_date , high_temp_f , low_temp_f , precip_in )
+		)
+
+	return
+
+
+def get_latest_date( db_cursor , table_name ):
+	"""
+	Fetch the last date for which we have data in the database.
+	(We will attempt to load data for dates later than this.)
+	"""
+
+	db_query = "select max(weather_date) from {0}".format( table_name )
+	db_cursor.execute( db_query )
+
+	row = db_cursor.fetchone()
+
+	if row and row[0]:
+		result = row[0]
+	else:
+		## table is empty, so we load the entire file by setting the start date to epoch.
+		## We _should_ call the bulk-load tool in that case; but we prefer to let this
+		## cron job do what it's supposed to do, and let a human decide on the larger issue.
+		result = datetime.date( 1970 , 1 , 1 )
+
+	return result
+
+def pull_station_data( station_id , year , since_date ):
+
+	download_url = "ftp://ftp.ncdc.noaa.gov/pub/data/gsod/{year}/{station_id}-{year}.op.gz".format( station_id=station_id , year=year )
+	## download_url = "file://localhost/tmp/ohare-725300-94846-2013.op.gz" # for testing
+
+	result = None
+
+	try:
+		## Since Pandas read_fwf() has builtin URL + gzip support, why are we
+		## using urllib+StringIO+gzip?  Because read_fwf()'s gzip support expects
+		## the data to exist on-disk, whereas we'd prefer to read it straight
+		## from the remote resource.  Furthermore, we need StringIO between
+		## urllib + gzip because of how GzipFile wants to move back/forth through
+		## the data.  This is apparently fixed in Python 3.x but still exists
+		## in Python 2.x
+
+		download_data_raw = urllib.urlopen( download_url )
+		download_data_string = StringIO.StringIO( download_data_raw.read() )
+
+		data_raw = pd.read_fwf(
+			gzip.GzipFile( fileobj=download_data_string , mode="r" ) ,
+			colspecs=field_widths ,
+			names=field_names ,
+			skiprows=1 ,
+			index_col=2 , ## index on the date column, as we'll be selecting based on that
+			parse_dates=2 ,
+			date_parser=parse_yearmoda ## parse the index into a date, not a datetime
+		)
+
+		result = data_raw[ data_raw.index > since_date ]
+
+	except IOError as swallowed:
+		logging.warning( "encountered an error downloading from %s :" , download_url )
+		if swallowed.message:
+			logging.warning( swallowed.message )
+		else:
+			logging.warning( "(no error message)" )
+		logging.warning( "Please ignore if this is the first day of the year, as this year's NOAA data file may not have been created yet." )
+
+		result = pd.DataFrame()
+
+	return result
+
+def main():
+
+	logging.basicConfig( format='%(asctime)-15s - %(levelname)s - %(message)s' , level=logging.WARNING )
+	
+	parser = prepare_arg_parser()
+	parsed = parser.parse_args( sys.argv[1:] )
+
+	if parsed.is_verbose:
+		logging.root.setLevel( logging.INFO )
+
+	config_file = parsed.config_file
+
+	with open( config_file , "r" ) as config_file_handle:
+		config = json.load( config_file_handle )
+
+	table_name = config[ "db_table_weather_daily_stats" ]
+	db_insert_statement = "INSERT INTO {0} ( weather_date , high_temp_f , low_temp_f , precip_in ) VALUES ( %s , %s , %s , %s )".format( table_name )
+
+	db_connect_string = config[ "db_connect_string" ]
+
+	logging.info( "connecting to database" )
+	db_conn = psycopg2.connect( db_connect_string )
+	db_conn.set_session( autocommit=False )
+	db_cursor = db_conn.cursor()
+
+	latest_date = get_latest_date( db_cursor , table_name )
+	today = datetime.date.today()
+
+	## if this update job runs after midnight, or if we miss a couple of days,
+	## this catches the case for which latest_date and today are separted by
+	## a year-end.
+	years = range( latest_date.year , today.year + 1 )
+
+	for year in years:
+
+		parsed_data = pull_station_data( STATION_ID , year , latest_date )
+
+		for row_instead , row in parsed_data.iterrows() :
+
+			weather_date = row.name
+			high_temp_f = catch_unkown_value( row[ "MAX" ] , UNKNOWN_TEMPERATURE )
+			low_temp_f = catch_unkown_value( row[ "MAX" ] , UNKNOWN_TEMPERATURE )
+			precip_in = catch_unkown_value( row[ "PRCP" ] , UNKNOWN_PRECIPITATION )
+
+			logging.info( "about to insert: %s | %s | %s | %s" , weather_date , high_temp_f , low_temp_f , precip_in )
+
+			db_cursor.execute(
+				db_insert_statement ,
+				( weather_date , high_temp_f , low_temp_f , precip_in )
+			)
+
+		db_conn.commit()
+
+	logging.info( "disconnecting from database" )
+
+	db_cursor.close()
+	db_conn.close()
+
+	logging.info( "done" )
+
+
+
+## - - - - - - - - - - - - - - - - - - - -
+
+if '__main__' == __name__:
+	main()
+

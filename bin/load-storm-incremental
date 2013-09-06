@@ -1,0 +1,158 @@
+#! /usr/bin/env python
+
+"""
+pull in recent data from the NOAA/NCDC Storm Events database.
+"""
+
+## - - - - - - - - - - - - - - - - - - - -
+
+import argparse
+import datetime
+import gzip
+import json
+import logging
+import pandas as pd
+import psycopg2
+import StringIO
+import sys
+import urllib
+
+## - - - - - - - - - - - - - - - - - - - -
+
+def prepare_arg_parser():
+	result = argparse.ArgumentParser(
+		description='periodic update of storm event data'
+	)
+	
+	result.add_argument(
+		'--config' ,
+		action='store' ,
+		dest='config_file' ,
+		required=True ,
+		help='config file, which includes database connectivity details'
+	)
+
+	result.add_argument(
+		'--verbose' ,
+		action='store_true' ,
+		dest='is_verbose' ,
+		help='print informational messages (NOTE: not suitable for cron jobs)'
+	)
+
+	return result
+
+
+def parse_and_load( data_file , db_cursor , table_name ) :
+
+	db_insert_statement = "INSERT INTO {0} ( event_date , event_id , event_type ) VALUES ( %s , %s , %s )".format( table_name )
+
+	## By specifying column names here, instead of reading them out of the file,
+	## we protect ourselves against an empty result set.  (If there are no
+	## results, the service doesn't even output a header row, which sends Pandas
+	## read_csv() into a fit...)
+
+	column_names = [
+		"EVENT_ID" , "CZ_NAME_STR" , "BEGIN_LOCATION" , "BEGIN_DATE" , "BEGIN_TIME" ,
+		"EVENT_TYPE" , "MAGNITUDE" , "TOR_F_SCALE" , "DEATHS_DIRECT" , "INJURIES_DIRECT" ,
+		"DAMAGE_PROPERTY_NUM" , "DAMAGE_CROPS_NUM" , "STATE_ABBR" , "CZ_TIMEZONE" ,
+		"MAGNITUDE_TYPE" , "EPISODE_ID" , "CZ_TYPE" , "CZ_FIPS" , "WFO" ,
+		"INJURIES_INDIRECT" , "DEATHS_INDIRECT" , "SOURCE" , "FLOOD_CAUSE" , "TOR_LENGTH" ,
+		"TOR_WIDTH" , "BEGIN_RANGE" , "BEGIN_AZIMUTH" , "END_RANGE" , "END_AZIMUTH" ,
+		"END_LOCATION" , "BEGIN_LAT" , "BEGIN_LON" , "END_LAT" , "END_LON" ,
+		"ABSOLUTE_ROWNUMBER"
+	]
+
+	data_raw = pd.read_csv( data_file , names=column_names , skiprows=0 )
+
+	for row_instead , row in data_raw.iterrows() :
+
+		logging.info( "about to insert: %s | %s | %s " , row[ "BEGIN_DATE" ] , row[ "EVENT_ID" ] , row[ "EVENT_TYPE" ] )
+
+		db_cursor.execute(
+			db_insert_statement ,
+			( row[ "BEGIN_DATE" ] , row[ "EVENT_ID" ] , row[ "EVENT_TYPE" ] )
+		)
+
+	return
+
+
+
+def get_latest_date( db_cursor , table_name ):
+	"""
+	Fetch the last date for which we have data in the database.
+	(We will attempt to load data for dates later than this.)
+	"""
+
+	db_query = "select max(event_date) from {0}".format( table_name )
+	db_cursor.execute( db_query )
+
+	row = db_cursor.fetchone()
+
+	if row and row[0]:
+		result = row[0]
+	else:
+		## table is empty, so we load the entire file by setting the start of this year.
+		## (The Storm Events download service will return a maximum 500 events, silently
+		## discarding any events beyond that limit.  Based on our research, the service
+		## returns fewer than 500 events in a calendar year, so starting from the first
+		## of this year should be a safe bet.
+
+		result = datetime.date( datetime.date.today().year , 1 , 1 )
+
+	return result
+
+
+def main():
+
+	logging.basicConfig( format='%(asctime)-15s - %(levelname)s - %(message)s' , level=logging.WARNING )
+	
+	parser = prepare_arg_parser()
+	parsed = parser.parse_args( sys.argv[1:] )
+
+	if parsed.is_verbose:
+		logging.root.setLevel( logging.INFO )
+
+	config_file = parsed.config_file
+
+	with open( config_file , "r" ) as config_file_handle:
+		config = json.load( config_file_handle )
+
+	table_name = config[ "db_table_weather_storm_event" ]
+	db_connect_string = config[ "db_connect_string" ]
+
+	logging.info( "connecting to database" )
+	db_conn = psycopg2.connect( db_connect_string )
+	db_conn.set_session( autocommit=False )
+	db_cursor = db_conn.cursor()
+
+	latest_date = get_latest_date( db_cursor , table_name )
+	download_start_date = latest_date + datetime.timedelta(1)
+	download_end_date = datetime.date.today()
+
+	download_url = 'http://www.ncdc.noaa.gov/stormevents/csv?beginDate_mm={beginDate_mm}&beginDate_dd={beginDate_dd}&beginDate_yyyy={beginDate_yyyy}&endDate_mm={endDate_mm}&endDate_dd={endDate_dd}&endDate_yyyy={endDate_yyyy}&eventType=%28Z%29+ALL&county=ALL&zone=COOK&submitbutton=Search&statefips=17%2CILLINOIS'.format(
+		beginDate_mm=format( download_start_date.month , "02d" ) ,
+		beginDate_dd=format( download_start_date.day , "02d" ) ,
+		beginDate_yyyy=download_start_date.year ,
+
+		endDate_mm=format( download_end_date.month , "02d" ) ,
+		endDate_dd=format( download_end_date.day , "02d" ) ,
+		endDate_yyyy=download_end_date.year
+	)
+
+	logging.info( "downloading from \"%s\"" , download_url )
+	parse_and_load( download_url , db_cursor , table_name )
+	db_conn.commit()
+
+	logging.info( "disconnecting from database" )
+
+	db_cursor.close()
+	db_conn.close()
+
+	logging.info( "done" )
+
+
+
+## - - - - - - - - - - - - - - - - - - - -
+
+if '__main__' == __name__:
+	main()
