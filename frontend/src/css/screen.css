@@ -135,6 +135,9 @@ h3 {
   .share-box .email {
     background-image: url(/img/email.png); }
 
+.span3 .share-box b span {
+  display: none; }
+
 .weeknav {
   border-bottom: 1px solid #ddd; }
   .weeknav .row {
