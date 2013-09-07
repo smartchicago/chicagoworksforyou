@@ -60,8 +60,11 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 	vars := mux.Vars(request)
 	service_code := vars["service_code"]
 
-	// determine date range. default is last 7 days.
-	days, _ := strconv.Atoi(params["count"][0])
+	// determine date range.
+	days, err := strconv.Atoi(params.Get("count"))
+	if err != nil || days > 60 || days < 1 {
+		return nil, &ApiError{Msg: "invalid count, must be integer, 1..60", Code: 400}
+	}
 
 	chi, _ := time.LoadLocation("America/Chicago")
 	end, _ := time.ParseInLocation("2006-01-02", params["end_date"][0], chi)

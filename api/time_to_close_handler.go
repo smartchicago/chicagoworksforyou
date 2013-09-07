@@ -44,10 +44,17 @@ func TimeToCloseHandler(params url.Values, request *http.Request) ([]byte, *ApiE
 
 	// required
 	service_code := params.Get("service_code")
-	days, _ := strconv.Atoi(params["count"][0])
+	days, err := strconv.Atoi(params.Get("count"))
+	if err != nil || days > 60 || days < 1 {
+		return nil, &ApiError{Msg: "invalid count, must be integer, 1..60", Code: 400}
+	}
 
 	chi, _ := time.LoadLocation("America/Chicago")
-	end, _ := time.ParseInLocation("2006-01-02", params["end_date"][0], chi)
+	end, err := time.ParseInLocation("2006-01-02", params.Get("end_date"), chi)
+	if err != nil {
+		return nil, &ApiError{Msg: "invalid end_date", Code: 400}
+	}
+
 	end = end.AddDate(0, 0, 1) // inc to the following day
 	start := end.AddDate(0, 0, -days)
 

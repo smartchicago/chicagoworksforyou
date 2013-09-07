@@ -32,7 +32,11 @@ func DayCountsHandler(params url.Values, request *http.Request) ([]byte, *ApiErr
 	//           },
 
 	chi, _ := time.LoadLocation("America/Chicago")
-	end, _ := time.ParseInLocation("2006-01-02", params["day"][0], chi)
+	end, err := time.ParseInLocation("2006-01-02", params.Get("day"), chi)
+	if err != nil {
+		return nil, &ApiError{Msg: "invalid date", Code: 400}
+	}
+
 	end = end.AddDate(0, 0, 1) // inc to the following day
 	start := end.AddDate(0, 0, -1)
 
