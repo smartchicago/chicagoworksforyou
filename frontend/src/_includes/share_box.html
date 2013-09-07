@@ -1,7 +1,7 @@
 {% raw %}
 <div class="share-box">
     <b>Share this <span>view</span>:</b>
-    <a class="twitter" ng-href="https://twitter.com/share?text=Chicago%20Works%20For%20You&url={{ data.currURL|escape }}" target="_blank"></a>
+    <a class="twitter" ng-href="https://twitter.com/share?text={{ data.shareText|escape }}&url={{ data.currURL|escape }}" target="_blank"></a>
     <a class="facebook" ng-href="https://www.facebook.com/sharer/sharer.php?u={{ data.currURL|escape }}" target="_blank"></a>
     <a class="email" href="mailto:?subject=Chicago%20Works%20For%20You&body={{ data.currURL|escape }}"></a>
 </div>

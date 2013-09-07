@@ -252,9 +252,6 @@ dateMapApp.controller("dateCtrl", function ($scope, Data, $http, $location, $rou
                 }
             }
 
-            Data.urlSuffix = $currentRoute.pathParams.serviceSlug ? $currentRoute.pathParams.serviceSlug + '/' : '';
-            Data.currURL = window.urlBase + Data.date + "/" + Data.urlSuffix;
-
             var titleParts = [];
             if (_.isEmpty($currentRoute.pathParams)) {
                 titleParts.push('Chicago Works For You');
@@ -266,7 +263,11 @@ dateMapApp.controller("dateCtrl", function ($scope, Data, $http, $location, $rou
                 }
                 titleParts.push('Chicago Works For You');
             }
+
             Data.pageTitle = titleParts.join(' | ');
+            Data.urlSuffix = $currentRoute.pathParams.serviceSlug ? $currentRoute.pathParams.serviceSlug + '/' : '';
+            Data.currURL = window.urlBase + Data.date + "/" + Data.urlSuffix;
+            Data.shareText = Data.dateFormatted + ' in Chicago';
 
             if (!$previousRoute) {
                 // First load
