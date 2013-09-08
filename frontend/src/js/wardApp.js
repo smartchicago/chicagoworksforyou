@@ -278,7 +278,8 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
                         categories: window.weekdays
                     },
                     yAxis: {
-                        min: 0
+                        min: 0,
+                        title: ''
                     },
                     plotOptions: {
                         line: {
