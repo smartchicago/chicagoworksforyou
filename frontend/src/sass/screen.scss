@@ -212,7 +212,7 @@ h3 {
     }
 
     .curr {
-        @include box-shadow(inset -1px 0 0 #ddd, inset 1px 0 0 #ddd);
+        border: 1px solid #ddd;
         border-width: 0 1px;
         text-align: center;
         font-size: 16px;

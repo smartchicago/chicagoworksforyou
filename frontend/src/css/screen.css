@@ -143,9 +143,7 @@ h3 {
   .weeknav .row {
     position: relative; }
   .weeknav .curr {
-    -webkit-box-shadow: inset -1px 0 0 #dddddd, inset 1px 0 0 #dddddd;
-    -moz-box-shadow: inset -1px 0 0 #dddddd, inset 1px 0 0 #dddddd;
-    box-shadow: inset -1px 0 0 #dddddd, inset 1px 0 0 #dddddd;
+    border: 1px solid #ddd;
     border-width: 0 1px;
     text-align: center;
     font-size: 16px;
