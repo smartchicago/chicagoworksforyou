@@ -1,3 +1,6 @@
+.sprites-sprite, .share-box .twitter span, .share-box .facebook span, .share-box .email span, .weeknav .open-count:before, .weeknav .closed-count:before, .wardApp .ward-info .city a span, .wardApp .ward-info .twitter a span, .wardApp .ward-info .facebook a span, .wardApp .ward-info .councilmatic a span {
+  background: url('/img/sprites-sf774bfe12c.png') no-repeat; }
+
 html, body {
   height: 100%;
   font-family: 'Monda', Helvetica, sans-serif; }
@@ -117,23 +120,27 @@ h3 {
     line-height: 34px;
     margin-right: 6px;
     text-transform: uppercase;
-    font-size: 11px; }
+    font-size: 11px;
+    vertical-align: top; }
   .share-box a {
     display: inline-block;
-    width: 30px;
-    height: 34px;
     padding: 0;
-    background-position: 50% 50%;
-    background-repeat: no-repeat;
     opacity: .6; }
+    .share-box a span {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      margin: 9px 5px 7px;
+      background-position: 50% 50%;
+      background-repeat: no-repeat; }
     .share-box a:hover {
       opacity: .9; }
-  .share-box .twitter {
-    background-image: url(/img/twitter.png); }
-  .share-box .facebook {
-    background-image: url(/img/facebook.png); }
-  .share-box .email {
-    background-image: url(/img/email.png); }
+  .share-box .twitter span {
+    background-position: 0 0; }
+  .share-box .facebook span {
+    background-position: 0 -21px; }
+  .share-box .email span {
+    background-position: 0 -105px; }
 
 .span3 .share-box b span {
   display: none; }
@@ -155,16 +162,15 @@ h3 {
     .weeknav .open-count:before, .weeknav .closed-count:before {
       content: "";
       display: inline-block;
-      width: 16px;
-      height: 16px;
-      background-color: #555;
+      width: 15px;
+      height: 15px;
       margin-right: 4px;
       position: relative;
-      top: 1px; }
+      top: 2px; }
   .weeknav .open-count:before {
-    background: url(/img/circle.png) no-repeat 50% 2px; }
+    background-position: 0 -42px; }
   .weeknav .closed-count:before {
-    background: url(/img/check.png) no-repeat 50% 3px; }
+    background-position: 0 -62px; }
   .weeknav h1 {
     font-size: 28px;
     margin: 0; }
@@ -524,19 +530,23 @@ h3 {
       opacity: 1; }
   .wardApp .ward-info .icon a {
     display: inline-block;
-    width: 28px;
-    height: 28px;
     padding: 0;
-    background-position: 50% 50%;
-    background-repeat: no-repeat; }
-  .wardApp .ward-info .city a {
-    background-image: url(/img/star.png); }
-  .wardApp .ward-info .twitter a {
-    background-image: url(/img/twitter.png); }
-  .wardApp .ward-info .facebook a {
-    background-image: url(/img/facebook.png); }
-  .wardApp .ward-info .councilmatic a {
-    background-image: url(/img/gavel.png); }
+    line-height: 24px; }
+    .wardApp .ward-info .icon a span {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      margin: 6px 6px 0 6px;
+      background-position: 50% 50%;
+      background-repeat: no-repeat; }
+  .wardApp .ward-info .city a span {
+    background-position: 0 -82px; }
+  .wardApp .ward-info .twitter a span {
+    background-position: 0 0; }
+  .wardApp .ward-info .facebook a span {
+    background-position: 0 -21px; }
+  .wardApp .ward-info .councilmatic a span {
+    background-position: 0 -126px; }
 .wardApp .filter.affix {
   top: 12px; }
 .wardApp section {
