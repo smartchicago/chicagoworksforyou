@@ -1,0 +1,21 @@
+#! /bin/bash
+
+## purpose: add incremental weather data updates to the CWFY database
+## (both staging and production)
+
+
+## NOTE: This script is meant to be run as a cron job.
+
+## NOTE: This file is bundled with the CWFY code base, but it should be
+## copied to /etc/cron.daily/cwfy-update-weather
+
+RUN_AS_USER="ec2-user"
+
+CONFIG_FILE_STAGING="~/etl-config-staging.json"
+su - ${RUN_AS_USER} -c "/var/www/cwfy/staging/current/bin/load-storm-incremental --config ${CONFIG_FILE_STAGING}"
+su - ${RUN_AS_USER} -c "/var/www/cwfy/staging/current/bin/load-weather-incremental --config ${CONFIG_FILE_STAGING}"
+
+
+CONFIG_FILE_PRODUCTION="~/etl-config-production.json"
+su - ${RUN_AS_USER} -c "/var/www/cwfy/staging/current/bin/load-storm-incremental --config ${CONFIG_FILE_PRODUCTION}"
+su - ${RUN_AS_USER} -c "/var/www/cwfy/staging/current/bin/load-weather-incremental --config ${CONFIG_FILE_PRODUCTION}"
