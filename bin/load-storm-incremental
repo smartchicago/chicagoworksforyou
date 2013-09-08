@@ -62,7 +62,7 @@ def parse_and_load( data_file , db_cursor , table_name ) :
 		"ABSOLUTE_ROWNUMBER"
 	]
 
-	data_raw = pd.read_csv( data_file , names=column_names , skiprows=0 )
+	data_raw = pd.read_csv( data_file , names=column_names , skiprows=1 )
 
 	for row_instead , row in data_raw.iterrows() :
 
