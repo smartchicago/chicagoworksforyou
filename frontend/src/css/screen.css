@@ -1,5 +1,5 @@
-.sprites-sprite, .share-box .twitter span, .share-box .facebook span, .share-box .email span, .wardApp .ward-info .city a span, .wardApp .ward-info .twitter a span, .wardApp .ward-info .facebook a span, .wardApp .ward-info .councilmatic a span {
-  background: url('/img/sprites-s6ebea2c6e0.png') no-repeat; }
+.sprites-sprite, .share-box .twitter span, .share-box .facebook span, .share-box .email span, .weeknav .open-count:before, .weeknav .closed-count:before, .wardApp .ward-info .city a span, .wardApp .ward-info .twitter a span, .wardApp .ward-info .facebook a span, .wardApp .ward-info .councilmatic a span {
+  background: url('/img/sprites-sf774bfe12c.png') no-repeat; }
 
 html, body {
   height: 100%;
@@ -136,11 +136,11 @@ h3 {
     .share-box a:hover {
       opacity: .9; }
   .share-box .twitter span {
-    background-position: 0 -92px; }
+    background-position: 0 0; }
   .share-box .facebook span {
-    background-position: 0 -44px; }
+    background-position: 0 -21px; }
   .share-box .email span {
-    background-position: 0 -60px; }
+    background-position: 0 -105px; }
 
 .span3 .share-box b span {
   display: none; }
@@ -162,16 +162,15 @@ h3 {
     .weeknav .open-count:before, .weeknav .closed-count:before {
       content: "";
       display: inline-block;
-      width: 16px;
-      height: 16px;
-      background-color: #555;
+      width: 15px;
+      height: 15px;
       margin-right: 4px;
       position: relative;
-      top: 1px; }
+      top: 2px; }
   .weeknav .open-count:before {
-    background: url(/img/circle.png) no-repeat 50% 2px; }
+    background-position: 0 -42px; }
   .weeknav .closed-count:before {
-    background: url(/img/check.png) no-repeat 50% 3px; }
+    background-position: 0 -62px; }
   .weeknav h1 {
     font-size: 28px;
     margin: 0; }
@@ -541,13 +540,13 @@ h3 {
       background-position: 50% 50%;
       background-repeat: no-repeat; }
   .wardApp .ward-info .city a span {
-    background-position: 0 -108px; }
+    background-position: 0 -82px; }
   .wardApp .ward-info .twitter a span {
-    background-position: 0 -92px; }
+    background-position: 0 0; }
   .wardApp .ward-info .facebook a span {
-    background-position: 0 -44px; }
+    background-position: 0 -21px; }
   .wardApp .ward-info .councilmatic a span {
-    background-position: 0 -76px; }
+    background-position: 0 -126px; }
 .wardApp .filter.affix {
   top: 12px; }
 .wardApp section {

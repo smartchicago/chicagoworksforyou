@@ -1,9 +1,8 @@
 @import "compass/css3/box-shadow";
 @import "compass/css3/transition";
 
-$sprites-layout:smart;
+$sprites-spacing: 5px;
 @import "sprites/*.png";
-
 
 html, body {
     height: 100%;
@@ -243,25 +242,23 @@ h3 {
         &:before {
             content:"";
             display: inline-block;
-            width: 16px;
-            height: 16px;
-            background-color: #555;
-            // border-radius: 12px;
+            width: 15px;
+            height: 15px;
             margin-right: 4px;
             position: relative;
-            top: 1px;
+            top: 2px;
         }
     }
 
     .open-count {
         &:before {
-            background: url(/img/circle.png) no-repeat 50% 2px;
+            @include sprites-sprite(circle);
         }
     }
 
     .closed-count {
         &:before {
-            background: url(/img/check.png) no-repeat 50% 3px;
+            @include sprites-sprite(check);
         }
     }
 
