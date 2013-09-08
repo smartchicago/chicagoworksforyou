@@ -1,8 +1,9 @@
 @import "compass/css3/box-shadow";
 @import "compass/css3/transition";
 
-$sprites-spacing: 20px;
+$sprites-layout:smart;
 @import "sprites/*.png";
+
 
 html, body {
     height: 100%;
@@ -166,16 +167,22 @@ h3 {
         margin-right: 6px;
         text-transform: uppercase;
         font-size: 11px;
+        vertical-align: top;
     }
 
     a {
         display: inline-block;
-        width: 30px;
-        height: 34px;
         padding: 0;
-        background-position: 50% 50%;
-        background-repeat: no-repeat;
         opacity: .6;
+
+        span {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            margin: 9px 5px 7px;
+            background-position: 50% 50%;
+            background-repeat: no-repeat;
+        }
 
         &:hover {
             opacity: .9;
@@ -183,15 +190,21 @@ h3 {
     }
 
     .twitter {
-        background-image: url(/img/twitter.png);
+        span {
+            @include sprites-sprite(twitter);
+        }
     }
 
     .facebook {
-        background-image: url(/img/facebook.png);
+        span {
+            @include sprites-sprite(facebook);
+        }
     }
 
     .email {
-        background-image: url(/img/email.png);
+        span {
+            @include sprites-sprite(email);
+        }
     }
 }
 
@@ -807,35 +820,49 @@ h3 {
         .icon {
             a {
                 display: inline-block;
-                width: 28px;
-                height: 28px;
                 padding: 0;
-                background-position: 50% 50%;
-                background-repeat: no-repeat;
+                line-height: 24px;
+
+                span {
+                    display: inline-block;
+                    width: 16px;
+                    height: 16px;
+                    margin: 6px 6px 0 6px;
+                    background-position: 50% 50%;
+                    background-repeat: no-repeat;
+                }
             }
         }
 
         .city {
             a {
-                background-image: url(/img/star.png);
+                span {
+                    @include sprites-sprite(star);
+                }
             }
         }
 
         .twitter {
             a {
-                background-image: url(/img/twitter.png);
+                span {
+                    @include sprites-sprite(twitter);
+                }
             }
         }
 
         .facebook {
             a {
-                background-image: url(/img/facebook.png);
+                span {
+                    @include sprites-sprite(facebook);
+                }
             }
         }
 
         .councilmatic {
             a {
-                background-image: url(/img/gavel.png);
+                span {
+                    @include sprites-sprite(gavel);
+                }
             }
         }
     }
