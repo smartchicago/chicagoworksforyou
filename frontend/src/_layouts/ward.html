@@ -24,6 +24,9 @@ window.wardPath = {{ page.points }};
                 <div class="pagination ward-info">
                     <ul>
                         <li><a href="{{ page.website }}">{{ page.alderman }}</a></li>
+                        {% if page.citysite != '' %}
+                            <li class="icon city"><a href="{{ page.citysite }}"></a></li>
+                        {% endif %}
                         {% if page.twitter != '' %}
                             <li class="icon twitter"><a href="{{ page.twitter }}"></a></li>
                         {% endif %}
