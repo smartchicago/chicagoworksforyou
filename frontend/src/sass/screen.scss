@@ -1,6 +1,9 @@
 @import "compass/css3/box-shadow";
 @import "compass/css3/transition";
 
+$sprites-spacing: 20px;
+@import "sprites/*.png";
+
 html, body {
     height: 100%;
     font-family: 'Monda', Helvetica, sans-serif;
