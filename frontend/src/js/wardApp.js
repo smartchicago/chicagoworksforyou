@@ -5,8 +5,10 @@ var wardCenter = [wardCentroid[1], wardCentroid[0]];
 // JQUERY
 
 $(function () {
-    // MAKE FILTER STICK
+    // ADD TOOLTIPS TO ALDERMAN LINKS
+    $('.ward-info li a').tooltip();
 
+    // MAKE FILTER STICK
     $(".filter").affix({
         offset: { top: 530 }
     });

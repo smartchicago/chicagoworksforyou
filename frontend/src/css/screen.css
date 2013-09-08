@@ -182,6 +182,10 @@ h3 {
   .weeknav .next {
     right: 0; }
 
+.tooltip {
+  font-weight: normal;
+  font-size: 12px; }
+
 .home-wrap {
   position: relative;
   min-height: 100%;
