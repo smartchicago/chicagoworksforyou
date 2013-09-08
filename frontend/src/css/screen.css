@@ -527,6 +527,8 @@ h3 {
     padding: 0;
     background-position: 50% 50%;
     background-repeat: no-repeat; }
+  .wardApp .ward-info .city a {
+    background-image: url(/img/star.png); }
   .wardApp .ward-info .twitter a {
     background-image: url(/img/twitter.png); }
   .wardApp .ward-info .facebook a {
