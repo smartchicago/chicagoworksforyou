@@ -32,7 +32,7 @@ func WardHistoricHighsHandler(params url.Values, request *http.Request) ([]byte,
 		return nil, &ApiError{Msg: "invalid count, must be integer, 1..60", Code: 400}
 	}
 
-	service_code = params.Get("service_code")
+	service_code := params.Get("service_code")
 
 	chi, _ := time.LoadLocation("America/Chicago")
 	day, err := time.ParseInLocation("2006-01-02", params.Get("include_date"), chi)

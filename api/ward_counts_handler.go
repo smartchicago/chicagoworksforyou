@@ -88,7 +88,6 @@ func WardCountsHandler(params url.Values, request *http.Request) ([]byte, *ApiEr
 		ORDER BY requested_date DESC;`
 
 	var rows *sql.Rows
-	var err error
 
 	if service_code != "" {
 		query = fmt.Sprintf(query, "AND service_code = $4")

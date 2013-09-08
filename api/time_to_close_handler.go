@@ -59,7 +59,6 @@ func TimeToCloseHandler(params url.Values, request *http.Request) ([]byte, *ApiE
 	start := end.AddDate(0, 0, -days)
 
 	var rows *sql.Rows
-	var err error
 
 	if service_code != "" {
 		log.Printf("fetching a single service code %s", service_code)
