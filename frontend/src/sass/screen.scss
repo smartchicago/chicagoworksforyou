@@ -144,6 +144,16 @@ h3 {
     margin: 0 0 12px;
 }
 
+// Adding the .pull-x classes b/c they're missing from the custom Bootstrap component build
+
+.pull-left {
+    float: left;
+}
+
+.pull-right {
+    float: right;
+}
+
 .container.content {
     padding-top: 25px;
     padding-bottom: 25px;
