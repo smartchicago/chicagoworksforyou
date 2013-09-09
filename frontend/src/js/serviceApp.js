@@ -195,6 +195,7 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
         function ($e, $currentRoute, $previousRoute) {
             Data.setDate(parseDate($routeParams.date, window.lastWeekEnd, $location));
             Data.currURL = window.urlBase + Data.date + "/";
+            Data.shareText = Data.stName + ' requests on ' + Data.dateFormatted;
             buildChart();
         }
     );
