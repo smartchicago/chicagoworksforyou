@@ -10,8 +10,12 @@ The data tools are written in Python, and rely on a number of modules.  Some of 
 
 The following commands will prepare the host machine for running the data tools:
 
-	sudo yum -y install pytz python-dateutil numpy scipy python-psycopg2 python-requests
-	pip-python install pandas
+	sudo yum -y install pytz python-dateutil numpy scipy python-requests
+	pip-python install pandas==0.12.0
+	pip-python install psycopg2==2.5.1
+
+
+Please note: as of this writing (2013/08), the Amazon Linux distribution supplies a much older version of psycopg2 (v2.0) whereas we require features from version 2.5  That is why we install psycopg2 using `pip` instead of `yum`.
 
 
 ## configuration

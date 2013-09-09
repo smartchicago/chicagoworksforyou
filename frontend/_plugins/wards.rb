@@ -18,7 +18,14 @@ module Jekyll
       aldermen = read_data_object(base, 'aldermen2.json')
       ward_data = aldermen['data'][ward]
       self.data['alderman'] = ward_data['ALDERMAN']
-      self.data['website'] = ward_data['WEBSITE']
+
+      website = ward_data['WEBSITE']
+      if (website == "")
+        website = ward_data['CITY_WEBSITE']
+      end
+
+      self.data['website'] = website
+      self.data['citysite'] = ward_data['CITY_WEBSITE']
       self.data['twitter'] = ward_data['TWITTER']
       self.data['facebook'] = ward_data['FACEBOOK']
       self.data['councilmatic'] = ward_data['COUNCILMATIC']

@@ -5,8 +5,10 @@ var wardCenter = [wardCentroid[1], wardCentroid[0]];
 // JQUERY
 
 $(function () {
-    // MAKE FILTER STICK
+    // ADD TOOLTIPS TO ALDERMAN LINKS
+    $('.ward-info li a').tooltip();
 
+    // MAKE FILTER STICK
     $(".filter").affix({
         offset: { top: 530 }
     });
@@ -250,19 +252,34 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
                         marginBottom: 50
                     },
                     series: [{
+                        id: 1,
                         data: opened,
                         name: "Requests opened",
-                        id: 1
+                        lineColor: "#3380A4",
+                        lineWidth: 3,
+                        marker: {
+                            symbol: "circle",
+                            radius: 7
+                        },
+                        zIndex: 200
                     },{
+                        id: 2,
                         data: closed,
                         name: "Requests closed",
-                        id: 1
+                        lineColor: "#666",
+                        lineWidth: 0,
+                        marker: {
+                            symbol: 'url(/img/check.png)',
+                            radius: 3
+                        },
+                        zIndex: 300
                     }],
                     xAxis: {
                         categories: window.weekdays
                     },
                     yAxis: {
-                        min: 0
+                        min: 0,
+                        title: ''
                     },
                     plotOptions: {
                         line: {
