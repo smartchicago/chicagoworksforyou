@@ -1,3 +1,4 @@
+@charset "UTF-8";
 .sprites-sprite, .share-box .twitter span, .share-box .facebook span, .share-box .email span, .weeknav .open-count:before, .weeknav .closed-count:before, .wardApp .ward-info .city a span, .wardApp .ward-info .twitter a span, .wardApp .ward-info .facebook a span, .wardApp .ward-info .councilmatic a span, footer .scc-nav .twitter, footer .scc-nav .facebook, footer .scc-nav .github {
   background: url('/img/sprites-se5e660fc8b.png') no-repeat; }
 
@@ -40,7 +41,7 @@ html, body {
       border-right: 1px solid rgba(255, 255, 255, 0.1); }
       .topnav .nav > li > a {
         padding: 12px 18px;
-        font-size: 12px;
+        font-size: 14px;
         text-transform: uppercase;
         outline: none;
         color: #bbb; }

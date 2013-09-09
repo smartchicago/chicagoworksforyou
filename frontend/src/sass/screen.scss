@@ -50,7 +50,7 @@ html, body {
 
             > a {
                 padding: 12px 18px;
-                font-size: 12px;
+                font-size: 14px;
                 text-transform: uppercase;
                 outline: none;
                 color: #bbb;
@@ -108,8 +108,10 @@ html, body {
     }
 }
 
-.navbar .nav > li > .dropdown-menu:after {
-    left: 40px;
+.navbar {
+    .nav > li > .dropdown-menu:after {
+        left: 40px;
+    }
 }
 
 .navbar-search {
