@@ -506,17 +506,17 @@ h3 {
     width: 14px;
     height: 14px; }
   .wardApp .legend .outgoing:before {
-    background: #D6E3EB;
+    background: #9CBED3;
     border: 1px dashed #182a35;
     width: 16px;
     height: 16px; }
   .wardApp .legend .incoming:before {
-    background: white;
+    background: #486778;
     border: 1px dashed #182a35;
     width: 16px;
     height: 16px; }
   .wardApp .legend .remaining:before {
-    background: #75A2BD; }
+    background: #5892B5; }
 .wardApp .ward-info {
   display: inline-block;
   position: relative;

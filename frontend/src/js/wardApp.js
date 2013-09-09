@@ -56,7 +56,7 @@ wardApp.factory('Data', function ($http) {
                 opacity: 1,
                 weight: 2,
                 color: '#182A35',
-                fillOpacity: 0.7,
+                fillOpacity: 0.9,
                 fillColor: '#4888AF'
             }
         ).addTo(window.chicagoMap);
@@ -70,8 +70,8 @@ wardApp.factory('Data', function ($http) {
                         dashArray: '3',
                         weight: 1,
                         color: '#000',
-                        fillOpacity: 0.65,
-                        fillColor: 'white'
+                        fillOpacity: 0.9,
+                        fillColor: '#36596D'
                     },
                     'Outgoing': {
                         opacity: 1,
