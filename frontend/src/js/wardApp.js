@@ -529,6 +529,7 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
 
             Data.urlSuffix = $currentRoute.pathParams.serviceSlug ? $currentRoute.pathParams.serviceSlug + '/' : '';
             Data.currURL = window.urlBase + Data.date + "/" + Data.urlSuffix;
+            Data.shareText = 'Ward ' + window.wardNum + ' on ' + Data.dateFormatted;
 
             if (!$previousRoute || $previousRoute.redirectTo || $currentRoute.pathParams.serviceSlug != $previousRoute.pathParams.serviceSlug) {
                 Data.serviceObj = {};
