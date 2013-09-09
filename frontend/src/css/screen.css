@@ -40,7 +40,7 @@ html, body {
       border-right: 1px solid rgba(255, 255, 255, 0.1); }
       .topnav .nav > li > a {
         padding: 12px 18px;
-        font-size: 12px;
+        font-size: 14px;
         text-transform: uppercase;
         outline: none;
         color: #bbb; }
@@ -64,15 +64,15 @@ html, body {
     display: inline-block;
     list-style-type: none;
     margin: 0; }
-    .dropdown-set ul li a {
-      text-align: right;
-      padding: 0 8px;
-      display: block; }
-      .dropdown-set ul li a:hover {
-        background: #0081c2;
-        color: #fff;
-        text-decoration: none;
-        border-radius: 4px; }
+  .dropdown-set li a {
+    text-align: right;
+    padding: 0 8px;
+    display: block; }
+    .dropdown-set li a:hover {
+      background: #0081c2;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 4px; }
 
 .navbar .nav > li > .dropdown-menu:after {
   left: 40px; }
@@ -100,6 +100,12 @@ h3 {
   font-size: 24px;
   line-height: 28px;
   margin: 0 0 12px; }
+
+.pull-left {
+  float: left; }
+
+.pull-right {
+  float: right; }
 
 .container.content {
   padding-top: 25px;
@@ -684,3 +690,23 @@ footer {
   position: absolute;
   top: 5px;
   left: -10px; }
+
+@media (max-device-width: 600px) {
+  .topnav .nav > li > a {
+    font-size: 18px;
+    padding: 18px; }
+
+  .dropdown-set {
+    width: 215px; }
+
+  .dropdown-menu li a {
+    font-size: 18px;
+    padding-top: 6px;
+    padding-bottom: 6px; }
+
+  .st-list > li > a {
+    font-size: 16px; }
+
+  .nav-pills > li > a {
+    padding-top: 9px;
+    padding-bottom: 9px; } }
