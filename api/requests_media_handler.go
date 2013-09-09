@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -63,13 +62,13 @@ func RequestsMediaHandler(params url.Values, request *http.Request) ([]byte, *Ap
                 ORDER BY requested_datetime DESC;`, start)
 
 	if err != nil {
-		log.Print("error loding media objects ", err)
+		return backend_error(err)
 	}
 
 	for rows.Next() {
 		sr := SR{}
 		if err := rows.Scan(&sr.Service_name, &sr.Address, &sr.Media_url, &sr.Service_request_id, &sr.Ward); err != nil {
-			log.Print("error ", err)
+			return backend_error(err)
 		}
 
 		sr_with_media = append(sr_with_media, sr)

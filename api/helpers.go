@@ -33,7 +33,7 @@ func endpoint(f ApiEndpoint) http.HandlerFunc {
 
 		if err != nil {
 			log.Printf(err.Error())
-			http.Error(w, err.Msg, err.Code)
+			http.Error(w, string(dumpJson(err)), err.Code)
 		}
 
 		w.Write(WrapJson(response, params["callback"]))
@@ -57,4 +57,9 @@ func dumpJson(in interface{}) []byte {
 		log.Printf("error marshalling to json: %s", err)
 	}
 	return out
+}
+
+func backend_error(err error) ([]byte, *ApiError) {
+	log.Printf("backend error: %s", err)
+	return nil, &ApiError{Msg: "backend error, retry your request later.", Code: 500}
 }
