@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"net/http"
 	"net/url"
 )
@@ -38,7 +37,7 @@ func ServicesHandler(params url.Values, request *http.Request) ([]byte, *ApiErro
 	rows, err := api.Db.Query("SELECT COUNT(*), service_code, service_name FROM service_requests WHERE duplicate IS NULL GROUP BY service_code,service_name;")
 
 	if err != nil {
-		log.Fatal("error fetching data for ServicesHandler", err)
+		return backend_error(err)
 	}
 
 	for rows.Next() {
@@ -46,7 +45,7 @@ func ServicesHandler(params url.Values, request *http.Request) ([]byte, *ApiErro
 		var service_code, service_name string
 
 		if err := rows.Scan(&count, &service_code, &service_name); err != nil {
-			log.Fatal("error reading row", err)
+			return backend_error(err)
 		}
 
 		row := ServicesCount{Count: count, Service_code: service_code, Service_name: service_name}

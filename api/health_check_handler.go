@@ -18,7 +18,7 @@ func HealthCheckHandler(params url.Values, request *http.Request) ([]byte, *ApiE
 
 	err := api.Db.QueryRow("SELECT service_request_id FROM service_requests ORDER BY requested_datetime DESC LIMIT 1").Scan(&health_check.SR)
 	if err != nil {
-		log.Printf("error fetching most recent SR: %s", err)
+		return backend_error(err)
 	}
 
 	// calculate overall health

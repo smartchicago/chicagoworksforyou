@@ -19,12 +19,12 @@ func WardBoundariesHandler(params url.Values, request *http.Request) ([]byte, *A
 	//   "2015": 4
 	// }
 
-	lat, err := strconv.ParseFloat(params["lat"][0], 32)
+	lat, err := strconv.ParseFloat(params.Get("lat"), 32)
 	if err != nil {
 		return nil, &ApiError{Code: 400, Msg: "bad latitude value"}
 	}
 
-	long, err := strconv.ParseFloat(params["long"][0], 32)
+	long, err := strconv.ParseFloat(params.Get("long"), 32)
 	if err != nil {
 		return nil, &ApiError{Code: 400, Msg: "bad longitude value"}
 	}

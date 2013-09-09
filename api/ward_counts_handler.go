@@ -66,7 +66,11 @@ func WardCountsHandler(params url.Values, request *http.Request) ([]byte, *ApiEr
 	days, _ := strconv.Atoi(params.Get("count"))
 
 	chi, _ := time.LoadLocation("America/Chicago")
-	end, _ := time.ParseInLocation("2006-01-02", params.Get("end_date"), chi)
+	end, err := time.ParseInLocation("2006-01-02", params.Get("end_date"), chi)
+	if err != nil {
+		return nil, &ApiError{Msg: "invalid end_date", Code: 400}
+	}
+
 	end = end.AddDate(0, 0, 1) // inc to the following day
 	start := end.AddDate(0, 0, -days)
 
@@ -84,7 +88,6 @@ func WardCountsHandler(params url.Values, request *http.Request) ([]byte, *ApiEr
 		ORDER BY requested_date DESC;`
 
 	var rows *sql.Rows
-	var err error
 
 	if service_code != "" {
 		query = fmt.Sprintf(query, "AND service_code = $4")

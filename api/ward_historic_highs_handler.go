@@ -27,22 +27,17 @@ func WardHistoricHighsHandler(params url.Values, request *http.Request) ([]byte,
 	vars := mux.Vars(request)
 	ward_id := vars["id"]
 
-	days, _ := strconv.Atoi(params["count"][0])
-
-	var service_code string
-	if _, present := params["service_code"]; present {
-		service_code = params["service_code"][0]
+	days, err := strconv.Atoi(params.Get("count"))
+	if err != nil || days < 1 || days > 60 {
+		return nil, &ApiError{Msg: "invalid count, must be integer, 1..60", Code: 400}
 	}
 
-	var day time.Time
-	if _, present := params["include_date"]; present {
-		chi, _ := time.LoadLocation("America/Chicago")
-		d, err := time.ParseInLocation("2006-01-02", params["include_date"][0], chi)
+	service_code := params.Get("service_code")
 
-		if err != nil {
-			// FIXME: handle bad dates
-		}
-		day = d
+	chi, _ := time.LoadLocation("America/Chicago")
+	day, err := time.ParseInLocation("2006-01-02", params.Get("include_date"), chi)
+	if err != nil {
+		return nil, &ApiError{Msg: "invalid include_date", Code: 400}
 	}
 
 	// if service_code provided, find highs for that code

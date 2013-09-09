@@ -68,10 +68,10 @@ func main() {
 
 type ApiEndpoint func(url.Values, *http.Request) ([]byte, *ApiError)
 type ApiError struct {
-	Msg  string // human readable error message
-	Code int    // http status code to use
+	Msg  string `json:"message"` // human readable error message
+	Code int    `json:"status"`  // http status code to use
 }
 
 func (e *ApiError) Error() string {
-	return fmt.Sprintf("api error %d: %s", e.Code, e.Msg)
+	return fmt.Sprintf("[%d] api error: %s", e.Code, e.Msg)
 }
