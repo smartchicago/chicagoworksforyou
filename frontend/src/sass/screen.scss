@@ -1004,6 +1004,33 @@ footer {
             color: #666;
         }
     }
+
+    .scc-nav {
+        .icon {
+            width: 24px;
+            height: 24px;
+            padding: 0;
+            opacity: .7;
+            display: inline-block;
+
+            &:hover {
+                opacity: .9;
+                background-color:#fff;
+            }
+        }
+
+        .twitter {
+            @include sprites-sprite(twitter24);
+        }
+
+        .facebook {
+            @include sprites-sprite(facebook24);
+        }
+
+        .github {
+            @include sprites-sprite(octocat24);
+        }
+    }
 }
 
 .dateMapApp {
