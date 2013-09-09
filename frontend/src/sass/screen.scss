@@ -50,7 +50,7 @@ html, body {
 
             > a {
                 padding: 12px 18px;
-                font-size: 12px;
+                font-size: 14px;
                 text-transform: uppercase;
                 outline: none;
                 color: #bbb;
@@ -90,26 +90,28 @@ html, body {
         display: inline-block;
         list-style-type: none;
         margin: 0;
+    }
 
-        li {
-            a {
-                text-align: right;
-                padding: 0 8px;
-                display: block;
+    li {
+        a {
+            text-align: right;
+            padding: 0 8px;
+            display: block;
 
-                &:hover {
-                    background:#0081c2;
-                    color: #fff;
-                    text-decoration: none;
-                    border-radius: 4px;
-                }
+            &:hover {
+                background:#0081c2;
+                color: #fff;
+                text-decoration: none;
+                border-radius: 4px;
             }
         }
     }
 }
 
-.navbar .nav > li > .dropdown-menu:after {
-    left: 40px;
+.navbar {
+    .nav > li > .dropdown-menu:after {
+        left: 40px;
+    }
 }
 
 .navbar-search {
@@ -142,6 +144,16 @@ h3 {
     font-size: 24px;
     line-height: 28px;
     margin: 0 0 12px;
+}
+
+// Adding the .pull-x classes b/c they're missing from the custom Bootstrap component build
+
+.pull-left {
+    float: left;
+}
+
+.pull-right {
+    float: right;
 }
 
 .container.content {
@@ -1084,4 +1096,52 @@ footer {
     position: absolute;
     top: 5px;
     left: -10px;
+}
+
+@media (max-device-width: 600px) {
+    .topnav {
+        .brand {
+            // Show smaller brand
+        }
+
+        .nav {
+            > li {
+                > a {
+                    font-size: 18px;
+                    padding: 18px;
+                }
+            }
+        }
+    }
+
+    .dropdown-set {
+        width: 215px;
+    }
+
+    .dropdown-menu {
+        li {
+            a {
+                font-size: 18px;
+                padding-top: 6px;
+                padding-bottom: 6px;
+            }
+        }
+    }
+
+    .st-list {
+        > li {
+            > a {
+                font-size: 16px;
+            }
+        }
+    }
+
+    .nav-pills {
+        > li {
+            > a {
+                padding-top: 9px;
+                padding-bottom: 9px;
+            }
+        }
+    }
 }
