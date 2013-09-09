@@ -61,7 +61,6 @@ func TimeToCloseHandler(params url.Values, request *http.Request) ([]byte, *ApiE
 	var rows *sql.Rows
 
 	if service_code != "" {
-		log.Printf("fetching a single service code %s", service_code)
 		rows, err = api.Db.Query(`SELECT EXTRACT('EPOCH' FROM AVG(closed_datetime - requested_datetime)) AS avg_ttc, COUNT(service_request_id), ward
         		FROM service_requests 
         		WHERE closed_datetime IS NOT NULL 
@@ -73,7 +72,6 @@ func TimeToCloseHandler(params url.Values, request *http.Request) ([]byte, *ApiE
         		GROUP BY ward 
         		ORDER BY avg_ttc DESC;`, start, end, service_code)
 	} else {
-		log.Printf("fetching all service codes")
 		rows, err = api.Db.Query(`SELECT EXTRACT('EPOCH' FROM AVG(closed_datetime - requested_datetime)) AS avg_ttc, COUNT(service_request_id), ward
         		FROM service_requests 
         		WHERE closed_datetime IS NOT NULL 
@@ -86,7 +84,7 @@ func TimeToCloseHandler(params url.Values, request *http.Request) ([]byte, *ApiE
 	}
 
 	if err != nil {
-		log.Print("error fetching time to close", err)
+		return backend_error(err)
 	}
 
 	type TimeToClose struct {
@@ -105,7 +103,7 @@ func TimeToCloseHandler(params url.Values, request *http.Request) ([]byte, *ApiE
 	for rows.Next() {
 		var ttc TimeToClose
 		if err := rows.Scan(&ttc.Time, &ttc.Count, &ttc.Ward); err != nil {
-			log.Print("error loading time to close counts", err)
+			return backend_error(err)
 		}
 		ttc.Time = ttc.Time / 86400.0 // convert from seconds to days
 		times[strconv.Itoa(ttc.Ward)] = ttc
@@ -135,7 +133,7 @@ func TimeToCloseHandler(params url.Values, request *http.Request) ([]byte, *ApiE
 	}
 
 	if err != nil {
-		log.Print("error fetching city average time to close", err)
+		return backend_error(err)
 	}
 
 	city_average.Time = city_average.Time / 86400.0 // convert to days

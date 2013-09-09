@@ -80,7 +80,7 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 		string(service_code), start, end)
 
 	if err != nil {
-		log.Fatal("error fetching data for RequestCountsHandler", err)
+		return backend_error(err)
 	}
 
 	data := make(map[int]map[string]int)
@@ -91,7 +91,7 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 		var date time.Time
 
 		if err := rows.Scan(&count, &ward, &date); err != nil {
-			// FIXME: handle
+			return backend_error(err)
 		}
 
 		if _, present := data[ward]; !present {
@@ -100,8 +100,6 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 
 		data[ward][date.Format("2006-01-02")] = count
 	}
-
-	// log.Printf("data\n\n%+v", data)
 
 	type WardCount struct {
 		Ward    int
@@ -132,8 +130,6 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 		}
 	}
 
-	// log.Printf("counts\n\n%+v", counts)
-
 	rows, err = api.Db.Query(`SELECT SUM(total)/365.0, ward
              FROM daily_counts
              WHERE requested_date >= DATE(NOW() - INTERVAL '1 year')
@@ -141,14 +137,14 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
              GROUP BY ward;`, service_code)
 
 	if err != nil {
-		log.Print("error querying for year average", err)
+		return backend_error(err)
 	}
 
 	for rows.Next() {
 		var count float32
 		var ward int
 		if err := rows.Scan(&count, &ward); err != nil {
-			log.Print("error loading ward counts ", err, count, ward)
+			return backend_error(err)
 		}
 
 		tmp := counts[ward]
@@ -172,7 +168,7 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 		string(service_code), start, end).Scan(&city_total.Count)
 
 	if err != nil {
-		log.Print("error loading city-wide total count for %s. err: %s", service_code, err)
+		return backend_error(err)
 	}
 
 	city_total.Average = float32(city_total.Count) / 365.0
@@ -188,7 +184,7 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 	for rows.Next() {
 		var daily_max int
 		if err := rows.Scan(&daily_max); err != nil {
-			log.Print("error loading city-wide daily max for %s. err: %s", service_code, err)
+			return backend_error(err)
 		}
 
 		city_total.DailyMax = append(city_total.DailyMax, daily_max)

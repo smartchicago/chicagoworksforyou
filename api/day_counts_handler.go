@@ -58,14 +58,14 @@ func DayCountsHandler(params url.Values, request *http.Request) ([]byte, *ApiErr
              ORDER BY cnt;`, start, end)
 
 	if err != nil {
-		log.Print("error loading day counts: ", err)
+		return backend_error(err)
 	}
 
 	for rows.Next() {
 		var dc DayCount
 		var sc string
 		if err := rows.Scan(&sc, &dc.Count); err != nil {
-			log.Print("error loading daily counts from DB", err)
+			return backend_error(err)
 		}
 		counts[sc] = dc
 	}
@@ -86,13 +86,13 @@ func DayCountsHandler(params url.Values, request *http.Request) ([]byte, *ApiErr
                      ORDER BY total DESC;`, start, end, sc)
 
 		if err != nil {
-			log.Print("error loading top wards: ", err)
+			return backend_error(err)
 		}
 
 		for rows.Next() {
 			var ward, total int
 			if err := rows.Scan(&total, &ward); err != nil {
-				log.Print("error loading daily counts from DB", err)
+				return backend_error(err)
 			}
 			wards[ward] = total
 		}
@@ -119,14 +119,14 @@ func DayCountsHandler(params url.Values, request *http.Request) ([]byte, *ApiErr
 		ORDER BY avg_reports;`)
 
 	if err != nil {
-		log.Print("error loading averages", err)
+		return backend_error(err)
 	}
 
 	for rows.Next() {
 		var sc string
 		var avg float32
 		if err := rows.Scan(&sc, &avg); err != nil {
-			// handle
+			return backend_error(err)
 		}
 
 		tmp := counts[sc]
