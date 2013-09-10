@@ -26,9 +26,9 @@ window.currServiceType = '{{ page.service_code }}';
 </div>
 </div>
 
-<div class="container" ng-controller="sidebarCtrl">
+<div class="container">
     {% raw %}
-    <div class="pagination">
+    <div class="pagination" ng-controller="weekdayCtrl">
         <ul>
             <li class="day" ng-repeat="day in data.days" ng-class="{future: day.inFuture}">
                 <a style="background: {{ day.color }};" ng-href="/#/{{ day.date|date:'yyyy-MM-dd' }}/{{ data.stSlug }}/" ng-disabled="day.inFuture">

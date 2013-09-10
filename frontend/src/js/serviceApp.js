@@ -89,7 +89,7 @@ serviceApp.controller("headerCtrl", function ($scope, Data, $location) {
 
 });
 
-serviceApp.controller("sidebarCtrl", function ($scope, Data) {
+serviceApp.controller("weekdayCtrl", function ($scope, Data) {
     $scope.data = Data;
 });
 
