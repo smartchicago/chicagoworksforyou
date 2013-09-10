@@ -381,7 +381,7 @@ h3 {
     max-width: 130px;
     @include box-shadow(0 0 10px fade-out(black,.7));
 
-    .ie & {
+    .ielt9 & {
         background:#E7F4FA;
     }
 
@@ -986,6 +986,10 @@ h3 {
                 transition: padding 400ms ease;
                 font-weight: bold;
                 font-size: 12px;
+
+                .ielt9 & {
+                    background:black;
+                }
             }
 
             em {

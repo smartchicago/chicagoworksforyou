@@ -251,7 +251,7 @@ h3 {
   -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); }
-  .ie .legend {
+  .ielt9 .legend {
     background: #E7F4FA; }
   .legend h4 {
     font-size: 15px;
@@ -615,6 +615,8 @@ h3 {
       transition: padding 400ms ease;
       font-weight: bold;
       font-size: 12px; }
+      .ielt9 .mediaApp .images .image span {
+        background: black; }
     .mediaApp .images .image em {
       font-style: normal; }
     .mediaApp .images .image:hover span {
