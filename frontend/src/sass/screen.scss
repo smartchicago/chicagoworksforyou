@@ -1014,10 +1014,28 @@ footer {
             font-size: 14px;
             margin-left: 14px;
             color: #666;
+
+            &:hover {
+                background-color: #fff;
+                color: #000;
+            }
         }
     }
 
     .scc-nav {
+        padding-top: 15px;
+
+        li {
+            float: left;
+            font-size: 14px;
+            margin-left: 14px;
+
+            a {
+                display: inline;
+                margin: 0;
+            }
+        }
+
         .icon {
             width: 24px;
             height: 24px;
@@ -1027,21 +1045,16 @@ footer {
 
             &:hover {
                 opacity: .9;
-                background-color:#fff;
             }
-        }
-
-        .twitter {
-            @include sprites-sprite(twitter24);
-        }
-
-        .facebook {
-            @include sprites-sprite(facebook24);
         }
 
         .github {
             @include sprites-sprite(octocat24);
         }
+    }
+
+    .widgets {
+        padding-top: 11px;
     }
 }
 
