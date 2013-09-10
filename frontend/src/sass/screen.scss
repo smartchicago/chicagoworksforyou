@@ -31,8 +31,13 @@ html, body {
 
 .topnav {
     background:url(/img/bluetweed.png) repeat 0 0;
-    @include box-shadow(inset 0 -3px 9px fade-out(black,.85));
+    // @include box-shadow(inset 0 -3px 9px fade-out(black,.85));
+    @include box-shadow(inset 0 -7px 0 #3E4C5C);
     z-index: 5000;
+
+    .navbar-inner {
+        @include box-shadow(none);
+    }
 
     .brand {
         font-size: 18px;
@@ -40,6 +45,11 @@ html, body {
         margin: 0 15px 0 0;
         text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
         color: white;
+        opacity: .92;
+
+        &:hover {
+            opacity: 1;
+        }
     }
 
     .nav {
@@ -49,11 +59,17 @@ html, body {
             // border-right: 1px solid fade-out(white,.9);
 
             > a {
-                padding: 12px 18px;
+                padding: 13px 18px 18px;
                 font-size: 15px;
                 // text-transform: uppercase;
                 outline: none;
                 color: #bbb;
+                background: none !important;
+
+                &:hover {
+                    // background: none;
+                    color: #fff;
+                }
             }
         }
 
@@ -72,6 +88,13 @@ html, body {
         width: 940px;
         padding: 0;
         border: none;
+    }
+}
+
+.navbar-inverse .nav .active > a {
+    &, &:hover {
+        @include box-shadow(inset 0 -7px 0 white);
+        // background: none;
     }
 }
 

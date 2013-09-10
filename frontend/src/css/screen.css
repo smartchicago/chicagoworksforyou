@@ -24,21 +24,31 @@ html, body {
 
 .topnav {
   background: url(/img/bluetweed.png) repeat 0 0;
-  -webkit-box-shadow: inset 0 -3px 9px rgba(0, 0, 0, 0.15);
-  -moz-box-shadow: inset 0 -3px 9px rgba(0, 0, 0, 0.15);
-  box-shadow: inset 0 -3px 9px rgba(0, 0, 0, 0.15);
+  -webkit-box-shadow: inset 0 -7px 0 #3e4c5c;
+  -moz-box-shadow: inset 0 -7px 0 #3e4c5c;
+  box-shadow: inset 0 -7px 0 #3e4c5c;
   z-index: 5000; }
+  .topnav .navbar-inner {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none; }
   .topnav .brand {
     font-size: 18px;
     padding: 12px 0 0;
     margin: 0 15px 0 0;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
-    color: white; }
+    color: white;
+    opacity: .92; }
+    .topnav .brand:hover {
+      opacity: 1; }
   .topnav .nav > li > a {
-    padding: 12px 18px;
+    padding: 13px 18px 18px;
     font-size: 15px;
     outline: none;
-    color: #bbb; }
+    color: #bbb;
+    background: none !important; }
+    .topnav .nav > li > a:hover {
+      color: #fff; }
   .topnav .navbar-inner {
     background: none;
     border-radius: 0;
@@ -46,6 +56,11 @@ html, body {
     width: 940px;
     padding: 0;
     border: none; }
+
+.navbar-inverse .nav .active > a, .navbar-inverse .nav .active > a:hover {
+  -webkit-box-shadow: inset 0 -7px 0 white;
+  -moz-box-shadow: inset 0 -7px 0 white;
+  box-shadow: inset 0 -7px 0 white; }
 
 .dropdown-menu {
   top: 88%;
