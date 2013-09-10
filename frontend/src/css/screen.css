@@ -251,6 +251,8 @@ h3 {
   -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); }
+  .ie .legend {
+    background: #E7F4FA; }
   .legend h4 {
     font-size: 15px;
     line-height: 18px;

@@ -381,6 +381,10 @@ h3 {
     max-width: 130px;
     @include box-shadow(0 0 10px fade-out(black,.7));
 
+    .ie & {
+        background:#E7F4FA;
+    }
+
     h4 {
         font-size: 15px;
         line-height: 18px;
