@@ -54,7 +54,7 @@ wardApp.factory('Data', function ($http) {
         L.polygon(window.wardPath,
             {
                 opacity: 1,
-                weight: 2,
+                weight: 3,
                 color: '#182A35',
                 fillOpacity: 0.9,
                 fillColor: '#4888AF'
