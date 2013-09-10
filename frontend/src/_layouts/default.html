@@ -1,5 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="{{ page.app }}">
+<!--[if lt IE 7 ]> <html lang="en" class="ie ielt9 ie6" ng-app="{{ page.app }}"> <![endif]-->
+<!--[if IE 7 ]>    <html lang="en" class="ie ielt9 ie7" ng-app="{{ page.app }}"> <![endif]-->
+<!--[if IE 8 ]>    <html lang="en" class="ie ielt9 ie8" ng-app="{{ page.app }}"> <![endif]-->
+<!--[if IE 9 ]>    <html lang="en" class="ie ie9" ng-app="{{ page.app }}"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" ng-app="{{ page.app }}"> <!--<![endif]-->
 <head ng-controller="headCtrl">
 <meta charset="utf-8">
 <title ng-bind="data.pageTitle">{{ page.title }} | Chicago Works For You</title>
@@ -14,7 +18,6 @@
 <meta property="og:image" content="">
 {% endcomment %}
 
-
 {% if site.debug %}
 <link href="/css/bootstrap_custom/bootstrap.css" rel="stylesheet">
 <link rel="stylesheet" href="/lib/monda.css" />
@@ -25,10 +28,9 @@
 <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
 {% endif %}
 <link href="/css/screen.css" rel="stylesheet">
-<!--[if IE]>
-    <link href="/css/ie.css" media="screen, projection" rel="stylesheet" type="text/css" />
+<!--[if lt IE 9]>
+<script src="/lib/html5shiv.js"></script>
 <![endif]-->
-
 <link rel="shortcut icon" href="/images/favicon.png">
 </head>
 
@@ -142,12 +144,9 @@
 
         <div class="pull-left"><a href="http://www.smartchicagocollaborative.org/"><img src="/img/go-logo.png" width="50" height="50" alt="Smart Chicago Collaborative"></a></div>
 
-        <ul class="scc-nav nav pull-left">
-            <li><a href="http://www.smartchicagoapps.org/">Another</a> <a href="https://github.com/smartchicago/chicagoworksforyou/">project</a> by <a href="http://www.smartchicagocollaborative.org/">Smart Chicago</a></li>
-            {% comment %}
-            <li><a class="icon github" href="https://github.com/smartchicago/"></a></li>
-            {% endcomment %}
-        </ul>
+        <div class="scc-nav pull-left">
+            <a href="http://www.smartchicagoapps.org/">Another</a> <a href="https://github.com/smartchicago/chicagoworksforyou/">project</a> by <a href="http://www.smartchicagocollaborative.org/">Smart Chicago</a>
+        </div>
 
         <div class="widgets pull-right">
             <iframe class="pull-right" allowtransparency="true" frameborder="0" scrolling="no" style="border:none; overflow:hidden; width:95px; height:21px;"

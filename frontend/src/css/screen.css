@@ -34,6 +34,7 @@ html, body {
     box-shadow: none; }
   .topnav .brand {
     font-size: 18px;
+    width: 250px;
     padding: 12px 0 0;
     margin: 0 15px 0 0;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
@@ -211,7 +212,7 @@ h3 {
 .home-wrap {
   position: relative;
   min-height: 100%;
-  margin-top: -46px; }
+  top: -53px; }
 
 .wards-map {
   min-height: 100%;
@@ -250,6 +251,8 @@ h3 {
   -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); }
+  .ie .legend {
+    background: #E7F4FA; }
   .legend h4 {
     font-size: 15px;
     line-height: 18px;
@@ -612,6 +615,8 @@ h3 {
       transition: padding 400ms ease;
       font-weight: bold;
       font-size: 12px; }
+      .ielt9 .mediaApp .images .image span {
+        background: black; }
     .mediaApp .images .image em {
       font-style: normal; }
     .mediaApp .images .image:hover span {
@@ -636,25 +641,15 @@ footer {
     margin-top: 10px;
     padding: 25px 0 30px 0;
     border-top: 1px solid #ddd; }
-  footer .nav {
-    padding-top: 8px;
-    margin: 0; }
-    footer .nav a {
-      font-size: 14px;
-      margin-left: 14px;
+  footer .scc-nav {
+    padding: 15px 0 0 15px;
+    margin: 0;
+    font-size: 14px; }
+    footer .scc-nav a {
       color: #666; }
-      footer .nav a:hover {
+      footer .scc-nav a:hover {
         background-color: #fff;
         color: #000; }
-  footer .scc-nav {
-    padding-top: 15px; }
-    footer .scc-nav li {
-      float: left;
-      font-size: 14px;
-      margin-left: 14px; }
-      footer .scc-nav li a {
-        display: inline;
-        margin: 0; }
     footer .scc-nav .icon {
       width: 24px;
       height: 24px;

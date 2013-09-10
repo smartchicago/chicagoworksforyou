@@ -4,6 +4,8 @@
 $sprites-spacing: 5px;
 @import "sprites/*.png";
 
+// GENERAL
+
 html, body {
     height: 100%;
     font-family: 'Monda', Helvetica, sans-serif;
@@ -41,6 +43,7 @@ html, body {
 
     .brand {
         font-size: 18px;
+        width: 250px;
         padding: 12px 0 0;
         margin: 0 15px 0 0;
         text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
@@ -335,7 +338,7 @@ h3 {
 .home-wrap {
     position: relative;
     min-height: 100%;
-    margin-top: -46px; // Height of navbar
+    top: -53px; // Height of navbar
 }
 
 .wards-map {
@@ -377,6 +380,10 @@ h3 {
     margin: 67px 0 0;
     max-width: 130px;
     @include box-shadow(0 0 10px fade-out(black,.7));
+
+    .ie & {
+        background:#E7F4FA;
+    }
 
     h4 {
         font-size: 15px;
@@ -979,6 +986,10 @@ h3 {
                 transition: padding 400ms ease;
                 font-weight: bold;
                 font-size: 12px;
+
+                .ielt9 & {
+                    background:black;
+                }
             }
 
             em {
@@ -1029,33 +1040,17 @@ footer {
         border-top: 1px solid #ddd;
     }
 
-    .nav {
-        padding-top: 8px;
+    .scc-nav {
+        padding: 15px 0 0 15px;
         margin: 0;
+        font-size: 14px;
 
         a {
-            font-size: 14px;
-            margin-left: 14px;
             color: #666;
 
             &:hover {
                 background-color: #fff;
                 color: #000;
-            }
-        }
-    }
-
-    .scc-nav {
-        padding-top: 15px;
-
-        li {
-            float: left;
-            font-size: 14px;
-            margin-left: 14px;
-
-            a {
-                display: inline;
-                margin: 0;
             }
         }
 
