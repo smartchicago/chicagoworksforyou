@@ -43,15 +43,15 @@ html, body {
     }
 
     .nav {
-        border-left: 1px solid fade-out(white,.9);
+        // border-left: 1px solid fade-out(white,.9);
 
         > li {
-            border-right: 1px solid fade-out(white,.9);
+            // border-right: 1px solid fade-out(white,.9);
 
             > a {
                 padding: 12px 18px;
-                font-size: 14px;
-                text-transform: uppercase;
+                font-size: 15px;
+                // text-transform: uppercase;
                 outline: none;
                 color: #bbb;
             }

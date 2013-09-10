@@ -34,16 +34,11 @@ html, body {
     margin: 0 15px 0 0;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
     color: white; }
-  .topnav .nav {
-    border-left: 1px solid rgba(255, 255, 255, 0.1); }
-    .topnav .nav > li {
-      border-right: 1px solid rgba(255, 255, 255, 0.1); }
-      .topnav .nav > li > a {
-        padding: 12px 18px;
-        font-size: 14px;
-        text-transform: uppercase;
-        outline: none;
-        color: #bbb; }
+  .topnav .nav > li > a {
+    padding: 12px 18px;
+    font-size: 15px;
+    outline: none;
+    color: #bbb; }
   .topnav .navbar-inner {
     background: none;
     border-radius: 0;
