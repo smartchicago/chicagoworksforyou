@@ -639,25 +639,15 @@ footer {
     margin-top: 10px;
     padding: 25px 0 30px 0;
     border-top: 1px solid #ddd; }
-  footer .nav {
-    padding-top: 8px;
-    margin: 0; }
-    footer .nav a {
-      font-size: 14px;
-      margin-left: 14px;
+  footer .scc-nav {
+    padding: 15px 0 0 15px;
+    margin: 0;
+    font-size: 14px; }
+    footer .scc-nav a {
       color: #666; }
-      footer .nav a:hover {
+      footer .scc-nav a:hover {
         background-color: #fff;
         color: #000; }
-  footer .scc-nav {
-    padding-top: 15px; }
-    footer .scc-nav li {
-      float: left;
-      font-size: 14px;
-      margin-left: 14px; }
-      footer .scc-nav li a {
-        display: inline;
-        margin: 0; }
     footer .scc-nav .icon {
       width: 24px;
       height: 24px;

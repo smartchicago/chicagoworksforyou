@@ -1036,33 +1036,17 @@ footer {
         border-top: 1px solid #ddd;
     }
 
-    .nav {
-        padding-top: 8px;
+    .scc-nav {
+        padding: 15px 0 0 15px;
         margin: 0;
+        font-size: 14px;
 
         a {
-            font-size: 14px;
-            margin-left: 14px;
             color: #666;
 
             &:hover {
                 background-color: #fff;
                 color: #000;
-            }
-        }
-    }
-
-    .scc-nav {
-        padding-top: 15px;
-
-        li {
-            float: left;
-            font-size: 14px;
-            margin-left: 14px;
-
-            a {
-                display: inline;
-                margin: 0;
             }
         }
 
