@@ -211,7 +211,7 @@ h3 {
 .home-wrap {
   position: relative;
   min-height: 100%;
-  margin-top: -46px; }
+  top: -53px; }
 
 .wards-map {
   min-height: 100%;
