@@ -335,10 +335,12 @@ h3 {
 
 // MAP
 
+$navbar_height: 53px;
+
 .home-wrap {
     position: relative;
     min-height: 100%;
-    top: -53px; // Height of navbar
+    top: -1 * $navbar_height; // Height of navbar
 }
 
 .wards-map {
@@ -1079,6 +1081,8 @@ footer {
 .dateMapApp {
     footer {
         border-top: 1px solid #ccc;
+        position: relative;
+        top: -1 * $navbar_height;
 
         .container {
             margin-top: 0;

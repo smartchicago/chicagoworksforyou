@@ -664,7 +664,9 @@ footer {
     padding-top: 11px; }
 
 .dateMapApp footer {
-  border-top: 1px solid #ccc; }
+  border-top: 1px solid #ccc;
+  position: relative;
+  top: -53px; }
   .dateMapApp footer .container {
     margin-top: 0;
     border: none; }
