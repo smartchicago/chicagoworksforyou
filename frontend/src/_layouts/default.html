@@ -1,5 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="{{ page.app }}">
+<!--[if lt IE 7 ]> <html lang="en" class="ie ie6" ng-app="{{ page.app }}"> <![endif]-->
+<!--[if IE 7 ]>    <html lang="en" class="ie ie7" ng-app="{{ page.app }}"> <![endif]-->
+<!--[if IE 8 ]>    <html lang="en" class="ie ie8" ng-app="{{ page.app }}"> <![endif]-->
+<!--[if IE 9 ]>    <html lang="en" class="ie ie9" ng-app="{{ page.app }}"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" ng-app="{{ page.app }}"> <!--<![endif]-->
 <head ng-controller="headCtrl">
 <meta charset="utf-8">
 <title ng-bind="data.pageTitle">{{ page.title }} | Chicago Works For You</title>
