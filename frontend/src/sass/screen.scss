@@ -37,7 +37,14 @@ html, body {
     @include box-shadow(inset 0 -7px 0 #3E4C5C);
     z-index: 5000;
 
-    .navbar-inner {
+    .navbar-shell {
+        background:none;
+        border-radius: 0;
+        margin: 0 auto;
+        width: 940px;
+        height: 51px;
+        padding: 0;
+        border: none;
         @include box-shadow(none);
     }
 
@@ -82,15 +89,6 @@ html, body {
             > a {
             }
         }
-    }
-
-    .navbar-inner {
-        background:none;
-        border-radius: 0;
-        margin: 0 auto;
-        width: 940px;
-        padding: 0;
-        border: none;
     }
 }
 
