@@ -1,3 +1,4 @@
+@charset "UTF-8";
 .sprites-sprite, .share-box .twitter span, .share-box .facebook span, .share-box .email span, .weeknav .open-count:before, .weeknav .closed-count:before, .wardApp .ward-info .city a span, .wardApp .ward-info .twitter a span, .wardApp .ward-info .facebook a span, .wardApp .ward-info .councilmatic a span, footer .scc-nav .github {
   background: url('/img/sprites-s23c8b82364.png') no-repeat; }
 
@@ -463,6 +464,20 @@ h3 {
     text-shadow: none; }
     .serviceApp .day.future a b {
       color: #555; }
+.serviceApp .Mon {
+  background: #1A3E50; }
+.serviceApp .Tue {
+  background: #22546C; }
+.serviceApp .Wed {
+  background: #2B6A88; }
+.serviceApp .Thu {
+  background: #3380A4; }
+.serviceApp .Fri {
+  background: #3A95C1; }
+.serviceApp .Sat {
+  background: #54A5CC; }
+.serviceApp .Sun {
+  background: #6FB4D5; }
 .serviceApp .pagination {
   margin: 0 0 1em 0; }
 .serviceApp .pagination-wrap.affix {
