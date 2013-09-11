@@ -1055,10 +1055,12 @@ footer {
 
         a {
             color: #666;
+            border-bottom: 1px solid #d4d4d4;
 
             &:hover {
-                background-color: #fff;
+                text-decoration: none;
                 color: #000;
+                border-bottom-color: #888;
             }
         }
 

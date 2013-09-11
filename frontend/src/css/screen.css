@@ -660,10 +660,12 @@ footer {
     margin: 0;
     font-size: 14px; }
     footer .scc-nav a {
-      color: #666; }
+      color: #666;
+      border-bottom: 1px solid #d4d4d4; }
       footer .scc-nav a:hover {
-        background-color: #fff;
-        color: #000; }
+        text-decoration: none;
+        color: #000;
+        border-bottom-color: #888; }
     footer .scc-nav .icon {
       width: 24px;
       height: 24px;
