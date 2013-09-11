@@ -1,3 +1,10 @@
+// JQUERY
+
+$(function () {
+    // ADD TOOLTIPS TO ALDERMAN LINKS
+    $('.day a').tooltip();
+});
+
 // ANGULAR
 
 var serviceApp = angular.module('serviceApp', []).value('$anchorScroll', angular.noop);

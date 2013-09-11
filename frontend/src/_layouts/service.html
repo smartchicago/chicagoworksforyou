@@ -31,7 +31,7 @@ window.currServiceType = '{{ page.service_code }}';
     <div class="pagination" ng-controller="weekdayCtrl">
         <ul>
             <li class="day" ng-repeat="day in data.days" ng-class="{future: day.inFuture}">
-                <a ng-class="day.date|date:'EEE'" ng-href="/#/{{ day.date|date:'yyyy-MM-dd' }}/{{ data.stSlug }}/" ng-disabled="day.inFuture">
+                <a ng-class="day.date|date:'EEE'" title="See all {{ data.stName }} requests for {{ day.date|date:'MMMM d' }}" ng-href="/#/{{ day.date|date:'yyyy-MM-dd' }}/{{ data.stSlug }}/" ng-disabled="day.inFuture">
                     {{ day.date|date:'EEE' }}
                     <b>{{ day.date|date:'d' }}</b>
                     {{ day.date|date:'MMM' }}
