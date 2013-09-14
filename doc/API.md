@@ -241,7 +241,7 @@ Input:
 
 Output:
 
-The output is a three element map, with keys `DayData`, `CityData`, `WardData`. `DayData` is an array of dates contained in the results. The last element of the array will equal the end_date URL parameter. `CityData` contains the total number of SR opened in the City for the date range (`Count`), and the average number opened per day, for the entire city, over the past 365 days (`Average`). `WardData` contains an array of number of SR opened per day (`Counts`) and average (`Average`) number opened per day over the past 365 days for each of the 50 wards.
+The output is a three element map, with keys `DayData`, `CityData`, `WardData`. `DayData` is an array of dates contained in the results. The last element of the array will equal the end_date URL parameter. `CityData` contains the total number of SR opened in the City for the date range (`Count`), and the average number opened per day, for the entire city, over the past 365 days (`Average`). The `DailyMax` field is an array of seven highest counts for SR opened in a day. `WardData` contains an array of number of SR opened per day (`Counts`) and  average (`Average`) number opened per day over the past 365 days for each of the 50 wards.
 
     $ curl "http://localhost:5000/requests/4fd3b167e750846744000005/counts.json?end_date=2013-06-19&count=1"
     {
@@ -255,36 +255,58 @@ The output is a three element map, with keys `DayData`, `CityData`, `WardData`. 
         "2013-06-10"
       ],
       "CityData": {
-        "Average": 8.084931,
-        "Count": 2951
+        "Average": 8.065753,
+        "DailyMax": [
+          114,
+          106,
+          104,
+          102,
+          102,
+          94,
+          93
+        ],
+        "Count": 2944
       },
       "WardData": {
         "1": {
           "Counts": [
-            29,
-            19,
-            40,
-            60,
-            16,
-            2,
-            35
+            25,
+            21,
+            37,
+            59,
+            17,
+            3,
+            33
           ],
-          "Average": 16.671232
+          "Average": 6.917808
         },
         "10": {
           "Counts": [
-            22,
-            2,
+            23,
+            0,
             28,
-            6,
-            2,
+            8,
+            0,
             5,
             6
           ],
-          "Average": 6.60274
+          "Average": 2.4958904
         },
-      (response truncated)
-
+        "11": {
+          "Counts": [
+            42,
+            15,
+            8,
+            30,
+            0,
+            5,
+            26
+          ],
+          "Average": 8.087671
+        }
+        (... truncated ...)
+      }
+    }
 Request Counts by Day
 ---------------------
 

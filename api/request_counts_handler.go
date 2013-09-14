@@ -16,45 +16,44 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 	// Sample request and output:
 	// $ curl "http://localhost:5000/requests/4fd3b167e750846744000005/counts.json?end_date=2013-06-10&count=1"
 	// {
-	//   "DayData": [
-	//     "2013-06-04",
-	//     "2013-06-05",
-	//     "2013-06-06",
-	//     "2013-06-07",
-	//     "2013-06-08",
-	//     "2013-06-09",
-	//     "2013-06-10"
-	//   ],
-	//   "CityData": {
-	//     "Average": 8.084931,
-	//     "Count": 2951,
-	//     "DailyMax": 1234
-	//   },
-	//   "WardData": {
-	//     "1": {
-	//       "Counts": [
-	//         29,
-	//         19,
-	//         40,
-	//         60,
-	//         16,
-	//         2,
-	//         35
-	//       ],
-	//       "Average": 16.671232
-	//     },
-	//     "10": {
-	//       "Counts": [
-	//         22,
-	//         2,
-	//         28,
-	//         6,
-	//         2,
-	//         5,
-	//         6
-	//       ],
-	//       "Average": 6.60274
-	//     },
+        //   "DayData": [
+        //     "2013-06-10"
+        //   ],
+        //   "CityData": {
+        //     "Average": 1.5424658,
+        //     "DailyMax": [
+        //       114,
+        //       106,
+        //       104,
+        //       102,
+        //       102,
+        //       94,
+        //       93
+        //     ],
+        //     "Count": 563
+        //   },
+        //   "WardData": {
+        //     "1": {
+        //       "Counts": [
+        //         33
+        //       ],
+        //       "Average": 6.917808
+        //     },
+        //     "10": {
+        //       "Counts": [
+        //         6
+        //       ],
+        //       "Average": 2.4958904
+        //     },
+        //     "11": {
+        //       "Counts": [
+        //         26
+        //       ],
+        //       "Average": 8.087671
+        //     },
+        //     (... truncated ...)
+        //   }
+        // }
 
 	vars := mux.Vars(request)
 	service_code := vars["service_code"]
