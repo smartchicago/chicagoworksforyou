@@ -41,7 +41,7 @@ Services
 
 Path: `/services.json`
 
-Description: Return a list of all types of service requests stored in the database and count of each type.
+Description: Return a list of all types of service requests stored in the database and count of each type. The database contains all Chicago service request data going back to Jan 1, 2008.
 
 Input: none
 
