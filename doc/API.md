@@ -14,6 +14,15 @@ Requests missing a parameter or with malformed data will get a HTTP 400 response
 
 Any request may include a `callback` URL parameter, e.g. `callback=foo`; the response will use the callback parameter as a function name and wrap the response in a Javascript function call.
 
+Notes on the data
+-----------------
+
+All totals and calculations exclude service requests marked as duplicates.
+
+In some strange cases, the City of Chicago will provide a service request with ward = 0. We save these requests, and in some cases, calling an endpoint with ward = 0 will return these service requests. 
+
+
+
 Access/Registration
 -------------------
 
