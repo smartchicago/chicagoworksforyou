@@ -4,9 +4,9 @@ Chicago Works For You API Reference
 Overview
 --------
 
-The Chicago Works For You (CWFY) API lives at http://cwfy-api.smartchicagoapps.org/.
+The Chicago Works For You (CWFY) API lives at [http://cwfy-api.smartchicagoapps.org/](http://cwfy-api.smartchicagoapps.org/).
 
-There is a test/staging API running at http://cwfy-api-staging.smartchicagoapps.org/.
+There is a test/staging API running at [http://cwfy-api-staging.smartchicagoapps.org/](http://cwfy-api-staging.smartchicagoapps.org/).
 
 The CWFY API serves JSON(P) responses to HTTP requests. All requests to the API **must** be HTTP GET requests. Sample curl commands are included below. The API does not support any method other than GET.
 
@@ -26,7 +26,7 @@ Service requests are fetched from the City of Chicago Open311 API every 30 secon
 Access/Registration
 -------------------
 
-There are no access restrictions to the API at the moment. You do not need to register for access or use a special token to access the API. Smart Chicago appreciates knowing about interesting uses of the API. Developers are encouraged to email info@smartchicagocollaborative.org and share how they're using the API. Smart Chicago reserves the right to block access from applications or users that negatively impact the availability and functionality of the API.
+There are no access restrictions to the API at the moment. You do not need to register for access or use a special token to access the API. Smart Chicago appreciates knowing about interesting uses of the API. Developers are encouraged to email [info@smartchicagocollaborative.org](mailto:info@smartchicagocollaborative.org) and share how they're using the API. Smart Chicago reserves the right to block access from applications or users that negatively impact the availability and functionality of the API.
 
 Health Check
 ------------
