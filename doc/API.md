@@ -21,7 +21,7 @@ All totals and calculations exclude service requests marked as duplicates.
 
 In some strange cases, the City of Chicago will provide a service request with ward = 0. We save these requests, and in some cases, calling an endpoint with ward = 0 will return these service requests. 
 
-
+Service requests are fetched from the City of Chicago Open311 API every 30 seconds.
 
 Access/Registration
 -------------------
