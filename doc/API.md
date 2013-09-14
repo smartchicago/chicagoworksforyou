@@ -360,7 +360,7 @@ Output:
 Historic Highs
 --------------
 
-Path: `/wards/32/historic_highs.json`
+Path: `/wards/{ward}/historic_highs.json`
 
 Description: For a given ward and service code, return the n-many days with the most service requests opened.
 
