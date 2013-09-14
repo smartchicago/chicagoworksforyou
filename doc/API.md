@@ -10,7 +10,15 @@ There is a test/staging API running at [http://cwfy-api-staging.smartchicagoapps
 
 The CWFY API serves JSON(P) responses to HTTP requests. All requests to the API **must** be HTTP GET requests. Sample curl commands are included below. The API does not support any method other than GET.
 
-Requests missing a parameter or with malformed data will get a HTTP 400 response with a error message in the body. HTTP 500 indicates a backend issue and that the request **should not** be retried. The health check endpoint shows the overall health of the system. 
+Requests missing a parameter or with malformed data will get a HTTP 400 response with a JSON representation of the error. HTTP 500 indicates a backend issue and that the request **should not** be retried. The health check endpoint shows the overall health of the system. 
+
+Sample error response:
+
+    $ curl "http://localhost:5000/requests/time_to_close.json?end_date=&count=7&service_code=4fd3b167e750846744000005"
+    {
+      "message": "invalid end_date",
+      "status": 400
+    }
 
 Any request may include a `callback` URL parameter, e.g. `callback=foo`; the response will use the callback parameter as a function name and wrap the response in a Javascript function call.
 
