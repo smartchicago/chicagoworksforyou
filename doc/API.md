@@ -22,7 +22,7 @@ Health Check
 
 Path: `/health_check`
 
-Description: Display the current status of the system. Returns the current API version, database health, count of service requests in the database, and overall system health.
+Description: Display the current status of the system. Returns the current API version, database health, SR with the greatest 'requested_datetime' field (most recent request), and overall system health. The 'healthy' field indicates overall health, and should be the sole determinate whether or not to use the system.
 
 Input: none
 
