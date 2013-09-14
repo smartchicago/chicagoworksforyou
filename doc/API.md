@@ -453,7 +453,7 @@ Description: Chicago ward boundaries are changing in 2015. This endpoint returns
 
 Input: 
 
-        ward: integer 1..50. If present, the response will be limited to that ward. If omitted, all wards will be present.    
+        ward: integer 1..50
 
 Output: 
 
