@@ -8,7 +8,9 @@ The Chicago Works For You (CWFY) API lives at http://cwfy-api.smartchicagoapps.o
 
 There is a test/staging API running at http://cwfy-api-staging.smartchicagoapps.org/.
 
-The CWFY API serves JSON(P) responses to HTTP requests.
+The CWFY API serves JSON(P) responses to HTTP requests. All requests to the API **must** be HTTP GET requests. Sample curl commands are included below. The API does not support any method other than GET.
+
+Requests missing a parameter or with malformed data will get a HTTP 400 response with a error message in the body. HTTP 500 indicates a backend issue and that the request **should not** be retried. The health check endpoint shows the overall health of the system. 
 
 Any request may include a `callback` URL parameter, e.g. `callback=foo`; the response will use the callback parameter as a function name and wrap the response in a Javascript function call.
 
