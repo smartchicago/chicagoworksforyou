@@ -368,7 +368,7 @@ Input:
 
    	count: 		        number of historical high days to return.
   	service_code:       (optional) the code used by the City of Chicago to categorize service requests. If omitted, all service types will be returned
-   	include_date:       (optional) a YYYY-MM-DD formatted string. If present, the results will include the counts for that day, too. 
+   	include_date:       a YYYY-MM-DD formatted string. If present, the results will include the counts for that day, too. 
 
 Output: 
 
