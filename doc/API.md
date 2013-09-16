@@ -4,25 +4,44 @@ Chicago Works For You API Reference
 Overview
 --------
 
-The Chicago Works For You (CWFY) API lives at http://cwfy-api.smartchicagoapps.org/.
+The Chicago Works For You (CWFY) API lives at [http://cwfy-api.smartchicagoapps.org/](http://cwfy-api.smartchicagoapps.org/).
 
-There is a test/staging API running at http://cwfy-api-staging.smartchicagoapps.org/.
+There is a test/staging API running at [http://cwfy-api-staging.smartchicagoapps.org/](http://cwfy-api-staging.smartchicagoapps.org/).
 
-The CWFY API serves JSON(P) responses to HTTP requests.
+The CWFY API serves JSON(P) responses to HTTP requests. All requests to the API **must** be HTTP GET requests. Sample curl commands are included below. The API does not support any method other than GET.
+
+Requests missing a parameter or with malformed data will get a HTTP 400 response with a JSON representation of the error. HTTP 500 indicates a backend issue and that the request **should not** be retried. The health check endpoint shows the overall health of the system. 
+
+Sample error response:
+
+    $ curl "http://localhost:5000/requests/time_to_close.json?end_date=&count=7&service_code=4fd3b167e750846744000005"
+    {
+      "message": "invalid end_date",
+      "status": 400
+    }
 
 Any request may include a `callback` URL parameter, e.g. `callback=foo`; the response will use the callback parameter as a function name and wrap the response in a Javascript function call.
+
+Notes on the data
+-----------------
+
+All totals and calculations exclude service requests marked as duplicates.
+
+In some strange cases, the City of Chicago will provide a service request with ward = 0. We save these requests, and in some cases, calling an endpoint with ward = 0 will return these service requests. 
+
+Service requests are fetched from the City of Chicago Open311 API every 30 seconds.
 
 Access/Registration
 -------------------
 
-There are no access restrictions to the API at the moment. You do not need to register for access or use a special token to access the API. Smart Chicago appreciates knowing about interesting uses of the API. Developers are encouraged to email info@smartchicagocollaborative.org and share how they're using the API. Smart Chicago reserves the right to block access from applications or users that negatively impact the availability and functionality of the API.
+There are no access restrictions to the API at the moment. You do not need to register for access or use a special token to access the API. Smart Chicago appreciates knowing about interesting uses of the API. Developers are encouraged to email [info@smartchicagocollaborative.org](mailto:info@smartchicagocollaborative.org) and share how they're using the API. Smart Chicago reserves the right to block access from applications or users that negatively impact the availability and functionality of the API.
 
 Health Check
 ------------
 
 Path: `/health_check`
 
-Description: Display the current status of the system. Returns the current API version, database health, count of service requests in the database, and overall system health.
+Description: Display the current status of the system. Returns the current API version, database health, SR with the greatest 'requested_datetime' field (most recent request), and overall system health. The 'healthy' field indicates overall health, and should be the sole determinate whether or not to use the system.
 
 Input: none
 
@@ -41,7 +60,7 @@ Services
 
 Path: `/services.json`
 
-Description: Return a list of all types of service requests stored in the database and count of each type.
+Description: Return a list of all types of service requests stored in the database and count of each type. The database contains all Chicago service request data going back to Jan 1, 2008.
 
 Input: none
 
@@ -222,7 +241,7 @@ Input:
 
 Output:
 
-The output is a three element map, with keys `DayData`, `CityData`, `WardData`. `DayData` is an array of dates contained in the results. The last element of the array will equal the end_date URL parameter. `CityData` contains the total number of SR opened in the City for the date range (`Count`), and the average number opened per day, for the entire city, over the past 365 days (`Average`). `WardData` contains an array of number of SR opened per day (`Counts`) and average (`Average`) number opened per day over the past 365 days for each of the 50 wards.
+The output is a three element map, with keys `DayData`, `CityData`, `WardData`. `DayData` is an array of dates contained in the results. The last element of the array will equal the end_date URL parameter. `CityData` contains the total number of SR opened in the City for the date range (`Count`), and the average number opened per day, for the entire city, over the past 365 days (`Average`). The `DailyMax` field is an array of seven highest counts for SR opened in a day. `WardData` contains an array of number of SR opened per day (`Counts`) and  average (`Average`) number opened per day over the past 365 days for each of the 50 wards.
 
     $ curl "http://localhost:5000/requests/4fd3b167e750846744000005/counts.json?end_date=2013-06-19&count=1"
     {
@@ -236,36 +255,58 @@ The output is a three element map, with keys `DayData`, `CityData`, `WardData`. 
         "2013-06-10"
       ],
       "CityData": {
-        "Average": 8.084931,
-        "Count": 2951
+        "Average": 8.065753,
+        "DailyMax": [
+          114,
+          106,
+          104,
+          102,
+          102,
+          94,
+          93
+        ],
+        "Count": 2944
       },
       "WardData": {
         "1": {
           "Counts": [
-            29,
-            19,
-            40,
-            60,
-            16,
-            2,
-            35
+            25,
+            21,
+            37,
+            59,
+            17,
+            3,
+            33
           ],
-          "Average": 16.671232
+          "Average": 6.917808
         },
         "10": {
           "Counts": [
-            22,
-            2,
+            23,
+            0,
             28,
-            6,
-            2,
+            8,
+            0,
             5,
             6
           ],
-          "Average": 6.60274
+          "Average": 2.4958904
         },
-      (response truncated)
-
+        "11": {
+          "Counts": [
+            42,
+            15,
+            8,
+            30,
+            0,
+            5,
+            26
+          ],
+          "Average": 8.087671
+        }
+        (... truncated ...)
+      }
+    }
 Request Counts by Day
 ---------------------
 
@@ -358,7 +399,7 @@ Output:
 Historic Highs
 --------------
 
-Path: `/wards/32/historic_highs.json`
+Path: `/wards/{ward}/historic_highs.json`
 
 Description: For a given ward and service code, return the n-many days with the most service requests opened.
 
@@ -366,45 +407,25 @@ Input:
 
    	count: 		        number of historical high days to return.
   	service_code:       (optional) the code used by the City of Chicago to categorize service requests. If omitted, all service types will be returned
-   	include_date:       (optional) a YYYY-MM-DD formatted string. If present, the results will include the counts for that day, too. 
+   	include_date:       a YYYY-MM-DD formatted string. If present, the results will include the counts for that day, too. 
 
 Output: 
 
     $ curl "http://localhost:5000/wards/32/historic_highs.json?service_code=4fd3b167e750846744000005&count=10&include_date=2013-07-25"
     [
       {
-        "2013-07-25": 0
+        "Date": "2013-04-30",
+        "Count": 37
       },
       {
-        "2010-10-27": 94
+        "Date": "2013-05-20",
+        "Count": 36
       },
       {
-        "2008-07-01": 75
+        "Date": "2013-04-21",
+        "Count": 31
       },
-      {
-        "2010-10-25": 70
-      },
-      {
-        "2008-05-16": 68
-      },
-      {
-        "2010-10-14": 65
-      },
-      {
-        "2008-03-20": 64
-      },
-      {
-        "2009-01-16": 60
-      },
-      {
-        "2008-07-30": 60
-      },
-      {
-        "2008-05-27": 60
-      },
-      {
-        "2008-02-18": 60
-      }
+      (... truncated ...)
     ]
     
     # If service_code is omitted, all service_codes are returned:
@@ -414,31 +435,51 @@ Output:
       "Highs": {
         "4fd3b167e750846744000005": [
           {
-            "Date": "2008-10-14",
-            "Count": 55
+            "Date": "2013-06-27",
+            "Count": 35
           },
-
+          {
+            "Date": "2013-05-07",
+            "Count": 32
+          },
+          {
+            "Date": "2013-05-20",
+            "Count": 27
+          }
         ],
         "4fd3b656e750846c53000004": [
           {
-            "Date": "2008-01-07",
-            "Count": 79
+            "Date": "2013-06-28",
+            "Count": 23
           },
+          {
+            "Date": "2013-07-09",
+            "Count": 19
+          },
+          {
+            "Date": "2013-08-05",
+            "Count": 12
+          }
         ],
-        ( ... truncated ... )
+        (... truncated ...)
+
         ]
       },
       "Current": {
         "4fd3b167e750846744000005": {
           "Date": "2013-05-23",
-          "Count": 7
+          "Count": 8
         },
         "4fd3b656e750846c53000004": {
           "Date": "2013-05-23",
-          "Count": 2
+          "Count": 3
         },
-        ( ... truncated ... )
-
+        "4fd3b750e750846c5300001d": {
+          "Date": "2013-05-23",
+          "Count": 0
+        },
+        (... truncated ...)
+ 
       }
     }
     
@@ -451,7 +492,7 @@ Description: Chicago ward boundaries are changing in 2015. This endpoint returns
 
 Input: 
 
-        ward: integer 1..50. If present, the response will be limited to that ward. If omitted, all wards will be present.    
+        ward: integer 1..50
 
 Output: 
 
