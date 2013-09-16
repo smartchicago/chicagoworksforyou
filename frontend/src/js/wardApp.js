@@ -65,7 +65,7 @@ wardApp.factory('Data', function ($http) {
         $http.jsonp(blobsURL).
             success(function(response, status, headers, config) {
                 var polygonOptions = {
-                    'Incoming': {
+                    'incoming': {
                         opacity: 1,
                         dashArray: '3',
                         weight: 1,
@@ -73,7 +73,7 @@ wardApp.factory('Data', function ($http) {
                         fillOpacity: 0.9,
                         fillColor: '#36596D'
                     },
-                    'Outgoing': {
+                    'outgoing': {
                         opacity: 1,
                         dashArray: '3',
                         weight: 0.5,
@@ -86,14 +86,14 @@ wardApp.factory('Data', function ($http) {
                 _.each(response, function(group, key) {
                     _.each(group, function(blob) {
                         var tooltipText = {
-                            'Incoming': "Currently <b>Ward " + blob.Ward2013 + "</b>",
-                            'Outgoing': "<b>Ward " + blob.Ward2015 + "</b> in 2015"
+                            'incoming': "Currently <b>Ward " + blob.ward_2013 + "</b>",
+                            'outgoing': "<b>Ward " + blob.ward_2015 + "</b> in 2015"
                         };
                         var clickDestination = {
-                            'Incoming': '/ward/' + blob.Ward2013 + '/',
-                            'Outgoing': '/ward/' + blob.Ward2015 + '/'
+                            'incoming': '/ward/' + blob.ward_2013 + '/',
+                            'outgoing': '/ward/' + blob.ward_2015 + '/'
                         };
-                        L.geoJson(jQuery.parseJSON(blob.Boundary), {
+                        L.geoJson(jQuery.parseJSON(blob.boundary), {
                             style: function (feature) {
                                 return polygonOptions[key];
                             },
@@ -239,8 +239,8 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
                     return key;
                 });
 
-                var opened = _.pluck(days, 'Opened');
-                var closed = _.pluck(days, 'Closed');
+                var opened = _.pluck(days, 'opened');
+                var closed = _.pluck(days, 'closed');
 
                 Data.openCount = _.reduce(opened , function(total, val) { return total + val; }, 0);
                 Data.closedCount = _.reduce(closed , function(total, val) { return total + val; }, 0);
@@ -307,12 +307,12 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
     var renderTTCchart = function(ttcURL) {
         $http.jsonp(ttcURL).
             success(function(response, status, headers, config) {
-                var threshold = Math.min(Math.round(Math.max(response.Threshold, 1)), 10);
-                var extended = _.map(response.WardData, function(val, key) { return _.extend(val,{'Ward':parseInt(key,10)}); });
-                var filtered = _.filter(extended, function(ward) { return ward.Count >= threshold && ward.Ward > 0; });
-                var sorted = _.sortBy(filtered, 'Time');
-                var wards = _.pluck(sorted, 'Ward');
-                var times = _.pluck(sorted, 'Time');
+                var threshold = Math.min(Math.round(Math.max(response.threshold, 1)), 10);
+                var extended = _.map(response.ward_data, function(val, key) { return _.extend(val,{'ward':parseInt(key,10)}); });
+                var filtered = _.filter(extended, function(ward) { return ward.count >= threshold && ward.ward > 0; });
+                var sorted = _.sortBy(filtered, 'time');
+                var wards = _.pluck(sorted, 'ward');
+                var times = _.pluck(sorted, 'time');
                 var position = _.indexOf(wards, Data.wardNum);
                 var colors = _.map(wards, function(ward) { return ward == Data.wardNum ? 'black' : '#BED0DE'; });
 
@@ -322,7 +322,7 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
 
                 if (Data.inTTCchart) {
                     Data.wardRank = window.getOrdinal(position + 1);
-                    Data.wardTime = Math.round(sorted[position].Time * 100) / 100;
+                    Data.wardTime = Math.round(sorted[position].time * 100) / 100;
                 }
 
                 Highcharts.setOptions(highchartsDefaults);
@@ -355,9 +355,9 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
                     tooltip: {
                         formatter: function() {
                             var text = [
-                                '<b>' + 'Ward ' + sorted[this.x].Ward + '<b>',
+                                '<b>' + 'Ward ' + sorted[this.x].ward + '<b>',
                                 Math.round(this.y * 10) / 10 + ' day' + window.pluralize(this.y),
-                                sorted[this.x].Count + ' request' + window.pluralize(sorted[this.x].Count)
+                                sorted[this.x].count + ' request' + window.pluralize(sorted[this.x].count)
                             ];
                             return text.join('<br>');
                         }
@@ -380,12 +380,12 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
             $http.jsonp(highsURL).
                 success(function(response, status, headers, config) {
                     var historicHighs = [];
-                    _.each(response.Highs, function(val, key) {
+                    _.each(response.highs, function(val, key) {
                         historicHighs.push({
                             'service': lookupCode(key).name,
-                            'y': val ? val[0].Count: 0,
-                            'name': val ? moment(val[0].Date).format("MMM D, 'YY") : '',
-                            'current': response.Current[key].Count
+                            'y': val ? val[0].count: 0,
+                            'name': val ? moment(val[0].date).format("MMM D, 'YY") : '',
+                            'current': response.current[key].count
                         });
                     });
                     historicHighs = _.sortBy(historicHighs, 'service');
@@ -471,11 +471,11 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
         if (isFirstRender) {
             $http.jsonp(highsURL).
                 success(function(response, status, headers, config) {
-                    var todaysCount = _.last(response).Count;
+                    var todaysCount = _.last(response).count;
                     var highs = _.initial(response);
-                    var highCounts = _.pluck(highs, "Count");
+                    var highCounts = _.pluck(highs, "count");
                     var categories = _.map(highs, function(d) {
-                        var m = moment(d.Date);
+                        var m = moment(d.date);
                         return "<a href='/#/" + m.format(dateFormat) + "/" + Data.serviceObj.slug + "'>" + m.format("MMM D<br>YYYY") + "</a>";
                     });
 
