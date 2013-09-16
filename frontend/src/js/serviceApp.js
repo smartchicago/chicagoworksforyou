@@ -133,22 +133,22 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
 
         $http.jsonp(requestsURL).
             success(function(response, status, headers, config) {
-                Data.cityCount = response.CityData.Count;
+                Data.cityCount = response.city_data.Count;
 
-                var wardData = _.sortBy(response.WardData, function(ward, wardNum) {
-                    ward.Ward = wardNum;
+                var wardData = _.sortBy(response.ward_data, function(ward, wardNum) {
+                    ward.ward = wardNum;
                     return parseInt(wardNum, 10);
                 });
 
                 var categories = _.map(wardData, function (ward) {
-                    return '<a href="/ward/' + ward.Ward + '/#/' + Data.endDate.format(dateFormat) + '/' + Data.stSlug + '">Ward ' + ward.Ward + '</a>';
+                    return '<a href="/ward/' + ward.ward + '/#/' + Data.endDate.format(dateFormat) + '/' + Data.stSlug + '">Ward ' + ward.ward + '</a>';
                 });
 
                 var days = [[],[],[],[],[],[],[]];
                 _.each(wardData, function(ward) {
                     var i = 0;
-                    for (var count in ward.Counts) {
-                        days[i++].push(ward.Counts[count]);
+                    for (var count in ward.counts) {
+                        days[i++].push(ward.counts[count]);
                     }
                 });
 
@@ -166,10 +166,10 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
 
                 $http.jsonp(closesURL).
                     success(function(response, status, headers, config) {
-                        Data.cityCloseCount = response.CityData.Count;
-                        var nonZeroWards = _.reject(response.WardData, function(ward, key) { return key === '0'; });
+                        Data.cityCloseCount = response.city_data.Count;
+                        var nonZeroWards = _.reject(response.ward_data, function(ward, key) { return key === '0'; });
                         var wardCloseData = _.sortBy(nonZeroWards, function(ward, wardNum) {
-                            ward.Ward = wardNum;
+                            ward.ward = wardNum;
                             return parseInt(wardNum, 10);
                         });
                         var closeCounts = _.map(_.pluck(wardCloseData, 'Count'), function(val) { return val || null; });
