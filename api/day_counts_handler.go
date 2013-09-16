@@ -40,9 +40,9 @@ func DayCountsHandler(params url.Values, request *http.Request) ([]byte, *ApiErr
 	start := end.AddDate(0, 0, -1)
 
 	type DayCount struct {
-		Count   int
-		Average float32
-		Wards   map[string]int
+		Count   int            `json:"count"`
+		Average float32        `json:"average"`
+		Wards   map[string]int `json:"wards"`
 	}
 
 	counts := make(map[string]DayCount)

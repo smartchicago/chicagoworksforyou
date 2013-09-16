@@ -48,8 +48,11 @@ func RequestsMediaHandler(params url.Values, request *http.Request) ([]byte, *Ap
 	start := time.Now().AddDate(0, 0, -days)
 
 	type SR struct {
-		Service_name, Address, Media_url, Service_request_id string
-		Ward                                                 int
+		Service_name       string `json:"service_name"`
+		Address            string `json:"address"`
+		Media_url          string `json:"media_url"`
+		Service_request_id string `json:"service_request_id"`
+		Ward               int    `json:"ward"`
 	}
 
 	var sr_with_media []SR

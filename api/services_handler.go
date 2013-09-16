@@ -27,9 +27,9 @@ func ServicesHandler(params url.Values, request *http.Request) ([]byte, *ApiErro
 	// ]
 
 	type ServicesCount struct {
-		Count        int
-		Service_code string
-		Service_name string
+		Count        int    `json:"count"`
+		Service_code string `json:"service_code"`
+		Service_name string `json:"service_name"`
 	}
 
 	var services []ServicesCount

@@ -48,8 +48,8 @@ func TransitionTimeToCloseHandler(params url.Values, request *http.Request) ([]b
 	start := end.AddDate(0, 0, -days)
 
 	type TimeToClose struct {
-		Time  float64
-		Count int
+		Time  float64 `json:"time"`
+		Count int     `json:"count"`
 	}
 	var ttc TimeToClose
 

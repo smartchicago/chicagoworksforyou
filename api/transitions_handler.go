@@ -13,12 +13,15 @@ func TransitionsHandler(params url.Values, request *http.Request) ([]byte, *ApiE
 	ward := params.Get("ward")
 
 	type Transition struct {
-		Id, Ward2013, Ward2015 int
-		Boundary               string
+		Id       int    `json:"id"`
+		Ward2013 int    `json:"ward_2013"`
+		Ward2015 int    `json:"ward_2015"`
+		Boundary string `json:"boundary"`
 	}
 
 	type Changes struct {
-		Incoming, Outgoing []Transition
+		Incoming []Transition `json:"incoming"`
+		Outgoing []Transition `json:"outgoing"`
 	}
 
 	var c Changes
