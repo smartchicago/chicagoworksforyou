@@ -50,7 +50,7 @@ func main() {
 	}()
 
 	router := mux.NewRouter()
-	router.HandleFunc("/health_check", endpoint(HealthCheckHandler))
+	router.HandleFunc("/health_check.json", endpoint(HealthCheckHandler))
 	router.HandleFunc("/services.json", endpoint(ServicesHandler))
 	router.HandleFunc("/requests/time_to_close.json", endpoint(TimeToCloseHandler))
 	router.HandleFunc("/wards/{id}/counts.json", endpoint(WardCountsHandler))

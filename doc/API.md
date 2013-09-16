@@ -39,7 +39,7 @@ There are no access restrictions to the API at the moment. You do not need to re
 Health Check
 ------------
 
-Path: `/health_check`
+Path: `/health_check.json`
 
 Description: Display the current status of the system. Returns the current API version, database health, SR with the greatest 'requested_datetime' field (most recent request), and overall system health. The 'healthy' field indicates overall health, and should be the sole determinate whether or not to use the system.
 
@@ -47,7 +47,7 @@ Input: none
 
 Output:
 
-    $ curl http://localhost:5000/health_check
+    $ curl http://localhost:5000/health_check.json
     {
       "most_recent_sr_id": "13-01255471",
       "Database": true,
