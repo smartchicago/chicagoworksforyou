@@ -146,10 +146,70 @@ h3 {
     padding-bottom: 25px;
 }
 
+.share-box {
+    line-height: 0;
+    font-size: 0;
+    background:#f7f7f7;
+    position: relative;
+    padding: 0 15px;
+    border-radius: 6px;
+
+    b {
+        display: inline-block;
+        height: 34px;
+        font-weight: normal;
+        vertical-align: bottom;
+        line-height: 34px;
+        margin-right: 6px;
+        text-transform: uppercase;
+        font-size: 11px;
+    }
+
+    a {
+        display: inline-block;
+        width: 30px;
+        height: 34px;
+        padding: 0;
+        background-position: 50% 50%;
+        background-repeat: no-repeat;
+        opacity: .6;
+
+        &:hover {
+            opacity: .9;
+        }
+    }
+
+    .twitter {
+        background-image: url(/img/twitter.png);
+    }
+
+    .facebook {
+        background-image: url(/img/facebook.png);
+    }
+
+    .email {
+        background-image: url(/img/email.png);
+    }
+}
+
+.span3 {
+    .share-box {
+        b {
+            span {
+                display: none;
+            }
+        }
+    }
+}
+
 // WEEK NAV
 
 .weeknav {
     border-bottom: 1px solid #ddd;
+
+    .row {
+        position: relative;
+    }
 
     .curr {
         @include box-shadow(inset -1px 0 0 #ddd, inset 1px 0 0 #ddd);
@@ -199,15 +259,21 @@ h3 {
 
     }
 
-    .move a {
+    .move {
+        position: absolute;
+        top: 50%;
+        margin-top: -10px;
         display: block;
-        padding: 30px 0;
         font-size: 14px;
         text-transform: uppercase;
     }
 
+    .prev {
+        left: 20px;
+    }
+
     .next {
-        text-align: right;
+        right: 0;
     }
 }
 
@@ -233,7 +299,7 @@ h3 {
     background: white;
     margin: 96px 0 100px 0; //100px to cover height of navbar
     z-index: 3000;
-    padding: 12px 20px;
+    padding: 12px 20px 0;
     border-radius: 6px;
     @include box-shadow(0 0 10px fade-out(black,.7));
 
@@ -256,7 +322,7 @@ h3 {
     top: 64px;
     right: 20px;
     margin: 67px 0 0;
-    max-width: 125px;
+    max-width: 130px;
     @include box-shadow(0 0 10px fade-out(black,.7));
 
     h4 {
@@ -272,8 +338,57 @@ h3 {
         vertical-align: bottom;
         margin-right: 4px;
     }
+
+    .colors {
+        margin-bottom: 12px;
+    }
+
+    .item {
+        padding-left: 26px;
+        position: relative;
+
+        &:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: block;
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+        }
+    }
+
+    .delta-up {
+        &:before {
+            content: "▲";
+            opacity: .8;
+            width: 18px;
+            height: 18px;
+            display: block;
+            text-align: center;
+            line-height: 1.6;
+            font-size: 10px;
+            border-radius: 20px;
+            z-index: 100;
+        }
+    }
+
+    .greatest {
+        &:before {
+            border: 1px dashed #777;
+            left: -1px;
+        }
+    }
 }
 
+.st-list {
+    margin-bottom: 10px;
+
+    > li > a {
+        margin: 0 !important;
+    }
+}
 
 // HOMEPAGE
 
@@ -298,6 +413,7 @@ h3 {
             display: block;
             line-height: 16px;
             font-weight: normal;
+            margin-bottom: 1px;
         }
     }
 
@@ -308,22 +424,33 @@ h3 {
     .pagination {
         position: relative;
         left: -20px;
-        top: -12px;
         margin: 0;
         width: 260px;
 
         ul {
             @include box-shadow(none);
+        }
+
+        li {
+            a {
+                border: none;
+                border-radius: 0;
+                text-align: left;
+            }
+        }
+    }
+
+    .date-nav {
+        top: -12px;
+
+        ul {
             border-bottom: 1px solid #eee;
         }
 
         li {
             a {
                 width: 110px;
-                border: none;
-                border-radius: 0;
                 padding: 6px 0;
-                text-align: left;
             }
 
             &:first-child {
@@ -339,6 +466,13 @@ h3 {
                 }
             }
         }
+    }
+
+    .share-box {
+        padding: 0 20px;
+        left: -20px;
+        width: 220px;
+        border-radius: 0 0 6px 6px;
     }
 }
 
@@ -383,7 +517,7 @@ h3 {
         line-height: 1;
         position: relative;
 
-        a {
+        .service {
             width: 224px;
             color: #555;
             display: block;
@@ -433,7 +567,7 @@ h3 {
         }
 
         &.active {
-            a {
+            .service {
                 background:lighten(#0088cc,55%);
                 color: #222;
                 font-size: 16px;
@@ -460,9 +594,16 @@ h3 {
     .metadata {
         display: block;
         font-size: 13px;
+        line-height: 17px;
         height: 0;
         opacity: 0;
         @include transition(all 200ms ease);
+    }
+
+    .more-about {
+        font-size: 9px;
+        text-transform: uppercase;
+        color: fade-out(black,.6);
     }
 
     .bar {
@@ -472,11 +613,6 @@ h3 {
         height: 1px;
         background: black;
     }
-}
-
-.share-this {
-    padding-top: 10px;
-    margin: 0;
 }
 
 // SERVICES
@@ -595,65 +731,6 @@ h3 {
 
 // WARDS
 
-.search-form {
-    margin: 0;
-
-    input {
-        margin: 0;
-        border: 0;
-        width: 100%;
-        padding: 14px 0;
-        line-height: 1;
-        text-indent: 40px;
-        border-radius: 6px 6px;
-    }
-}
-
-// PAGINATION
-
-.pagination {
-    a {
-        text-align: center;
-    }
-
-    .this-date {
-        font-weight: bold;
-
-        a {
-            color: #333;
-            width: 134px;
-        }
-    }
-
-    .prev-date, .next-date {
-        a {
-            font-size: 13px;
-            color: #666;
-            padding: 4px 8px;
-            width: 13px;
-        }
-    }
-}
-
-// WARD DETAIL
-
-ul.nav .alderman {
-    a {
-        font-weight: bold;
-        background: #e3e3e3;
-        color: #111;
-        border-radius: 0 4px 4px 0;
-
-        i {
-            margin-right: 4px;
-        }
-
-        &:hover {
-            background:#d7d7d7;
-        }
-    }
-}
-
 .wardApp {
     #map {
         height:360px;
@@ -667,53 +744,90 @@ ul.nav .alderman {
         padding: 12px 10px 2px;
 
         div {
-            padding-left: 26px;
-            position: relative;
             margin-bottom: 8px;
-
-            &:before {
-                content: "";
-                position: absolute;
-                top: -1px;
-                left: 0;
-                display: block;
-                width: 18px;
-                height: 18px;
-            }
         }
 
         .area2013 {
             &:before {
                 border: 2px solid #182a35;
-                // border-radius: 10px;
                 width: 14px;
                 height: 14px;
             }
         }
 
-        .area2015 {
+        .outgoing {
             &:before {
                 background: #D6E3EB;
                 border: 1px dashed #182a35;
                 width: 16px;
                 height: 16px;
-                // border-radius: 10px;
             }
         }
 
-        .areaBoth {
+        .incoming {
+            &:before {
+                background: white;
+                border: 1px dashed #182a35;
+                width: 16px;
+                height: 16px;
+            }
+        }
+
+        .remaining {
             &:before {
                 background: #75A2BD;
             }
         }
     }
 
-    .filter.affix {
-        top: 12px;
+    .ward-info {
+        display: inline-block;
+        position: relative;
+        top: 4px;
+        margin: 0 0 0 8px;
+        font-size: 16px;
+        line-height: 1;
+
+        a {
+            opacity: .6;
+
+            &:hover {
+                opacity: 1;
+            }
+        }
+
+        .icon {
+            a {
+                display: inline-block;
+                width: 28px;
+                height: 28px;
+                padding: 0;
+                background-position: 50% 50%;
+                background-repeat: no-repeat;
+            }
+        }
+
+        .twitter {
+            a {
+                background-image: url(/img/twitter.png);
+            }
+        }
+
+        .facebook {
+            a {
+                background-image: url(/img/facebook.png);
+            }
+        }
+
+        .councilmatic {
+            a {
+                background-image: url(/img/gavel.png);
+            }
+        }
     }
 
-    .pagination {
-        margin-bottom: 10px;
+    .filter.affix {
+        top: 12px;
     }
 
     section {
@@ -827,14 +941,6 @@ ul.nav .alderman {
 
     p {
         margin: 0 0 1.2em;
-    }
-}
-
-// ANNOTATIONS
-
-.annotations {
-    .article-body {
-        padding-top: 10px;
     }
 }
 

@@ -17,6 +17,8 @@ has_js: true
                     <li ng-class="{active: service.slug == data.currServiceSlug}" ng-repeat="service in data.services | orderBy:'name'"><a href="" ng-click="filterByService(service)"><span ng-bind="service.name"></span> <span class="count" ng-bind="serviceCount(service.name)"></span></a></li>
                 </ul>
                 {% endraw %}
+
+                {% include share_box.html %}
             </div>
         </div>
         <div class="span9 images">

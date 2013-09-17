@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"net/url"
@@ -18,22 +17,22 @@ func TransitionsHandler(params url.Values, request *http.Request) ([]byte, *ApiE
 		Boundary               string
 	}
 
-	var transitions []Transition
-	// [ { 'id': 123, 'Ward2013': 42, 'Ward2015': 35, 'Boundary': <GeoJSON> },  ] }
-
-	query := "SELECT ward_2013,ward_2015,id, ST_AsGeoJSON(boundary, 5, 2) FROM transition_areas %s ORDER BY ward_2013;"
-	if ward != "" {
-		w, err := strconv.Atoi(ward)
-		if err != nil || w < 1 || w > 50 {
-			return nil, &ApiError{Code: 400, Msg: "invalid ward"}
-		}
-
-		query = fmt.Sprintf(query, fmt.Sprintf("WHERE ward_2013 = %d", w))
-	} else {
-		query = fmt.Sprintf(query, "")
+	type Changes struct {
+		Incoming, Outgoing []Transition
 	}
 
-	rows, err := api.Db.Query(query)
+	var c Changes
+
+	w, err := strconv.Atoi(ward)
+	if err != nil || w < 1 || w > 50 {
+		return nil, &ApiError{Code: 400, Msg: "invalid ward"}
+	}
+
+	rows, err := api.Db.Query(`SELECT ward_2013,ward_2015,id, ST_AsGeoJSON(boundary, 5, 2) 
+		FROM transition_areas 
+		WHERE ward_2013 = $1 
+			OR ward_2015 = $2 
+		ORDER BY ward_2013;`, w, w)
 	if err != nil {
 		log.Printf("error fetching transition areas: %s", err)
 	}
@@ -43,8 +42,13 @@ func TransitionsHandler(params url.Values, request *http.Request) ([]byte, *ApiE
 		if err := rows.Scan(&t.Ward2013, &t.Ward2015, &t.Id, &t.Boundary); err != nil {
 			log.Printf("error loading transition area result: %s", err)
 		}
-		transitions = append(transitions, t)
+
+		if t.Ward2013 == w {
+			c.Outgoing = append(c.Outgoing, t)
+		} else {
+			c.Incoming = append(c.Incoming, t)
+		}
 	}
 
-	return dumpJson(transitions), nil
+	return dumpJson(c), nil
 }

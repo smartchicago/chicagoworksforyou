@@ -8,6 +8,7 @@ has_js: true
 
 <script>
 window.wardNum = {{ page.ward }};
+window.wardPath = {{ page.points }};
 </script>
 
 <div class="map">
@@ -17,23 +18,31 @@ window.wardNum = {{ page.ward }};
 <div class="weeknav">
 <div class="container" ng-controller="headerCtrl">
     <div class="row">
-        <div class="move prev span2">
-            <a href="" ng-click="goToPrevDate()">« Prev week</a>
-        </div>
-        <div class="curr span8">
+        <div class="curr span8 offset2">
             <h1>
                 <a href="#">{{ page.title }}</a>
-                •
-                <a href="{{ page.website }}">{{ page.alderman }}</a>
+                <div class="pagination ward-info">
+                    <ul>
+                        <li><a href="{{ page.website }}">{{ page.alderman }}</a></li>
+                        {% if page.twitter != '' %}
+                            <li class="icon twitter"><a href="{{ page.twitter }}"></a></li>
+                        {% endif %}
+                        {% if page.facebook != '' %}
+                            <li class="icon facebook"><a href="{{ page.facebook }}"></a></li>
+                        {% endif %}
+                        {% if page.councilmatic != '' %}
+                            <li class="icon councilmatic"><a href="{{ page.councilmatic }}"></a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+
             </h1>
-            <span ng-bind="data.thisDate"></span>
-            &nbsp; •
+            <span ng-bind="data.thisDate"></span>:
             <span class="open-count" ng-bind="data.openCount"></span> opened
             <span class="closed-count" ng-bind="data.closedCount"></span> closed
         </div>
-        <div class="move next span2">
-            <a href="" ng-click="goToNextDate()">Next week »</a>
-        </div>
+        <a class="move prev" href="" ng-click="goToPrevDate()">« Prev week</a>
+        <a class="move next" href="" ng-click="goToNextDate()">Next week »</a>
     </div>
 </div>
 </div>
@@ -48,6 +57,8 @@ window.wardNum = {{ page.ward }};
                     <li ng-class="{active: service.slug == data.serviceObj.slug}" ng-repeat="service in data.services | orderBy:'name'"><a ng-href="#/{{ data.date }}/{{ service.slug }}/" ng-bind="service.name"></a></li>
                 </ul>
                 {% endraw %}
+
+                {% include share_box.html %}
             </div>
         </div>
         <div class="span9" ng-controller="wardChartCtrl" ng-switch on="data.action">
