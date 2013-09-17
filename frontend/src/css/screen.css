@@ -1,3 +1,6 @@
+.sprites-sprite, .share-box .twitter span, .share-box .facebook span, .share-box .email span, .weeknav .open-count:before, .weeknav .closed-count:before, .wardApp .ward-info .city a span, .wardApp .ward-info .twitter a span, .wardApp .ward-info .facebook a span, .wardApp .ward-info .councilmatic a span, footer .scc-nav .github {
+  background: url('/img/sprites-s23c8b82364.png') no-repeat; }
+
 html, body {
   height: 100%;
   font-family: 'Monda', Helvetica, sans-serif; }
@@ -21,33 +24,44 @@ html, body {
 
 .topnav {
   background: url(/img/bluetweed.png) repeat 0 0;
-  -webkit-box-shadow: inset 0 -3px 9px rgba(0, 0, 0, 0.15);
-  -moz-box-shadow: inset 0 -3px 9px rgba(0, 0, 0, 0.15);
-  box-shadow: inset 0 -3px 9px rgba(0, 0, 0, 0.15);
+  -webkit-box-shadow: inset 0 -7px 0 #3e4c5c;
+  -moz-box-shadow: inset 0 -7px 0 #3e4c5c;
+  box-shadow: inset 0 -7px 0 #3e4c5c;
   z-index: 5000; }
-  .topnav .brand {
-    font-size: 18px;
-    padding: 12px 0 0;
-    margin: 0 15px 0 0;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
-    color: white; }
-  .topnav .nav {
-    border-left: 1px solid rgba(255, 255, 255, 0.1); }
-    .topnav .nav > li {
-      border-right: 1px solid rgba(255, 255, 255, 0.1); }
-      .topnav .nav > li > a {
-        padding: 12px 18px;
-        font-size: 12px;
-        text-transform: uppercase;
-        outline: none;
-        color: #bbb; }
-  .topnav .navbar-inner {
+  .topnav .navbar-shell {
     background: none;
     border-radius: 0;
     margin: 0 auto;
     width: 940px;
+    height: 51px;
     padding: 0;
-    border: none; }
+    border: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none; }
+  .topnav .brand {
+    font-size: 18px;
+    width: 250px;
+    padding: 12px 0 0;
+    margin: 0 15px 0 0;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
+    color: white;
+    opacity: .92; }
+    .topnav .brand:hover {
+      opacity: 1; }
+  .topnav .nav > li > a {
+    padding: 13px 18px 18px;
+    font-size: 15px;
+    outline: none;
+    color: #bbb;
+    background: none !important; }
+    .topnav .nav > li > a:hover {
+      color: #fff; }
+
+.navbar-inverse .nav .active > a, .navbar-inverse .nav .active > a:hover {
+  -webkit-box-shadow: inset 0 -7px 0 white;
+  -moz-box-shadow: inset 0 -7px 0 white;
+  box-shadow: inset 0 -7px 0 white; }
 
 .dropdown-menu {
   top: 88%;
@@ -61,15 +75,15 @@ html, body {
     display: inline-block;
     list-style-type: none;
     margin: 0; }
-    .dropdown-set ul li a {
-      text-align: right;
-      padding: 0 8px;
-      display: block; }
-      .dropdown-set ul li a:hover {
-        background: #0081c2;
-        color: #fff;
-        text-decoration: none;
-        border-radius: 4px; }
+  .dropdown-set li a {
+    text-align: right;
+    padding: 0 8px;
+    display: block; }
+    .dropdown-set li a:hover {
+      background: #0081c2;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 4px; }
 
 .navbar .nav > li > .dropdown-menu:after {
   left: 40px; }
@@ -98,6 +112,12 @@ h3 {
   line-height: 28px;
   margin: 0 0 12px; }
 
+.pull-left {
+  float: left; }
+
+.pull-right {
+  float: right; }
+
 .container.content {
   padding-top: 25px;
   padding-bottom: 25px; }
@@ -117,23 +137,27 @@ h3 {
     line-height: 34px;
     margin-right: 6px;
     text-transform: uppercase;
-    font-size: 11px; }
+    font-size: 11px;
+    vertical-align: top; }
   .share-box a {
     display: inline-block;
-    width: 30px;
-    height: 34px;
     padding: 0;
-    background-position: 50% 50%;
-    background-repeat: no-repeat;
     opacity: .6; }
+    .share-box a span {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      margin: 9px 5px 7px;
+      background-position: 50% 50%;
+      background-repeat: no-repeat; }
     .share-box a:hover {
       opacity: .9; }
-  .share-box .twitter {
-    background-image: url(/img/twitter.png); }
-  .share-box .facebook {
-    background-image: url(/img/facebook.png); }
-  .share-box .email {
-    background-image: url(/img/email.png); }
+  .share-box .twitter span {
+    background-position: 0 0; }
+  .share-box .facebook span {
+    background-position: 0 -21px; }
+  .share-box .email span {
+    background-position: 0 -155px; }
 
 .span3 .share-box b span {
   display: none; }
@@ -143,9 +167,7 @@ h3 {
   .weeknav .row {
     position: relative; }
   .weeknav .curr {
-    -webkit-box-shadow: inset -1px 0 0 #dddddd, inset 1px 0 0 #dddddd;
-    -moz-box-shadow: inset -1px 0 0 #dddddd, inset 1px 0 0 #dddddd;
-    box-shadow: inset -1px 0 0 #dddddd, inset 1px 0 0 #dddddd;
+    border: 1px solid #ddd;
     border-width: 0 1px;
     text-align: center;
     font-size: 16px;
@@ -157,16 +179,15 @@ h3 {
     .weeknav .open-count:before, .weeknav .closed-count:before {
       content: "";
       display: inline-block;
-      width: 16px;
-      height: 16px;
-      background-color: #555;
+      width: 15px;
+      height: 15px;
       margin-right: 4px;
       position: relative;
-      top: 1px; }
+      top: 2px; }
   .weeknav .open-count:before {
-    background: url(/img/circle.png) no-repeat 50% 2px; }
+    background-position: 0 -71px; }
   .weeknav .closed-count:before {
-    background: url(/img/check.png) no-repeat 50% 3px; }
+    background-position: 0 -112px; }
   .weeknav h1 {
     font-size: 28px;
     margin: 0; }
@@ -184,10 +205,14 @@ h3 {
   .weeknav .next {
     right: 0; }
 
+.tooltip {
+  font-weight: normal;
+  font-size: 12px; }
+
 .home-wrap {
   position: relative;
   min-height: 100%;
-  margin-top: -46px; }
+  top: -53px; }
 
 .wards-map {
   min-height: 100%;
@@ -226,6 +251,8 @@ h3 {
   -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); }
+  .ie .legend {
+    background: #E7F4FA; }
   .legend h4 {
     font-size: 15px;
     line-height: 18px;
@@ -427,7 +454,7 @@ h3 {
     border-radius: 0 !important;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.3); }
     .serviceApp .day a:hover {
-      background: inherit; }
+      background: #111; }
     .serviceApp .day a b {
       color: #fff;
       font-weight: bold; }
@@ -436,6 +463,20 @@ h3 {
     text-shadow: none; }
     .serviceApp .day.future a b {
       color: #555; }
+.serviceApp .Mon {
+  background: #1A3E50; }
+.serviceApp .Tue {
+  background: #22546C; }
+.serviceApp .Wed {
+  background: #2B6A88; }
+.serviceApp .Thu {
+  background: #3380A4; }
+.serviceApp .Fri {
+  background: #3A95C1; }
+.serviceApp .Sat {
+  background: #54A5CC; }
+.serviceApp .Sun {
+  background: #6FB4D5; }
 .serviceApp .pagination {
   margin: 0 0 1em 0; }
 .serviceApp .pagination-wrap.affix {
@@ -498,17 +539,17 @@ h3 {
     width: 14px;
     height: 14px; }
   .wardApp .legend .outgoing:before {
-    background: #D6E3EB;
+    background: #9CBED3;
     border: 1px dashed #182a35;
     width: 16px;
     height: 16px; }
   .wardApp .legend .incoming:before {
-    background: white;
+    background: #486778;
     border: 1px dashed #182a35;
     width: 16px;
     height: 16px; }
   .wardApp .legend .remaining:before {
-    background: #75A2BD; }
+    background: #5892B5; }
 .wardApp .ward-info {
   display: inline-block;
   position: relative;
@@ -522,17 +563,23 @@ h3 {
       opacity: 1; }
   .wardApp .ward-info .icon a {
     display: inline-block;
-    width: 28px;
-    height: 28px;
     padding: 0;
-    background-position: 50% 50%;
-    background-repeat: no-repeat; }
-  .wardApp .ward-info .twitter a {
-    background-image: url(/img/twitter.png); }
-  .wardApp .ward-info .facebook a {
-    background-image: url(/img/facebook.png); }
-  .wardApp .ward-info .councilmatic a {
-    background-image: url(/img/gavel.png); }
+    line-height: 24px; }
+    .wardApp .ward-info .icon a span {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      margin: 6px 6px 0 6px;
+      background-position: 50% 50%;
+      background-repeat: no-repeat; }
+  .wardApp .ward-info .city a span {
+    background-position: 0 -132px; }
+  .wardApp .ward-info .twitter a span {
+    background-position: 0 0; }
+  .wardApp .ward-info .facebook a span {
+    background-position: 0 -21px; }
+  .wardApp .ward-info .councilmatic a span {
+    background-position: 0 -176px; }
 .wardApp .filter.affix {
   top: 12px; }
 .wardApp section {
@@ -582,6 +629,8 @@ h3 {
       transition: padding 400ms ease;
       font-weight: bold;
       font-size: 12px; }
+      .ielt9 .mediaApp .images .image span {
+        background: black; }
     .mediaApp .images .image em {
       font-style: normal; }
     .mediaApp .images .image:hover span {
@@ -606,16 +655,34 @@ footer {
     margin-top: 10px;
     padding: 25px 0 30px 0;
     border-top: 1px solid #ddd; }
-  footer .nav {
-    padding-top: 8px;
-    margin: 0; }
-    footer .nav a {
-      font-size: 14px;
-      margin-left: 14px;
-      color: #666; }
+  footer .scc-nav {
+    padding: 15px 0 0 15px;
+    margin: 0;
+    font-size: 14px; }
+    footer .scc-nav a {
+      color: #666;
+      border-bottom: 1px solid #d4d4d4; }
+      footer .scc-nav a:hover {
+        text-decoration: none;
+        color: #000;
+        border-bottom-color: #888; }
+    footer .scc-nav .icon {
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      opacity: .7;
+      display: inline-block; }
+      footer .scc-nav .icon:hover {
+        opacity: .9; }
+    footer .scc-nav .github {
+      background-position: 0 -42px; }
+  footer .widgets {
+    padding-top: 11px; }
 
 .dateMapApp footer {
-  border-top: 1px solid #ccc; }
+  border-top: 1px solid #ccc;
+  position: relative;
+  top: -53px; }
   .dateMapApp footer .container {
     margin-top: 0;
     border: none; }
@@ -655,3 +722,23 @@ footer {
   position: absolute;
   top: 5px;
   left: -10px; }
+
+@media (max-device-width: 600px) {
+  .topnav .nav > li > a {
+    font-size: 18px;
+    padding: 18px; }
+
+  .dropdown-set {
+    width: 215px; }
+
+  .dropdown-menu li a {
+    font-size: 18px;
+    padding-top: 6px;
+    padding-bottom: 6px; }
+
+  .st-list > li > a {
+    font-size: 16px; }
+
+  .nav-pills > li > a {
+    padding-top: 9px;
+    padding-bottom: 9px; } }

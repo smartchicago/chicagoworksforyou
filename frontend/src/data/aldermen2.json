@@ -2,8 +2,9 @@
 // To convert:
 // DOWNLOAD CSV     https://docs.google.com/spreadsheet/pub?key=0AofAD3dmbOYCdE1OM2pLdjhSRGE4OW9OZGszQkcxZGc&single=true&gid=0&output=csv
 // CONVERT TO JSON  http://www.convertcsv.com/csv-to-json.htm
-// REPLACE          (\{\n\s+"WARD":)(\d+),
-// WITH             "\2": \1\2,
+// REPLACE          (\{\n\s+"WARD":)(\d+), => "\2": \1\2,
+// REPLACE          [ => {
+// REPLACE          ] => }
 
 {
   "1": {

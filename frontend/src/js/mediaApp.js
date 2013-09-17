@@ -20,6 +20,7 @@ mediaApp.factory('Data', function () {
         data.search.Service_name = name;
         data.pageTitle = (data.search.Service_name ? data.search.Service_name + " | " : '') + defaultTitle;
         data.currURL = window.urlBase + (slug ? slug + '/' : '');
+        data.shareText = 'Recent ' + (data.search.Service_name ? data.search.Service_name : '311') + ' photos in Chicago';
     };
 
     return data;

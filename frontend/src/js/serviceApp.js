@@ -1,3 +1,10 @@
+// JQUERY
+
+$(function () {
+    // ADD TOOLTIPS TO ALDERMAN LINKS
+    $('.day a').tooltip();
+});
+
 // ANGULAR
 
 var serviceApp = angular.module('serviceApp', []).value('$anchorScroll', angular.noop);
@@ -89,7 +96,7 @@ serviceApp.controller("headerCtrl", function ($scope, Data, $location) {
 
 });
 
-serviceApp.controller("sidebarCtrl", function ($scope, Data) {
+serviceApp.controller("weekdayCtrl", function ($scope, Data) {
     $scope.data = Data;
 });
 
@@ -195,6 +202,7 @@ serviceApp.controller("serviceCtrl", function ($scope, Data, $http, $location, $
         function ($e, $currentRoute, $previousRoute) {
             Data.setDate(parseDate($routeParams.date, window.lastWeekEnd, $location));
             Data.currURL = window.urlBase + Data.date + "/";
+            Data.shareText = Data.stName + ' requests on ' + Data.dateFormatted;
             buildChart();
         }
     );

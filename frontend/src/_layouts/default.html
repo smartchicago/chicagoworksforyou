@@ -1,9 +1,13 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="{{ page.app }}">
+<!--[if lt IE 7 ]> <html lang="en" class="ie ielt9 ie6" ng-app="{{ page.app }}"> <![endif]-->
+<!--[if IE 7 ]>    <html lang="en" class="ie ielt9 ie7" ng-app="{{ page.app }}"> <![endif]-->
+<!--[if IE 8 ]>    <html lang="en" class="ie ielt9 ie8" ng-app="{{ page.app }}"> <![endif]-->
+<!--[if IE 9 ]>    <html lang="en" class="ie ie9" ng-app="{{ page.app }}"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" ng-app="{{ page.app }}"> <!--<![endif]-->
 <head ng-controller="headCtrl">
 <meta charset="utf-8">
 <title ng-bind="data.pageTitle">{{ page.title }} | Chicago Works For You</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=960px">
 <meta name="description" content="The citywide dashboard with ward-by-ward views of service delivery in Chicago">
 <meta name="author" content="Smart Chicago Collaborative">
 <meta property="og:site_name" content="Chicago Works For You">
@@ -14,28 +18,27 @@
 <meta property="og:image" content="">
 {% endcomment %}
 
-
-<link href="/css/bootstrap/bootstrap.css" rel="stylesheet">
 {% if site.debug %}
+<link href="/css/bootstrap_custom/bootstrap.css" rel="stylesheet">
 <link rel="stylesheet" href="/lib/monda.css" />
 <link rel="stylesheet" href="/lib/leaflet.css" />
 {% else %}
+<link href="/css/bootstrap_custom/bootstrap.min.css" rel="stylesheet">
 <link href='http://fonts.googleapis.com/css?family=Monda:400,700' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
 {% endif %}
 <link href="/css/screen.css" rel="stylesheet">
-<!--[if IE]>
-    <link href="/css/ie.css" media="screen, projection" rel="stylesheet" type="text/css" />
+<!--[if lt IE 9]>
+<script src="/lib/html5shiv.js"></script>
 <![endif]-->
-
 <link rel="shortcut icon" href="/images/favicon.png">
 </head>
 
 <body class="{{ page.app }}">
 
 <div class="navbar topnav navbar-inverse">
-    <div class="navbar-inner">
-      <a class="brand" href="/">CW4U</a>
+    <div class="navbar-shell">
+      <a class="brand" href="/"><img src="/img/logo.png" width="250" height="48" alt="Chicago Works For You"></a>
       <ul class="nav">
         <li class="{% if page.section == 'home' %}active{% endif %}"><a href="/">Home</a></li>
         <li class="{% if page.section == 'services' %}active{% endif %} dropdown">
@@ -138,14 +141,20 @@
 
 <footer>
     <div class="container">
-        <a href="http://www.smartchicagocollaborative.org/"><img src="/img/scc.png" width="189" height="50" alt="Smart Chicago Collaborative"></a>
 
-        <ul class="nav nav-pills pull-right">
-            <li><a href="/">Home</a></li>
-            <li><a href="/photos/">Photos</a></li>
-            <li><a href="http://annotations.chicagoworksforyou.com/">Annotations</a></li>
-            <li><a href="/about/">About</a></li>
-        </ul>
+        <div class="pull-left"><a href="http://www.smartchicagocollaborative.org/"><img src="/img/go-logo.png" width="50" height="50" alt="Smart Chicago Collaborative"></a></div>
+
+        <div class="scc-nav pull-left">
+            <a href="http://www.smartchicagoapps.org/">Another</a> <a href="https://github.com/smartchicago/chicagoworksforyou/">project</a> by <a href="http://www.smartchicagocollaborative.org/">Smart Chicago</a>
+        </div>
+
+        <div class="widgets pull-right">
+            <iframe class="pull-right" allowtransparency="true" frameborder="0" scrolling="no" style="border:none; overflow:hidden; width:95px; height:21px;"
+             src="//www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.facebook.com%2Fsmartchicago&amp;width=100&amp;height=21&amp;colorscheme=light&amp;layout=button_count&amp;action=like&amp;show_faces=false&amp;send=false&amp;appId=178379958902349"></iframe>
+            <iframe class="pull-right" allowtransparency="true" frameborder="0" scrolling="no"
+              src="//platform.twitter.com/widgets/follow_button.html?screen_name=smartchicago&show-count=true&show_screen_name=false"
+              style="width:148px; height:21px;"></iframe>
+        </div>
     </div>
 </footer>
 
@@ -165,12 +174,17 @@ window.apiDomain = "{{ site.api_domain }}";
 <script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
 {% endif %}
 
+{% if site.debug %}
 <script src="/lib/bootstrap.custom.min.js"></script>
 <script src="/lib/moment.min.js"></script>
 <script src="/lib/twix.min.js"></script>
 <script src="/lib/underscore-min.js"></script>
 <script src="/lib/leaflet.label.js"></script>
 <script src="/js/scripts.js"></script>
+{% else %}
+<script src="/js/scripts_prod.js"></script>
+{% endif %}
+
 {% if page.has_js %}
 <script src="/js/{{ page.app }}.js"></script>
 {% endif %}

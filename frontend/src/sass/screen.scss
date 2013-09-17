@@ -1,6 +1,11 @@
 @import "compass/css3/box-shadow";
 @import "compass/css3/transition";
 
+$sprites-spacing: 5px;
+@import "sprites/*.png";
+
+// GENERAL
+
 html, body {
     height: 100%;
     font-family: 'Monda', Helvetica, sans-serif;
@@ -28,29 +33,53 @@ html, body {
 
 .topnav {
     background:url(/img/bluetweed.png) repeat 0 0;
-    @include box-shadow(inset 0 -3px 9px fade-out(black,.85));
+    // @include box-shadow(inset 0 -3px 9px fade-out(black,.85));
+    @include box-shadow(inset 0 -7px 0 #3E4C5C);
     z-index: 5000;
+
+    .navbar-shell {
+        background:none;
+        border-radius: 0;
+        margin: 0 auto;
+        width: 940px;
+        height: 51px;
+        padding: 0;
+        border: none;
+        @include box-shadow(none);
+    }
 
     .brand {
         font-size: 18px;
+        width: 250px;
         padding: 12px 0 0;
         margin: 0 15px 0 0;
         text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
         color: white;
+        opacity: .92;
+
+        &:hover {
+            opacity: 1;
+        }
     }
 
     .nav {
-        border-left: 1px solid fade-out(white,.9);
+        // border-left: 1px solid fade-out(white,.9);
 
         > li {
-            border-right: 1px solid fade-out(white,.9);
+            // border-right: 1px solid fade-out(white,.9);
 
             > a {
-                padding: 12px 18px;
-                font-size: 12px;
-                text-transform: uppercase;
+                padding: 13px 18px 18px;
+                font-size: 15px;
+                // text-transform: uppercase;
                 outline: none;
                 color: #bbb;
+                background: none !important;
+
+                &:hover {
+                    // background: none;
+                    color: #fff;
+                }
             }
         }
 
@@ -61,14 +90,12 @@ html, body {
             }
         }
     }
+}
 
-    .navbar-inner {
-        background:none;
-        border-radius: 0;
-        margin: 0 auto;
-        width: 940px;
-        padding: 0;
-        border: none;
+.navbar-inverse .nav .active > a {
+    &, &:hover {
+        @include box-shadow(inset 0 -7px 0 white);
+        // background: none;
     }
 }
 
@@ -87,26 +114,28 @@ html, body {
         display: inline-block;
         list-style-type: none;
         margin: 0;
+    }
 
-        li {
-            a {
-                text-align: right;
-                padding: 0 8px;
-                display: block;
+    li {
+        a {
+            text-align: right;
+            padding: 0 8px;
+            display: block;
 
-                &:hover {
-                    background:#0081c2;
-                    color: #fff;
-                    text-decoration: none;
-                    border-radius: 4px;
-                }
+            &:hover {
+                background:#0081c2;
+                color: #fff;
+                text-decoration: none;
+                border-radius: 4px;
             }
         }
     }
 }
 
-.navbar .nav > li > .dropdown-menu:after {
-    left: 40px;
+.navbar {
+    .nav > li > .dropdown-menu:after {
+        left: 40px;
+    }
 }
 
 .navbar-search {
@@ -141,6 +170,16 @@ h3 {
     margin: 0 0 12px;
 }
 
+// Adding the .pull-x classes b/c they're missing from the custom Bootstrap component build
+
+.pull-left {
+    float: left;
+}
+
+.pull-right {
+    float: right;
+}
+
 .container.content {
     padding-top: 25px;
     padding-bottom: 25px;
@@ -163,16 +202,22 @@ h3 {
         margin-right: 6px;
         text-transform: uppercase;
         font-size: 11px;
+        vertical-align: top;
     }
 
     a {
         display: inline-block;
-        width: 30px;
-        height: 34px;
         padding: 0;
-        background-position: 50% 50%;
-        background-repeat: no-repeat;
         opacity: .6;
+
+        span {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            margin: 9px 5px 7px;
+            background-position: 50% 50%;
+            background-repeat: no-repeat;
+        }
 
         &:hover {
             opacity: .9;
@@ -180,15 +225,21 @@ h3 {
     }
 
     .twitter {
-        background-image: url(/img/twitter.png);
+        span {
+            @include sprites-sprite(twitter);
+        }
     }
 
     .facebook {
-        background-image: url(/img/facebook.png);
+        span {
+            @include sprites-sprite(facebook);
+        }
     }
 
     .email {
-        background-image: url(/img/email.png);
+        span {
+            @include sprites-sprite(email);
+        }
     }
 }
 
@@ -212,7 +263,7 @@ h3 {
     }
 
     .curr {
-        @include box-shadow(inset -1px 0 0 #ddd, inset 1px 0 0 #ddd);
+        border: 1px solid #ddd;
         border-width: 0 1px;
         text-align: center;
         font-size: 16px;
@@ -227,25 +278,23 @@ h3 {
         &:before {
             content:"";
             display: inline-block;
-            width: 16px;
-            height: 16px;
-            background-color: #555;
-            // border-radius: 12px;
+            width: 15px;
+            height: 15px;
             margin-right: 4px;
             position: relative;
-            top: 1px;
+            top: 2px;
         }
     }
 
     .open-count {
         &:before {
-            background: url(/img/circle.png) no-repeat 50% 2px;
+            @include sprites-sprite(circle);
         }
     }
 
     .closed-count {
         &:before {
-            background: url(/img/check.png) no-repeat 50% 3px;
+            @include sprites-sprite(check);
         }
     }
 
@@ -277,12 +326,19 @@ h3 {
     }
 }
 
+.tooltip {
+    font-weight: normal;
+    font-size: 12px;
+}
+
 // MAP
+
+$navbar_height: 53px;
 
 .home-wrap {
     position: relative;
     min-height: 100%;
-    margin-top: -46px; // Height of navbar
+    top: -1 * $navbar_height; // Height of navbar
 }
 
 .wards-map {
@@ -324,6 +380,10 @@ h3 {
     margin: 67px 0 0;
     max-width: 130px;
     @include box-shadow(0 0 10px fade-out(black,.7));
+
+    .ie & {
+        background:#E7F4FA;
+    }
 
     h4 {
         font-size: 15px;
@@ -639,7 +699,7 @@ h3 {
             text-shadow: 0 -1px 0 fade-out(black,.7);
 
             &:hover {
-                background: inherit;
+                background:#111;
             }
 
             b {
@@ -659,6 +719,14 @@ h3 {
             }
         }
     }
+
+    .Mon { background: #1A3E50;}
+    .Tue { background: #22546C; }
+    .Wed { background: #2B6A88; }
+    .Thu { background: #3380A4; }
+    .Fri { background: #3A95C1; }
+    .Sat { background: #54A5CC; }
+    .Sun { background: #6FB4D5; }
 
     .pagination {
         margin: 0 0 1em 0;
@@ -757,7 +825,7 @@ h3 {
 
         .outgoing {
             &:before {
-                background: #D6E3EB;
+                background: #9CBED3;
                 border: 1px dashed #182a35;
                 width: 16px;
                 height: 16px;
@@ -766,7 +834,7 @@ h3 {
 
         .incoming {
             &:before {
-                background: white;
+                background: #486778;
                 border: 1px dashed #182a35;
                 width: 16px;
                 height: 16px;
@@ -775,7 +843,7 @@ h3 {
 
         .remaining {
             &:before {
-                background: #75A2BD;
+                background: #5892B5;
             }
         }
     }
@@ -799,29 +867,49 @@ h3 {
         .icon {
             a {
                 display: inline-block;
-                width: 28px;
-                height: 28px;
                 padding: 0;
-                background-position: 50% 50%;
-                background-repeat: no-repeat;
+                line-height: 24px;
+
+                span {
+                    display: inline-block;
+                    width: 16px;
+                    height: 16px;
+                    margin: 6px 6px 0 6px;
+                    background-position: 50% 50%;
+                    background-repeat: no-repeat;
+                }
+            }
+        }
+
+        .city {
+            a {
+                span {
+                    @include sprites-sprite(star);
+                }
             }
         }
 
         .twitter {
             a {
-                background-image: url(/img/twitter.png);
+                span {
+                    @include sprites-sprite(twitter);
+                }
             }
         }
 
         .facebook {
             a {
-                background-image: url(/img/facebook.png);
+                span {
+                    @include sprites-sprite(facebook);
+                }
             }
         }
 
         .councilmatic {
             a {
-                background-image: url(/img/gavel.png);
+                span {
+                    @include sprites-sprite(gavel);
+                }
             }
         }
     }
@@ -906,6 +994,10 @@ h3 {
                 transition: padding 400ms ease;
                 font-weight: bold;
                 font-size: 12px;
+
+                .ielt9 & {
+                    background:black;
+                }
             }
 
             em {
@@ -956,21 +1048,49 @@ footer {
         border-top: 1px solid #ddd;
     }
 
-    .nav {
-        padding-top: 8px;
+    .scc-nav {
+        padding: 15px 0 0 15px;
         margin: 0;
+        font-size: 14px;
 
         a {
-            font-size: 14px;
-            margin-left: 14px;
             color: #666;
+            border-bottom: 1px solid #d4d4d4;
+
+            &:hover {
+                text-decoration: none;
+                color: #000;
+                border-bottom-color: #888;
+            }
         }
+
+        .icon {
+            width: 24px;
+            height: 24px;
+            padding: 0;
+            opacity: .7;
+            display: inline-block;
+
+            &:hover {
+                opacity: .9;
+            }
+        }
+
+        .github {
+            @include sprites-sprite(octocat24);
+        }
+    }
+
+    .widgets {
+        padding-top: 11px;
     }
 }
 
 .dateMapApp {
     footer {
         border-top: 1px solid #ccc;
+        position: relative;
+        top: -1 * $navbar_height;
 
         .container {
             margin-top: 0;
@@ -1019,4 +1139,52 @@ footer {
     position: absolute;
     top: 5px;
     left: -10px;
+}
+
+@media (max-device-width: 600px) {
+    .topnav {
+        .brand {
+            // Show smaller brand
+        }
+
+        .nav {
+            > li {
+                > a {
+                    font-size: 18px;
+                    padding: 18px;
+                }
+            }
+        }
+    }
+
+    .dropdown-set {
+        width: 215px;
+    }
+
+    .dropdown-menu {
+        li {
+            a {
+                font-size: 18px;
+                padding-top: 6px;
+                padding-bottom: 6px;
+            }
+        }
+    }
+
+    .st-list {
+        > li {
+            > a {
+                font-size: 16px;
+            }
+        }
+    }
+
+    .nav-pills {
+        > li {
+            > a {
+                padding-top: 9px;
+                padding-bottom: 9px;
+            }
+        }
+    }
 }

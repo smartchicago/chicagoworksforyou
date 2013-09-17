@@ -23,15 +23,18 @@ window.wardPath = {{ page.points }};
                 <a href="#">{{ page.title }}</a>
                 <div class="pagination ward-info">
                     <ul>
-                        <li><a href="{{ page.website }}">{{ page.alderman }}</a></li>
+                        <li><a href="{{ page.website }}">Ald. {{ page.alderman }}</a></li>
+                        {% if page.citysite != '' %}
+                            <li class="icon city"><a title="City of Chicago website" href="{{ page.citysite }}"><span></span></a></li>
+                        {% endif %}
                         {% if page.twitter != '' %}
-                            <li class="icon twitter"><a href="{{ page.twitter }}"></a></li>
+                            <li class="icon twitter"><a title="Twitter" href="{{ page.twitter }}"><span></span></a></li>
                         {% endif %}
                         {% if page.facebook != '' %}
-                            <li class="icon facebook"><a href="{{ page.facebook }}"></a></li>
+                            <li class="icon facebook"><a title="Facebook" href="{{ page.facebook }}"><span></span></a></li>
                         {% endif %}
                         {% if page.councilmatic != '' %}
-                            <li class="icon councilmatic"><a href="{{ page.councilmatic }}"></a></li>
+                            <li class="icon councilmatic"><a title="Councilmatic" href="{{ page.councilmatic }}"><span></span></a></li>
                         {% endif %}
                     </ul>
                 </div>

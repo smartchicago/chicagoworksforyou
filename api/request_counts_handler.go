@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/gorilla/mux"
-	"log"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -18,50 +17,52 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 	// $ curl "http://localhost:5000/requests/4fd3b167e750846744000005/counts.json?end_date=2013-06-10&count=1"
 	// {
 	//   "DayData": [
-	//     "2013-06-04",
-	//     "2013-06-05",
-	//     "2013-06-06",
-	//     "2013-06-07",
-	//     "2013-06-08",
-	//     "2013-06-09",
 	//     "2013-06-10"
 	//   ],
 	//   "CityData": {
-	//     "Average": 8.084931,
-	//     "Count": 2951,
-	//     "DailyMax": 1234
+	//     "Average": 1.5424658,
+	//     "DailyMax": [
+	//       114,
+	//       106,
+	//       104,
+	//       102,
+	//       102,
+	//       94,
+	//       93
+	//     ],
+	//     "Count": 563
 	//   },
 	//   "WardData": {
 	//     "1": {
 	//       "Counts": [
-	//         29,
-	//         19,
-	//         40,
-	//         60,
-	//         16,
-	//         2,
-	//         35
+	//         33
 	//       ],
-	//       "Average": 16.671232
+	//       "Average": 6.917808
 	//     },
 	//     "10": {
 	//       "Counts": [
-	//         22,
-	//         2,
-	//         28,
-	//         6,
-	//         2,
-	//         5,
 	//         6
 	//       ],
-	//       "Average": 6.60274
+	//       "Average": 2.4958904
 	//     },
+	//     "11": {
+	//       "Counts": [
+	//         26
+	//       ],
+	//       "Average": 8.087671
+	//     },
+	//     (... truncated ...)
+	//   }
+	// }
 
 	vars := mux.Vars(request)
 	service_code := vars["service_code"]
 
-	// determine date range. default is last 7 days.
-	days, _ := strconv.Atoi(params["count"][0])
+	// determine date range.
+	days, err := strconv.Atoi(params.Get("count"))
+	if err != nil || days > 60 || days < 1 {
+		return nil, &ApiError{Msg: "invalid count, must be integer, 1..60", Code: 400}
+	}
 
 	chi, _ := time.LoadLocation("America/Chicago")
 	end, _ := time.ParseInLocation("2006-01-02", params["end_date"][0], chi)
@@ -77,7 +78,7 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 		string(service_code), start, end)
 
 	if err != nil {
-		log.Fatal("error fetching data for RequestCountsHandler", err)
+		return backend_error(err)
 	}
 
 	data := make(map[int]map[string]int)
@@ -88,7 +89,7 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 		var date time.Time
 
 		if err := rows.Scan(&count, &ward, &date); err != nil {
-			// FIXME: handle
+			return backend_error(err)
 		}
 
 		if _, present := data[ward]; !present {
@@ -97,8 +98,6 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 
 		data[ward][date.Format("2006-01-02")] = count
 	}
-
-	// log.Printf("data\n\n%+v", data)
 
 	type WardCount struct {
 		Ward    int
@@ -129,8 +128,6 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 		}
 	}
 
-	// log.Printf("counts\n\n%+v", counts)
-
 	rows, err = api.Db.Query(`SELECT SUM(total)/365.0, ward
              FROM daily_counts
              WHERE requested_date >= DATE(NOW() - INTERVAL '1 year')
@@ -138,14 +135,14 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
              GROUP BY ward;`, service_code)
 
 	if err != nil {
-		log.Print("error querying for year average", err)
+		return backend_error(err)
 	}
 
 	for rows.Next() {
 		var count float32
 		var ward int
 		if err := rows.Scan(&count, &ward); err != nil {
-			log.Print("error loading ward counts ", err, count, ward)
+			return backend_error(err)
 		}
 
 		tmp := counts[ward]
@@ -169,7 +166,7 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 		string(service_code), start, end).Scan(&city_total.Count)
 
 	if err != nil {
-		log.Print("error loading city-wide total count for %s. err: %s", service_code, err)
+		return backend_error(err)
 	}
 
 	city_total.Average = float32(city_total.Count) / 365.0
@@ -185,7 +182,7 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 	for rows.Next() {
 		var daily_max int
 		if err := rows.Scan(&daily_max); err != nil {
-			log.Print("error loading city-wide daily max for %s. err: %s", service_code, err)
+			return backend_error(err)
 		}
 
 		city_total.DailyMax = append(city_total.DailyMax, daily_max)
