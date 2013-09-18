@@ -87,9 +87,9 @@ func TimeToCloseHandler(params url.Values, request *http.Request) ([]byte, *ApiE
 	}
 
 	type TimeToClose struct {
-		Time  float64
-		Count int
-		Ward  int `json:"-"`
+		Time  float64 `json:"time"`
+		Count int     `json:"count"`
+		Ward  int     `json:"-"`
 	}
 
 	times := make(map[string]TimeToClose)
@@ -147,9 +147,9 @@ func TimeToCloseHandler(params url.Values, request *http.Request) ([]byte, *ApiE
 	threshold := (float64(city_average.Count) / 50.0) - std_dev
 
 	type resp_data struct {
-		WardData  map[string]TimeToClose
-		CityData  TimeToClose
-		Threshold float64
+		WardData  map[string]TimeToClose `json:"ward_data"`
+		CityData  TimeToClose            `json:"city_data"`
+		Threshold float64                `json:"threshold"`
 	}
 
 	return dumpJson(resp_data{WardData: times, CityData: city_average, Threshold: threshold}), nil

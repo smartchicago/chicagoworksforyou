@@ -102,8 +102,8 @@ func WardCountsHandler(params url.Values, request *http.Request) ([]byte, *ApiEr
 	}
 
 	type WardCount struct {
-		Opened int
-		Closed int
+		Opened int `json:"opened"`
+		Closed int `json:"closed"`
 	}
 
 	counts := make(map[string]WardCount)

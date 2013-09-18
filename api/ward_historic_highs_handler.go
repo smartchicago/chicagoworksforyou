@@ -10,8 +10,8 @@ import (
 )
 
 type HighDay struct {
-	Date  string
-	Count int
+	Date  string `json:"date"`
+	Count int    `json:"count"`
 }
 
 func WardHistoricHighsHandler(params url.Values, request *http.Request) ([]byte, *ApiError) {
@@ -54,8 +54,8 @@ func WardHistoricHighsHandler(params url.Values, request *http.Request) ([]byte,
 
 	} else {
 		type ResponseData struct {
-			Highs   map[string][]HighDay
-			Current map[string]HighDay
+			Highs   map[string][]HighDay `json:"highs"`
+			Current map[string]HighDay   `json:"current"`
 		}
 
 		var resp ResponseData

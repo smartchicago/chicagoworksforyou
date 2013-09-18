@@ -118,9 +118,9 @@ dateMapApp.controller("dateCtrl", function ($scope, Data, $http, $location, $rou
         if (service.Slug == Data.maxService.Slug) {
             classes.push('max');
         }
-        if (service.Count > service.Average) {
+        if (service.count > service.average) {
             classes.push('up');
-        } else if (service.Count < service.Average) {
+        } else if (service.count < service.average) {
             classes.push('down');
         }
         return classes.join(" ");
@@ -131,7 +131,7 @@ dateMapApp.controller("dateCtrl", function ($scope, Data, $http, $location, $rou
             return obj.Slug == Data.serviceObj.slug;
         });
 
-        var allCounts = _.toArray(serviceObj.Wards);
+        var allCounts = _.toArray(serviceObj.wards);
         var maxCount = _.max(allCounts);
         var hasRanges = maxCount >= wardColors.length;
 
@@ -161,7 +161,7 @@ dateMapApp.controller("dateCtrl", function ($scope, Data, $http, $location, $rou
         $timeout(function() {
             for (var path in window.wardPaths) {
                 var wardNum = parseInt(path,10) + 1;
-                var wardCount = serviceObj.Wards[wardNum];
+                var wardCount = serviceObj.wards[wardNum];
                 var poly = L.polygon(
                     window.wardPaths[path],
                     {
@@ -219,8 +219,8 @@ dateMapApp.controller("dateCtrl", function ($scope, Data, $http, $location, $rou
                         "Code": pair[0],
                         "Slug": service.slug,
                         "Name": service.name,
-                        "AvgRounded": Math.round(pair[1].Average * 10) / 10,
-                        "Percent": Math.min(Math.round((pair[1].Count - pair[1].Average) * 100 / pair[1].Average), 100)
+                        "AvgRounded": Math.round(pair[1].average * 10) / 10,
+                        "Percent": Math.min(Math.round((pair[1].count - pair[1].average) * 100 / pair[1].average), 100)
                     });
                 });
 

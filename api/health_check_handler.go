@@ -8,9 +8,10 @@ import (
 
 func HealthCheckHandler(params url.Values, request *http.Request) ([]byte, *ApiError) {
 	type HealthCheck struct {
-		SR                string `json:"most_recent_sr_id"`
-		Database, Healthy bool
-		Version           string
+		SR       string `json:"most_recent_sr_id"`
+		Database bool   `json:"database"`
+		Healthy  bool   `json:"healthy"`
+		Version  string `json:"version"`
 	}
 
 	health_check := HealthCheck{Version: version}
