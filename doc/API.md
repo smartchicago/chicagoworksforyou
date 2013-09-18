@@ -49,10 +49,10 @@ Output:
 
     $ curl http://localhost:5000/health_check.json
     {
-      "most_recent_sr_id": "13-01255471",
-      "Database": true,
-      "Healthy": true,
-      "Version": ""
+      "most_recent_sr_id": "13-01264162",
+      "database": true,
+      "healthy": true,
+      "version": ""
     }
 
 Services
@@ -69,74 +69,74 @@ Output:
     $ curl "http://localhost:5000/services.json"
     [
       {
-        "Count": 354942,
-        "Service_code": "4fd3b167e750846744000005",
-        "Service_name": "Graffiti Removal"
+        "count": 123412,
+        "service_code": "4fd3bd72e750846c530000cd",
+        "service_name": "Building Violation"
       },
       {
-        "Count": 7970,
-        "Service_code": "4fd6e4ece750840569000019",
-        "Service_name": "Restaurant Complaint"
+        "count": 151704,
+        "service_code": "4ffa4c69601827691b000018",
+        "service_name": "Abandoned Vehicle"
       },
       {
-        "Count": 92675,
-        "Service_code": "4fd3b9bce750846c5300004a",
-        "Service_name": "Rodent Baiting / Rat Complaint"
+        "count": 82603,
+        "service_code": "4ffa9cad6018277d4000007b",
+        "service_name": "Alley Light Out"
       },
       {
-        "Count": 50249,
-        "Service_code": "4fd3bbf8e750846c53000069",
-        "Service_name": "Tree Debris"
+        "count": 836103,
+        "service_code": "4fd3b167e750846744000005",
+        "service_name": "Graffiti Removal"
       },
       {
-        "Count": 50777,
-        "Service_code": "4ffa4c69601827691b000018",
-        "Service_name": "Abandoned Vehicle"
+        "count": 333398,
+        "service_code": "4fd3b656e750846c53000004",
+        "service_name": "Pothole in Street"
       },
       {
-        "Count": 27343,
-        "Service_code": "4ffa9f2d6018277d400000c8",
-        "Service_name": "Street Light 1 / Out"
+        "count": 132453,
+        "service_code": "4fd3bd3de750846c530000b9",
+        "service_name": "Street Lights All / Out"
       },
       {
-        "Count": 22489,
-        "Service_code": "4ffa971e6018277d4000000b",
-        "Service_name": "Pavement Cave-In Survey"
+        "count": 39092,
+        "service_code": "4ffa971e6018277d4000000b",
+        "service_name": "Pavement Cave-In Survey"
       },
       {
-        "Count": 44753,
-        "Service_code": "4ffa9cad6018277d4000007b",
-        "Service_name": "Alley Light Out"
+        "count": 17815,
+        "service_code": "4fd6e4ece750840569000019",
+        "service_name": "Restaurant Complaint"
       },
       {
-        "Count": 59801,
-        "Service_code": "4fd3bd72e750846c530000cd",
-        "Service_name": "Building Violation"
+        "count": 189760,
+        "service_code": "4fd3b9bce750846c5300004a",
+        "service_name": "Rodent Baiting / Rat Complaint"
       },
       {
-        "Count": 33909,
-        "Service_code": "4ffa9db16018277d400000a2",
-        "Service_name": "Traffic Signal Out"
+        "count": 67727,
+        "service_code": "4ffa9db16018277d400000a2",
+        "service_name": "Traffic Signal Out"
       },
       {
-        "Count": 4507,
-        "Service_code": "4ffa995a6018277d4000003c",
-        "Service_name": "Street Cut Complaints"
+        "count": 7926,
+        "service_code": "4ffa995a6018277d4000003c",
+        "service_name": "Street Cut Complaints"
       },
       {
-        "Count": 46949,
-        "Service_code": "4fd3b750e750846c5300001d",
-        "Service_name": "Sanitation Code Violation"
+        "count": 53229,
+        "service_code": "4ffa9f2d6018277d400000c8",
+        "service_name": "Street Light 1 / Out"
       },
       {
-        "Count": 147457,
-        "Service_code": "4fd3b656e750846c53000004",
-        "Service_name": "Pothole in Street"
+        "count": 112470,
+        "service_code": "4fd3b750e750846c5300001d",
+        "service_name": "Sanitation Code Violation"
       },
       {
-        "Count": 65615,
-        "Service_code": "4fd3bd3de750846c530000b9",
-        "Service_name": "Street Lights All / Out"
+        "count": 128979,
+        "service_code": "4fd3bbf8e750846c53000069",
+        "service_name": "Tree Debris"
       }
     ]
 
@@ -160,22 +160,36 @@ The city-wide average time to close and count of requests opened is in the `City
 
     $ curl "http://localhost:5000/requests/time_to_close.json?end_date=2013-06-19&count=7&service_code=4fd3b167e750846744000005"
     {
-      "WardData": {
-         "1": {
-             "Time": 6.586492353553241,
-              "Count": 643
-            },
-         ( .. truncated ...)
-            "9": {
-              "Time": 2.469373385011574,
-              "Count": 43
-            }
-          },
-      "CityData": {
-        "Time": 3.8197868124884256,
-        "Count": 11123
+      "ward_data": {
+        "1": {
+          "time": 2.364411651238426,
+          "count": 102
+        },
+        "10": {
+          "time": 4.099598842592593,
+          "count": 50
+        },
+        "11": {
+          "time": 0.8528237674768518,
+          "count": 151
+        },
+        "12": {
+          "time": 2.1940788901273147,
+          "count": 149
+        },
+        
+        (... truncated ...)
+        
+        "9": {
+          "time": 0,
+          "count": 0
+        }
       },
-      "Threshold": 27.537741650677532
+      "city_data": {
+        "time": 2.90123641712963,
+        "count": 2587
+      },
+      "threshold": -3.9964548567631866
     }
 	
 
@@ -197,32 +211,32 @@ Output:
     $ curl "http://localhost:5000/wards/10/counts.json?count=7&end_date=2013-08-30"
     {
       "2013-08-24": {
-        "Opened": 0,
-        "Closed": 0
+        "opened": 0,
+        "closed": 0
       },
       "2013-08-25": {
-        "Opened": 0,
-        "Closed": 0
+        "opened": 0,
+        "closed": 0
       },
       "2013-08-26": {
-        "Opened": 7,
-        "Closed": 4
+        "opened": 0,
+        "closed": 0
       },
       "2013-08-27": {
-        "Opened": 20,
-        "Closed": 37
+        "opened": 0,
+        "closed": 0
       },
       "2013-08-28": {
-        "Opened": 18,
-        "Closed": 34
+        "opened": 0,
+        "closed": 0
       },
       "2013-08-29": {
-        "Opened": 7,
-        "Closed": 6
+        "opened": 0,
+        "closed": 0
       },
       "2013-08-30": {
-        "Opened": 0,
-        "Closed": 0
+        "opened": 11,
+        "closed": 7
       }
     }
     
@@ -245,68 +259,54 @@ The output is a three element map, with keys `DayData`, `CityData`, `WardData`. 
 
     $ curl "http://localhost:5000/requests/4fd3b167e750846744000005/counts.json?end_date=2013-06-19&count=1"
     {
-      "DayData": [
-        "2013-06-04",
-        "2013-06-05",
-        "2013-06-06",
-        "2013-06-07",
-        "2013-06-08",
-        "2013-06-09",
-        "2013-06-10"
+      "day_data": [
+        "2013-06-19"
       ],
-      "CityData": {
-        "Average": 8.065753,
-        "DailyMax": [
-          114,
-          106,
-          104,
-          102,
-          102,
-          94,
-          93
+      "city_data": {
+        "average": 1.3123288,
+        "daily_max": [
+          169,
+          163,
+          161,
+          160,
+          156,
+          155,
+          152
         ],
-        "Count": 2944
+        "count": 479
       },
-      "WardData": {
+      "ward_data": {
         "1": {
-          "Counts": [
-            25,
-            21,
-            37,
-            59,
-            17,
-            3,
-            33
+          "counts": [
+            11
           ],
-          "Average": 6.917808
+          "average": 16.980822
         },
         "10": {
-          "Counts": [
-            23,
-            0,
-            28,
-            8,
-            0,
-            5,
-            6
+          "counts": [
+            1
           ],
-          "Average": 2.4958904
+          "average": 6.4054794
         },
         "11": {
-          "Counts": [
-            42,
-            15,
-            8,
-            30,
-            0,
-            5,
-            26
+          "counts": [
+            25
           ],
-          "Average": 8.087671
-        }
+          "average": 18.536985
+        },
+        
         (... truncated ...)
+        
+        "9": {
+          "counts": [
+            1
+          ],
+          "average": 0.80547947
+        }
       }
     }
+    
+
 Request Counts by Day
 ---------------------
 
@@ -323,35 +323,213 @@ Output:
     $ curl "http://localhost:5000/requests/counts_by_day.json?day=2013-06-21"
     {
       "4fd3b167e750846744000005": {
-        "Count": 379,
-        "Average": 8.694054,
-        "TopWards": [
-          14
-        ]
+        "count": 387,
+        "average": 324.28766,
+        "wards": {
+          "1": 11,
+          "10": 5,
+          "11": 7,
+          "12": 47,
+          
+          (... truncated ...)
+          
+          "8": 0,
+          "9": 0
+        }
       },
       "4fd3b656e750846c53000004": {
-        "Count": 140,
-        "Average": 4.195414,
-        "TopWards": [
-          31
-        ]
+        "count": 140,
+        "average": 134.4137,
+        "wards": {
+          "1": 0,
+          "10": 4,
+          "11": 2,
+          "12": 0,
+          
+          (... truncated ...)
+          
+          "8": 2,
+          "9": 2
+        }
       },
       "4fd3b750e750846c5300001d": {
-        "Count": 82,
-        "Average": 1.9250441,
-        "TopWards": [
-          18
-        ]
+        "count": 83,
+        "average": 43.31781,
+        "wards": {
+          "1": 2,
+          "10": 1,
+          "11": 0,
+          "12": 2,
+          
+          (... truncated ...)
+          
+          "8": 0,
+          "9": 2
+        }
       },
       "4fd3b9bce750846c5300004a": {
-        "Count": 86,
-        "Average": 2.774941,
-        "TopWards": [
-          32,
-          50
-        ]
+        "count": 86,
+        "average": 75.438354,
+        "wards": {
+          "1": 3,
+          "10": 1,
+          "11": 0,
+          "12": 0,
+
+          (... truncated ...)
+
+          "8": 2,
+          "9": 1
+        }
       },
-      (response truncated)
+      "4fd3bbf8e750846c53000069": {
+        "count": 68,
+        "average": 51.624657,
+        "wards": {
+          "1": 1,
+          "10": 1,
+          "11": 1,
+ 
+          (... truncated ...)
+
+          "8": 2,
+          "9": 0
+        }
+      },
+      "4fd3bd3de750846c530000b9": {
+        "count": 61,
+        "average": 56.09863,
+        "wards": {
+          "1": 0,
+          "10": 0,
+          "11": 0,
+          "12": 3,
+  
+          (... truncated ...)
+
+          "8": 6,
+          "9": 1
+        }
+      },
+      "4fd3bd72e750846c530000cd": {
+        "count": 67,
+        "average": 45.673973,
+        "wards": {
+          "1": 1,
+          "10": 5,
+          "11": 1,
+          "12": 0,
+   
+          (... truncated ...)
+
+          "7": 0,
+          "8": 0,
+          "9": 0
+        }
+      },
+      "4fd6e4ece750840569000019": {
+        "count": 12,
+        "average": 6.893151,
+        "wards": {
+          "1": 0,
+          "10": 0,
+          "11": 1,
+
+          (... truncated ...)
+
+          "7": 0,
+          "8": 0,
+          "9": 0
+        }
+      },
+      "4ffa4c69601827691b000018": {
+        "count": 44,
+        "average": 38.684933,
+        "wards": {
+          "1": 2,
+          "10": 0,
+          "11": 4,
+          "12": 1,
+
+          (... truncated ...)
+
+          "7": 1,
+          "8": 1,
+          "9": 0
+        }
+      },
+      "4ffa971e6018277d4000000b": {
+        "count": 23,
+        "average": 18.50137,
+        "wards": {
+          "1": 0,
+          "10": 1,
+          "11": 0,
+ 
+          (... truncated ...)
+
+          "8": 0,
+          "9": 1
+        }
+      },
+      "4ffa995a6018277d4000003c": {
+        "count": 3,
+        "average": 4.8328767,
+        "wards": {
+          "1": 0,
+          "10": 0,
+          "11": 1,
+ 
+          (... truncated ...)
+
+          "8": 0,
+          "9": 0
+        }
+      },
+      "4ffa9cad6018277d4000007b": {
+        "count": 44,
+        "average": 29.767124,
+        "wards": {
+          "1": 0,
+          "10": 3,
+          "11": 1,
+
+          (... truncated ...)
+
+          "8": 1,
+          "9": 0
+        }
+      },
+      "4ffa9db16018277d400000a2": {
+        "count": 23,
+        "average": 33.90411,
+        "wards": {
+          "1": 0,
+          "10": 0,
+          "11": 0,
+          "12": 1,
+
+          (... truncated ...)
+
+          "8": 0,
+          "9": 0
+        }
+      },
+      "4ffa9f2d6018277d400000c8": {
+        "count": 32,
+        "average": 33.2137,
+        "wards": {
+          "1": 0,
+          "10": 1,
+          "11": 0,
+
+          (... truncated ...)
+
+          "8": 1,
+          "9": 0
+        }
+      }
+    }
 
 
 Requests with media
@@ -368,33 +546,28 @@ Output:
     $ curl "http://localhost:5000/requests/media.json?callback=foo"
     foo([
       {
-        "Service_name": "Pothole in Street",
-        "Address": "4552 n Lockwood",
-        "Media_url": "http://311request.cityofchicago.org/media/chicago/report/photos/51ded6f0016305b6f8ba12ea/pic_8092_960.png",
-        "Service_request_id": "13-00921084",
-        "Ward": 45
+        "service_name": "Graffiti Removal",
+        "address": "13536 S Avenue L Arizona",
+        "media_url": "http://311request.cityofchicago.org/media/chicago/report/photos/5238e960016302a78310d085/20130909_150213.jpg",
+        "service_request_id": "13-01372533",
+        "ward": 10
       },
       {
-        "Service_name": "Graffiti Removal",
-        "Address": "1545 w Cortez",
-        "Media_url": "http://311request.cityofchicago.org/media/chicago/report/photos/51ded522016305b6f8ba12b0/pic_8089_1010.png",
-        "Service_request_id": "13-00920959",
-        "Ward": 27
+        "service_name": "Graffiti Removal",
+        "address": "828-848 North Washtenaw Avenue, Chicago, IL 60622, USA",
+        "media_url": "http://311request.cityofchicago.org/media/chicago/report/photos/5238df60016302a78310d04c/1379458553907.jpg",
+        "service_request_id": "13-01372401",
+        "ward": 26
       },
       {
-        "Service_name": "Sanitation Code Violation",
-        "Address": "2031 w 23rd street",
-        "Media_url": "http://311request.cityofchicago.org/media/chicago/report/photos/51dece78016305b6f8ba11f8/pic_8086_2356.png",
-        "Service_request_id": "13-00920544",
-        "Ward": 25
+        "service_name": "Graffiti Removal",
+        "address": "Swift Elementary School, 5832 N Winthrop Ave, Chicago, IL  60660",
+        "media_url": "http://311request.cityofchicago.org/media/chicago/report/photos/5238daed016302a78310d025/pic_9955_2572.png",
+        "service_request_id": "13-01372335",
+        "ward": 48
       },
-      {
-        "Service_name": "Pothole in Street",
-        "Address": "4816 - 18 n Linder.",
-        "Media_url": "http://311request.cityofchicago.org/media/chicago/report/photos/51decd21016305b6f8ba11ca/pic_8085_960.png",
-        "Service_request_id": "13-00920440",
-        "Ward": 45
-      },
+
+      (... truncated ...)
       
 Historic Highs
 --------------
@@ -414,72 +587,85 @@ Output:
     $ curl "http://localhost:5000/wards/32/historic_highs.json?service_code=4fd3b167e750846744000005&count=10&include_date=2013-07-25"
     [
       {
-        "Date": "2013-04-30",
-        "Count": 37
+        "date": "2010-10-27",
+        "count": 94
       },
       {
-        "Date": "2013-05-20",
-        "Count": 36
+        "date": "2008-07-01",
+        "count": 75
       },
-      {
-        "Date": "2013-04-21",
-        "Count": 31
-      },
+
       (... truncated ...)
+
+      {
+        "date": "2013-07-25",
+        "count": 9
+      }
     ]
     
     # If service_code is omitted, all service_codes are returned:
     
     $ curl "http://localhost:5000/wards/2/historic_highs.json?&count=3&include_date=2013-05-23"
     {
-      "Highs": {
+      "highs": {
         "4fd3b167e750846744000005": [
           {
-            "Date": "2013-06-27",
-            "Count": 35
+            "date": "2008-10-14",
+            "count": 55
           },
           {
-            "Date": "2013-05-07",
-            "Count": 32
+            "date": "2008-08-07",
+            "count": 49
           },
           {
-            "Date": "2013-05-20",
-            "Count": 27
+            "date": "2009-05-20",
+            "count": 42
           }
         ],
         "4fd3b656e750846c53000004": [
           {
-            "Date": "2013-06-28",
-            "Count": 23
+            "date": "2008-01-07",
+            "count": 79
           },
           {
-            "Date": "2013-07-09",
-            "Count": 19
+            "date": "2008-03-18",
+            "count": 62
           },
           {
-            "Date": "2013-08-05",
-            "Count": 12
+            "date": "2008-03-27",
+            "count": 53
           }
         ],
+
         (... truncated ...)
 
+        "4ffa9f2d6018277d400000c8": [
+          {
+            "date": "2013-02-08",
+            "count": 41
+          },
+          {
+            "date": "2012-05-21",
+            "count": 23
+          },
+          {
+            "date": "2012-05-16",
+            "count": 22
+          }
         ]
       },
-      "Current": {
+      "current": {
         "4fd3b167e750846744000005": {
-          "Date": "2013-05-23",
-          "Count": 8
+          "date": "2013-05-23",
+          "count": 8
         },
-        "4fd3b656e750846c53000004": {
-          "Date": "2013-05-23",
-          "Count": 3
-        },
-        "4fd3b750e750846c5300001d": {
-          "Date": "2013-05-23",
-          "Count": 0
-        },
+   
         (... truncated ...)
- 
+
+        "4ffa9f2d6018277d400000c8": {
+          "date": "2013-05-23",
+          "count": 0
+        }
       }
     }
     
@@ -499,52 +685,28 @@ Output:
     $ curl "http://localhost:5000/wards/transitions.json?ward=50"
 
     {
-      "Incoming": [
+      "incoming": [
         {
-          "Id": 37,
-          "Ward2013": 26,
-          "Ward2015": 1,
-          "Boundary": (... truncated geojson ...) 
+          "id": 124,
+          "ward_2013": 39,
+          "ward_2015": 50,
+          "boundary": "{\"type\":\"MultiPolygon\",\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}},\"coordinates\":[[[[-87.72275,41.99706],[-87.72275,41.99705],[-87.72275,41.99693],[-87.72275,41.99706]]],[[[-87.72275,41.99677],[-87.72274,41.99671],[-87.72274,41.99652],[-87.72273,41.99633],[-87.72273,41.99612],[-87.72273,41.99593],[-87.72272,41.99577],[-87.72272,41.99549],[-87.72272,41.99549],[-87.72272,41.99549],[-87.72273,41.99585],[-87.72275,41.99677]]],[[[-87.72144,41.99373],[-87.72144,41.99373],[-87.72144,41.99359],[-87.72144,41.99373]]],[[[-87.72142,41.99293],[-87.72142,41.99283],[-87.72142,41.99282],[-87.72142,41.99293]]],[[[-87.72139,41.99148],[-87.72138,41.99133],[-87.72138,41.99126],[-87.72138,41.99112],[-87.72137,41.99094],[-87.72137,41.99077],[-87.72137,41.99066],[-87.72137,41.99063],[-87.72137,41.99066],[-87.72139,41.99148]]],[[[-87.72136,41.99023],[-87.72102,41.99023],[-87.72048,41.99024],[-87.72011,41.99025],[-87.71946,41.99025],[-87.71919,41.99026],[-87.71901,41.99026],[-87.71911,41.99026],[-87.71986,41.99025],[-87.72011,41.99025],[-87.72036,41.99024],[-87.72111,41.99023],[-87.72136,41.99023],[-87.72136,41.99023]]],[[[-87.71877,41.99026],[-87.7182,41.99027],[-87.71793,41.99027],[-87.71862,41.99027],[-87.71877,41.99026]]],[[[-87.71678,41.99029],[-87.71656,41.99029],[-87.71667,41.99029],[-87.71678,41.99029]]],[[[-87.71628,41.9903],[-87.71569,41.9903],[-87.71525,41.99031],[-87.71545,41.99031],[-87.71618,41.9903],[-87.71628,41.9903]]],[[[-87.71511,41.99031],[-87.71455,41.99032],[-87.71444,41.99032],[-87.71408,41.99032],[-87.71423,41.99032],[-87.71444,41.99032],[-87.71455,41.99032],[-87.71496,41.99031],[-87.71511,41.99031]]],[[[-87.71389,41.99032],[-87.71373,41.99033],[-87.71341,41.99033],[-87.71318,41.99033],[-87.71276,41.99034],[-87.7127,41.99034],[-87.71276,41.99034],[-87.71301,41.99034],[-87.71374,41.99033],[-87.71389,41.99032]]],[[[-87.71156,41.99036],[-87.71143,41.99036],[-87.71102,41.99036],[-87.71137,41.99036],[-87.71156,41.99036]]],[[[-87.71102,41.99036],[-87.7108,41.99036],[-87.7109,41.99036],[-87.71102,41.99036]]],[[[-87.71007,41.99037],[-87.70979,41.99038],[-87.70969,41.99038],[-87.71007,41.99037]]],[[[-87.70945,41.99038],[-87.70931,41.99038],[-87.70942,41.99038],[-87.70945,41.99038]]],[[[-87.70914,41.99038],[-87.70909,41.99038],[-87.70909,41.99038],[-87.70913,41.99038],[-87.70914,41.99038]]]]}"
         },
-        {
-          "Id": 182,
-          "Ward2013": 27,
-          "Ward2015": 1,
-          "Boundary": (... truncated geojson ...) 
-        },
-        {
-          "Id": 69,
-          "Ward2013": 32,
-          "Ward2015": 1,
-          "Boundary": (... truncated geojson ...) 
-        },
-        {
-          "Id": 59,
-          "Ward2013": 35,
-          "Ward2015": 1,
-          "Boundary": (... truncated geojson ...) 
+
+        (... truncated ...)
+
         }
       ],
-      "Outgoing": [
+      "outgoing": [
         {
-          "Id": 103,
-          "Ward2013": 1,
-          "Ward2015": 26,
-          "Boundary": (... truncated geojson ...) 
+          "id": 189,
+          "ward_2013": 50,
+          "ward_2015": 39,
+          "boundary": "{\"type\":\"MultiPolygon\",\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}},\"coordinates\":[[[[-87.70916,41.99038],[-87.70931,41.99038],[-87.7093,41.99038],[-87.70916,41.99038],[-87.70916,41.99038]]],[[[-87.70945,41.99038],[-87.70963,41.99038],[-87.70969,41.99038],[-87.70948,41.99038],[-87.70945,41.99038]]],[[[-87.71007,41.99037],[-87.71013,41.99037],[-87.71051,41.99037],[-87.7108,41.99036],[-87.71057,41.99037],[-87.71045,41.99037],[-87.71019,41.99037],[-87.71007,41.99037]]],[[[-87.71156,41.99036],[-87.71164,41.99036],[-87.71169,41.99035],[-87.71196,41.99035],[-87.71235,41.99034],[-87.7127,41.99034],[-87.71241,41.99034],[-87.71168,41.99036],[-87.71156,41.99036]]],[[[-87.71389,41.99032],[-87.71398,41.99032],[-87.71408,41.99032],[-87.71398,41.99032],[-87.71389,41.99032]]],[[[-87.71511,41.99031],[-87.7152,41.99031],[-87.71525,41.99031],[-87.7152,41.99031],[-87.71511,41.99031]]],[[[-87.71628,41.9903],[-87.71642,41.99029],[-87.71656,41.99029],[-87.71642,41.99029],[-87.71628,41.9903]]],[[[-87.71678,41.99029],[-87.71692,41.99029],[-87.71764,41.99028],[-87.71793,41.99027],[-87.71789,41.99028],[-87.71764,41.99028],[-87.7174,41.99028],[-87.71678,41.99029]]],[[[-87.71877,41.99026],[-87.71886,41.99026],[-87.71901,41.99026],[-87.71886,41.99026],[-87.71877,41.99026]]],[[[-87.72136,41.99023],[-87.72136,41.99023],[-87.72137,41.99063],[-87.72136,41.99057],[-87.72136,41.99023]]],[[[-87.72139,41.99148],[-87.7214,41.99196],[-87.7214,41.99216],[-87.72141,41.99236],[-87.72142,41.99282],[-87.72141,41.99231],[-87.7214,41.99196],[-87.72139,41.99161],[-87.72139,41.99148]]],[[[-87.72142,41.99293],[-87.72142,41.99306],[-87.72143,41.99327],[-87.72144,41.99359],[-87.72143,41.99337],[-87.72142,41.99293]]],[[[-87.72144,41.99373],[-87.72167,41.99373],[-87.72199,41.99372],[-87.72206,41.99372],[-87.72234,41.99372],[-87.72268,41.99372],[-87.72269,41.99408],[-87.72269,41.99432],[-87.7227,41.99455],[-87.7227,41.99476],[-87.72271,41.99497],[-87.72271,41.99518],[-87.72272,41.99549],[-87.72247,41.99549],[-87.7221,41.9955],[-87.72173,41.9955],[-87.72148,41.9955],[-87.72147,41.99514],[-87.72145,41.99408],[-87.72144,41.99373],[-87.72144,41.99373]]],[[[-87.72275,41.99677],[-87.72275,41.99679],[-87.72275,41.99686],[-87.72275,41.99693],[-87.72275,41.99691],[-87.72275,41.99679],[-87.72275,41.99677]]],[[[-87.72275,41.99706],[-87.72279,41.99726],[-87.72279,41.99726],[-87.72276,41.99716],[-87.72275,41.99706]]],[[[-87.71102,41.99036],[-87.71102,41.99036],[-87.71102,41.99036],[-87.71102,41.99036],[-87.71102,41.99036]]]]}"
         },
-        {
-          "Id": 105,
-          "Ward2013": 1,
-          "Ward2015": 33,
-          "Boundary": (... truncated geojson ...) 
-        },
-        {
-          "Id": 104,
-          "Ward2013": 1,
-          "Ward2015": 32,
-          "Boundary": (... truncated geojson ...) 
-        },
-        (... truncated ...) 
+        
+        (... truncated ...)
+
       ]
     }
     
@@ -566,6 +728,6 @@ Output:
 
     $ curl "http://localhost:5000/transitions/time_to_close.json?transition_area_id=1&count=7&end_date=2013-08-22"
     {
-      "Time": 0.04724537037037037,
-      "Count": 1
+      "time": 38.26763888888889,
+      "count": 3
     }

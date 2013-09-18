@@ -17,10 +17,10 @@ mediaApp.factory('Data', function () {
 
     data.setService = function(slug, name) {
         data.currServiceSlug = slug;
-        data.search.Service_name = name;
-        data.pageTitle = (data.search.Service_name ? data.search.Service_name + " | " : '') + defaultTitle;
+        data.search.service_name = name;
+        data.pageTitle = (data.search.service_name ? data.search.service_name + " | " : '') + defaultTitle;
         data.currURL = window.urlBase + (slug ? slug + '/' : '');
-        data.shareText = 'Recent ' + (data.search.Service_name ? data.search.Service_name : '311') + ' photos in Chicago';
+        data.shareText = 'Recent ' + (data.search.service_name ? data.search.service_name : '311') + ' photos in Chicago';
     };
 
     return data;
@@ -64,7 +64,7 @@ mediaApp.controller("mediaCtrl", function ($scope, $http, Data, $location) {
     $http.jsonp(url).
         success(function(response, status, headers, config) {
             Data.media = response;
-            Data.mediaGroupped = _.countBy(response,'Service_name');
+            Data.mediaGroupped = _.countBy(response,'service_name');
         }
     );
 });

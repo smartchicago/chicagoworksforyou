@@ -100,9 +100,9 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 	}
 
 	type WardCount struct {
-		Ward    int
-		Counts  []int
-		Average float32
+		Ward    int     `json:"ward"`
+		Counts  []int   `json:"counts"`
+		Average float32 `json:"average"`
 	}
 
 	counts := make(map[int]WardCount)
@@ -151,9 +151,9 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 	}
 
 	type CityCount struct {
-		Average  float32
-		DailyMax []int
-		Count    int
+		Average  float32 `json:"average"`
+		DailyMax []int   `json:"daily_max"`
+		Count    int     `json:"count"`
 	}
 
 	// find total opened for the entire city for date range
@@ -190,8 +190,8 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 
 	// pluck data to return, ensure we return a number, even zero, for each ward
 	type WC struct {
-		Counts  []int
-		Average float32
+		Counts  []int   `json:"counts"`
+		Average float32 `json:"average"`
 	}
 
 	complete_wards := make(map[string]WC)
@@ -204,9 +204,9 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 	}
 
 	type RespData struct {
-		DayData  []string
-		CityData CityCount
-		WardData map[string]WC
+		DayData  []string      `json:"day_data"`
+		CityData CityCount     `json:"city_data"`
+		WardData map[string]WC `json:"ward_data"`
 	}
 
 	return dumpJson(RespData{CityData: city_total, WardData: complete_wards, DayData: day_data}), nil
