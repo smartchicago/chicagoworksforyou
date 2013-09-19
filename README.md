@@ -8,7 +8,7 @@ Chicago Works For You
 Technical
 ---------
 
-The CWFY website (`[frontend/](frontend/)`) runs on Jekyll and Compass. There is a backend API (`[api/](api/)`) written in Go.
+The CWFY website ([`frontend/`](frontend/)) runs on Jekyll and Compass. There is a backend API ([`api/`](api/)) written in Go.
 
 See [API.md](doc/API.md) for details on how to use the backend API. See [FRONTEND.md](doc/FRONTEND.md) for information on the public-facing website.
 
