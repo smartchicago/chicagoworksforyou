@@ -16,7 +16,7 @@ Dark lines under and up-arrows next to a request type means there were more requ
 
 Click any service request type to see the raw numbers and averages. The legend in the lake shows you the number ranges for each type in each ward. Click any service type to see those numbers for any day.
 
-Go back and forth in time, it will show numbers for that service request, updating the web address so that you can share any view.
+Go back and forth in time, it will show numbers for that service request, updating the web address so that you can share any view via Twitter, Facebook, or email.
 
 For advanced users who like to hack URLs, you can type in any date you want, going back to January 1, 2008, the first day for which we have data from the City.
 
