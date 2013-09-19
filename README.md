@@ -3,7 +3,8 @@ Chicago Works For You
 
 ![CWFY screenshot](doc/cwfy-screenshot.png)
 
-[http://www.chicagoworksforyou.com](http://www.chicagoworksforyou.com)
+
+Chicago Works For You [http://www.chicagoworksforyou.com](http://www.chicagoworksforyou.com) is a citywide dashboard with ward-by-ward views of service delivery in Chicago. 
 
 Technical
 ---------
