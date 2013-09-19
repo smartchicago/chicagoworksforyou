@@ -34,3 +34,10 @@ License
 -------
 
 The application code is released under the [MIT License](LICENSE.md). Editorial content is released under the Creative Commons [Attribution 3.0 Unported (CC BY 3.0)](http://creativecommons.org/licenses/by/3.0/deed.en_US) license. Content from other authors (e.g. photos on service types pages) are used according to their licenses.
+
+Credits
+-------
+
+CWFY was built by [Daniel X. O'Neil](https://github.com/danxoneil), [Sandor Weisz](https://github.com/santheo), and [Chris Gansen](https://github.com/cgansen).
+
+We thank [Christopher Whitaker](https://github.com/govintrenches), [Q Ethan McCallum](https://github.com/qethanm), [Rob Brackett](https://github.com/mr0grog), [Eryan Cobham](https://github.com/littlelazer), and [Paul Smith](https://github.com/paulsmith) for valuable contributions and feedback.
