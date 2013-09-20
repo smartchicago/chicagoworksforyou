@@ -4,15 +4,15 @@ section: about
 title: About Chicago Works For You
 ---
 
-## Welcome 
+## Welcome
 
 Chicago Works For You is a citywide dashboard with ward-by-ward views of service delivery in Chicago. Here's a look at what you get:
 
 #### Home
 
-The homepage is a citywide map with a daily summary of all service requests submitted, by service type and ward. 
+The [homepage](/) is a citywide map with a daily summary of all service requests submitted, by service type and ward.
 
-Dark lines under and up-arrows next to a request type means there were more requests of that type on that date than average. The longer the line, the higher above average. Highest above average is highlighted on the map as default. 
+Dark lines under and up-arrows next to a request type means there were more requests of that type on that date than average. The longer the line, the higher above average. Highest above average is highlighted on the map as default.
 
 Click any service request type to see the raw numbers and averages. The legend in the lake shows you the number ranges for each type in each ward. Click any service type to see those numbers for any day.
 
