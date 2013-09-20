@@ -636,14 +636,20 @@ h3 {
     .mediaApp .images .image:hover span {
       padding-bottom: 10px; }
 
-.about h3 {
-  padding: .5em 0 0;
-  margin: 0 0 .25em;
-  color: #888; }
-  .about h3:not(:first-of-type) {
+.about h1 {
+  margin-bottom: 30px; }
+.about h2 {
+  padding: 0;
+  margin: 0 0 .5em;
+  color: #888;
+  position: relative; }
+  .about h2:not(:first-of-type) {
+    top: .5em;
+    margin-bottom: 1em;
+    padding: 18px 0 0;
     border-top: 1px solid #ddd; }
 .about h4 {
-  padding-top: 1em;
+  padding-top: .5em;
   margin: 0 0 1em; }
 .about p {
   margin: 0 0 1.2em; }
