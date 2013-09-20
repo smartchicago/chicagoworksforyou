@@ -62,7 +62,7 @@ In 2012, the City of Chicago became a [Code for America](http://codeforamerica.o
 
 #### Can I use your data?
 
-Yes! There is an open API available as well as raw database snapshots. Consult the [Chicago Works For You API documentation](https://github.com/smartchicago/chicagoworksforyou/blob/development/doc/API.md) for details on how to query the API and use the results.
+Yes! You may access and use the results of our calculations. There is an open API available as well as raw database snapshots. Consult the [Chicago Works For You API documentation](https://github.com/smartchicago/chicagoworksforyou/blob/development/doc/API.md) for details on how to query the API and use the results. For definitive Chicago 311 data, you should access the [Open311 API](http://dev.cityofchicago.org/docs/api) directly or download [311-related datasets from the City of Chicago Data Portal](https://data.cityofchicago.org/browse?category=Service+Requests).
 
 ## Open311
 
