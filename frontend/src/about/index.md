@@ -30,11 +30,29 @@ Click any day to see that service type on a map.
 
 Move backward and forward in time to see the weeks go by.
 
+Each service has details on the work it takes to close requests. Again, you can share any view and click links to view raw data or submit requests of this type.
 
+#### Wards
+
+Choose any ward to see the week in review-- all open and closed requests. You can choose any request or view all of them at the same time.
+
+The Time-to-close ranking shows the average time from open to close, per request, in context with all other wards.
+
+The Days with the most requests is a raw count for each service type for this ward, going back to January 1, 2008.
+
+The alderman name links to their ward website, and the Chicago start links to their contact information on the City website. See also Facebook account, Twitter stream, and legislative history (as compiled by Councilmatic) links.
+
+#### Photos
+
+See the last 500 photos submits with service requests. You can sort by service request and see raw counts. Clicking any image takes you to the detail page on the City's Service Tracker website to see details and current status.
+
+#### Annotations
+
+All of the data, maps, and charts on this site are just mute representations of a 14-type portion of the services delivered by the city for the city. We use our Tumblr blog to make observations and solicit yours.
 
 ## Data
 
-#### Where does this data come from?
+#### Where does the data that drives this site come from?
 
 This data comes directly from the City of Chicago's [Open311 API](http://dev.cityofchicago.org/docs/api). Chicago's Open311 API can be used to both view 311 request data as well as enter new requests directly into the system.
 
