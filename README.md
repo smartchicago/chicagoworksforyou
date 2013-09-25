@@ -18,8 +18,18 @@ Data
 
 The service request data for Chicago Works For You comes from the [City of Chicago Open311 API](http://dev.cityofchicago.org/docs/api).
 
-Snapshots of the CWFY database, in PostgreSQL pg_dump format, are available at: [http://cwfy-database-backups.s3.amazonaws.com/production.dump](http://cwfy-database-backups.s3.amazonaws.com/production.dump).
+Chicago Works For You publishes a nightly database snapshot. This is a complete copy of the production database powering [chicagoworksforyou.com](http://chicagoworksforyou.com).
 
+The snapshot file is ~235MB and is in PostgreSQL [pg_dump format](http://www.postgresql.org/docs/9.2/interactive/app-pgdump.html).
+
+Download the snapshot: [http://s3.amazonaws.com/cwfy-database-backups/production.dump](http://s3.amazonaws.com/cwfy-database-backups/production.dump)
+
+Instructions for loading into a local PostgreSQL database:
+
+    createdb cwfy
+    pg_restore -d cwfy -O -c /path/to/download/production.dump
+
+This assumes that your have PostgreSQL installed and the PostGIS extension installed. If you are using Mac OS X,  [Postgres.app](http://postgresapp.com/) is a very quick and easy way to install both PostgreSQL and PostGIS.
 The database schema is available at [db/schema.sql](db/schema.sql).
 
 Contributing
