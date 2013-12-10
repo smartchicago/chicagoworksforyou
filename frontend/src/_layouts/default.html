@@ -42,6 +42,7 @@
       <a class="brand" href="/"><img src="/img/logo.png" width="250" height="48" alt="Chicago Works For You"></a>
       <ul class="nav">
         <li class="{% if page.section == 'home' %}active{% endif %}"><a href="/">Home</a></li>
+        <li class="{% if page.section == 'media' %}active{% endif %}"><a href="/photos/">Photos</a></li>
         <li class="{% if page.section == 'services' %}active{% endif %} dropdown">
             <a class="dropdown-toggle" data-toggle="dropdown" data-target="#" href="/service/">Services <b class="caret"></b></a>
             <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
@@ -126,7 +127,6 @@
                 </ul>
             </div>
         </li>
-        <li class="{% if page.section == 'media' %}active{% endif %}"><a href="/photos/">Photos</a></li>
         <li class="{% if page.section == 'annotations' %}active{% endif %}"><a href="http://annotations.chicagoworksforyou.com ">Annotations</a></li>
         <li class="{% if page.section == 'about' %}active{% endif %}"><a href="/about/">About</a></li>
       </ul>
