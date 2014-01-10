@@ -158,7 +158,7 @@ func RequestCountsHandler(params url.Values, request *http.Request) ([]byte, *Ap
 
 	// find total opened for the entire city for date range
 	var city_total CityCount
-	err = api.Db.QueryRow(`SELECT SUM(total)
+	err = api.Db.QueryRow(`SELECT COALESCE(SUM(total),0)
                      FROM daily_counts
                      WHERE service_code = $1
                              AND requested_date >= $2
