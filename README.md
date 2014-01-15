@@ -20,9 +20,7 @@ The service request data for Chicago Works For You comes from the [City of Chica
 
 Chicago Works For You publishes a nightly database snapshot. This is a complete copy of the production database powering [chicagoworksforyou.com](http://chicagoworksforyou.com).
 
-The snapshot file is ~235MB and is in PostgreSQL [pg_dump format](http://www.postgresql.org/docs/9.2/interactive/app-pgdump.html).
-
-Download the snapshot: [http://s3.amazonaws.com/cwfy-database-backups/production.dump](http://s3.amazonaws.com/cwfy-database-backups/production.dump)
+[Download the snapshot](http://chicagoworksforyou.com/about/#can_i_use_your_data)
 
 Instructions for loading into a local PostgreSQL database:
 
