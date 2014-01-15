@@ -50,6 +50,7 @@ func main() {
 	}()
 
 	router := mux.NewRouter()
+	router.HandleFunc("/", homeHandler)
 	router.HandleFunc("/health_check.json", endpoint(HealthCheckHandler))
 	router.HandleFunc("/services.json", endpoint(ServicesHandler))
 	router.HandleFunc("/requests/time_to_close.json", endpoint(TimeToCloseHandler))
@@ -64,6 +65,11 @@ func main() {
 
 	log.Printf("CWFY ready for battle on port %d", *port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), router))
+}
+
+func homeHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html")
+	fmt.Fprint(w, "Documentation on the Chicago Works For You API can be found at <a href='https://github.com/smartchicago/chicagoworksforyou/blob/development/doc/API.md'>https://github.com/smartchicago/chicagoworksforyou/blob/development/doc/API.md</a>.")
 }
 
 type ApiEndpoint func(url.Values, *http.Request) ([]byte, *ApiError)
