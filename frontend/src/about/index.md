@@ -64,7 +64,7 @@ In 2012, the City of Chicago became a [Code for America](http://codeforamerica.o
 
 Yes! You may access and use the results of our calculations. There is an open API available as well as raw database snapshots. Consult the [Chicago Works For You API documentation](https://github.com/smartchicago/chicagoworksforyou/blob/development/doc/API.md) for details on how to query the API and use the results. For definitive Chicago 311 data, you should access the [Open311 API](http://dev.cityofchicago.org/docs/api) directly or download [311-related datasets from the City of Chicago Data Portal](https://data.cityofchicago.org/browse?category=Service+Requests).
 
-&raquo; <a href="http://s3.amazonaws.com/cwfy-database-backups/production.dump" onClick="_gaq.push(['_trackEvent', 'DB Snapshot', 'Download']);">Download the latest database snapshot</a> (approx. 230MB, [pg_dump](http://www.postgresql.org/docs/9.2/interactive/app-pgdump.html) format)
+&raquo; <a href="http://s3.amazonaws.com/cwfy-database-backups/production.dump" onClick="ga('send', 'event', 'DB Snapshot', 'Download')">Download the latest database snapshot</a> (approx. 230MB, [pg_dump](http://www.postgresql.org/docs/9.2/interactive/app-pgdump.html) format)
 
 ## Open311
 
