@@ -12,6 +12,7 @@ set :use_sudo, false
 after 'deploy:update', 'deploy:compile:api'
 after 'deploy:update', 'deploy:compile:worker'
 after 'deploy:update', 'deploy:restart'
+after 'deploy:update', 'varnish:flush'
 
 namespace :db do
   desc "prepare a snapshot of the CWFY database, store to S3"
@@ -54,4 +55,8 @@ namespace :deploy do
   task (:restart) { sudo "supervisorctl restart #{stage}:*", pty: true } 
   task (:start) { sudo "sudo supervisorctl start #{stage}:*", pty: true }
   task (:stop) { sudo "sudo supervisorctl stop #{stage}:*", pty: true }
+end
+
+namespace :varnish do
+  task (:flush) { sudo "sudo /usr/bin/varnishadm 'ban req.url ~ /'", pty: true }
 end
