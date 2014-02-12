@@ -52,12 +52,13 @@ func RequestsMediaHandler(params url.Values, request *http.Request) ([]byte, *Ap
 		Address            string `json:"address"`
 		Media_url          string `json:"media_url"`
 		Service_request_id string `json:"service_request_id"`
-		Ward               int    `json:"ward"`
+		Ward               string    `json:"ward"`
+		Requested_date     string `json:"requested_date"`
 	}
 
 	var sr_with_media []SR
 
-	rows, err := api.Db.Query(`SELECT service_name,address,media_url,service_request_id,ward 
+	rows, err := api.Db.Query(`SELECT service_name,address,media_url,service_request_id,ward,CAST(requested_datetime as varchar(10))
                 FROM service_requests
                 WHERE media_url != ''
 			AND requested_datetime >= $1
@@ -70,7 +71,7 @@ func RequestsMediaHandler(params url.Values, request *http.Request) ([]byte, *Ap
 
 	for rows.Next() {
 		sr := SR{}
-		if err := rows.Scan(&sr.Service_name, &sr.Address, &sr.Media_url, &sr.Service_request_id, &sr.Ward); err != nil {
+		if err := rows.Scan(&sr.Service_name, &sr.Address, &sr.Media_url, &sr.Service_request_id, &sr.Ward, &sr.Requested_date); err != nil {
 			return backend_error(err)
 		}
 
