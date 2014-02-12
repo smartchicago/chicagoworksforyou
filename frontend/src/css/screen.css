@@ -725,6 +725,11 @@ footer {
     margin: 0;
     font-family: 'Monda', Helvetica, sans-serif; }
 
+.photo-filters {
+  margin-bottom: 40px; }
+  .photo-filters .btn-reset {
+    margin-top: 20px; }
+
 .leaflet-label:before {
   border-right: 6px solid black;
   border-right-color: inherit;

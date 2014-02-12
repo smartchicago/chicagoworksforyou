@@ -12,10 +12,25 @@ has_js: true
             <div class="filter">
                 <h1>Recent photos</h1>
                 {% raw %}
-                <ul class="st-list nav nav-pills nav-stacked">
-                    <li ng-class="{active: !data.currServiceSlug}"><a href="" ng-click="filterByService()">All service types <span class="count" ng-bind="data.media.length"></span></a></li>
-                    <li ng-class="{active: service.slug == data.currServiceSlug}" ng-repeat="service in data.services | orderBy:'name'"><a href="" ng-click="filterByService(service)"><span ng-bind="service.name"></span> <span class="count" ng-bind="serviceCount(service.name)"></span></a></li>
-                </ul>
+                <form class="photo-filters">
+                    <p>Filter the photos by choosing from the dropdowns below.</p>
+                    <h4>Ward</h4>
+                    <select ng-model="data.search.ward" ng-options="w for w in data.wards">
+                        <option value="">--All wards--</option>
+                    </select>
+
+                    <h4>Service Type</h4>
+                    <select ng-model="data.search.service_name" ng-options="st for st in data.serviceTypes">
+                        <option value="">--All service types--</option>
+                    </select>
+
+                    <h4>Date</h4>
+                    <select ng-model="data.search.requested_date">
+                        <option value="">--All dates--</option>
+                        <option ng-repeat="rd in data.requestedDates" value="{{rd}}">{{ rd | date:'MMMM d' }}</option>
+                    </select>
+                    <input class="btn btn-reset" type="reset" value="Reset filters" ng-click="data.search={}">
+                </form>
                 {% endraw %}
 
                 {% include share_box.html %}
@@ -29,10 +44,11 @@ has_js: true
                     Clicking on a picture will take you to the <a href="http://servicetracker.cityofchicago.org/">Service Tracker</a> page for that request.
                 </p>
                 {% raw %}
-                <a class="image" ng-href="http://servicetracker.cityofchicago.org/requests/{{ img.service_request_id }}" ng-repeat="img in data.media | filter:data.search">
+                <a class="image" ng-href="http://servicetracker.cityofchicago.org/requests/{{ img.service_request_id }}" ng-repeat="img in data.media | filter:data.search:true">
                     <img ng-src="{{ img.media_url }}" alt="{{ img.address }}">
                     <span>Ward <em ng-bind="img.ward"></em></span>
                 </a>
+                <h4 ng-show="(data.media | filter:data.search:true).length == 0">No photos found.</h4>
                 {% endraw %}
             </div>
         </div>

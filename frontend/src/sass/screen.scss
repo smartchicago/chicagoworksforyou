@@ -1145,6 +1145,13 @@ footer {
     }
 }
 
+// PHOTO
+.photo-filters {
+    margin-bottom: 40px;
+
+    .btn-reset { margin-top: 20px; }
+}
+
 .leaflet-label:before {
     border-right: 6px solid black;
     border-right-color: inherit;
