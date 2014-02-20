@@ -56,6 +56,7 @@ func main() {
 	router.HandleFunc("/requests/time_to_close.json", endpoint(TimeToCloseHandler))
 	router.HandleFunc("/wards/{id}/counts.json", endpoint(WardCountsHandler))
 	router.HandleFunc("/wards/{id}/historic_highs.json", endpoint(WardHistoricHighsHandler))
+	router.HandleFunc("/wards/{id}/services.json", endpoint(WardServicesHandler))
 	router.HandleFunc("/requests/{service_code}/counts.json", endpoint(RequestCountsHandler))
 	router.HandleFunc("/requests/counts_by_day.json", endpoint(DayCountsHandler))
 	router.HandleFunc("/requests/media.json", endpoint(RequestsMediaHandler))

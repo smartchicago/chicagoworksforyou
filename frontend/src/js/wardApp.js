@@ -170,11 +170,39 @@ wardApp.controller("headerCtrl", function ($scope, Data, $location) {
     };
 });
 
-wardApp.controller("sidebarCtrl", function ($scope, Data, $http, $location) {
-    $http.get('/data/services.json').success(function(response) {
-        Data.services = response;
-    });
+wardApp.controller("sidebarCtrl", function ($scope, Data, $http, $location, $routeParams) {
+    $scope.$on(
+        "$routeChangeSuccess",
+        function ($e, $currentRoute, $previousRoute) {
+            Data.setDate(parseDate($routeParams.date, window.lastWeekEnd, $location));
+        
+            var weekServiceCountURL = window.apiDomain + 'wards/' + window.wardNum + '/services.json?count=' + (Data.duration + 1) + '&end_date=' + Data.date + '&callback=JSON_CALLBACK';
+            var serviceTotals = {opened: 0, closed: 0};
 
+            $http.jsonp(weekServiceCountURL).success(function(response) {
+                var wardServices = _.map(window.serviceTypesJSON, function (s) {
+                    var service = _.clone(s);
+                    var item = _.find(response, function (r) {
+                        return r.service_code == service.code;
+                    });
+                    if (item) {
+                        service.opened = item.opened;
+                        service.closed = item.closed;
+
+                        serviceTotals.opened += item.opened;
+                        serviceTotals.closed += item.closed;
+                    }
+
+                    return service;
+                });
+
+                Data.services = wardServices;
+                Data.serviceTotals = serviceTotals;
+            });
+        }
+    );
+
+    Data.services = window.serviceTypesJSON;
     $scope.data = Data;
 });
 

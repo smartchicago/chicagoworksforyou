@@ -530,6 +530,18 @@ h3 {
 .serviceApp .highcharts-axis-labels a {
   color: #555; }
 
+.wardApp .st-list li {
+  border-bottom: 1px dashed #d7d7d7; }
+  .wardApp .st-list li a {
+    border-radius: 0; }
+  .wardApp .st-list li.active .counts {
+    color: #eee; }
+  .wardApp .st-list li:hover .counts {
+    color: #333; }
+.wardApp .st-list .counts {
+  color: #999;
+  font-size: 11px;
+  margin-top: 2px; }
 .wardApp #map {
   height: 360px; }
 .wardApp .legend {
