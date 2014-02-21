@@ -25,11 +25,11 @@
 <link rel="stylesheet" href="/lib/monda.css" />
 <link rel="stylesheet" href="/lib/leaflet.css" />
 {% else %}
-<link href="/css/bootstrap_custom/bootstrap.min.css?v=20140220" rel="stylesheet">
+<link href="/css/bootstrap_custom/bootstrap.min.css?v=20140221" rel="stylesheet">
 <link href='http://fonts.googleapis.com/css?family=Monda:400,700' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
 {% endif %}
-<link href="/css/screen.css" rel="stylesheet">
+<link href="/css/screen.css?v=20140221" rel="stylesheet">
 <!--[if lt IE 9]>
 <script src="/lib/html5shiv.js"></script>
 <![endif]-->
@@ -188,7 +188,7 @@ window.apiDomain = "{{ site.api_domain }}";
 {% endif %}
 
 {% if page.has_js %}
-<script src="/js/{{ page.app }}.js?v=20140220"></script>
+<script src="/js/{{ page.app }}.js?v=20140221"></script>
 {% endif %}
 
 {% if site.debug %}
