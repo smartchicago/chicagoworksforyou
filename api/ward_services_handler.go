@@ -9,51 +9,70 @@ import (
 )
 
 func WardServicesHandler(params url.Values, request *http.Request) ([]byte, *ApiError) {
-  // for a given ward, return the number of service requests opened and closed
-  // grouped by day, then by service request type
+  // for a given ward, return the number of service requests opened and closed,
+  // grouped by service_code
   //
   // Parameters:
   //
   //  count:          the number of days of data to return
   //  end_date:       date that +count+ is based from.
-  //  service_code:   (optional) the code used by the City of Chicago to categorize service requests
   //  callback:       function to wrap response in (for JSONP functionality)
   //
   // Sample API output
   //
-  // Note that the end date is August 30, and the results include the end_date. Days with no service requests will report "0"
-  //
-  // $ curl "http://localhost:5000/wards/10/counts.json?count=7&end_date=2013-08-30"
-  // {
-  //   "2013-08-24": {
-  //     "Opened": 0,
-  //     "Closed": 0
+  // $ curl "http://localhost:5000/wards/10/services.json?count=7&end_date=2013-08-30"
+  // [
+  //   {
+  //     opened: 5,
+  //     closed: 7,
+  //     service_code: "4ffa9cad6018277d4000007b"
   //   },
-  //   "2013-08-25": {
-  //     "Opened": 0,
-  //     "Closed": 0
+  //   {
+  //     opened: 1,
+  //     closed: 2,
+  //     service_code: "4ffa4c69601827691b000018"
   //   },
-  //   "2013-08-26": {
-  //     "Opened": 7,
-  //     "Closed": 4
+  //   {
+  //     opened: 33,
+  //     closed: 49,
+  //     service_code: "4fd3b167e750846744000005"
   //   },
-  //   "2013-08-27": {
-  //     "Opened": 20,
-  //     "Closed": 37
+  //   {
+  //     opened: 14,
+  //     closed: 23,
+  //     service_code: "4fd3b656e750846c53000004"
   //   },
-  //   "2013-08-28": {
-  //     "Opened": 18,
-  //     "Closed": 34
+  //   {
+  //     opened: 7,
+  //     closed: 4,
+  //     service_code: "4ffa9db16018277d400000a2"
   //   },
-  //   "2013-08-29": {
-  //     "Opened": 7,
-  //     "Closed": 6
+  //   {
+  //     opened: 14,
+  //     closed: 18,
+  //     service_code: "4fd3bd3de750846c530000b9"
   //   },
-  //   "2013-08-30": {
-  //     "Opened": 0,
-  //     "Closed": 0
+  //   {
+  //     opened: 1,
+  //     closed: 1,
+  //     service_code: "4ffa971e6018277d4000000b"
+  //   },
+  //   {
+  //     opened: 6,
+  //     closed: 50,
+  //     service_code: "4fd3bbf8e750846c53000069"
+  //   },
+  //   {
+  //     opened: 4,
+  //     closed: 5,
+  //     service_code: "4fd3b750e750846c5300001d"
+  //   },
+  //   {
+  //     opened: 7,
+  //     closed: 5,
+  //     service_code: "4ffa9f2d6018277d400000c8"
   //   }
-  // }
+  // ]
 
   vars := mux.Vars(request)
   ward_id := vars["id"]

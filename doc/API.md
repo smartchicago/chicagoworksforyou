@@ -239,6 +239,74 @@ Output:
         "closed": 7
       }
     }
+
+Ward Service Counts
+--------
+
+Path: `/wards/{id}/services.json`
+
+Description: Return the number of service requests opened and closed grouped by service request code, for a given ward.
+
+Input:
+
+    end_date: e.g. "2013-06-19"
+    count: number of days to count back from end date
+
+Output:
+
+    $ curl "http://localhost:5000/wards/10/services.json?count=7&end_date=2013-08-30"
+    [
+      {
+        opened: 5,
+        closed: 7,
+        service_code: "4ffa9cad6018277d4000007b"
+      },
+      {
+        opened: 1,
+        closed: 2,
+        service_code: "4ffa4c69601827691b000018"
+      },
+      {
+        opened: 33,
+        closed: 49,
+        service_code: "4fd3b167e750846744000005"
+      },
+      {
+        opened: 14,
+        closed: 23,
+        service_code: "4fd3b656e750846c53000004"
+      },
+      {
+        opened: 7,
+        closed: 4,
+        service_code: "4ffa9db16018277d400000a2"
+      },
+      {
+        opened: 14,
+        closed: 18,
+        service_code: "4fd3bd3de750846c530000b9"
+      },
+      {
+        opened: 1,
+        closed: 1,
+        service_code: "4ffa971e6018277d4000000b"
+      },
+      {
+        opened: 6,
+        closed: 50,
+        service_code: "4fd3bbf8e750846c53000069"
+      },
+      {
+        opened: 4,
+        closed: 5,
+        service_code: "4fd3b750e750846c5300001d"
+      },
+      {
+        opened: 7,
+        closed: 5,
+        service_code: "4ffa9f2d6018277d400000c8"
+      }
+    ]
     
 Request Counts
 --------------
