@@ -60,7 +60,7 @@ func TimeToCloseHandler(params url.Values, request *http.Request) ([]byte, *ApiE
 	var rows *sql.Rows
 
 	if service_code != "" {
-		rows, err = api.Db.Query(`SELECT EXTRACT('EPOCH' FROM AVG(closed_datetime - requested_datetime)) AS avg_ttc, COUNT(service_request_id), ward
+		rows, err = api.Db.Query(`SELECT COALESCE(EXTRACT('EPOCH' FROM AVG(closed_datetime - requested_datetime)),0) AS avg_ttc, COUNT(service_request_id), ward
         		FROM service_requests 
         		WHERE closed_datetime IS NOT NULL 
         			AND duplicate IS NULL
@@ -71,7 +71,7 @@ func TimeToCloseHandler(params url.Values, request *http.Request) ([]byte, *ApiE
         		GROUP BY ward 
         		ORDER BY avg_ttc DESC;`, start, end, service_code)
 	} else {
-		rows, err = api.Db.Query(`SELECT EXTRACT('EPOCH' FROM AVG(closed_datetime - requested_datetime)) AS avg_ttc, COUNT(service_request_id), ward
+		rows, err = api.Db.Query(`SELECT COALESCE(EXTRACT('EPOCH' FROM AVG(closed_datetime - requested_datetime)),0) AS avg_ttc, COUNT(service_request_id), ward
         		FROM service_requests 
         		WHERE closed_datetime IS NOT NULL 
         			AND duplicate IS NULL
@@ -112,7 +112,7 @@ func TimeToCloseHandler(params url.Values, request *http.Request) ([]byte, *ApiE
 	city_average := TimeToClose{Ward: 0}
 
 	if service_code != "" {
-		err = api.Db.QueryRow(`SELECT EXTRACT('EPOCH' FROM AVG(closed_datetime - requested_datetime)) AS avg_ttc, COUNT(service_request_id)
+		err = api.Db.QueryRow(`SELECT COALESCE(EXTRACT('EPOCH' FROM AVG(closed_datetime - requested_datetime)),0) AS avg_ttc, COUNT(service_request_id)
         		FROM service_requests 
         		WHERE closed_datetime IS NOT NULL 
         			AND duplicate IS NULL
@@ -122,7 +122,8 @@ func TimeToCloseHandler(params url.Values, request *http.Request) ([]byte, *ApiE
         			AND ward IS NOT NULL`, service_code, start, end).Scan(&city_average.Time, &city_average.Count)
 
 	} else {
-		err = api.Db.QueryRow(`SELECT EXTRACT('EPOCH' FROM AVG(closed_datetime - requested_datetime)) AS avg_ttc, COUNT(service_request_id)
+
+		err = api.Db.QueryRow(`SELECT COALESCE(EXTRACT('EPOCH' FROM AVG(closed_datetime - requested_datetime)),0) AS avg_ttc, COUNT(service_request_id)
         		FROM service_requests 
         		WHERE closed_datetime IS NOT NULL 
         			AND duplicate IS NULL
