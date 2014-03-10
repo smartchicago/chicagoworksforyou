@@ -82,10 +82,10 @@ window.wardPath = {{ page.points }};
             <section id="ttc" class="ttc">
                 <h3>Time-to-close ranking <small>(in days)</small></h3>
                 <p class="explanation" ng-show="data.inTTCchart">
-                    Among the <span ng-bind="data.totalTTCWards"></span> wards that closed <span ng-bind="data.minTTCcount"></span> or more <b ng-bind="data.serviceObj.name"></b> requests this week, Ward <span ng-bind="data.wardNum"></span> ranked <b ng-bind="data.wardRank"></b>, with an average time-to-close of <b ng-bind="data.wardTime"></b> <b>days</b>.
+                    Among the <span ng-bind="data.totalTTCWards"></span> wards that closed <span ng-bind="data.minTTCcount"></span> or more <b ng-bind="data.serviceObj.name"></b> requests in the week of <span ng-bind="data.thisDate"></span>, Ward <span ng-bind="data.wardNum"></span> ranked <b ng-bind="data.wardRank"></b>, with an average time-to-close of <b ng-bind="data.wardTime"></b> <b>days</b>.
                 </p>
                 <p class="explanation" ng-show="!data.inTTCchart">
-                    Ward <span ng-bind="data.wardNum"></span> didn't close <span ng-bind="data.minTTCcount"></span> or more <span ng-bind="data.serviceObj.name"></span> requests this week, so it's not shown on this chart.
+                    Ward <span ng-bind="data.wardNum"></span> didn't close <span ng-bind="data.minTTCcount"></span> or more <span ng-bind="data.serviceObj.name"></span> requests in the week of <span ng-bind="data.thisDate">, so it's not shown on this chart.
                 </p>
                 <div id="ttc-chart" class="service-chart"></div>
             </section>
