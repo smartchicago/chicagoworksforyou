@@ -46,7 +46,7 @@ wardApp.factory('Data', function ($http) {
     if (!window.chicagoMap) {
         window.chicagoMap = L.map('map', {scrollWheelZoom: false}).setView(wardCenter, 13);
         L.tileLayer(
-                'http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png',
+                'http://{s}.tiles.mapbox.com/v3/{key}/{z}/{x}/{y}.png',
                 window.mapOptions
             )
             .addTo(window.chicagoMap);

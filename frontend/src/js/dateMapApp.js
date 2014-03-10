@@ -50,7 +50,7 @@ dateMapApp.factory('Data', function ($route) {
         }).setView([41.838, -87.815], 11);
 
         L.tileLayer(
-                'http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png',
+                'https://{s}.tiles.mapbox.com/v3/{key}/{z}/{x}/{y}.png',
                 _.extend(window.mapOptions, {'maxZoom': 11})
             )
             .addTo(window.chicagoMap);
