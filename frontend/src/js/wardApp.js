@@ -397,7 +397,7 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
                             var wt = this.y;
 
                             // Are we highlighting a low number?
-                            if (Data.wardNum == wardNum && Data.highlightLowTTC) {
+                            if (Data.wardNum == wn && Data.highlightLowTTC) {
                                 // Set it back to the original value
                                 wt = wardTime;
                             }
