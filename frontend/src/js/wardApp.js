@@ -335,22 +335,33 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
     var renderTTCchart = function(ttcURL) {
         $http.jsonp(ttcURL).
             success(function(response, status, headers, config) {
-                var threshold = Math.min(Math.round(Math.max(response.threshold, 1)), 10);
+                var countThreshold = Math.min(Math.round(Math.max(response.threshold, 1)), 10);
                 var extended = _.map(response.ward_data, function(val, key) { return _.extend(val,{'ward':parseInt(key,10)}); });
-                var filtered = _.filter(extended, function(ward) { return ward.count >= threshold && ward.ward > 0; });
+                var filtered = _.filter(extended, function(ward) { return ward.count >= countThreshold && ward.ward > 0; });
                 var sorted = _.sortBy(filtered, 'time');
                 var wards = _.pluck(sorted, 'ward');
-                var times = _.pluck(sorted, 'time');
                 var position = _.indexOf(wards, Data.wardNum);
+
+                // So that we can see small values on the chart
+                var maxWard = _.max(filtered, function (val, key) { return val.time });
+                var currentWard = _.findWhere(extended, {ward: Data.wardNum});
+                var timeThreshold = maxWard.time / 100;
+                var wardTime = currentWard.time;
+                if (sorted[position] && wardTime < timeThreshold) {
+                    Data.highlightLowTTC = true;
+                    sorted[position].time = timeThreshold;
+                }
+
+                var times = _.pluck(sorted, 'time');
                 var colors = _.map(wards, function(ward) { return ward == Data.wardNum ? 'black' : '#BED0DE'; });
 
                 Data.inTTCchart = position >= 0;
                 Data.totalTTCWards = wards.length;
-                Data.minTTCcount = threshold;
+                Data.minTTCcount = countThreshold;
 
                 if (Data.inTTCchart) {
                     Data.wardRank = window.getOrdinal(position + 1);
-                    Data.wardTime = Math.round(sorted[position].time * 100) / 100;
+                    Data.wardTime = Math.round( wardTime * 100 ) / 100;
                 }
 
                 Highcharts.setOptions(highchartsDefaults);
@@ -382,9 +393,18 @@ wardApp.controller("wardChartCtrl", function ($scope, Data, $http, $location, $r
                     }],
                     tooltip: {
                         formatter: function() {
+                            var wn = sorted[this.x].ward;
+                            var wt = this.y;
+
+                            // Are we highlighting a low number?
+                            if (Data.wardNum == wardNum && Data.highlightLowTTC) {
+                                // Set it back to the original value
+                                wt = wardTime;
+                            }
+
                             var text = [
-                                '<b>' + 'Ward ' + sorted[this.x].ward + '<b>',
-                                Math.round(this.y * 10) / 10 + ' day' + window.pluralize(this.y),
+                                '<b>' + 'Ward ' + wn+ '<b>',
+                                Math.round(wt * 100) / 100 + ' day' + window.pluralize(this.y),
                                 sorted[this.x].count + ' request' + window.pluralize(sorted[this.x].count)
                             ];
                             return text.join('<br>');
